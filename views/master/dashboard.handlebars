@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Master Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <span class="navbar-brand mb-0 h1">Master Admin</span>
+        <a href="/master/logout" class="btn btn-outline-light">Logout</a>
+    </nav>
+
+    <div class="container mt-4">
+        <h3>Manage Communities</h3>
+
+        <div class="card mb-4">
+            <div class="card-header">Add New Community</div>
+            <div class="card-body">
+                <form method="POST" action="/master/add" class="form-inline">
+                    <input type="text" name="name" class="form-control mr-2" placeholder="Name" required>
+                    <input type="text" name="slug" class="form-control mr-2" placeholder="Slug (URL)" required>
+                    <input type="password" name="adminPassword" class="form-control mr-2" placeholder="Admin Password"
+                        required>
+                    <button type="submit" class="btn btn-success">Create</button>
+                </form>
+            </div>
+        </div>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Slug</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each synagogues}}
+                <tr>
+                    <td>{{this.name}}</td>
+                    <td><a href="/s/{{this.slug}}" target="_blank">{{this.slug}}</a></td>
+                    <td>
+                        <a href="/admin/{{this.slug}}/login" class="btn btn-sm btn-info" target="_blank">Admin Login</a>
+                        <form method="POST" action="/master/delete" class="d-inline"
+                            onsubmit="return confirm('Are you sure?');">
+                            <input type="hidden" name="id" value="{{this._id}}">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

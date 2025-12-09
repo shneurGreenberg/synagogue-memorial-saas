@@ -1,0 +1,66 @@
+<h2>{{t 'slideshow'}}</h2>
+
+<div class="card mb-4">
+    <div class="card-header">{{t 'settings'}}</div>
+    <div class="card-body">
+        <form method="POST" action="/admin/{{synagogue.slug}}/slideshow/settings">
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="enabledCheck" name="enabled" {{#if
+                    synagogue.slideshow.enabled}}checked{{/if}}>
+                <label class="form-check-label" for="enabledCheck">{{t 'enable_slideshow'}}</label>
+            </div>
+            <div class="form-group">
+                <label>{{t 'slide_duration'}}</label>
+                <input type="number" class="form-control" name="interval" value="{{synagogue.slideshow.interval}}"
+                    required>
+            </div>
+            <div class="form-group">
+                <label>{{t 'main_duration'}}</label>
+                <small class="form-text text-muted">{{t 'main_duration_help'}}</small>
+                <input type="number" class="form-control" name="mainDuration"
+                    value="{{synagogue.slideshow.mainDuration}}" required>
+            </div>
+            <button type="submit" class="btn btn-primary">{{t 'save'}}</button>
+        </form>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">{{t 'add_new_slide'}}</div>
+    <div class="card-body">
+        <form method="POST" action="/admin/{{synagogue.slug}}/slideshow/add" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>{{t 'image'}}</label>
+                <input type="file" name="image" class="form-control-file" required>
+            </div>
+            <div class="form-group">
+                <label>{{t 'text'}}</label>
+                <input type="text" name="text" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">{{t 'add'}}</button>
+        </form>
+    </div>
+</div>
+
+<h3>{{t 'current_slides'}}</h3>
+<div class="row">
+    {{#each synagogue.slideshow.images}}
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <img src="/images/{{this.url}}" class="card-img-top" style="height: 200px; object-fit: cover;">
+            <div class="card-body">
+                <p class="card-text">{{this.text}}</p>
+                <form method="POST" action="/admin/{{../synagogue.slug}}/slideshow/delete"
+                    onsubmit="return confirm('Are you sure?');">
+                    <input type="hidden" name="slideId" value="{{this._id}}">
+                    <button type="submit" class="btn btn-danger btn-sm">{{t 'delete'}}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{else}}
+    <div class="col-12">
+        <p>{{t 'no_slides'}}</p>
+    </div>
+    {{/each}}
+</div>

@@ -1,0 +1,49 @@
+$background: #b5a9a9;
+$goldenText: #cfaf1f;
+$cardBackground: #030200;
+$cardButton: darken($goldenText, 15%);
+$cardButtonBorder: darken($goldenText, 20%);
+$cardButtonText: lighten(#000, 25%);
+$cardName: lighten($background, 50%);
+$cardTime: lighten($background, 25%);
+$cardTitle: lighten($background, 35%);
+$cardOutline: lighten(#ff4f1f, 10%);
+$textColor: darken(#fff, 25%);
+$woodenPanelBorder: #604f2f;
+$goldenPanelDark: rgba(82, 75, 11, 50%);
+$goldenPanelLight: rgba(117, 110, 40, 0);
+$goldenPanelBorder: darken($goldenText, 25%);
+
+body {
+  background: url('/images/brickwall.jpg');
+  margin: 0;
+  color: $textColor;
+}
+
+.wooden-panel {
+  background: url('/images/wood2.png');
+  border: 7px solid $woodenPanelBorder;
+  box-shadow:
+    1px 1px 10px #000,
+    2px 2px 2px darken($woodenPanelBorder, 50%),
+    -2px -2px 2px lighten($woodenPanelBorder, 50%),
+    inset -2px -2px 1px lighten($woodenPanelBorder, 5%),
+    inset 2px 2px 1px darken($woodenPanelBorder, 5%);
+  height: 90vh;
+  margin: 20px;
+}
+
+.golden-panel {
+  background: linear-gradient(80deg, rgba(0, 0, 0, 100%) 0%, rgba(0, 0, 0, 100%) 20%, $goldenPanelDark 40%, $goldenPanelLight), url('/images/gold.png');
+  border-radius: 10px / 5px;
+  padding: 10px;
+  border: 1px solid $goldenPanelBorder;
+  box-shadow:
+    1px 1px 10px #000;
+}
+
+@mixin golden-text-mixin {
+  color: $goldenText;
+  font-weight: lighter;
+  text-shadow: 2px 2px 2px darken($goldenText, 50%);
+}

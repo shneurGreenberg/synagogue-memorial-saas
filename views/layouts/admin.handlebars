@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Synagogue Admin</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/{{synagogue.slug}}/dashboard">{{t 'settings'}}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/{{synagogue.slug}}/people">{{t 'people'}}</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/{{synagogue.slug}}/slideshow">{{t 'slideshow'}}</a>
+                </li>
+            </ul>
+            <a class="btn btn-outline-light" href="/admin/logout">{{t 'logout'}}</a>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        {{{body}}}
+    </div>
+</body>
+
+</html>

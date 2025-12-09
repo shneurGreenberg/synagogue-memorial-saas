@@ -1,0 +1,57 @@
+<h2>{{t 'settings'}}</h2>
+<form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data">
+    <div class="form-group">
+        <label>{{t 'title'}}</label>
+        <input type="text" name="title" class="form-control" value="{{synagogue.title}}">
+    </div>
+    <div class="form-group">
+        <label>{{t 'primary_color'}}</label>
+        <input type="color" name="primaryColor" class="form-control" value="{{synagogue.theme.primaryColor}}">
+    </div>
+    <div class="form-group">
+        <label>{{t 'text_color'}}</label>
+        <input type="color" name="textColor" class="form-control" value="{{synagogue.theme.textColor}}">
+    </div>
+    <div class="form-group">
+        <label>{{t 'logo'}}</label>
+        {{#if synagogue.theme.logo}}
+        <img src="/images/{{synagogue.theme.logo}}" style="height: 50px; margin-bottom: 10px;">
+        {{/if}}
+        <input type="file" name="logo" class="form-control-file">
+    </div>
+    <div class="form-group">
+        <label>{{t 'background_image'}}</label>
+        {{#if synagogue.theme.backgroundImage}}
+        <div class="mb-2">
+            <img src="/images/{{synagogue.theme.backgroundImage}}" style="height: 100px; object-fit: cover;">
+        </div>
+        {{/if}}
+        <input type="file" name="backgroundImage" class="form-control-file">
+    </div>
+    <div class="form-group">
+        <label>{{t 'tiles_background'}}</label>
+        {{#if synagogue.theme.tilesBackground}}
+        <div class="mb-2">
+            <img src="/images/{{synagogue.theme.tilesBackground}}" style="height: 100px; object-fit: cover;">
+        </div>
+        {{/if}}
+        <input type="file" name="tilesBackground" class="form-control-file">
+    </div>
+    <div class="form-group">
+        <label>{{t 'language'}}</label>
+        <select name="language" class="form-control">
+            <option value="ru" {{#if (eq synagogue.language 'ru' )}}selected{{/if}}>Russian</option>
+            <option value="en" {{#if (eq synagogue.language 'en' )}}selected{{/if}}>English</option>
+            <option value="he" {{#if (eq synagogue.language 'he' )}}selected{{/if}}>Hebrew</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>{{t 'admin_language'}}</label>
+        <select name="adminLanguage" class="form-control">
+            <option value="ru" {{#if (eq synagogue.adminLanguage 'ru' )}}selected{{/if}}>Russian</option>
+            <option value="en" {{#if (eq synagogue.adminLanguage 'en' )}}selected{{/if}}>English</option>
+            <option value="he" {{#if (eq synagogue.adminLanguage 'he' )}}selected{{/if}}>Hebrew</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">{{t 'save'}}</button>
+</form>

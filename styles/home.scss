@@ -1,0 +1,325 @@
+@import 'common';
+
+.main-container {
+  display: flex;
+
+  & > div {
+    flex-grow: 0;
+    text-align: center;
+  }
+
+  .left {
+    width: 17%;
+
+    .banner {
+      margin-top: 20px;
+      width: 80%;
+    }
+
+    .daily-cite {
+      margin-top: 50px;
+    }
+
+    .nearest-dates {
+      h2 {
+        font-size: 30px;
+        font-weight: bold;
+        @include golden-text-mixin;
+      }
+
+      ul {
+        margin: 0;
+        padding: 0;
+        text-align: left;
+
+        li {
+          list-style: none;
+          margin: 10px;
+          margin-left: 15px;
+          margin-bottom: 20px;
+          padding: 0;
+
+          a {
+            display: block;
+            color: white;
+            text-decoration: none;
+
+            time {
+              display: block;
+              margin-bottom: 5px;
+              text-decoration: underline;
+              color: $textColor;
+            }
+
+            .name {
+              display: block;
+              margin-left: 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .middle {
+    width: 66%;
+    position: relative;
+
+    header {
+      h1 {
+        font-size: 60px;
+        margin: 20px 0;
+        margin-bottom: 20px;
+        @include golden-text-mixin;
+        letter-spacing: 10px;
+      }
+    }
+
+    .search {
+      position: absolute;
+      text-align: left;
+      left: 48px;
+      bottom: 48px;
+      width: 100%;
+      z-index: 20;
+
+      button {
+        position: absolute;
+        top: 4px;
+        left: 3px;
+        width: 30px;
+        height: 32px;
+        padding: 0;
+        background: none;
+        cursor: pointer;
+        border: none;
+        outline: none;
+        box-shadow: none;
+        color: #000;
+        font-size: 24px;
+      }
+
+      input {
+        width: calc(100% - 330px);
+        height: 32px;
+        border-radius: 5px;
+        font-size: 24px;
+        letter-spacing: 1px;
+        background: $cardButton;
+
+        padding-left: 35px;
+
+        &:focus {
+          outline: none;
+        }
+
+        &::placeholder {
+          color: $textColor;
+        }
+      }
+
+      &.search-full-width input {
+        width: calc(100% - 140px);
+      }
+    }
+
+    .pager {
+      position: absolute;
+      right: 40px;
+      bottom: 35px;
+      z-index: 20;
+
+      .currentPage {
+        position: relative;
+        display: inline-block;
+        color: white;
+        font-size: 20px;
+        bottom: -3px;
+      }
+
+      button {
+        position: relative;
+        margin: 12px;
+        min-height: 30px;
+        font-weight: bold;
+        font-size: 25px;
+        padding: 0 10px;
+        padding-bottom: 8px;
+        color: white;
+      }
+    }
+
+    button  {
+      cursor: pointer;
+      background: $cardButton;
+      border: 1.5px solid $cardButtonBorder;
+      border-radius: 3px;
+      color: $cardButtonText;
+      box-shadow: 1px 1px 2px $cardButtonBorder;
+      padding: 3px 10px;
+
+      &:active, &:focus {
+        outline: none;
+      }
+    }
+
+    table {
+      width: calc(100% - 20px);
+      margin: 10px;
+
+      td {
+        padding: 0;
+        min-width: 290px;
+
+        .card {
+          position: relative;
+          cursor: pointer;
+          margin: 10px;
+          text-align: center;
+          max-width: 290px;
+          min-width: 230px;
+          min-height: 130px;
+
+          &.card-hidden {
+            display: none;
+          }
+
+          .candle {
+            width: 46px;
+            height: 100px;
+            position: absolute;
+            // background: url('/images/candle.webp');
+            background-size: 60px;
+            background-repeat: no-repeat;
+            left: 0px;
+            top: 20px;
+          }
+
+          &.card-big {
+            max-width: 600px;
+
+            .candle {
+              background-size: 100px;
+              width: 100px;
+              height: 200px;
+              opacity: 100%;
+              top: 100px;
+            }
+          }
+
+          &.card-outline {
+            border: 4px outset $cardOutline;
+          }
+
+          .inner {
+            z-index: 10;
+            position: relative;
+            margin-left: 56px;
+
+            h3 {
+              font-size: 20px;
+              margin: 0;
+              margin-bottom: 10px;
+              position: relative;
+              @include golden-text-mixin;
+              font-weight: bold;
+            }
+
+            time {
+              font-size: 15px;
+              color: $cardTime;
+              white-space: nowrap;
+            }
+
+            .title {
+              margin: 5px 0;
+              color: $cardTitle;
+            }
+
+            .placeholder {
+              min-height: 30px;
+            }
+          }
+
+          &.card-big {
+            .inner {
+              h3 {
+                font-size: 40px;
+                margin-bottom: 50px;
+              }
+
+              time {
+                font-size: 30px;
+              }
+
+              .title {
+                margin: 20px 0;
+                margin-top: 40px;
+              }
+
+              .placeholder {
+                min-height: 140px;
+              }
+            }
+          }
+
+          button  {
+            position: absolute;
+            right: 30px;
+            bottom: 15px;
+          }
+        }
+      }
+    }
+  }
+
+  .right {
+    width: 17%;
+
+    .inner {
+      padding: 15px;
+
+      .weekly-chapter {
+        margin-top: 30px;
+      }
+
+      h1 {
+        font-size: 40px;
+        margin: 0;
+        @include golden-text-mixin;
+      }
+
+      h2 {
+        font-size: 25px;
+        margin: 0;
+        @include golden-text-mixin;
+      }
+
+      h3 {
+        font-size: 15px;
+        margin: 0;
+      }
+
+      .izkor {
+        h1 {
+          white-space: nowrap;
+          font-size: 30px;
+        }
+
+        padding-top: 15px;
+        margin-top: 30px;
+        border-top: 1px solid $goldenPanelBorder;
+        font-size: 20px;
+
+        div {
+          color: #fff;
+          padding-top: 15px;
+        }
+
+        &.izkor-big {
+          font-size: 25px;
+        }
+      }
+    }
+  }
+}
