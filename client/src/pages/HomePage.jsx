@@ -1,6 +1,6 @@
 import Hebcal from 'hebcal';
 import React from 'react';
-import Clock from 'react-live-clock';
+import { LiveClock } from '../components/LiveClock';
 import { withTranslation } from 'react-i18next';
 import {
   formatHebrewDate,
@@ -419,7 +419,7 @@ class HomePageBase extends React.Component {
         {wrap('k-r1c4', pick(pageShift + 4))}
         {wrap('k-r2c1', pick(pageShift + 12))}
         <div className="kadish-center">
-          <Card entry={pick(0)} big />
+          <MemorialCard entry={pick(0)} big onOpen={this.props.onOpenCard} />
         </div>
         {wrap('k-r2c4', pick(pageShift + 5))}
         {wrap('k-r3c1', pick(pageShift + 11))}
@@ -487,7 +487,7 @@ class HomePageBase extends React.Component {
           <div className="wooden-panel">
             <div className="inner">
               <time>
-                <h1><Clock format="HH:mm" ticking timezone="Asia/Novosibirsk" /></h1>
+                <h1><LiveClock timezone="Asia/Novosibirsk" /></h1>
                 <br />
                 <h2>{formatHebrewDate(this.state.hebrewDate)}</h2>
                 <h3>{formatGregorianDate(this.state.gregorianDate)}</h3>
