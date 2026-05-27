@@ -8,8 +8,6 @@ const {
   CURRENT_DAY_OF_YEAR,
   DAYS_IN_YEAR,
   gregorianDayOfYear,
-  translit,
-  translitSplit,
 } = require('./novosibirsk');
 const Clock = require('react-live-clock');
 require('./i18n');
@@ -121,7 +119,7 @@ class CardBase extends React.Component {
           aria-hidden="true"
         />
         <div className="inner">
-          <h3>{entry.name}</h3>
+          <h3 title={entry.name}>{entry.name}</h3>
           <time dateTime={toDatetimeAttr(entry.gregorianDateOfDeath)}>
             {formatGregorianDate(entry.gregorianDateOfDeath)}
           </time>
@@ -346,7 +344,6 @@ class HomePageBase extends React.Component {
       .slice(0)
       .map((a) => {
         const person = { ...a };
-        person.nameComponents = translitSplit(person.name);
         person.gregorianDayOfMemory = gregorianDayOfYear(
           person.gregorianDateOfDeath.month,
           person.gregorianDateOfDeath.date,
@@ -385,17 +382,14 @@ class HomePageBase extends React.Component {
       itemsPerPage: 16,
       page: 0,
       pageShift: 0,
-      filterString: '',
     };
 
-    this.searchState(initialState, '');
+    this.initPagination(initialState);
 
     this.state = initialState;
 
     this.previousPage = this.previousPage.bind(this);
     this.nextPage = this.nextPage.bind(this);
-    this.search = this.search.bind(this);
-    this.clearSearch = this.clearSearch.bind(this);
     this.finishSlideshow = this.finishSlideshow.bind(this);
   }
 
@@ -419,8 +413,8 @@ class HomePageBase extends React.Component {
     this.startMainTimer();
   }
 
-  searchState(state, string) {
-    const people = this.searchPeopleByString(string, state.allPeople);
+  initPagination(state) {
+    const people = state.allPeople;
 
     const hasKadishToday =
       people.length == 1
@@ -438,69 +432,6 @@ class HomePageBase extends React.Component {
     state.itemsPerPage = itemsPerPage;
     state.page = 0;
     state.pageShift = 0;
-    state.filterString = string;
-  }
-
-  searchPeopleByString(string, allPeople) {
-    const searchComponents = translitSplit(string);
-
-    if (searchComponents.length == 0) {
-      return allPeople;
-    }
-
-    const result = [];
-    let hasFullMatches = false;
-
-    for (let index = 0; index < allPeople.length; index++) {
-      const person = allPeople[index];
-      let matches = 0;
-
-      for (
-        let searchComponentIndex = 0;
-        searchComponentIndex < searchComponents.length;
-        searchComponentIndex++
-      ) {
-        const searchComponent = searchComponents[searchComponentIndex];
-        const found = person
-          .nameComponents
-          .some((nameComponent) => nameComponent.includes(searchComponent));
-
-        if (found) {
-          matches += 1;
-        }
-      }
-
-      if (matches === 0) {
-        continue;
-      }
-
-      hasFullMatches = hasFullMatches || matches === searchComponents.length;
-
-      result.push({
-        matches: matches / searchComponents.length,
-        person,
-      });
-    }
-
-    if (hasFullMatches) {
-      return result
-        .filter((a) => a.matches === 1.0)
-        .map((a) => a.person);
-    }
-
-    return result
-      .sort((a, b) => {
-        if (a.matches < b.matches) {
-          return -1;
-        }
-
-        if (a.matches > b.matches) {
-          return 1;
-        }
-
-        return 0;
-      })
-      .map((a) => a.person);
   }
 
   changePage(shift) {
@@ -519,24 +450,6 @@ class HomePageBase extends React.Component {
 
   nextPage() {
     this.changePage(1);
-  }
-
-  search(event) {
-    const string = event.target.value;
-
-    this.setState((state) => {
-      const next = { ...state };
-      this.searchState(next, string);
-      return next;
-    });
-  }
-
-  clearSearch() {
-    this.setState((state) => {
-      const next = { ...state };
-      this.searchState(next, '');
-      return next;
-    });
   }
 
   getChapterOrHoliday(hebrewDate) {
@@ -586,7 +499,11 @@ class HomePageBase extends React.Component {
       );
     }
 
-    return <div className="cards-grid">{cells}</div>;
+    return (
+      <div className="cards-area">
+        <div className="cards-grid">{cells}</div>
+      </div>
+    );
   }
 
   renderKadishGrid() {
@@ -599,7 +516,8 @@ class HomePageBase extends React.Component {
     );
 
     return (
-      <div className="cards-grid cards-grid-kadish">
+      <div className="cards-area">
+        <div className="cards-grid cards-grid-kadish">
         {wrap('k-r1c1', pick(pageShift + 1))}
         {wrap('k-r1c2', pick(pageShift + 2))}
         {wrap('k-r1c3', pick(pageShift + 3))}
@@ -615,6 +533,7 @@ class HomePageBase extends React.Component {
         {wrap('k-r4c2', pick(pageShift + 9))}
         {wrap('k-r4c3', pick(pageShift + 8))}
         {wrap('k-r4c4', pick(pageShift + 7))}
+        </div>
       </div>
     );
   }
@@ -653,26 +572,8 @@ class HomePageBase extends React.Component {
         </aside>
         <section className="middle">
           <div className="wooden-panel">
-            <header><h1>{appData.title}</h1></header>
+            <header className="board-header"><h1>{appData.title}</h1></header>
             {this.state.hasKadishToday ? this.renderKadishGrid() : this.renderStandardGrid()}
-            <div className={`search ${this.state.totalPages <= 1 ? 'search-full-width' : ''}`}>
-              <button
-                type="button"
-                className="search-clear"
-                onClick={this.clearSearch}
-                style={this.state.filterString.length === 0 ? { display: 'none' } : {}}
-                aria-label={this.props.t('clear_search')}
-              >
-                &#x2715;
-              </button>
-              <input
-                type="search"
-                placeholder={this.props.t('search_placeholder')}
-                value={this.state.filterString}
-                onChange={this.search}
-                aria-label={this.props.t('search_placeholder')}
-              />
-            </div>
             <div
               className="pager"
               style={this.state.totalPages <= 1 ? { display: 'none' } : {}}
