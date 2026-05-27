@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const handlebars = require('express-handlebars');
-const browserify = require('express-browserify');
 const sass = require('sass');
 const fs = require('fs');
 const path = require('path');
@@ -77,23 +76,25 @@ app.use('/photos', express.static(path.join(__dirname, 'photos')));
 
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
-app.get('/js/home.js', browserify(
-  path.join(__dirname, 'js/home.jsx'),
-  (browserify) => {
-    return browserify.transform('babelify', {
-      presets: ['@babel/preset-env', '@babel/preset-react']
-    });
-  }
-));
+app.use('/board', express.static(path.join(__dirname, 'public/board')));
 
-app.get('/js/card.js', browserify(
-  path.join(__dirname, 'js/card.jsx'),
-  (browserify) => {
-    return browserify.transform('babelify', {
-      presets: ['@babel/preset-env', '@babel/preset-react']
-    });
+async function loadSynagogueBoard(slug) {
+  const synagogue = await Synagogue.findOne({ slug }).lean();
+
+  if (!synagogue) {
+    return null;
   }
-));
+
+  synagogue.baseUrl = `/s/${slug}`;
+  return synagogue;
+}
+
+function renderMemorialBoard(req, res, synagogue) {
+  res.render('board', {
+    layout: false,
+    data: synagogue,
+  });
+}
 
 app.get('/', async (req, res) => {
   try {
@@ -104,36 +105,45 @@ app.get('/', async (req, res) => {
   }
 });
 
-app.get('/s/:slug', async (req, res) => {
+app.get('/s/:slug/api/board', async (req, res) => {
   try {
-    const { slug } = req.params;
-    const synagogue = await Synagogue.findOne({ slug }).lean();
+    const synagogue = await loadSynagogueBoard(req.params.slug);
+
     if (!synagogue) {
-      return res.status(404).send('Synagogue not found');
+      return res.status(404).json({ error: 'Synagogue not found' });
     }
-    // Map database fields to expected structure if needed, or ensure Seed matches
-    synagogue.baseUrl = `/s/${slug}`;
-    // Ensure data structure matches what frontend expects (it expects 'data' object with people etc, but here 'synagogue' IS that object mostly)
-    // The original database.json had "data": { ... } and "port": ...
-    // Our model has fields at top level.
-    // So we pass 'synagogue' as 'data'.
-    res.render('home', { data: synagogue, pageScript: 'home' });
+
+    return res.json(synagogue);
   } catch (err) {
-    res.status(500).send(err.message);
+    return res.status(500).json({ error: err.message });
   }
 });
 
-app.get('/s/:slug/card/*', async (req, res) => {
+app.get('/s/:slug/card/:personId', async (req, res) => {
   try {
-    const { slug } = req.params;
-    const synagogue = await Synagogue.findOne({ slug }).lean();
+    const synagogue = await loadSynagogueBoard(req.params.slug);
+
     if (!synagogue) {
       return res.status(404).send('Synagogue not found');
     }
-    synagogue.baseUrl = `/s/${slug}`;
-    res.render('card', { data: synagogue, pageScript: 'card' });
+
+    return renderMemorialBoard(req, res, synagogue);
   } catch (err) {
-    res.status(500).send(err.message);
+    return res.status(500).send(err.message);
+  }
+});
+
+app.get('/s/:slug', async (req, res) => {
+  try {
+    const synagogue = await loadSynagogueBoard(req.params.slug);
+
+    if (!synagogue) {
+      return res.status(404).send('Synagogue not found');
+    }
+
+    return renderMemorialBoard(req, res, synagogue);
+  } catch (err) {
+    return res.status(500).send(err.message);
   }
 });
 

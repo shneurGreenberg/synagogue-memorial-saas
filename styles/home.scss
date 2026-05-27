@@ -119,12 +119,19 @@
           margin: 8px 10px 12px;
           padding: 0;
 
-          a {
+          a,
+          .nearest-date-link {
             display: block;
+            width: 100%;
             color: white;
             text-decoration: none;
             padding: 4px 6px;
             border-radius: 8px;
+            background: transparent;
+            border: none;
+            font: inherit;
+            cursor: pointer;
+            text-align: center;
 
             &:hover,
             &:focus-visible {
