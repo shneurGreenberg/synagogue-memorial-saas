@@ -17,6 +17,23 @@ class CardViewBase extends React.Component {
     const card = (window.data.people || []).find((a) => a.id == id);
 
     this.state = { card };
+    this.goBack = this.goBack.bind(this);
+    this.onBackdropClick = this.onBackdropClick.bind(this);
+    this.stopPropagation = this.stopPropagation.bind(this);
+  }
+
+  goBack() {
+    window.location.href = window.data.baseUrl;
+  }
+
+  onBackdropClick(event) {
+    if (event.target === event.currentTarget) {
+      this.goBack();
+    }
+  }
+
+  stopPropagation(event) {
+    event.stopPropagation();
   }
 
   render() {
@@ -24,18 +41,33 @@ class CardViewBase extends React.Component {
 
     if (!card) {
       return (
-        <main className="card-view wooden-panel card-view-missing">
-          <h1>{this.props.t('person_not_found')}</h1>
-          <p>
-            <a href={window.data.baseUrl}>{this.props.t('back_to_board')}</a>
-          </p>
+        <main
+          className="card-view wooden-panel card-view-missing"
+          onClick={this.onBackdropClick}
+          role="presentation"
+        >
+          <div className="card-detail golden-panel" onClick={this.stopPropagation}>
+            <h1>{this.props.t('person_not_found')}</h1>
+            <p>
+              <a href={window.data.baseUrl}>{this.props.t('back_to_board')}</a>
+            </p>
+          </div>
         </main>
       );
     }
 
     return (
-      <main className="card-view wooden-panel">
-        <div className="card-detail golden-panel">
+      <main
+        className="card-view wooden-panel"
+        onClick={this.onBackdropClick}
+        role="presentation"
+        aria-label={this.props.t('back_to_board')}
+      >
+        <div
+          className="card-detail golden-panel"
+          onClick={this.stopPropagation}
+          role="article"
+        >
           <div className="card-detail-photo">
             <PersonAvatar person={card} size="xl" />
           </div>

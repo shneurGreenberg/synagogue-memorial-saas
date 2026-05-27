@@ -16,8 +16,6 @@ const { sanitizeRichText } = require('./html-sanitize');
 
 configureNovosibirsk();
 
-const CANDLE_LOOP_LENGTH = 104;
-
 function getAppData() {
   return window.data || {};
 }
@@ -38,42 +36,6 @@ class CardBase extends React.Component {
     super(props);
     this.onActivate = this.onActivate.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
-    this.state = {
-      candleHash: 0,
-      candleTimeout: null,
-    };
-  }
-
-  componentDidMount() {
-    const shift = Math.round(Math.random() * CANDLE_LOOP_LENGTH);
-    const left = CANDLE_LOOP_LENGTH - shift;
-    this.setCandleTimeout(left);
-  }
-
-  componentWillUnmount() {
-    this.tearDownCandle();
-  }
-
-  setCandleTimeout(left) {
-    this.setState((prev) => {
-      if (prev.candleTimeout) {
-        clearTimeout(prev.candleTimeout);
-      }
-
-      return {
-        candleHash: Math.random(),
-        candleTimeout: setTimeout(() => {
-          this.setCandleTimeout(CANDLE_LOOP_LENGTH);
-        }, left * 1000),
-      };
-    });
-  }
-
-  tearDownCandle() {
-    if (this.state.candleTimeout) {
-      clearTimeout(this.state.candleTimeout);
-      this.setState({ candleTimeout: null });
-    }
   }
 
   onActivate() {
@@ -113,10 +75,12 @@ class CardBase extends React.Component {
         onKeyDown={this.onKeyDown}
         aria-label={`${entry.name}, ${this.props.t('learn_more')}`}
       >
-        <div
+        <img
           className="candle"
-          style={{ backgroundImage: `url("/images/candle.webp?hash=${this.state.candleHash}")` }}
+          src="/images/candle.webp"
+          alt=""
           aria-hidden="true"
+          decoding="async"
         />
         <div className="inner">
           <h3 title={entry.name}>{entry.name}</h3>
@@ -555,9 +519,11 @@ class HomePageBase extends React.Component {
 
     return (
       <main className="main-container">
-        <aside className="left">
+        <aside className="left side-panel">
           <div className="wooden-panel">
-            <img className="banner" src={`/images/${logo}`} alt={appData.title || 'Synagogue'} />
+            <div className="banner-wrap">
+              <img className="banner" src={`/images/${logo}`} alt={appData.title || 'Synagogue'} />
+            </div>
             {this.state.dailyCite && (
               <div
                 className="daily-cite"
@@ -586,7 +552,7 @@ class HomePageBase extends React.Component {
             </div>
           </div>
         </section>
-        <aside className="right">
+        <aside className="right side-panel">
           <div className="wooden-panel">
             <div className="inner">
               <time>
