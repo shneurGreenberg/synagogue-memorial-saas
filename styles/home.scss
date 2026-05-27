@@ -90,6 +90,7 @@
       .nearest-dates-scroll {
         flex: 1;
         min-height: 0;
+        width: 100%;
         overflow: hidden;
         scrollbar-width: none;
         -ms-overflow-style: none;
@@ -98,10 +99,6 @@
         &::-webkit-scrollbar {
           display: none;
         }
-      }
-
-      .nearest-dates-scroll {
-        width: 100%;
       }
 
       .nearest-dates-track {
