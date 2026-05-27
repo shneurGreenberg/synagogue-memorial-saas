@@ -98,7 +98,7 @@ app.get('/js/card.js', browserify(
 app.get('/', async (req, res) => {
   try {
     const synagogues = await Synagogue.find({}, 'slug name');
-    res.render('landing', { synagogues });
+    res.render('landing', { synagogues, layout: 'landing' });
   } catch (err) {
     res.status(500).send(err.message);
   }
@@ -117,7 +117,7 @@ app.get('/s/:slug', async (req, res) => {
     // The original database.json had "data": { ... } and "port": ...
     // Our model has fields at top level.
     // So we pass 'synagogue' as 'data'.
-    res.render('home', { data: synagogue });
+    res.render('home', { data: synagogue, pageScript: 'home' });
   } catch (err) {
     res.status(500).send(err.message);
   }
@@ -131,7 +131,7 @@ app.get('/s/:slug/card/*', async (req, res) => {
       return res.status(404).send('Synagogue not found');
     }
     synagogue.baseUrl = `/s/${slug}`;
-    res.render('card', { data: synagogue });
+    res.render('card', { data: synagogue, pageScript: 'card' });
   } catch (err) {
     res.status(500).send(err.message);
   }

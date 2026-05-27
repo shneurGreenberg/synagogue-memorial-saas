@@ -2,27 +2,50 @@
 
 .main-container {
   display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0;
 
-  & > div {
+  & > aside,
+  & > section {
     flex-grow: 0;
     text-align: center;
   }
 
   .left {
     width: 17%;
+    min-width: 200px;
+  }
 
+  .middle {
+    width: 66%;
+    flex: 1 1 400px;
+    position: relative;
+    min-width: 280px;
+  }
+
+  .right {
+    width: 17%;
+    min-width: 200px;
+  }
+
+  .left {
     .banner {
       margin-top: 20px;
       width: 80%;
+      max-width: 220px;
+      height: auto;
     }
 
     .daily-cite {
-      margin-top: 50px;
+      margin-top: 30px;
+      padding: 0 12px;
+      font-size: clamp(14px, 1.2vw, 18px);
     }
 
     .nearest-dates {
       h2 {
-        font-size: 30px;
+        font-size: clamp(20px, 2vw, 30px);
         font-weight: bold;
         @include golden-text-mixin;
       }
@@ -34,26 +57,41 @@
 
         li {
           list-style: none;
-          margin: 10px;
-          margin-left: 15px;
-          margin-bottom: 20px;
+          margin: 10px 12px 16px;
           padding: 0;
 
           a {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 12px;
             color: white;
             text-decoration: none;
+            min-height: 48px;
+            padding: 6px;
+            border-radius: 8px;
+
+            &:hover,
+            &:focus-visible {
+              background: rgba(0, 0, 0, 0.25);
+            }
+
+            .nearest-person-meta {
+              flex: 1;
+              min-width: 0;
+            }
 
             time {
               display: block;
-              margin-bottom: 5px;
+              margin-bottom: 4px;
               text-decoration: underline;
               color: $textColor;
+              font-size: clamp(12px, 1vw, 15px);
             }
 
             .name {
               display: block;
-              margin-left: 10px;
+              font-size: clamp(14px, 1.1vw, 17px);
+              line-height: 1.3;
             }
           }
         }
@@ -62,55 +100,53 @@
   }
 
   .middle {
-    width: 66%;
-    position: relative;
-
-    header {
-      h1 {
-        font-size: 60px;
-        margin: 20px 0;
-        margin-bottom: 20px;
-        @include golden-text-mixin;
-        letter-spacing: 10px;
-      }
+    header h1 {
+      font-size: clamp(28px, 4.5vw, 60px);
+      margin: 16px 0;
+      @include golden-text-mixin;
+      letter-spacing: clamp(2px, 1vw, 10px);
     }
 
     .search {
-      position: absolute;
-      text-align: left;
-      left: 48px;
-      bottom: 48px;
-      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 12px clamp(12px, 2vw, 48px) 16px;
+      position: relative;
+      left: auto;
+      bottom: auto;
+      width: auto;
       z-index: 20;
 
-      button {
-        position: absolute;
-        top: 4px;
-        left: 3px;
-        width: 30px;
-        height: 32px;
+      .search-clear {
+        flex-shrink: 0;
+        width: 44px;
+        height: 44px;
+        min-height: 44px;
         padding: 0;
-        background: none;
+        background: $cardButton;
         cursor: pointer;
-        border: none;
-        outline: none;
-        box-shadow: none;
-        color: #000;
-        font-size: 24px;
+        border: 1.5px solid $cardButtonBorder;
+        border-radius: 6px;
+        color: $cardButtonText;
+        font-size: 22px;
       }
 
       input {
-        width: calc(100% - 330px);
-        height: 32px;
-        border-radius: 5px;
-        font-size: 24px;
+        flex: 1;
+        min-width: 0;
+        height: 44px;
+        min-height: 44px;
+        border-radius: 6px;
+        font-size: clamp(16px, 1.5vw, 24px);
         letter-spacing: 1px;
         background: $cardButton;
+        border: 1.5px solid $cardButtonBorder;
+        padding: 0 12px 0 40px;
 
-        padding-left: 35px;
-
-        &:focus {
-          outline: none;
+        &:focus-visible {
+          outline: 3px solid $goldenText;
+          outline-offset: 2px;
         }
 
         &::placeholder {
@@ -118,208 +154,372 @@
         }
       }
 
-      &.search-full-width input {
-        width: calc(100% - 140px);
+      .search-clear {
+        position: absolute;
+        left: 4px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 36px;
+        height: 36px;
+        min-height: 36px;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        color: #000;
+        z-index: 1;
       }
     }
 
     .pager {
-      position: absolute;
-      right: 40px;
-      bottom: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin: 0 clamp(12px, 2vw, 40px) 16px;
+      position: relative;
+      right: auto;
+      bottom: auto;
       z-index: 20;
 
       .currentPage {
-        position: relative;
-        display: inline-block;
         color: white;
-        font-size: 20px;
-        bottom: -3px;
+        font-size: clamp(16px, 1.5vw, 20px);
       }
 
       button {
-        position: relative;
-        margin: 12px;
-        min-height: 30px;
+        min-width: 44px;
+        min-height: 44px;
         font-weight: bold;
-        font-size: 25px;
-        padding: 0 10px;
-        padding-bottom: 8px;
+        font-size: 22px;
+        padding: 0 12px;
         color: white;
+        cursor: pointer;
+        background: $cardButton;
+        border: 1.5px solid $cardButtonBorder;
+        border-radius: 6px;
+
+        &:focus-visible {
+          outline: 3px solid $goldenText;
+          outline-offset: 2px;
+        }
       }
     }
 
-    button  {
-      cursor: pointer;
-      background: $cardButton;
-      border: 1.5px solid $cardButtonBorder;
-      border-radius: 3px;
-      color: $cardButtonText;
-      box-shadow: 1px 1px 2px $cardButtonBorder;
-      padding: 3px 10px;
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: clamp(6px, 1vw, 12px);
+      padding: clamp(6px, 1vw, 12px);
+      width: 100%;
+      box-sizing: border-box;
 
-      &:active, &:focus {
-        outline: none;
-      }
-    }
+      .card {
+        position: relative;
+        cursor: pointer;
+        margin: 0 auto;
+        text-align: left;
+        width: 100%;
+        max-width: 320px;
+        min-height: 130px;
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 44px;
+        box-sizing: border-box;
 
-    table {
-      width: calc(100% - 20px);
-      margin: 10px;
+        &.card-hidden {
+          visibility: hidden;
+          pointer-events: none;
+        }
 
-      td {
-        padding: 0;
-        min-width: 290px;
+        .card-media {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          padding: 8px 8px 0;
+        }
 
-        .card {
-          position: relative;
-          cursor: pointer;
-          margin: 10px;
-          text-align: center;
-          max-width: 290px;
-          min-width: 230px;
-          min-height: 130px;
+        .candle {
+          width: 36px;
+          height: 80px;
+          flex-shrink: 0;
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: center bottom;
+          opacity: 0.9;
+        }
 
-          &.card-hidden {
-            display: none;
+        &.card-big {
+          max-width: 100%;
+          min-height: 200px;
+
+          .card-media .person-avatar-lg {
+            width: 100px;
+            height: 100px;
           }
 
           .candle {
-            width: 46px;
-            height: 100px;
-            position: absolute;
-            // background: url('/images/candle.webp');
-            background-size: 60px;
-            background-repeat: no-repeat;
-            left: 0px;
-            top: 20px;
-          }
-
-          &.card-big {
-            max-width: 600px;
-
-            .candle {
-              background-size: 100px;
-              width: 100px;
-              height: 200px;
-              opacity: 100%;
-              top: 100px;
-            }
-          }
-
-          &.card-outline {
-            border: 4px outset $cardOutline;
-          }
-
-          .inner {
-            z-index: 10;
-            position: relative;
-            margin-left: 56px;
-
-            h3 {
-              font-size: 20px;
-              margin: 0;
-              margin-bottom: 10px;
-              position: relative;
-              @include golden-text-mixin;
-              font-weight: bold;
-            }
-
-            time {
-              font-size: 15px;
-              color: $cardTime;
-              white-space: nowrap;
-            }
-
-            .title {
-              margin: 5px 0;
-              color: $cardTitle;
-            }
-
-            .placeholder {
-              min-height: 30px;
-            }
-          }
-
-          &.card-big {
-            .inner {
-              h3 {
-                font-size: 40px;
-                margin-bottom: 50px;
-              }
-
-              time {
-                font-size: 30px;
-              }
-
-              .title {
-                margin: 20px 0;
-                margin-top: 40px;
-              }
-
-              .placeholder {
-                min-height: 140px;
-              }
-            }
-          }
-
-          button  {
-            position: absolute;
-            right: 30px;
-            bottom: 15px;
+            width: 64px;
+            height: 140px;
           }
         }
+
+        &.card-outline {
+          border: 4px outset $cardOutline;
+        }
+
+        .inner {
+          flex: 1;
+          padding: 0 12px 8px 12px;
+
+          h3 {
+            font-size: clamp(16px, 1.4vw, 20px);
+            margin: 0 0 8px;
+            @include golden-text-mixin;
+            font-weight: bold;
+          }
+
+          time {
+            font-size: clamp(12px, 1vw, 15px);
+            color: $cardTime;
+          }
+
+          .title {
+            margin: 8px 0;
+            color: $cardTitle;
+            font-size: clamp(14px, 1.2vw, 18px);
+          }
+
+          .placeholder {
+            min-height: 12px;
+          }
+        }
+
+        &.card-big .inner {
+          h3 {
+            font-size: clamp(24px, 2.5vw, 40px);
+            margin-bottom: 16px;
+          }
+
+          time {
+            font-size: clamp(16px, 1.6vw, 30px);
+          }
+
+          .title {
+            margin-top: 20px;
+            font-size: clamp(18px, 1.8vw, 24px);
+          }
+        }
+
+        .card-action {
+          position: absolute;
+          right: 12px;
+          bottom: 12px;
+          cursor: pointer;
+          background: $cardButton;
+          border: 1.5px solid $cardButtonBorder;
+          border-radius: 6px;
+          color: $cardButtonText;
+          box-shadow: 1px 1px 2px $cardButtonBorder;
+          padding: 6px 12px;
+          font-size: clamp(12px, 1vw, 14px);
+          min-height: 36px;
+          display: inline-flex;
+          align-items: center;
+        }
+      }
+    }
+
+    .cards-grid-kadish {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-rows: repeat(4, auto);
+
+      .k-r1c1 { grid-column: 1; grid-row: 1; }
+      .k-r1c2 { grid-column: 2; grid-row: 1; }
+      .k-r1c3 { grid-column: 3; grid-row: 1; }
+      .k-r1c4 { grid-column: 4; grid-row: 1; }
+      .k-r2c1 { grid-column: 1; grid-row: 2; }
+      .k-r2c4 { grid-column: 4; grid-row: 2; }
+      .k-r3c1 { grid-column: 1; grid-row: 3; }
+      .k-r3c4 { grid-column: 4; grid-row: 3; }
+      .k-r4c1 { grid-column: 1; grid-row: 4; }
+      .k-r4c2 { grid-column: 2; grid-row: 4; }
+      .k-r4c3 { grid-column: 3; grid-row: 4; }
+      .k-r4c4 { grid-column: 4; grid-row: 4; }
+
+      .kadish-center {
+        grid-column: 2 / span 2;
+        grid-row: 2 / span 2;
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+
+        .card {
+          max-width: none;
+          width: 100%;
+        }
+      }
+
+      > div .card {
+        margin: 0 auto;
       }
     }
   }
 
-  .right {
-    width: 17%;
+  .right .inner {
+    padding: 15px;
 
-    .inner {
-      padding: 15px;
+    .weekly-chapter {
+      margin-top: 24px;
+    }
 
-      .weekly-chapter {
-        margin-top: 30px;
-      }
+    h1 {
+      font-size: clamp(24px, 2.5vw, 40px);
+      margin: 0;
+      @include golden-text-mixin;
+    }
 
+    h2 {
+      font-size: clamp(18px, 1.8vw, 25px);
+      margin: 0;
+      @include golden-text-mixin;
+    }
+
+    h3 {
+      font-size: clamp(14px, 1.2vw, 15px);
+      margin: 0;
+    }
+
+    .izkor {
       h1 {
-        font-size: 40px;
-        margin: 0;
-        @include golden-text-mixin;
+        white-space: nowrap;
+        font-size: clamp(22px, 2vw, 30px);
       }
 
-      h2 {
-        font-size: 25px;
-        margin: 0;
-        @include golden-text-mixin;
+      padding-top: 15px;
+      margin-top: 24px;
+      border-top: 1px solid $goldenPanelBorder;
+      font-size: clamp(16px, 1.4vw, 20px);
+
+      div {
+        color: #fff;
+        padding-top: 12px;
       }
 
-      h3 {
-        font-size: 15px;
-        margin: 0;
+      &.izkor-big {
+        font-size: clamp(18px, 1.6vw, 25px);
       }
+    }
+  }
+}
 
-      .izkor {
-        h1 {
-          white-space: nowrap;
-          font-size: 30px;
-        }
+.slideshow-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
-        padding-top: 15px;
-        margin-top: 30px;
-        border-top: 1px solid $goldenPanelBorder;
-        font-size: 20px;
+.slideshow-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
 
-        div {
-          color: #fff;
-          padding-top: 15px;
-        }
+.slideshow-caption {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 90%;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 16px 24px;
+  font-size: clamp(16px, 2vw, 2em);
+  border-radius: 10px;
+  text-align: center;
+}
 
-        &.izkor-big {
-          font-size: 25px;
-        }
+.slideshow-loading {
+  position: absolute;
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.slideshow-skip {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.9);
+  color: #111;
+  cursor: pointer;
+  z-index: 1001;
+
+  &:focus-visible {
+    outline: 3px solid $goldenText;
+  }
+}
+
+@media (max-width: 1200px) {
+  .main-container {
+    .left,
+    .right {
+      width: 100%;
+      flex: 1 1 100%;
+    }
+
+    .middle {
+      width: 100%;
+      order: -1;
+    }
+
+    .wooden-panel {
+      max-height: none;
+    }
+
+    .middle .cards-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .middle .cards-grid-kadish .kadish-center {
+      grid-column: 1 / span 2;
+      grid-row: auto;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .main-container .middle {
+    .cards-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .cards-grid-kadish {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+
+      .kadish-center {
+        grid-column: 1 / span 2;
+        grid-row: auto;
       }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .main-container .middle .cards-grid {
+    grid-template-columns: 1fr;
+
+    .card {
+      max-width: 100%;
     }
   }
 }

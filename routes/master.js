@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Synagogue = require('../models/Synagogue');
+const { hashPassword } = require('../lib/password');
 
 // Middleware to check master admin auth
 const requireMaster = (req, res, next) => {
@@ -39,7 +40,7 @@ router.post('/add', requireMaster, async (req, res) => {
         const newSynagogue = new Synagogue({
             name,
             slug,
-            adminPassword, // Note: In production, hash this!
+            adminPassword: await hashPassword(adminPassword),
             title: name
         });
         await newSynagogue.save();

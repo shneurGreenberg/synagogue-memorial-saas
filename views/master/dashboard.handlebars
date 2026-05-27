@@ -2,6 +2,8 @@
 <html>
 
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Master Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
@@ -42,7 +44,7 @@
                     <td>{{this.name}}</td>
                     <td><a href="/s/{{this.slug}}" target="_blank">{{this.slug}}</a></td>
                     <td>
-                        <a href="/admin/{{this.slug}}/login" class="btn btn-sm btn-info" target="_blank">Admin Login</a>
+                        <a href="/admin/login" class="btn btn-sm btn-info" target="_blank">Admin Login</a>
                         <form method="POST" action="/master/delete" class="d-inline"
                             onsubmit="return confirm('Are you sure?');">
                             <input type="hidden" name="id" value="{{this._id}}">

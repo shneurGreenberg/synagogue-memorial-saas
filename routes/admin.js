@@ -4,6 +4,8 @@ const Synagogue = require('../models/Synagogue');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { verifyPassword, ensureHashed, hashPassword } = require('../lib/password');
+const { sanitizeRichText } = require('../lib/sanitize');
 
 // Configure Multer
 const storage = multer.diskStorage({
@@ -42,7 +44,11 @@ router.post('/login', async (req, res) => {
     const { slug, password } = req.body;
     try {
         const synagogue = await Synagogue.findOne({ slug }).select('+adminPassword');
-        if (synagogue && synagogue.adminPassword === password) {
+        if (synagogue && await verifyPassword(password, synagogue.adminPassword)) {
+            const hashed = await ensureHashed(password, synagogue.adminPassword);
+            if (hashed) {
+                await Synagogue.updateOne({ slug }, { $set: { adminPassword: hashed } });
+            }
             req.session.adminSlug = slug;
             return res.redirect(`/admin/${slug}/dashboard`);
         }
@@ -93,7 +99,13 @@ const translations = {
         "delete_photo": "Delete current photo",
         "save_changes": "Save Changes",
         "date_gregorian": "Date of Death (Gregorian)",
-        "are_you_sure": "Are you sure?"
+        "are_you_sure": "Are you sure?",
+        "photo": "Photo",
+        "name": "Name",
+        "search_people": "Search by name...",
+        "sort_label": "Sort people",
+        "sort_by_name": "Sort by name",
+        "sort_by_date": "Sort by date"
     },
     ru: {
         "settings": "Настройки",
@@ -130,7 +142,13 @@ const translations = {
         "delete_photo": "Удалить текущее фото",
         "save_changes": "Сохранить изменения",
         "date_gregorian": "Дата смерти (Григорианская)",
-        "are_you_sure": "Вы уверены?"
+        "are_you_sure": "Вы уверены?",
+        "photo": "Фото",
+        "name": "Имя",
+        "search_people": "Поиск по имени...",
+        "sort_label": "Сортировка",
+        "sort_by_name": "По имени",
+        "sort_by_date": "По дате"
     },
     he: {
         "settings": "הגדרות",
@@ -167,7 +185,13 @@ const translations = {
         "delete_photo": "מחק תמונה נוכחית",
         "save_changes": "שמור שינויים",
         "date_gregorian": "תאריך פטירה (לועזי)",
-        "are_you_sure": "האם אתה בטוח?"
+        "are_you_sure": "האם אתה בטוח?",
+        "photo": "תמונה",
+        "name": "שם",
+        "search_people": "חיפוש לפי שם...",
+        "sort_label": "מיון",
+        "sort_by_name": "לפי שם",
+        "sort_by_date": "לפי תאריך"
     }
 };
 
@@ -271,7 +295,7 @@ router.post('/:slug/slideshow/add', requireAdmin, upload.single('image'), async 
                     $push: {
                         'slideshow.images': {
                             url: req.file.filename,
-                            text: text
+                            text: sanitizeRichText(text)
                         }
                     }
                 }
@@ -324,7 +348,7 @@ router.post('/:slug/people/add', requireAdmin, upload.single('photo'), async (re
         const newPerson = {
             id: maxId + 1,
             name,
-            text,
+            text: sanitizeRichText(text),
             gregorianDateOfDeath: { month: parseInt(month), date: parseInt(date), year: parseInt(year) },
             photo: req.file ? req.file.filename : '',
             title: ''
@@ -348,7 +372,7 @@ router.post('/:slug/people/edit', requireAdmin, upload.single('photo'), async (r
 
         const updateFields = {
             'people.$.name': name,
-            'people.$.text': text,
+            'people.$.text': sanitizeRichText(text),
             'people.$.gregorianDateOfDeath': { month: parseInt(month), date: parseInt(date), year: parseInt(year) }
         };
 
