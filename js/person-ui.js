@@ -15,29 +15,51 @@ function getInitials(name) {
     .toUpperCase();
 }
 
-function PersonAvatar({ person, size = 'md', className = '' }) {
-  if (!person) {
-    return null;
+class PersonAvatar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { imageFailed: false };
+    this.onImageError = this.onImageError.bind(this);
   }
 
-  const classes = `person-avatar person-avatar-${size} ${className}`.trim();
-  const name = person.name || '';
+  componentDidUpdate(prevProps) {
+    if (prevProps.person !== this.props.person || prevProps.person?.photo !== this.props.person?.photo) {
+      this.setState({ imageFailed: false });
+    }
+  }
 
-  if (person.photo) {
+  onImageError() {
+    this.setState({ imageFailed: true });
+  }
+
+  render() {
+    const { person, size = 'md', className = '' } = this.props;
+
+    if (!person) {
+      return null;
+    }
+
+    const classes = `person-avatar person-avatar-${size} ${className}`.trim();
+    const name = person.name || '';
+    const showPhoto = person.photo && !this.state.imageFailed;
+
+    if (showPhoto) {
+      return (
+        <img
+          src={`/photos/${person.photo}`}
+          alt={name}
+          className={classes}
+          onError={this.onImageError}
+        />
+      );
+    }
+
     return (
-      <img
-        src={`/photos/${person.photo}`}
-        alt={name}
-        className={classes}
-      />
+      <span className={`${classes} person-avatar-placeholder`} aria-hidden="true">
+        {getInitials(name)}
+      </span>
     );
   }
-
-  return (
-    <span className={`${classes} person-avatar-placeholder`} aria-hidden="true">
-      {getInitials(name)}
-    </span>
-  );
 }
 
 module.exports = {

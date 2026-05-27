@@ -201,6 +201,26 @@ const getTranslator = (lang) => {
     };
 };
 
+const getInitials = (name) => {
+    if (!name) {
+        return '?';
+    }
+
+    return name
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0])
+        .join('')
+        .toUpperCase();
+};
+
+const adminViewHelpers = (t) => ({
+    t,
+    initials: getInitials,
+});
+
 router.post('/:slug/settings', requireAdmin, upload.fields([
     { name: 'logo', maxCount: 1 },
     { name: 'backgroundImage', maxCount: 1 },
@@ -244,7 +264,7 @@ router.get('/:slug/dashboard', requireAdmin, async (req, res) => {
         res.render('admin/dashboard', {
             synagogue,
             layout: 'admin',
-            helpers: { t }
+            helpers: adminViewHelpers(t)
         });
     } catch (err) {
         res.status(500).send(err.message);
@@ -260,7 +280,7 @@ router.get('/:slug/slideshow', requireAdmin, async (req, res) => {
         res.render('admin/slideshow', {
             synagogue,
             layout: 'admin',
-            helpers: { t }
+            helpers: adminViewHelpers(t)
         });
     } catch (err) {
         res.status(500).send(err.message);
@@ -331,7 +351,7 @@ router.get('/:slug/people', requireAdmin, async (req, res) => {
         res.render('admin/people', {
             synagogue,
             layout: 'admin',
-            helpers: { t }
+            helpers: adminViewHelpers(t)
         });
     } catch (err) {
         res.status(500).send(err.message);

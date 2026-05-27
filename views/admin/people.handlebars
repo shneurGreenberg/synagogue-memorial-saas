@@ -93,9 +93,11 @@
     <article class="person-row" data-name="{{this.name}}" data-id="{{this.id}}"
         data-date="{{this.gregorianDateOfDeath.year}}-{{this.gregorianDateOfDeath.month}}-{{this.gregorianDateOfDeath.date}}">
         {{#if this.photo}}
-        <img src="/photos/{{this.photo}}" class="person-photo" alt="{{this.name}}">
+        <img src="/photos/{{this.photo}}" class="person-photo" alt="{{this.name}}"
+            onerror="this.classList.add('d-none'); this.nextElementSibling.classList.remove('d-none');">
+        <span class="person-photo person-photo-placeholder d-none" aria-hidden="true">{{initials this.name}}</span>
         {{else}}
-        <span class="person-photo person-photo-placeholder" aria-hidden="true">?</span>
+        <span class="person-photo person-photo-placeholder" aria-hidden="true">{{initials this.name}}</span>
         {{/if}}
         <div class="person-meta">
             <strong>{{this.name}}</strong>
@@ -284,11 +286,5 @@
             });
         });
 
-        document.querySelectorAll('.person-photo-placeholder').forEach(function (el) {
-            const row = el.closest('.person-row');
-            if (row) {
-                el.textContent = getInitials(row.getAttribute('data-name'));
-            }
-        });
     })();
 </script>

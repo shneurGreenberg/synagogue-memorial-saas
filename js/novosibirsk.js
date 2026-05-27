@@ -287,6 +287,19 @@ module.exports = {
 
   formatGregorianDate: (gregorianDate) => {
     const lang = (typeof window !== 'undefined' && window.data && window.data.language) || 'ru';
+
+    if (!gregorianDate || typeof gregorianDate.getDate !== 'function') {
+      if (gregorianDate && gregorianDate.date != null) {
+        const asDate = new Date(
+          gregorianDate.year,
+          gregorianDate.month - 1,
+          gregorianDate.date,
+        );
+        return module.exports.formatGregorianDate(asDate);
+      }
+      return '';
+    }
+
     let result = `${gregorianDate.getDate()} `;
     const month = gregorianDate.getMonth();
 

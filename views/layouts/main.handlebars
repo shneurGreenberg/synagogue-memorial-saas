@@ -49,6 +49,9 @@
 <body>
     <script>window.data = {{{json data}}};</script>
 
+    <div id="main-entry"></div>
+    {{{body}}}
+
     {{#if (eq pageScript 'card')}}
     <script src="/js/card.js"></script>
     {{else if (eq pageScript 'home')}}
@@ -82,9 +85,6 @@
         })();
     </script>
     {{/if}}
-
-    <div id="main-entry"></div>
-    {{{body}}}
 </body>
 
 </html>
