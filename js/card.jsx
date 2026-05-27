@@ -23,7 +23,14 @@ class CardViewBase extends React.Component {
   }
 
   goBack() {
-    window.location.href = window.data.baseUrl;
+    if (document.documentElement.classList.contains('board-leaving')) {
+      return;
+    }
+
+    document.documentElement.classList.add('board-leaving');
+    window.setTimeout(() => {
+      window.location.href = window.data.baseUrl;
+    }, 280);
   }
 
   onBackdropClick(event) {

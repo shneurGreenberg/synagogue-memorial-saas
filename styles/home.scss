@@ -226,7 +226,26 @@
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        padding: 0 0 36px;
+        padding: 0;
+        transition:
+          transform 0.22s ease,
+          box-shadow 0.22s ease,
+          filter 0.22s ease;
+
+        @media (hover: hover) {
+          &:hover {
+            transform: translateY(-2px) scale(1.012);
+            box-shadow:
+              0 8px 18px rgba(0, 0, 0, 0.42),
+              inset 0 0 0 1px rgba(207, 175, 31, 0.22);
+            z-index: 2;
+          }
+        }
+
+        &:active {
+          transform: translateY(0) scale(0.995);
+          transition-duration: 0.1s;
+        }
 
         &.card-hidden {
           visibility: hidden;
@@ -245,6 +264,9 @@
           object-fit: contain;
           object-position: center bottom;
           contain: layout style paint;
+          --candle-flicker-delay: calc(var(--candle-phase, 0) * -0.41s);
+          animation: candle-soft-flicker 2.6s ease-in-out infinite;
+          animation-delay: var(--candle-flicker-delay);
         }
 
         &.card-big {
@@ -329,25 +351,6 @@
           }
         }
 
-        .card-action {
-          position: absolute;
-          right: 6px;
-          bottom: 6px;
-          left: auto;
-          cursor: pointer;
-          background: $cardButton;
-          border: 1px solid $cardButtonBorder;
-          border-radius: 8px;
-          color: $cardButtonText;
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-          padding: 5px 10px;
-          font-size: clamp(10px, 0.9vw, 14px);
-          line-height: 1.2;
-          max-width: calc(100% - 12px);
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
       }
     }
 
@@ -454,34 +457,74 @@
         margin: 0;
       }
 
-      .izkor {
+      .memorial-prayers {
         width: 100%;
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
 
         h1 {
-          font-size: clamp(22px, 2.2vw, 30px);
+          font-size: clamp(18px, 1.7vw, 24px);
           white-space: normal;
+          margin: 0 0 6px;
         }
 
         h2 {
-          font-size: clamp(18px, 1.8vw, 24px);
+          font-size: clamp(16px, 1.55vw, 22px);
+          margin: 0;
         }
 
-        padding-top: 14px;
-        margin-top: 18px;
+        padding-top: 12px;
+        margin-top: 14px;
         border-top: 1px solid $goldenPanelBorder;
-        font-size: clamp(15px, 1.35vw, 20px);
 
-        div {
-          color: #fff;
-          padding-top: 10px;
-          line-height: 1.45;
+        .memorial-prayer-block {
+          margin-top: 10px;
+
+          &.kel-male {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+          }
         }
 
-        &.izkor-big {
-          font-size: clamp(16px, 1.45vw, 22px);
+        .prayer-text {
+          color: #fff;
+          font-size: clamp(12px, 1.05vw, 16px);
+          line-height: 1.38;
+          text-align: center;
+          overflow: hidden;
+        }
+
+        &.memorial-prayers-big {
+          .prayer-text {
+            font-size: clamp(13px, 1.12vw, 17px);
+            line-height: 1.4;
+          }
         }
       }
     }
+  }
+}
+
+@keyframes candle-soft-flicker {
+  0%,
+  100% {
+    opacity: 1;
+    filter: brightness(1);
+  }
+
+  38% {
+    opacity: 0.9;
+    filter: brightness(0.94);
+  }
+
+  72% {
+    opacity: 0.97;
+    filter: brightness(1.05);
   }
 }
 
@@ -489,6 +532,10 @@
 @media (prefers-reduced-motion: reduce) {
   .main-container .cards-grid .card .candle {
     animation: none !important;
+  }
+
+  .main-container .cards-grid .card {
+    transition: none !important;
   }
 }
 

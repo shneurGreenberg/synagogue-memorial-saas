@@ -31,19 +31,46 @@ function toDatetimeAttr(gregorianDateOfDeath) {
   return `${gregorianDateOfDeath.year}-${month}-${day}`;
 }
 
+const BOARD_LEAVE_MS = 280;
+const CANDLE_CYCLE_MS = 4000;
+
 class CardBase extends React.Component {
   constructor(props) {
     super(props);
+    this.state = { showCandle: false };
     this.onActivate = this.onActivate.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
   }
 
-  onActivate() {
-    if (!this.props.entry) {
+  componentDidMount() {
+    const { entry } = this.props;
+
+    if (!entry) {
       return;
     }
 
-    window.location.href = `${getAppData().baseUrl}/card/${this.props.entry.id}`;
+    const phaseOffset = (entry.id * 317) % CANDLE_CYCLE_MS;
+    this.candleTimer = setTimeout(() => {
+      this.setState({ showCandle: true });
+    }, phaseOffset);
+  }
+
+  componentWillUnmount() {
+    if (this.candleTimer) {
+      clearTimeout(this.candleTimer);
+    }
+  }
+
+  onActivate() {
+    if (!this.props.entry || document.documentElement.classList.contains('board-leaving')) {
+      return;
+    }
+
+    const target = `${getAppData().baseUrl}/card/${this.props.entry.id}`;
+    document.documentElement.classList.add('board-leaving');
+    window.setTimeout(() => {
+      window.location.href = target;
+    }, BOARD_LEAVE_MS);
   }
 
   onKeyDown(event) {
@@ -73,15 +100,18 @@ class CardBase extends React.Component {
         tabIndex={0}
         onClick={this.onActivate}
         onKeyDown={this.onKeyDown}
-        aria-label={`${entry.name}, ${this.props.t('learn_more')}`}
+        aria-label={entry.name}
+        style={{ '--candle-phase': entry.id % 17 }}
       >
-        <img
-          className="candle"
-          src="/images/candle.webp"
-          alt=""
-          aria-hidden="true"
-          decoding="async"
-        />
+        {this.state.showCandle && (
+          <img
+            className="candle"
+            src="/images/candle.webp"
+            alt=""
+            aria-hidden="true"
+            decoding="async"
+          />
+        )}
         <div className="inner">
           <h3 title={entry.name}>{entry.name}</h3>
           <time dateTime={toDatetimeAttr(entry.gregorianDateOfDeath)}>
@@ -92,13 +122,12 @@ class CardBase extends React.Component {
           {entry.title && big && <div className="title">{entry.title}</div>}
           <div className="placeholder" />
         </div>
-        <span className="card-action">{this.props.t('learn_more')}</span>
       </article>
     );
   }
 }
 
-const Card = withTranslation()(CardBase);
+const Card = CardBase;
 
 class NearestDatesList extends React.Component {
   constructor(props) {
@@ -576,10 +605,16 @@ class HomePageBase extends React.Component {
                   )}
                 </div>
               )}
-              <div className={`izkor ${!appData.weeklyChapterEnabled ? 'izkor-big' : ''}`}>
+              <div className={`memorial-prayers ${!appData.weeklyChapterEnabled ? 'memorial-prayers-big' : ''}`}>
                 <h2>{this.props.t('memorial_prayer')}</h2>
-                <h1>{this.props.t('izkor')}</h1>
-                <div>{this.props.t('izkor_text')}</div>
+                <section className="memorial-prayer-block kel-male" aria-labelledby="kel-male-heading">
+                  <h1 id="kel-male-heading">{this.props.t('kel_male_rachamim')}</h1>
+                  <div className="prayer-text">{this.props.t('kel_male_rachamim_text')}</div>
+                </section>
+                <section className="memorial-prayer-block yizkor" aria-labelledby="yizkor-heading">
+                  <h1 id="yizkor-heading">{this.props.t('izkor')}</h1>
+                  <div className="prayer-text">{this.props.t('izkor_text')}</div>
+                </section>
               </div>
             </div>
           </div>

@@ -9,6 +9,11 @@
   justify-content: center;
   box-sizing: border-box;
   cursor: pointer;
+  animation: card-view-enter 0.42s ease-out both;
+
+  .card-detail {
+    animation: card-detail-enter 0.48s ease-out 0.06s both;
+  }
 
   &.card-view-missing {
     .card-detail {
@@ -69,6 +74,37 @@
       line-height: 1.65;
       text-align: center;
     }
+  }
+}
+
+@keyframes card-view-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes card-detail-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-view,
+  .card-view .card-detail {
+    animation: none !important;
   }
 }
 

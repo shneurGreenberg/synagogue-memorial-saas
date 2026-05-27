@@ -5,9 +5,11 @@ const resources = {
   en: {
     translation: {
       search_placeholder: 'Search by name...',
-      learn_more: 'Learn more',
       nearest_dates: 'Upcoming Dates',
       memorial_prayer: 'Memorial Prayer',
+      kel_male_rachamim: 'El Malei Rachamim',
+      kel_male_rachamim_text:
+        'God, full of mercy, Who dwells on high, grant proper rest on the wings of the Divine Presence, among the holy and pure who shine like the sky, to the souls of our brethren, the children of Israel, remembered here and to all the souls of Israel. For we pray for the elevation of their souls. Therefore may the Merciful One shelter them in the shelter of His wings for eternity, and bind their souls in the bond of life. The Lord is their heritage; may they rest in peace upon their beds, and let us say: Amen.',
       izkor: 'Yizkor',
       izkor_text: 'May God remember the soul of my father/mother...',
       weekly_chapter: 'Weekly Chapter',
@@ -26,6 +28,9 @@ const resources = {
       learn_more: 'Узнать больше',
       nearest_dates: 'Ближайшие даты',
       memorial_prayer: 'Поминальная молитва',
+      kel_male_rachamim: 'Эль Мале Рахамим',
+      kel_male_rachamim_text:
+        'Б-г, исполненный милосердия, обитающий на высотах, даруй истинный покой на крыльях Шехины, среди святых и чистых, сияющих как небеса, душам наших братьев и сестёр, детей Израиля, поминаемых здесь, и всем душам Израиля. Ибо мы молимся о возвышении их душ. Пусть же Владыка милосердия укроет их в тени Своих крыльев навеки и свяжет их души в узел жизни. Господь — их удел; да упокоятся они с миром на ложе своём, и скажем: аминь.',
       izkor: '"Изкор"',
       izkor_text: 'Пусть вспомнит Б-г душу моего отца/деда/дяди/брата/сына/мужа (имя покойного) сына (имя его отца), ушедшего в иной мир, — в награду за то, что я, не связывая себя обетом, дам пожертвование, чтобы оно было засчитано ему в заслугу. За это да будет душа его пребывать в обители вечной жизни вместе с душами Авраhама, Ицхака и Яакова, Сары, Ривки, Рахели и Леи и прочих праведников и праведниц, обитающих в Ган-Эдене, и скажем: амен!',
       weekly_chapter: 'недельная глава',
@@ -41,11 +46,14 @@ const resources = {
   he: {
     translation: {
       search_placeholder: 'חיפוש לפי שם...',
-      learn_more: 'למידע נוסף',
       nearest_dates: 'תאריכים קרובים',
       memorial_prayer: 'תפילת זיכרון',
+      kel_male_rachamim: 'אל מלא רחמים',
+      kel_male_rachamim_text:
+        'אֵל מָלֵא רַחֲמִים, שׁוֹכֵן בַּמְּרוֹמִים, הַמְצֵא מְנוּחָה נְכוֹנָה עַל כַּנְפֵי הַשְּׁכִינָה, בְּמַעֲלוֹת קְדוֹשִׁים וּטְהוֹרִים כְּזוֹהַר הָרָקִיעַ מַזְהִירִים, לְנִשְׁמוֹת אַחֵינוּ וְאַחְיוֹתֵינוּ בְּנֵי יִשְׂרָאֵל הַנִּזְכָּרִים בְּמָקוֹם זֶה וּלְכָל נִשְׁמוֹת יִשְׂרָאֵל. בַּעֲבוּר שֶׁאֲנַחְנוּ מִתְפַּלְּלִים לְעִלּוּי נִשְׁמוֹתֵיהֶם. לָכֵן בַּעַל הָרַחֲמִים יַסְתִּירֵם בְּסֵתֶר כְּנָפָיו לְעוֹלָמִים, וְיִצְרוֹר בִּצְרוֹר הַחַיִּים אֶת נִשְׁמוֹתֵיהֶם, ה׳ הוּא נַחֲלָתָם, וְיָנוּחוּ בְּשָׁלוֹם עַל מִשְׁכָּבָם, וְנֹאמַר אָמֵן.',
       izkor: 'יזכור',
-      izkor_text: 'יזכור אלוהים נשמת אבי/אמי...',
+      izkor_text:
+        'יִזְכּוֹר אֱלֹהִים נִשְׁמַת אָבִי/אִמִּי (שם הנפטר) בֶּן/בַּת (שם האב), שֶׁהָלַךְ/הָלְכָה לְעוֹלָמוֹ/לְעוֹלָמָהּ, בַּעֲבוּר שֶׁאֲנִי נוֹדֵב צְדָקָה בְּעַד הַזְכָּרַת נִשְׁמָתוֹ/נִשְׁמָתָהּ. תְּהֵא נִשְׁמָתוֹ/נִשְׁמָתָהּ צְרוּרָה בִּצְרוֹר הַחַיִּים עִם נִשְׁמוֹת אַבְרָהָם, יִצְחָק וְיַעֲקֹב, שָׂרָה, רִבְקָה, רָחֵל וְלֵאָה, וְעִם שְׁאָר צַדִּיקִים וְצַדְקָנִיּוֹת הַגְּנוּזִים בַּגַּן, וְנֹאמַר אָמֵן.',
       weekly_chapter: 'פרשת השבוע',
       slideshow_skip: 'דלג על מצגת',
       slideshow_loading: 'טוען...',
