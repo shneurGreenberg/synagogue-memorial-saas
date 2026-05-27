@@ -25,7 +25,6 @@ const resources = {
   ru: {
     translation: {
       search_placeholder: 'Поиск по имени, фамилии, отчеству',
-      learn_more: 'Узнать больше',
       nearest_dates: 'Ближайшие даты',
       memorial_prayer: 'Поминальная молитва',
       kel_male_rachamim: 'Эль Мале Рахамим',
