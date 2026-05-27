@@ -662,6 +662,24 @@ body.admin-login-page {
   color: var(--admin-text-muted);
 }
 
+.field-label-static {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  color: var(--admin-text);
+}
+
+.color-mode-field {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.color-mode-toggle {
+  margin-bottom: 0.35rem;
+}
+
 .toggle-switch {
   display: flex;
   align-items: center;

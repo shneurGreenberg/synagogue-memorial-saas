@@ -24,6 +24,22 @@
                     <input type="text" name="title" id="settingsTitle" class="form-control"
                         value="{{synagogue.title}}">
                 </div>
+                <div class="form-field color-mode-field"
+                    data-light-label="{{t 'light_mode'}}"
+                    data-dark-label="{{t 'dark_mode'}}">
+                    <span class="field-label-static">{{t 'color_mode'}}</span>
+                    <input type="hidden" name="colorMode" id="colorModeInput"
+                        value="{{#if (eq synagogue.theme.colorMode 'light')}}light{{else}}dark{{/if}}">
+                    <label class="toggle-switch color-mode-toggle" for="colorModeToggle">
+                        <input type="checkbox" id="colorModeToggle"
+                            {{#if (eq synagogue.theme.colorMode 'light')}}checked{{/if}}>
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label" id="colorModeToggleLabel">
+                            {{#if (eq synagogue.theme.colorMode 'light')}}{{t 'light_mode'}}{{else}}{{t 'dark_mode'}}{{/if}}
+                        </span>
+                    </label>
+                    <span class="field-hint">{{t 'color_mode_help'}}</span>
+                </div>
                 <div class="color-picker-row">
                     <div class="form-field">
                         <label for="primaryColor">{{t 'primary_color'}}</label>
@@ -135,4 +151,24 @@
             valueEl.textContent = input.value;
         });
     });
+
+    (function () {
+        var toggle = document.getElementById('colorModeToggle');
+        var hidden = document.getElementById('colorModeInput');
+        var label = document.getElementById('colorModeToggleLabel');
+        var field = document.querySelector('.color-mode-field');
+        if (!toggle || !hidden || !label || !field) return;
+
+        var lightLabel = field.dataset.lightLabel || 'Light';
+        var darkLabel = field.dataset.darkLabel || 'Dark';
+
+        function syncColorMode() {
+            var isLight = toggle.checked;
+            hidden.value = isLight ? 'light' : 'dark';
+            label.textContent = isLight ? lightLabel : darkLabel;
+        }
+
+        toggle.addEventListener('change', syncColorMode);
+        syncColorMode();
+    })();
 </script>

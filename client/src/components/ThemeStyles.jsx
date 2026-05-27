@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { getBoardData } from '../lib/board-data';
 
 export function ThemeStyles() {
   const data = getBoardData();
   const theme = data.theme || {};
+  const isLight = theme.colorMode === 'light';
+  const defaultTextColor = isLight ? '#2c2418' : '#d9d9d9';
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-board-theme', isLight ? 'light' : 'dark');
+
+    return () => {
+      document.documentElement.removeAttribute('data-board-theme');
+    };
+  }, [isLight]);
 
   const css = `
     :root {
       --primary-color: ${theme.primaryColor || '#cfaf1f'};
-      --text-color: ${theme.textColor || '#d9d9d9'};
+      --text-color: ${theme.textColor || defaultTextColor};
       --card-button: color-mix(in srgb, ${theme.primaryColor || '#cfaf1f'} 85%, #000);
       --card-button-border: color-mix(in srgb, ${theme.primaryColor || '#cfaf1f'} 70%, #000);
       --card-button-text: #1a1a1a;

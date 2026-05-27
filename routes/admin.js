@@ -121,6 +121,10 @@ const translations = {
         "settings_subtitle": "Customize the memorial display appearance and languages.",
         "slideshow_subtitle": "Configure automatic slideshow timing and slides.",
         "appearance_section": "Appearance",
+        "color_mode": "Display mode",
+        "light_mode": "Light mode",
+        "dark_mode": "Dark mode",
+        "color_mode_help": "Light mode uses a brighter board for well-lit rooms. You may want a darker text color.",
         "branding_section": "Branding & images",
         "languages_section": "Languages",
         "slideshow_settings_section": "Slideshow timing",
@@ -186,6 +190,10 @@ const translations = {
         "settings_subtitle": "Настройка внешнего вида мемориальной доски и языков.",
         "slideshow_subtitle": "Настройка автоматической слайдшоу и слайдов.",
         "appearance_section": "Внешний вид",
+        "color_mode": "Режим отображения",
+        "light_mode": "Светлый режим",
+        "dark_mode": "Тёмный режим",
+        "color_mode_help": "Светлый режим удобнее при ярком освещении. Возможно, понадобится более тёмный цвет текста.",
         "branding_section": "Брендинг и изображения",
         "languages_section": "Языки",
         "slideshow_settings_section": "Тайминг слайдшоу",
@@ -251,6 +259,10 @@ const translations = {
         "settings_subtitle": "התאמת מראה לוח הזיכרון והשפות.",
         "slideshow_subtitle": "הגדרת מצגת אוטומטית ושקופיות.",
         "appearance_section": "מראה",
+        "color_mode": "מצב תצוגה",
+        "light_mode": "מצב בהיר",
+        "dark_mode": "מצב כהה",
+        "color_mode_help": "מצב בהיר מתאים לחדר מואר. ייתכן שתרצו צבע טקסט כהה יותר.",
         "branding_section": "מיתוג ותמונות",
         "languages_section": "שפות",
         "slideshow_settings_section": "תזמון מצגת",
@@ -295,11 +307,13 @@ router.post('/:slug/settings', requireAdmin, upload.fields([
 ]), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { title, primaryColor, textColor, language, adminLanguage } = req.body;
+        const { title, primaryColor, textColor, language, adminLanguage, colorMode } = req.body;
+        const safeColorMode = colorMode === 'light' ? 'light' : 'dark';
         const updateData = {
             title,
             'theme.primaryColor': primaryColor,
             'theme.textColor': textColor,
+            'theme.colorMode': safeColorMode,
             language,
             adminLanguage
         };
