@@ -117,7 +117,18 @@ const translations = {
         "biography": "Biography",
         "day": "Day",
         "month": "Month",
-        "year": "Year"
+        "year": "Year",
+        "settings_subtitle": "Customize the memorial display appearance and languages.",
+        "slideshow_subtitle": "Configure automatic slideshow timing and slides.",
+        "appearance_section": "Appearance",
+        "branding_section": "Branding & images",
+        "languages_section": "Languages",
+        "slideshow_settings_section": "Slideshow timing",
+        "slide_caption_optional": "Caption (optional)",
+        "replace_image": "Replace image",
+        "current_image": "Current",
+        "slideshow_timing_help": "Control when the board switches to slideshow mode.",
+        "saved_settings": "Settings saved successfully"
     },
     ru: {
         "settings": "Настройки",
@@ -171,7 +182,18 @@ const translations = {
         "biography": "Биография",
         "day": "День",
         "month": "Месяц",
-        "year": "Год"
+        "year": "Год",
+        "settings_subtitle": "Настройка внешнего вида мемориальной доски и языков.",
+        "slideshow_subtitle": "Настройка автоматической слайдшоу и слайдов.",
+        "appearance_section": "Внешний вид",
+        "branding_section": "Брендинг и изображения",
+        "languages_section": "Языки",
+        "slideshow_settings_section": "Тайминг слайдшоу",
+        "slide_caption_optional": "Подпись (необязательно)",
+        "replace_image": "Заменить изображение",
+        "current_image": "Текущее",
+        "slideshow_timing_help": "Когда переключаться с доски на слайдшоу.",
+        "saved_settings": "Настройки сохранены"
     },
     he: {
         "settings": "הגדרות",
@@ -225,7 +247,18 @@ const translations = {
         "biography": "ביוגרפיה",
         "day": "יום",
         "month": "חודש",
-        "year": "שנה"
+        "year": "שנה",
+        "settings_subtitle": "התאמת מראה לוח הזיכרון והשפות.",
+        "slideshow_subtitle": "הגדרת מצגת אוטומטית ושקופיות.",
+        "appearance_section": "מראה",
+        "branding_section": "מיתוג ותמונות",
+        "languages_section": "שפות",
+        "slideshow_settings_section": "תזמון מצגת",
+        "slide_caption_optional": "כיתוב (אופציונלי)",
+        "replace_image": "החלף תמונה",
+        "current_image": "נוכחי",
+        "slideshow_timing_help": "מתי לעבור מהלוח למצגת.",
+        "saved_settings": "ההגדרות נשמרו"
     }
 };
 
@@ -284,7 +317,7 @@ router.post('/:slug/settings', requireAdmin, upload.fields([
         await Synagogue.updateOne({ slug: req.params.slug }, {
             $set: updateData
         });
-        res.redirect(`/admin/${req.params.slug}/dashboard`);
+        res.redirect(`/admin/${req.params.slug}/dashboard?saved=1`);
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -298,6 +331,7 @@ router.get('/:slug/dashboard', requireAdmin, async (req, res) => {
         res.render('admin/dashboard', {
             synagogue,
             layout: 'admin',
+            saved: req.query.saved === '1',
             helpers: adminViewHelpers(t)
         });
     } catch (err) {

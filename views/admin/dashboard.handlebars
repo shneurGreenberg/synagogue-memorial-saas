@@ -1,57 +1,138 @@
-<h2>{{t 'settings'}}</h2>
-<form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data">
-    <div class="form-group">
-        <label>{{t 'title'}}</label>
-        <input type="text" name="title" class="form-control" value="{{synagogue.title}}">
-    </div>
-    <div class="form-group">
-        <label>{{t 'primary_color'}}</label>
-        <input type="color" name="primaryColor" class="form-control" value="{{synagogue.theme.primaryColor}}">
-    </div>
-    <div class="form-group">
-        <label>{{t 'text_color'}}</label>
-        <input type="color" name="textColor" class="form-control" value="{{synagogue.theme.textColor}}">
-    </div>
-    <div class="form-group">
-        <label>{{t 'logo'}}</label>
-        {{#if synagogue.theme.logo}}
-        <img src="/images/{{synagogue.theme.logo}}" style="height: 50px; margin-bottom: 10px;">
-        {{/if}}
-        <input type="file" name="logo" class="form-control-file">
-    </div>
-    <div class="form-group">
-        <label>{{t 'background_image'}}</label>
-        {{#if synagogue.theme.backgroundImage}}
-        <div class="mb-2">
-            <img src="/images/{{synagogue.theme.backgroundImage}}" style="height: 100px; object-fit: cover;">
+<div class="admin-page settings-page">
+    <header class="admin-page-header">
+        <div>
+            <h1>{{t 'settings'}}</h1>
+            <p class="admin-subtitle">{{t 'settings_subtitle'}}</p>
         </div>
-        {{/if}}
-        <input type="file" name="backgroundImage" class="form-control-file">
+    </header>
+
+  {{#if saved}}
+    <div class="alert alert-success alert-dismissible fade show admin-alert" role="alert">
+        {{t 'saved_settings'}}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div>
-    <div class="form-group">
-        <label>{{t 'tiles_background'}}</label>
-        {{#if synagogue.theme.tilesBackground}}
-        <div class="mb-2">
-            <img src="/images/{{synagogue.theme.tilesBackground}}" style="height: 100px; object-fit: cover;">
+  {{/if}}
+
+    <form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data" class="settings-form">
+        <section class="admin-panel">
+            <div class="admin-panel-header">
+                <h2>{{t 'appearance_section'}}</h2>
+            </div>
+            <div class="admin-panel-body">
+                <div class="form-field">
+                    <label for="settingsTitle">{{t 'title'}}</label>
+                    <input type="text" name="title" id="settingsTitle" class="form-control"
+                        value="{{synagogue.title}}">
+                </div>
+                <div class="color-picker-row">
+                    <div class="form-field">
+                        <label for="primaryColor">{{t 'primary_color'}}</label>
+                        <div class="color-input-wrap">
+                            <input type="color" name="primaryColor" id="primaryColor"
+                                value="{{synagogue.theme.primaryColor}}">
+                            <span class="color-value">{{synagogue.theme.primaryColor}}</span>
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <label for="textColor">{{t 'text_color'}}</label>
+                        <div class="color-input-wrap">
+                            <input type="color" name="textColor" id="textColor"
+                                value="{{synagogue.theme.textColor}}">
+                            <span class="color-value">{{synagogue.theme.textColor}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-panel">
+            <div class="admin-panel-header">
+                <h2>{{t 'branding_section'}}</h2>
+            </div>
+            <div class="admin-panel-body media-upload-grid">
+                <div class="media-upload-card">
+                    <label>{{t 'logo'}}</label>
+                    <div class="media-preview media-preview-logo">
+                        {{#if synagogue.theme.logo}}
+                        <img src="/images/{{synagogue.theme.logo}}" alt="{{t 'logo'}}">
+                        {{else}}
+                        <span class="media-preview-empty">{{t 'no_photo'}}</span>
+                        {{/if}}
+                    </div>
+                    <label class="file-drop-label">
+                        {{t 'replace_image'}}
+                        <input type="file" name="logo" accept="image/*">
+                    </label>
+                </div>
+                <div class="media-upload-card">
+                    <label>{{t 'background_image'}}</label>
+                    <div class="media-preview">
+                        {{#if synagogue.theme.backgroundImage}}
+                        <img src="/images/{{synagogue.theme.backgroundImage}}" alt="{{t 'background_image'}}">
+                        {{else}}
+                        <span class="media-preview-empty">{{t 'no_photo'}}</span>
+                        {{/if}}
+                    </div>
+                    <label class="file-drop-label">
+                        {{t 'replace_image'}}
+                        <input type="file" name="backgroundImage" accept="image/*">
+                    </label>
+                </div>
+                <div class="media-upload-card">
+                    <label>{{t 'tiles_background'}}</label>
+                    <div class="media-preview">
+                        {{#if synagogue.theme.tilesBackground}}
+                        <img src="/images/{{synagogue.theme.tilesBackground}}" alt="{{t 'tiles_background'}}">
+                        {{else}}
+                        <span class="media-preview-empty">{{t 'no_photo'}}</span>
+                        {{/if}}
+                    </div>
+                    <label class="file-drop-label">
+                        {{t 'replace_image'}}
+                        <input type="file" name="tilesBackground" accept="image/*">
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-panel">
+            <div class="admin-panel-header">
+                <h2>{{t 'languages_section'}}</h2>
+            </div>
+            <div class="admin-panel-body">
+                <div class="settings-two-col">
+                    <div class="form-field">
+                        <label for="language">{{t 'language'}}</label>
+                        <select name="language" id="language" class="form-control">
+                            <option value="ru" {{#if (eq synagogue.language 'ru')}}selected{{/if}}>Russian</option>
+                            <option value="en" {{#if (eq synagogue.language 'en')}}selected{{/if}}>English</option>
+                            <option value="he" {{#if (eq synagogue.language 'he')}}selected{{/if}}>Hebrew</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label for="adminLanguage">{{t 'admin_language'}}</label>
+                        <select name="adminLanguage" id="adminLanguage" class="form-control">
+                            <option value="ru" {{#if (eq synagogue.adminLanguage 'ru')}}selected{{/if}}>Russian</option>
+                            <option value="en" {{#if (eq synagogue.adminLanguage 'en')}}selected{{/if}}>English</option>
+                            <option value="he" {{#if (eq synagogue.adminLanguage 'he')}}selected{{/if}}>Hebrew</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="form-actions-sticky">
+            <button type="submit" class="btn-admin btn-admin-primary">{{t 'save'}}</button>
         </div>
-        {{/if}}
-        <input type="file" name="tilesBackground" class="form-control-file">
-    </div>
-    <div class="form-group">
-        <label>{{t 'language'}}</label>
-        <select name="language" class="form-control">
-            <option value="ru" {{#if (eq synagogue.language 'ru' )}}selected{{/if}}>Russian</option>
-            <option value="en" {{#if (eq synagogue.language 'en' )}}selected{{/if}}>English</option>
-            <option value="he" {{#if (eq synagogue.language 'he' )}}selected{{/if}}>Hebrew</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label>{{t 'admin_language'}}</label>
-        <select name="adminLanguage" class="form-control">
-            <option value="ru" {{#if (eq synagogue.adminLanguage 'ru' )}}selected{{/if}}>Russian</option>
-            <option value="en" {{#if (eq synagogue.adminLanguage 'en' )}}selected{{/if}}>English</option>
-            <option value="he" {{#if (eq synagogue.adminLanguage 'he' )}}selected{{/if}}>Hebrew</option>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-success">{{t 'save'}}</button>
-</form>
+    </form>
+</div>
+
+<script>
+    document.querySelectorAll('input[type="color"]').forEach(function (input) {
+        const valueEl = input.parentElement.querySelector('.color-value');
+        if (!valueEl) return;
+        input.addEventListener('input', function () {
+            valueEl.textContent = input.value;
+        });
+    });
+</script>
