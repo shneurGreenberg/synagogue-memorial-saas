@@ -19,6 +19,7 @@ body {
   margin: 0;
   color: $textColor;
   font-family: Georgia, 'Times New Roman', serif;
+  overflow: hidden;
 }
 
 .wooden-panel {
@@ -30,11 +31,11 @@ body {
     -2px -2px 2px lighten($woodenPanelBorder, 50%),
     inset -2px -2px 1px lighten($woodenPanelBorder, 5%),
     inset 2px 2px 1px darken($woodenPanelBorder, 5%);
-  min-height: 70vh;
-  height: auto;
-  max-height: 92vh;
+  height: 90vh;
+  max-height: 90vh;
   margin: clamp(8px, 1.5vw, 20px);
-  overflow: auto;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .golden-panel {

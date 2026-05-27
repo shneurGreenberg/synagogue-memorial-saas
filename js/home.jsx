@@ -15,7 +15,6 @@ const Clock = require('react-live-clock');
 require('./i18n');
 const { withTranslation } = require('react-i18next');
 const { sanitizeRichText } = require('./html-sanitize');
-const { PersonAvatar } = require('./person-ui');
 
 configureNovosibirsk();
 
@@ -101,8 +100,6 @@ class CardBase extends React.Component {
       return <div className="card card-hidden" aria-hidden="true" />;
     }
 
-    const showCandle = !entry.photo;
-
     return (
       <article
         className={`
@@ -118,16 +115,11 @@ class CardBase extends React.Component {
         onKeyDown={this.onKeyDown}
         aria-label={`${entry.name}, ${this.props.t('learn_more')}`}
       >
-        <div className="card-media">
-          <PersonAvatar person={entry} size={big ? 'lg' : 'md'} />
-          {showCandle && (
-            <div
-              className="candle"
-              style={{ backgroundImage: `url("/images/candle.webp?hash=${this.state.candleHash}")` }}
-              aria-hidden="true"
-            />
-          )}
-        </div>
+        <div
+          className="candle"
+          style={{ backgroundImage: `url("/images/candle.webp?hash=${this.state.candleHash}")` }}
+          aria-hidden="true"
+        />
         <div className="inner">
           <h3>{entry.name}</h3>
           <time dateTime={toDatetimeAttr(entry.gregorianDateOfDeath)}>
@@ -145,6 +137,102 @@ class CardBase extends React.Component {
 }
 
 const Card = withTranslation()(CardBase);
+
+class NearestDatesList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.viewportRef = React.createRef();
+    this.trackRef = React.createRef();
+    this.state = {
+      shouldScroll: false,
+      durationSec: 120,
+    };
+  }
+
+  componentDidMount() {
+    this.updateScrollBehavior();
+    window.addEventListener('resize', this.updateScrollBehavior);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.people !== this.props.people) {
+      this.updateScrollBehavior();
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateScrollBehavior);
+  }
+
+  updateScrollBehavior = () => {
+    requestAnimationFrame(() => {
+      const viewport = this.viewportRef.current;
+      const track = this.trackRef.current;
+
+      if (!viewport || !track) {
+        return;
+      }
+
+      const contentHeight = this.state.shouldScroll
+        ? track.scrollHeight / 2
+        : track.scrollHeight;
+
+      if (contentHeight <= viewport.clientHeight + 4) {
+        if (this.state.shouldScroll) {
+          this.setState({ shouldScroll: false });
+        }
+        return;
+      }
+
+      const pixelsPerSecond = 18;
+      const durationSec = Math.max(contentHeight / pixelsPerSecond, 90);
+
+      if (!this.state.shouldScroll) {
+        this.setState({ shouldScroll: true, durationSec }, () => {
+          this.updateScrollBehavior();
+        });
+        return;
+      }
+
+      if (Math.abs(this.state.durationSec - durationSec) > 2) {
+        this.setState({ durationSec });
+      }
+    });
+  };
+
+  renderPerson(card, suffix) {
+    const appData = getAppData();
+
+    return (
+      <li key={`${card.id}${suffix}`}>
+        <a href={`${appData.baseUrl}/card/${card.id}`}>
+          <time dateTime={toDatetimeAttr(card.gregorianDateOfDeath)}>
+            {formatGregorianDate(card.gregorianDateOfDeath)} / {formatHebrewDate(card.hebrewDateOfDeath)}
+          </time>
+          <span className="name">{card.name}</span>
+        </a>
+      </li>
+    );
+  }
+
+  render() {
+    const { people } = this.props;
+    const items = people.map((card) => this.renderPerson(card, ''));
+
+    return (
+      <div className="nearest-dates-scroll" ref={this.viewportRef}>
+        <ul
+          className={`nearest-dates-track${this.state.shouldScroll ? ' is-scrolling' : ''}`}
+          ref={this.trackRef}
+          style={this.state.shouldScroll ? { animationDuration: `${this.state.durationSec}s` } : undefined}
+        >
+          {items}
+          {this.state.shouldScroll && people.map((card) => this.renderPerson(card, '-dup'))}
+        </ul>
+      </div>
+    );
+  }
+}
 
 class Slideshow extends React.Component {
   constructor(props) {
@@ -559,21 +647,7 @@ class HomePageBase extends React.Component {
             )}
             <nav className="nearest-dates" aria-label={this.props.t('nearest_dates')}>
               <h2>{this.props.t('nearest_dates')}</h2>
-              <ul>
-                {this.state.allPeople.slice(0, 8).map((card) => (
-                  <li key={card.id}>
-                    <a href={`${appData.baseUrl}/card/${card.id}`}>
-                      <PersonAvatar person={card} size="sm" />
-                      <div className="nearest-person-meta">
-                        <time dateTime={toDatetimeAttr(card.gregorianDateOfDeath)}>
-                          {formatGregorianDate(card.gregorianDateOfDeath)} / {formatHebrewDate(card.hebrewDateOfDeath)}
-                        </time>
-                        <span className="name">{card.name}</span>
-                      </div>
-                    </a>
-                  </li>
-                ))}
-              </ul>
+              <NearestDatesList people={this.state.allPeople} />
             </nav>
           </div>
         </aside>
