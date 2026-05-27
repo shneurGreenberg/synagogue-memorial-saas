@@ -6,6 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const { verifyPassword, ensureHashed, hashPassword } = require('../lib/password');
 const { sanitizeRichText } = require('../lib/sanitize');
+const { seedPhotosForSynagogue } = require('../lib/seed-people-photos');
 
 // Configure Multer
 const storage = multer.diskStorage({
@@ -105,7 +106,18 @@ const translations = {
         "search_people": "Search by name...",
         "sort_label": "Sort people",
         "sort_by_name": "Sort by name",
-        "sort_by_date": "Sort by date"
+        "sort_by_date": "Sort by date",
+        "people_subtitle": "Manage memorial entries, photos, and dates.",
+        "seed_test_photos": "Generate test photos",
+        "seed_test_photos_help": "Downloads sample portraits (randomuser / thispersondoesnotexist) for entries missing files.",
+        "seed_photos_done": "Test photos updated",
+        "upload_photo": "Upload photo",
+        "photo_hint": "JPG or PNG, max 5 MB recommended",
+        "cancel": "Cancel",
+        "biography": "Biography",
+        "day": "Day",
+        "month": "Month",
+        "year": "Year"
     },
     ru: {
         "settings": "Настройки",
@@ -148,7 +160,18 @@ const translations = {
         "search_people": "Поиск по имени...",
         "sort_label": "Сортировка",
         "sort_by_name": "По имени",
-        "sort_by_date": "По дате"
+        "sort_by_date": "По дате",
+        "people_subtitle": "Управление записями, фотографиями и датами.",
+        "seed_test_photos": "Тестовые фото",
+        "seed_test_photos_help": "Загружает портреты с randomuser / thispersondoesnotexist для записей без файла.",
+        "seed_photos_done": "Тестовые фото обновлены",
+        "upload_photo": "Загрузить фото",
+        "photo_hint": "JPG или PNG",
+        "cancel": "Отмена",
+        "biography": "Биография",
+        "day": "День",
+        "month": "Месяц",
+        "year": "Год"
     },
     he: {
         "settings": "הגדרות",
@@ -191,7 +214,18 @@ const translations = {
         "search_people": "חיפוש לפי שם...",
         "sort_label": "מיון",
         "sort_by_name": "לפי שם",
-        "sort_by_date": "לפי תאריך"
+        "sort_by_date": "לפי תאריך",
+        "people_subtitle": "ניהול רשומות, תמונות ותאריכים.",
+        "seed_test_photos": "צור תמונות בדיקה",
+        "seed_test_photos_help": "מוריד פורטרטים לדוגמה מ־randomuser / thispersondoesnotexist.",
+        "seed_photos_done": "תמונות בדיקה עודכנו",
+        "upload_photo": "העלה תמונה",
+        "photo_hint": "JPG או PNG",
+        "cancel": "ביטול",
+        "biography": "ביוגרפיה",
+        "day": "יום",
+        "month": "חודש",
+        "year": "שנה"
     }
 };
 
@@ -351,6 +385,7 @@ router.get('/:slug/people', requireAdmin, async (req, res) => {
         res.render('admin/people', {
             synagogue,
             layout: 'admin',
+            seeded: req.query.seeded === '1',
             helpers: adminViewHelpers(t)
         });
     } catch (err) {
@@ -407,6 +442,20 @@ router.post('/:slug/people/edit', requireAdmin, upload.single('photo'), async (r
             { $set: updateFields }
         );
         res.redirect(`/admin/${req.params.slug}/people`);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+router.post('/:slug/people/seed-test-photos', requireAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        await seedPhotosForSynagogue(req.params.slug, {
+            source: 'mixed',
+            force: false,
+            limit: 25,
+        });
+        res.redirect(`/admin/${req.params.slug}/people?seeded=1`);
     } catch (err) {
         res.status(500).send(err.message);
     }

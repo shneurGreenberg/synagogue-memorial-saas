@@ -1,159 +1,115 @@
-<h2>{{t 'people'}}</h2>
-<button class="btn btn-primary mb-3" data-toggle="modal" data-target="#addPersonModal">{{t 'add_person'}}</button>
-
-<style>
-    .people-toolbar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 20px;
-        align-items: center;
-    }
-
-    .people-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .person-row {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        padding: 14px 16px;
-        border: 1px solid #dee2e6;
-        border-radius: 12px;
-        background: #fff;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-    }
-
-    .person-photo {
-        width: 72px;
-        height: 72px;
-        object-fit: cover;
-        border-radius: 50%;
-        flex-shrink: 0;
-        border: 2px solid #dee2e6;
-        background: #f1f3f5;
-    }
-
-    .person-photo-placeholder {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: #6c757d;
-        font-size: 22px;
-    }
-
-    .person-meta {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .person-meta strong {
-        display: block;
-        font-size: 18px;
-        margin-bottom: 4px;
-    }
-
-    .person-meta small {
-        color: #6c757d;
-    }
-
-    .person-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-    @media (max-width: 576px) {
-        .person-row {
-            flex-wrap: wrap;
-        }
-
-        .person-actions {
-            width: 100%;
-        }
-    }
-</style>
-
-<div class="people-toolbar">
-    <input type="search" id="peopleSearch" class="form-control" style="max-width: 280px;"
-        placeholder="{{t 'search_people'}}" aria-label="{{t 'search_people'}}">
-    <select id="peopleSort" class="form-control" style="max-width: 200px;" aria-label="{{t 'sort_label'}}">
-        <option value="name">{{t 'sort_by_name'}}</option>
-        <option value="date">{{t 'sort_by_date'}}</option>
-        <option value="id">ID</option>
-    </select>
-</div>
-
-<div class="people-list" id="peopleList">
-    {{#each synagogue.people}}
-    <article class="person-row" data-name="{{this.name}}" data-id="{{this.id}}"
-        data-date="{{this.gregorianDateOfDeath.year}}-{{this.gregorianDateOfDeath.month}}-{{this.gregorianDateOfDeath.date}}">
-        {{#if this.photo}}
-        <img src="/photos/{{this.photo}}" class="person-photo" alt="{{this.name}}"
-            onerror="this.classList.add('d-none'); this.nextElementSibling.classList.remove('d-none');">
-        <span class="person-photo person-photo-placeholder d-none" aria-hidden="true">{{initials this.name}}</span>
-        {{else}}
-        <span class="person-photo person-photo-placeholder" aria-hidden="true">{{initials this.name}}</span>
-        {{/if}}
-        <div class="person-meta">
-            <strong>{{this.name}}</strong>
-            <small>ID {{this.id}} · {{t 'date_of_death'}}:
-                {{this.gregorianDateOfDeath.date}}/{{this.gregorianDateOfDeath.month}}/{{this.gregorianDateOfDeath.year}}</small>
+<div class="admin-page people-page">
+    <header class="admin-page-header">
+        <div>
+            <h1>{{t 'people'}}</h1>
+            <p class="admin-subtitle">{{t 'people_subtitle'}}</p>
         </div>
-        <div class="person-actions">
-            <button type="button" class="btn btn-sm btn-info edit-btn" data-id="{{this.id}}">{{t 'edit'}}</button>
-            <form method="POST" action="/admin/{{../synagogue.slug}}/people/delete" class="d-inline"
-                onsubmit="return confirm('{{t 'are_you_sure'}}');">
-                <input type="hidden" name="id" value="{{this.id}}">
-                <button type="submit" class="btn btn-sm btn-danger">{{t 'delete'}}</button>
+        <div class="header-actions">
+            <form method="POST" action="/admin/{{synagogue.slug}}/people/seed-test-photos" class="d-inline"
+                onsubmit="return confirm('{{t 'seed_test_photos'}}?');">
+                <button type="submit" class="btn-admin btn-admin-secondary">{{t 'seed_test_photos'}}</button>
             </form>
+            <button type="button" class="btn-admin btn-admin-primary" data-toggle="modal" data-target="#addPersonModal">
+                + {{t 'add_person'}}
+            </button>
         </div>
-    </article>
-    {{/each}}
+    </header>
+
+    {{#if seeded}}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{t 'seed_photos_done'}}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {{/if}}
+
+    <p class="seed-notice">{{t 'seed_test_photos_help'}}</p>
+
+    <div class="people-toolbar">
+        <input type="search" id="peopleSearch" class="form-control admin-input" style="max-width: 300px; flex: 1;"
+            placeholder="{{t 'search_people'}}" aria-label="{{t 'search_people'}}">
+        <select id="peopleSort" class="form-control admin-input" style="max-width: 200px;" aria-label="{{t 'sort_label'}}">
+            <option value="name">{{t 'sort_by_name'}}</option>
+            <option value="date">{{t 'sort_by_date'}}</option>
+            <option value="id">ID</option>
+        </select>
+    </div>
+
+    <div class="people-list" id="peopleList">
+        {{#each synagogue.people}}
+        <article class="person-row" data-name="{{this.name}}" data-id="{{this.id}}"
+            data-date="{{this.gregorianDateOfDeath.year}}-{{this.gregorianDateOfDeath.month}}-{{this.gregorianDateOfDeath.date}}">
+            {{#if this.photo}}
+            <img src="/photos/{{this.photo}}" class="person-photo" alt="{{this.name}}"
+                onerror="this.classList.add('d-none'); this.nextElementSibling.classList.remove('d-none');">
+            <span class="person-photo person-photo-placeholder d-none" aria-hidden="true">{{initials this.name}}</span>
+            {{else}}
+            <span class="person-photo person-photo-placeholder" aria-hidden="true">{{initials this.name}}</span>
+            {{/if}}
+            <div class="person-meta">
+                <strong>{{this.name}}</strong>
+                <small>ID {{this.id}} · {{t 'date_of_death'}}:
+                    {{this.gregorianDateOfDeath.date}}/{{this.gregorianDateOfDeath.month}}/{{this.gregorianDateOfDeath.year}}</small>
+            </div>
+            <div class="person-actions">
+                <button type="button" class="btn-admin btn-admin-secondary edit-btn" data-id="{{this.id}}">{{t 'edit'}}</button>
+                <form method="POST" action="/admin/{{../synagogue.slug}}/people/delete" class="d-inline"
+                    onsubmit="return confirm('{{t 'are_you_sure'}}');">
+                    <input type="hidden" name="id" value="{{this.id}}">
+                    <button type="submit" class="btn-admin btn-admin-danger">{{t 'delete'}}</button>
+                </form>
+            </div>
+        </article>
+        {{/each}}
+    </div>
 </div>
 
 <script id="people-data" type="application/json">{{{json synagogue.people}}}</script>
 
 <!-- Add Person Modal -->
-<div class="modal fade" id="addPersonModal" tabindex="-1">
-    <div class="modal-dialog">
+<div class="modal fade admin-modal" id="addPersonModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form method="POST" action="/admin/{{synagogue.slug}}/people/add" enctype="multipart/form-data">
+            <form method="POST" action="/admin/{{synagogue.slug}}/people/add" enctype="multipart/form-data"
+                class="person-form" data-preview="addPhotoPreview">
                 <div class="modal-header">
                     <h5 class="modal-title">{{t 'add_person'}}</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{t 'cancel'}}">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label>{{t 'name'}}</label>
-                        <input type="text" name="name" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>{{t 'date_gregorian'}}</label>
-                        <div class="row">
-                            <div class="col"><input type="number" name="date" class="form-control" placeholder="DD"
-                                    required></div>
-                            <div class="col"><input type="number" name="month" class="form-control" placeholder="MM"
-                                    required></div>
-                            <div class="col"><input type="number" name="year" class="form-control" placeholder="YYYY"
-                                    required></div>
+                    <div class="person-form-layout">
+                        <div class="photo-upload-zone">
+                            <div class="photo-preview-wrap" id="addPhotoPreview">
+                                <span class="photo-preview-empty">{{t 'upload_photo'}}</span>
+                            </div>
+                            <label class="file-drop-label">
+                                {{t 'upload_photo'}}
+                                <input type="file" name="photo" accept="image/*" data-preview-target="addPhotoPreview">
+                            </label>
+                            <span class="seed-notice">{{t 'photo_hint'}}</span>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>{{t 'text'}}</label>
-                        <textarea name="text" class="form-control"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>{{t 'photo'}}</label>
-                        <input type="file" name="photo" class="form-control-file" accept="image/*">
+                        <div class="person-form-fields">
+                            <div class="form-field">
+                                <label for="addName">{{t 'name'}}</label>
+                                <input type="text" name="name" id="addName" class="form-control" required>
+                            </div>
+                            <div class="form-field">
+                                <label>{{t 'date_gregorian'}}</label>
+                                <div class="date-row">
+                                    <input type="number" name="date" class="form-control" placeholder="{{t 'day'}}" required>
+                                    <input type="number" name="month" class="form-control" placeholder="{{t 'month'}}" required>
+                                    <input type="number" name="year" class="form-control" placeholder="{{t 'year'}}" required>
+                                </div>
+                            </div>
+                            <div class="form-field">
+                                <label for="addText">{{t 'biography'}}</label>
+                                <textarea name="text" id="addText" class="form-control"></textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">{{t 'save'}}</button>
+                    <button type="button" class="btn-admin btn-admin-ghost" data-dismiss="modal">{{t 'cancel'}}</button>
+                    <button type="submit" class="btn-admin btn-admin-primary">{{t 'save'}}</button>
                 </div>
             </form>
         </div>
@@ -161,50 +117,54 @@
 </div>
 
 <!-- Edit Person Modal -->
-<div class="modal fade" id="editPersonModal" tabindex="-1">
-    <div class="modal-dialog">
+<div class="modal fade admin-modal" id="editPersonModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form method="POST" action="/admin/{{synagogue.slug}}/people/edit" enctype="multipart/form-data">
+            <form method="POST" action="/admin/{{synagogue.slug}}/people/edit" enctype="multipart/form-data"
+                class="person-form" data-preview="editPhotoPreview">
                 <input type="hidden" name="id" id="editId">
                 <div class="modal-header">
                     <h5 class="modal-title">{{t 'edit'}}</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{t 'cancel'}}">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label>{{t 'name'}}</label>
-                        <input type="text" name="name" id="editName" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label>{{t 'date_gregorian'}}</label>
-                        <div class="row">
-                            <div class="col"><input type="number" name="date" id="editDate" class="form-control"
-                                    placeholder="DD" required></div>
-                            <div class="col"><input type="number" name="month" id="editMonth" class="form-control"
-                                    placeholder="MM" required></div>
-                            <div class="col"><input type="number" name="year" id="editYear" class="form-control"
-                                    placeholder="YYYY" required></div>
+                    <div class="person-form-layout">
+                        <div class="photo-upload-zone">
+                            <div class="photo-preview-wrap" id="editPhotoPreview">
+                                <span class="photo-preview-empty">{{t 'no_photo'}}</span>
+                            </div>
+                            <label class="file-drop-label">
+                                {{t 'change_photo'}}
+                                <input type="file" name="photo" accept="image/*" data-preview-target="editPhotoPreview">
+                            </label>
+                            <div class="form-check-modern mt-2">
+                                <input type="checkbox" name="deletePhoto" id="deletePhotoCheck">
+                                <label for="deletePhotoCheck">{{t 'delete_photo'}}</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>{{t 'text'}}</label>
-                        <textarea name="text" id="editText" class="form-control"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>{{t 'current_photo'}}</label>
-                        <div id="currentPhotoContainer"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>{{t 'change_photo'}}</label>
-                        <input type="file" name="photo" class="form-control-file" accept="image/*">
-                    </div>
-                    <div class="form-group form-check">
-                        <input type="checkbox" name="deletePhoto" class="form-check-input" id="deletePhotoCheck">
-                        <label class="form-check-label" for="deletePhotoCheck">{{t 'delete_photo'}}</label>
+                        <div class="person-form-fields">
+                            <div class="form-field">
+                                <label for="editName">{{t 'name'}}</label>
+                                <input type="text" name="name" id="editName" class="form-control" required>
+                            </div>
+                            <div class="form-field">
+                                <label>{{t 'date_gregorian'}}</label>
+                                <div class="date-row">
+                                    <input type="number" name="date" id="editDate" class="form-control" placeholder="{{t 'day'}}" required>
+                                    <input type="number" name="month" id="editMonth" class="form-control" placeholder="{{t 'month'}}" required>
+                                    <input type="number" name="year" id="editYear" class="form-control" placeholder="{{t 'year'}}" required>
+                                </div>
+                            </div>
+                            <div class="form-field">
+                                <label for="editText">{{t 'biography'}}</label>
+                                <textarea name="text" id="editText" class="form-control"></textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">{{t 'save_changes'}}</button>
+                    <button type="button" class="btn-admin btn-admin-ghost" data-dismiss="modal">{{t 'cancel'}}</button>
+                    <button type="submit" class="btn-admin btn-admin-primary">{{t 'save_changes'}}</button>
                 </div>
             </form>
         </div>
@@ -222,11 +182,35 @@
         const list = document.getElementById('peopleList');
         const searchInput = document.getElementById('peopleSearch');
         const sortSelect = document.getElementById('peopleSort');
+        const urlParams = new URLSearchParams(window.location.search);
 
-        function getInitials(name) {
-            return (name || '').trim().split(/\s+/).filter(Boolean).slice(0, 2)
-                .map(function (part) { return part[0]; }).join('').toUpperCase() || '?';
+        if (urlParams.get('seeded')) {
+            const clean = window.location.pathname;
+            window.history.replaceState({}, '', clean);
         }
+
+        function setPreviewImage(container, src, alt) {
+            container.innerHTML = '<img src="' + src + '" alt="' + (alt || '') + '">';
+        }
+
+        function clearPreview(container) {
+            container.innerHTML = '<span class="photo-preview-empty">{{t "upload_photo"}}</span>';
+        }
+
+        document.querySelectorAll('input[type="file"][data-preview-target]').forEach(function (input) {
+            input.addEventListener('change', function () {
+                const container = document.getElementById(input.getAttribute('data-preview-target'));
+                const file = input.files && input.files[0];
+                if (!file) {
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    setPreviewImage(container, e.target.result, file.name);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
 
         function applyFilters() {
             const query = searchInput.value.trim().toLowerCase();
@@ -266,25 +250,23 @@
                     return;
                 }
 
-                $('#editId').val(person.id);
-                $('#editName').val(person.name || '');
-                $('#editDate').val(person.gregorianDateOfDeath.date);
-                $('#editMonth').val(person.gregorianDateOfDeath.month);
-                $('#editYear').val(person.gregorianDateOfDeath.year);
-                $('#editText').val(person.text || '');
-                $('#deletePhotoCheck').prop('checked', false);
+                document.getElementById('editId').value = person.id;
+                document.getElementById('editName').value = person.name || '';
+                document.getElementById('editDate').value = person.gregorianDateOfDeath.date;
+                document.getElementById('editMonth').value = person.gregorianDateOfDeath.month;
+                document.getElementById('editYear').value = person.gregorianDateOfDeath.year;
+                document.getElementById('editText').value = person.text || '';
+                document.getElementById('deletePhotoCheck').checked = false;
 
+                const preview = document.getElementById('editPhotoPreview');
                 if (person.photo) {
-                    $('#currentPhotoContainer').html(
-                        '<img src="/photos/' + person.photo + '" class="person-photo" alt="' + (person.name || '') + '">'
-                    );
+                    setPreviewImage(preview, '/photos/' + person.photo, person.name || '');
                 } else {
-                    $('#currentPhotoContainer').html('<span class="text-muted">{{t "no_photo"}}</span>');
+                    preview.innerHTML = '<span class="photo-preview-empty">{{t "no_photo"}}</span>';
                 }
 
                 $('#editPersonModal').modal('show');
             });
         });
-
     })();
 </script>

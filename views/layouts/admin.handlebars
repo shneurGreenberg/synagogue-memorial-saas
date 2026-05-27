@@ -5,11 +5,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
 </head>
 
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<body class="admin-body">
+    <nav class="navbar navbar-expand-lg navbar-dark admin-navbar">
         <a class="navbar-brand" href="/admin/{{synagogue.slug}}/dashboard">Synagogue Admin</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#adminNavbar"
             aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,7 +34,7 @@
             <a class="btn btn-outline-light" href="/admin/logout">{{t 'logout'}}</a>
         </div>
     </nav>
-    <div class="container mt-4">
+    <div class="admin-container">
         {{{body}}}
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
