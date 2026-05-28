@@ -1,0 +1,16 @@
+# Amvera deploy is done via Git push to Amvera remote (not GitHub Actions by default).
+# 1. Create project at https://amvera.ru
+# 2. Link this repo (branch: cursor/spa-vite-migration-ac8f)
+# 3. Set env: MONGODB_URI, SESSION_SECRET, NODE_ENV=production
+# 4. git remote add amvera <url-from-amvera-dashboard>
+# 5. git push amvera cursor/spa-vite-migration-ac8f:master
+name: Amvera deploy reminder
+on:
+  workflow_dispatch:
+jobs:
+  hint:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Deploy manually via Amvera dashboard or: git push amvera <branch>:master"
+          echo "Config file: amvera.yaml"
