@@ -1,0 +1,19 @@
+# Render Blueprint — free web tier (spins down after inactivity)
+# 1. Create a free M0 cluster at https://www.mongodb.com/cloud/atlas/register
+# 2. In Render dashboard, set MONGODB_URI to your Atlas connection string
+services:
+  - type: web
+    name: kadish-memorial
+    runtime: node
+    plan: free
+    branch: cursor/spa-vite-migration-ac8f
+    buildCommand: npm install && npm run build:board
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false
