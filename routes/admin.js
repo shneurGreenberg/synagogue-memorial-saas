@@ -108,13 +108,16 @@ router.post('/:slug/settings', requireAdmin, upload.fields([
 ]), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { title, titleRu, titleEn, titleHe, primaryColor, textColor, language, adminLanguage, colorMode } = req.body;
+        const { titleRu, titleEn, titleHe, primaryColor, textColor, language, adminLanguage, colorMode } = req.body;
         const safeColorMode = colorMode === 'light' ? 'light' : 'dark';
+        const titles = {
+            ru: String(titleRu || '').trim(),
+            en: String(titleEn || '').trim(),
+            he: String(titleHe || '').trim(),
+        };
         const updateData = {
-            title,
-            'titles.ru': titleRu ? String(titleRu).trim() : '',
-            'titles.en': titleEn ? String(titleEn).trim() : '',
-            'titles.he': titleHe ? String(titleHe).trim() : '',
+            titles,
+            title: titles.ru,
             'theme.primaryColor': primaryColor,
             'theme.textColor': textColor,
             'adminTheme.colorMode': safeColorMode,

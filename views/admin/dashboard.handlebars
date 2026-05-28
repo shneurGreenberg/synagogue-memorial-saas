@@ -45,11 +45,6 @@
                 <h2>{{t 'appearance_section'}}</h2>
             </div>
             <div class="admin-panel-body">
-                <div class="form-field">
-                    <label for="settingsTitle">{{t 'board_title_main'}}</label>
-                    <input type="text" name="title" id="settingsTitle" class="form-control admin-input-modern"
-                        value="{{synagogue.title}}">
-                </div>
                 <div class="board-titles-grid">
                     <div class="form-field">
                         <label for="titleRu">{{t 'board_title_ru'}}</label>
@@ -67,7 +62,6 @@
                             value="{{synagogue.titles.he}}">
                     </div>
                 </div>
-                <p class="field-hint board-titles-hint">{{t 'board_title_auto_hint'}}</p>
                 <div class="color-picker-row color-picker-modern">
                     <div class="color-field-modern">
                         <label for="primaryColor">{{t 'primary_color'}}</label>
@@ -230,13 +224,12 @@
             applyAdminTheme(toggle.checked);
         }
 
-        ['settingsTitle', 'titleRu', 'titleEn', 'titleHe'].forEach(function (id) {
+        ['titleRu', 'titleEn', 'titleHe'].forEach(function (id) {
             var el = document.getElementById(id);
             if (el) {
                 el.addEventListener('input', schedulePreview);
             }
         });
-        var titleInput = document.getElementById('settingsTitle');
 
         function schedulePreview() {
             clearTimeout(previewDebounce);
@@ -248,17 +241,15 @@
             if (!frame) return;
 
             var params = new URLSearchParams();
-            var title = titleInput && titleInput.value.trim();
             var primary = document.getElementById('primaryColor');
             var text = document.getElementById('textColor');
-
-            if (title) params.set('title', title);
             var titleRu = document.getElementById('titleRu');
             var titleEn = document.getElementById('titleEn');
             var titleHe = document.getElementById('titleHe');
-            if (titleRu) params.set('titleRu', titleRu.value.trim());
-            if (titleEn) params.set('titleEn', titleEn.value.trim());
-            if (titleHe) params.set('titleHe', titleHe.value.trim());
+
+            if (titleRu && titleRu.value.trim()) params.set('titleRu', titleRu.value.trim());
+            if (titleEn && titleEn.value.trim()) params.set('titleEn', titleEn.value.trim());
+            if (titleHe && titleHe.value.trim()) params.set('titleHe', titleHe.value.trim());
             if (primary) params.set('primaryColor', primary.value);
             if (text) params.set('textColor', text.value);
 
