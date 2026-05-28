@@ -1,4 +1,6 @@
 # Render Blueprint — free web tier (spins down after inactivity)
+# WARNING: Render may use Cloudflare; sites behind Cloudflare are often throttled in Russia.
+# Prefer Amvera (amvera.yaml) or docker-compose on a Russian VPS — see docs/DEPLOYMENT-RU.md
 # 1. Create a free M0 cluster at https://www.mongodb.com/cloud/atlas/register
 # 2. In Render dashboard, set MONGODB_URI to your Atlas connection string
 services:

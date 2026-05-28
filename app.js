@@ -15,6 +15,10 @@ const MongoStore = require('connect-mongo');
 
 const app = express();
 
+if (process.env.NODE_ENV === 'production' || process.env.TRUST_PROXY === '1') {
+  app.set('trust proxy', 1);
+}
+
 mongoose.set('strictQuery', false);
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue', {
   useNewUrlParser: true,
@@ -24,11 +28,17 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+const isProduction = process.env.NODE_ENV === 'production';
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'secret',
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue' })
+  cookie: {
+    secure: isProduction,
+    sameSite: 'lax',
+  },
+  store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue' }),
 }));
 
 app.use('/admin', adminRoutes);

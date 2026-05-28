@@ -1,0 +1,21 @@
+# Self-host on a Russian VPS (Timeweb, Selectel, etc.) — no Cloudflare.
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      MONGODB_URI: mongodb://mongo:27017/synagogue
+      SESSION_SECRET: change-me-in-production
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:

@@ -31,3 +31,7 @@ Built assets are served from `/board/assets/`.
 API for refreshing board data without reload:
 
 `GET /s/:slug/api/board`
+
+## Access from Russia
+
+Cloudflare tunnels (`trycloudflare.com`) and many Western CDNs are often blocked or throttled in Russia. See **[DEPLOYMENT-RU.md](./DEPLOYMENT-RU.md)** for Amvera (Moscow) and Docker on a Russian VPS.
