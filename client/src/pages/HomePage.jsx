@@ -542,7 +542,7 @@ function HomePageConnected(props) {
   const boardTitle = resolveBoardTitle(data, uiLang);
   return (
     <HomePageBase
-      key={`home-${revision}`}
+      key={`home-${revision}-${uiLang}`}
       {...props}
       onOpenCard={goToCard}
       uiLang={uiLang}

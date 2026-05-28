@@ -9,6 +9,7 @@ const { sanitizeRichText } = require('../lib/sanitize');
 const { seedPhotosForSynagogue } = require('../lib/seed-people-photos');
 const { enrichSynagogueForAdmin } = require('../lib/admin-theme');
 const { getTranslator } = require('../lib/admin-translations');
+const { BOARD_THEME_DEFAULTS } = require('../lib/board-defaults');
 
 // Configure Multer
 const storage = multer.diskStorage({
@@ -87,7 +88,7 @@ function renderAdmin(res, view, options = {}) {
 
     res.render(view, {
         ...options,
-        _adminT: getTranslator(lang),
+        adminTranslate: getTranslator(lang),
         layout: options.layout === false ? false : (options.layout || 'admin'),
     });
 }
@@ -111,9 +112,9 @@ router.post('/:slug/settings', requireAdmin, upload.fields([
         const { titleRu, titleEn, titleHe, primaryColor, textColor, language, adminLanguage, colorMode } = req.body;
         const safeColorMode = colorMode === 'light' ? 'light' : 'dark';
         const titles = {
-            ru: String(titleRu || '').trim(),
-            en: String(titleEn || '').trim(),
-            he: String(titleHe || '').trim(),
+            ru: String(titleRu ?? '').trim(),
+            en: String(titleEn ?? '').trim(),
+            he: String(titleHe ?? '').trim(),
         };
         const updateData = {
             titles,
@@ -144,12 +145,32 @@ router.post('/:slug/settings', requireAdmin, upload.fields([
     }
 });
 
+router.post('/:slug/settings/reset-theme', requireAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        await Synagogue.updateOne({ slug: req.params.slug }, {
+            $set: {
+                'theme.primaryColor': BOARD_THEME_DEFAULTS.primaryColor,
+                'theme.textColor': BOARD_THEME_DEFAULTS.textColor,
+                'theme.logo': BOARD_THEME_DEFAULTS.logo,
+                'theme.backgroundImage': BOARD_THEME_DEFAULTS.backgroundImage,
+                'theme.tilesBackground': BOARD_THEME_DEFAULTS.tilesBackground,
+            },
+        });
+        res.redirect(`/admin/${req.params.slug}/dashboard?saved=1`);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
 router.get('/:slug/dashboard', requireAdmin, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        const enriched = enrichSynagogueForAdmin(synagogue);
         renderAdmin(res, 'admin/dashboard', {
-            synagogue: enrichSynagogueForAdmin(synagogue),
+            synagogue: enriched,
+            boardTitles: enriched.titles,
             saved: req.query.saved === '1',
         });
     } catch (err) {

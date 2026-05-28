@@ -8,7 +8,8 @@ const rimraf = require('rimraf');
 const mongoose = require('mongoose');
 const Synagogue = require('./models/Synagogue');
 const { applyBoardPreviewOverrides } = require('./lib/board-preview');
-const { getTranslator } = require('./lib/admin-translations');
+const { normalizeTitles } = require('./lib/admin-theme');
+const { getTranslator, humanizeLabel } = require('./lib/admin-translations');
 const adminRoutes = require('./routes/admin');
 const masterRoutes = require('./routes/master');
 const bodyParser = require('body-parser');
@@ -89,9 +90,10 @@ app.engine('handlebars', handlebars({
     json: value => JSON.stringify(value, false, '  '),
     eq: (a, b) => a === b,
     t(key, options) {
-      const root = options.data.root;
-      const fn = root._adminT || getTranslator((root.synagogue && root.synagogue.adminLanguage) || 'ru');
-      return typeof fn === 'function' ? fn(key) : key;
+      const root = options.data && options.data.root;
+      const adminLang = (root && root.synagogue && root.synagogue.adminLanguage) || 'ru';
+      const fn = (root && root.adminTranslate) || getTranslator(adminLang);
+      return typeof fn === 'function' ? fn(key) : humanizeLabel(key);
     },
     initials(name) {
       return getInitials(name);
@@ -122,6 +124,7 @@ async function loadSynagogueBoard(slug) {
   }
 
   synagogue.baseUrl = `/s/${slug}`;
+  synagogue.titles = normalizeTitles(synagogue);
   return synagogue;
 }
 

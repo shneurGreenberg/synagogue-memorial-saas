@@ -49,18 +49,25 @@
                     <div class="form-field">
                         <label for="titleRu">{{t 'board_title_ru'}}</label>
                         <input type="text" name="titleRu" id="titleRu" class="form-control admin-input-modern"
-                            value="{{synagogue.titles.ru}}">
+                            value="{{boardTitles.ru}}">
                     </div>
                     <div class="form-field">
                         <label for="titleEn">{{t 'board_title_en'}}</label>
                         <input type="text" name="titleEn" id="titleEn" class="form-control admin-input-modern"
-                            value="{{synagogue.titles.en}}">
+                            value="{{boardTitles.en}}">
                     </div>
                     <div class="form-field">
                         <label for="titleHe">{{t 'board_title_he'}}</label>
                         <input type="text" name="titleHe" id="titleHe" class="form-control admin-input-modern"
-                            value="{{synagogue.titles.he}}">
+                            value="{{boardTitles.he}}">
                     </div>
+                </div>
+                <div class="appearance-actions">
+                    <form method="POST" action="/admin/{{synagogue.slug}}/settings/reset-theme" class="reset-theme-form"
+                        onsubmit="return confirm('{{t 'reset_theme_confirm'}}');">
+                        <button type="submit" class="btn-admin btn-admin-secondary">{{t 'reset_theme'}}</button>
+                    </form>
+                    <p class="field-hint">{{t 'reset_theme_help'}}</p>
                 </div>
                 <div class="color-picker-row color-picker-modern">
                     <div class="color-field-modern">
@@ -247,14 +254,15 @@
             var titleEn = document.getElementById('titleEn');
             var titleHe = document.getElementById('titleHe');
 
-            if (titleRu && titleRu.value.trim()) params.set('titleRu', titleRu.value.trim());
-            if (titleEn && titleEn.value.trim()) params.set('titleEn', titleEn.value.trim());
-            if (titleHe && titleHe.value.trim()) params.set('titleHe', titleHe.value.trim());
+            params.set('preview', '1');
+            if (titleRu) params.set('titleRu', titleRu.value.trim());
+            if (titleEn) params.set('titleEn', titleEn.value.trim());
+            if (titleHe) params.set('titleHe', titleHe.value.trim());
             if (primary) params.set('primaryColor', primary.value);
             if (text) params.set('textColor', text.value);
 
             var query = params.toString();
-            frame.src = '/s/' + slug + (query ? '?' + query : '');
+            frame.src = '/s/' + slug + '?' + query + '&_=' + Date.now();
         }
 
         if (document.getElementById('boardPreviewFrame')) {

@@ -4,8 +4,8 @@ import { useBoardData } from '../context/BoardDataContext';
 export function ThemeStyles() {
   const { data } = useBoardData();
   const theme = data.theme || {};
-  const primary = theme.primaryColor || '#cfaf1f';
-  const text = theme.textColor || '#d9d9d9';
+  const primary = theme.primaryColor || '#d4af37';
+  const text = theme.textColor || '#ffffff';
 
   const css = `
     :root {
@@ -26,10 +26,22 @@ export function ThemeStyles() {
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.55);
     }
     .main-container .cards-grid .card .inner time,
-    .main-container .cards-grid-kadish .card .inner time {
+    .main-container .cards-grid-kadish .card .inner time,
+    .main-container .nearest-dates,
+    .main-container .nearest-dates h2,
+    .main-container .nearest-dates .name,
+    .main-container .nearest-dates time,
+    .main-container .right .inner,
+    .main-container .right .inner h1,
+    .main-container .right .inner h2,
+    .main-container .right .inner h3,
+    .main-container .right .inner time,
+    .main-container .daily-cite,
+    .main-container .weekly-chapter h3 {
       color: var(--tile-date-color) !important;
     }
-    body {
+    body,
+    .main-container {
       color: var(--text-color) !important;
       ${theme.backgroundImage ? `background-image: url('/images/${theme.backgroundImage}') !important;
       background-size: cover;

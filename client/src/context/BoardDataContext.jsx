@@ -7,6 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { getDisplayLanguage, setDisplayLanguage } from '../lib/person-names';
+import { isBoardPreviewMode } from '../lib/board-preview-mode';
 import i18n from '../lib/i18n';
 
 const POLL_MS = 8000;
@@ -31,6 +32,7 @@ function snapshotForCompare(data) {
 }
 
 export function BoardDataProvider({ slug, children }) {
+  const previewMode = isBoardPreviewMode();
   const [data, setData] = useState(() => window.data || {});
   const [revision, setRevision] = useState(0);
   const [uiLang, setUiLangState] = useState(() => getDisplayLanguage());
@@ -49,7 +51,7 @@ export function BoardDataProvider({ slug, children }) {
   }, []);
 
   useEffect(() => {
-    if (!slug) {
+    if (!slug || previewMode) {
       return undefined;
     }
 
@@ -85,7 +87,7 @@ export function BoardDataProvider({ slug, children }) {
       cancelled = true;
       window.clearInterval(timer);
     };
-  }, [slug, applyData]);
+  }, [slug, applyData, previewMode]);
 
   const value = useMemo(() => ({ data, revision, uiLang, setUiLang }), [data, revision, uiLang, setUiLang]);
 

@@ -565,6 +565,18 @@ body.admin-login-page {
   margin-top: 0.75rem;
 }
 
+.appearance-actions {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.reset-theme-form {
+  margin: 0;
+}
+
 body.admin-is-busy {
   pointer-events: none;
 

@@ -27,9 +27,9 @@ const SynagogueSchema = new mongoose.Schema({
   adminPassword: { type: String, select: false }, // Store hashed password here ideally
   title: String,
   titles: {
-    ru: String,
-    en: String,
-    he: String,
+    ru: { type: String, default: '' },
+    en: { type: String, default: '' },
+    he: { type: String, default: '' },
   },
   weeklyChapterEnabled: { type: Boolean, default: false },
   dailyCites: [DailyCiteSchema],
