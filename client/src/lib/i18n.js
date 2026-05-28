@@ -11,7 +11,8 @@ const resources = {
       kel_male_rachamim_text:
         'God, full of mercy, Who dwells on high, grant proper rest on the wings of the Divine Presence, among the holy and pure who shine like the sky, to the souls of our brethren, the children of Israel, remembered here and to all the souls of Israel. For we pray for the elevation of their souls. Therefore may the Merciful One shelter them in the shelter of His wings for eternity, and bind their souls in the bond of life. The Lord is their heritage; may they rest in peace upon their beds, and let us say: Amen.',
       izkor: 'Yizkor',
-      izkor_text: 'May God remember the soul of my father/mother...',
+      izkor_text:
+        'May God remember the soul of my father, mother, grandfather, uncle, brother, son, or husband (name of the deceased), son of (father\'s name), who has departed this world, in reward for my making a charitable donation without vow, that it be credited to him or her as merit. May his or her soul be bound in the bond of life together with the souls of Abraham, Isaac, and Jacob, Sarah, Rebecca, Rachel, and Leah, and with all the righteous men and women who dwell in the Garden, and let us say: Amen.',
       weekly_chapter: 'Weekly Chapter',
       slideshow_skip: 'Skip slideshow',
       slideshow_loading: 'Loading...',

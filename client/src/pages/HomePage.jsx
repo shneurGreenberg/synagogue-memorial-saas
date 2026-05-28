@@ -16,7 +16,7 @@ import { MemorialPrayersPanel } from '../components/MemorialPrayersPanel';
 import { CommunityLogo } from '../components/CommunityLogo';
 import { useBoardNavigation } from '../context/BoardNavigationContext';
 import { useBoardData } from '../context/BoardDataContext';
-import { formatPersonName } from '../lib/person-names';
+import { resolveBoardTitle } from '../lib/board-title';
 
 function getAppData() {
   return getBoardData();
@@ -96,7 +96,7 @@ class NearestDatesList extends React.Component {
   };
 
   renderPerson(card, suffix) {
-    const displayName = formatPersonName(card.name, this.props.uiLang);
+    const displayName = card.name || '';
     return (
       <li key={`${card.id}${suffix}`}>
         <button type="button" className="nearest-date-link" onClick={() => this.props.onPersonClick(card.id)}>
@@ -284,7 +284,6 @@ class HomePageBase extends React.Component {
 
     this.state = {
       ...initialState,
-      pageTurn: null,
     };
 
     this.previousPage = this.previousPage.bind(this);
@@ -334,19 +333,12 @@ class HomePageBase extends React.Component {
   }
 
   changePage(shift) {
-    const direction = shift > 0 ? 'next' : 'prev';
-
-    this.setState({ pageTurn: direction }, () => {
-      window.setTimeout(() => {
-        this.setState((state) => {
-          const page = Math.min(Math.max(state.page + shift, 0), state.totalPages - 1);
-          return {
-            page,
-            pageShift: page * state.itemsPerPage,
-            pageTurn: null,
-          };
-        });
-      }, 280);
+    this.setState((state) => {
+      const page = Math.min(Math.max(state.page + shift, 0), state.totalPages - 1);
+      return {
+        page,
+        pageShift: page * state.itemsPerPage,
+      };
     });
   }
 
@@ -409,11 +401,9 @@ class HomePageBase extends React.Component {
       );
     }
 
-    const turnClass = this.state.pageTurn ? ` page-turn-${this.state.pageTurn}` : '';
-
     return (
-      <div className={`cards-area${turnClass}`}>
-        <div className="cards-grid">{cells}</div>
+      <div className="cards-area">
+        <div className="cards-grid" key={`page-${this.state.page}`}>{cells}</div>
       </div>
     );
   }
@@ -427,11 +417,9 @@ class HomePageBase extends React.Component {
       </div>
     );
 
-    const turnClass = this.state.pageTurn ? ` page-turn-${this.state.pageTurn}` : '';
-
     return (
-      <div className={`cards-area${turnClass}`}>
-        <div className="cards-grid cards-grid-kadish">
+      <div className="cards-area">
+        <div className="cards-grid cards-grid-kadish" key={`kadish-page-${this.state.page}`}>
         {wrap('k-r1c1', pick(pageShift + 1))}
         {wrap('k-r1c2', pick(pageShift + 2))}
         {wrap('k-r1c3', pick(pageShift + 3))}
@@ -482,13 +470,13 @@ class HomePageBase extends React.Component {
             )}
             <nav className="nearest-dates" aria-label={this.props.t('nearest_dates')}>
               <h2>{this.props.t('nearest_dates')}</h2>
-              <NearestDatesList people={this.state.allPeople} onPersonClick={this.props.onOpenCard} uiLang={this.props.uiLang} />
+              <NearestDatesList people={this.state.allPeople} onPersonClick={this.props.onOpenCard} />
             </nav>
           </div>
         </aside>
         <section className="middle">
           <div className="wooden-panel">
-            <header className="board-header"><h1>{appData.title}</h1></header>
+            <header className="board-header"><h1>{this.props.boardTitle || appData.title}</h1></header>
             {this.state.hasKadishToday ? this.renderKadishGrid() : this.renderStandardGrid()}
             <div
               className="pager"
@@ -550,8 +538,17 @@ class HomePageBase extends React.Component {
 
 function HomePageConnected(props) {
   const { goToCard } = useBoardNavigation();
-  const { revision, uiLang } = useBoardData();
-  return <HomePageBase key={`home-${revision}-${uiLang}`} {...props} onOpenCard={goToCard} uiLang={uiLang} />;
+  const { revision, uiLang, data } = useBoardData();
+  const boardTitle = resolveBoardTitle(data, uiLang);
+  return (
+    <HomePageBase
+      key={`home-${revision}`}
+      {...props}
+      onOpenCard={goToCard}
+      uiLang={uiLang}
+      boardTitle={boardTitle}
+    />
+  );
 }
 
 export default withTranslation()(HomePageConnected);

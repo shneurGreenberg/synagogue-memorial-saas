@@ -20,6 +20,7 @@ function snapshotForCompare(data) {
 
   return JSON.stringify({
     title: data.title,
+    titles: data.titles,
     language: data.language,
     weeklyChapterEnabled: data.weeklyChapterEnabled,
     theme: data.theme,

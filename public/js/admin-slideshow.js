@@ -11,6 +11,7 @@
     }
     overlay.hidden = false;
     overlay.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('admin-is-busy');
   }
 
   function hideBusy() {
@@ -19,6 +20,7 @@
     }
     overlay.hidden = true;
     overlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('admin-is-busy');
   }
 
   function escapeHtml(value) {
@@ -27,6 +29,16 @@
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  function scrollToSlides() {
+    var grid = document.querySelector('.slides-grid');
+    if (!grid) {
+      return;
+    }
+
+    var panel = grid.closest('.admin-panel') || grid;
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function renderSlides(slideshow, labels) {
@@ -67,24 +79,38 @@
     window.dispatchEvent(new CustomEvent('slideshow-grid-updated'));
   }
 
+  async function readJson(response) {
+    var contentType = response.headers.get('content-type') || '';
+
+    if (!contentType.includes('application/json')) {
+      throw new Error('Unexpected server response');
+    }
+
+    return response.json();
+  }
+
   async function submitAjax(form, message) {
     showBusy(message);
     var formData = new FormData(form);
+    var labels = window.slideshowAdminLabels || {};
+    var isAddSlide = form.classList.contains('add-slide-form');
 
     try {
       var response = await fetch(form.action, {
         method: 'POST',
         body: formData,
-        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          Accept: 'application/json',
+        },
         credentials: 'same-origin',
       });
 
-      var payload = await response.json();
+      var payload = await readJson(response);
       if (!response.ok || !payload.ok) {
         throw new Error((payload && payload.error) || 'Request failed');
       }
 
-      var labels = window.slideshowAdminLabels || {};
       renderSlides(payload.slideshow, labels);
 
       var slidesData = document.getElementById('slides-data');
@@ -92,12 +118,13 @@
         slidesData.textContent = JSON.stringify(payload.slideshow.images || []);
       }
 
-      if (form.classList.contains('add-slide-form')) {
+      if (isAddSlide) {
         form.reset();
         var preview = document.getElementById('slidePreview');
         if (preview) {
           preview.innerHTML = '<span class="media-preview-empty">' + escapeHtml(labels.uploadPhoto || '') + '</span>';
         }
+        scrollToSlides();
       }
 
       if (form.id === 'editSlideForm' && window.jQuery) {
@@ -108,7 +135,7 @@
         busyText.textContent = labels.saved || 'Saved';
       }
 
-      window.setTimeout(hideBusy, 500);
+      window.setTimeout(hideBusy, 600);
     } catch (err) {
       hideBusy();
       window.alert(err.message || 'Save failed');

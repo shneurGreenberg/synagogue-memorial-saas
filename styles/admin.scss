@@ -558,6 +558,25 @@ body.admin-login-page {
   padding: 1.35rem;
 }
 
+.board-titles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.board-titles-hint {
+  margin-top: 0.35rem;
+}
+
+body.admin-is-busy {
+  pointer-events: none;
+
+  .admin-busy-overlay {
+    pointer-events: auto;
+  }
+}
+
 .settings-two-col {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

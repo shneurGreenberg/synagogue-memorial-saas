@@ -4,9 +4,6 @@ import {
   formatHebrewDate,
 } from '../lib/novosibirsk';
 import { getNameDensityClass } from '../lib/text-density';
-import { formatPersonName } from '../lib/person-names';
-import { useBoardData } from '../context/BoardDataContext';
-
 const CANDLE_CYCLE_MS = 4000;
 
 function toDatetimeAttr(gregorianDateOfDeath) {
@@ -65,8 +62,8 @@ class MemorialCardInner extends React.Component {
   }
 
   render() {
-    const { entry, big, uiLang } = this.props;
-    const displayName = formatPersonName(entry?.name, uiLang);
+    const { entry, big } = this.props;
+    const displayName = entry?.name || '';
 
     if (!entry) {
       return <div className="card card-hidden" aria-hidden="true" />;
@@ -113,6 +110,5 @@ class MemorialCardInner extends React.Component {
 }
 
 export function MemorialCard(props) {
-  const { uiLang } = useBoardData();
-  return <MemorialCardInner {...props} uiLang={uiLang} />;
+  return <MemorialCardInner {...props} />;
 }

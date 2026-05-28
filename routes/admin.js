@@ -108,10 +108,13 @@ router.post('/:slug/settings', requireAdmin, upload.fields([
 ]), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { title, primaryColor, textColor, language, adminLanguage, colorMode } = req.body;
+        const { title, titleRu, titleEn, titleHe, primaryColor, textColor, language, adminLanguage, colorMode } = req.body;
         const safeColorMode = colorMode === 'light' ? 'light' : 'dark';
         const updateData = {
             title,
+            'titles.ru': titleRu ? String(titleRu).trim() : '',
+            'titles.en': titleEn ? String(titleEn).trim() : '',
+            'titles.he': titleHe ? String(titleHe).trim() : '',
             'theme.primaryColor': primaryColor,
             'theme.textColor': textColor,
             'adminTheme.colorMode': safeColorMode,
@@ -175,15 +178,9 @@ router.post('/:slug/slideshow/settings', requireAdmin, async (req, res) => {
                 'slideshow.mainDuration': parseInt(mainDuration)
             }
         });
-        if (wantsJson(req)) {
-            return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
-        }
-        res.redirect(`/admin/${req.params.slug}/slideshow`);
+        return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
     } catch (err) {
-        if (wantsJson(req)) {
-            return res.status(500).json({ ok: false, error: err.message });
-        }
-        res.status(500).send(err.message);
+        return res.status(500).json({ ok: false, error: err.message });
     }
 });
 
@@ -191,28 +188,23 @@ router.post('/:slug/slideshow/add', requireAdmin, upload.single('image'), async 
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { text } = req.body;
-        if (req.file) {
-            await Synagogue.updateOne(
-                { slug: req.params.slug },
-                {
-                    $push: {
-                        'slideshow.images': {
-                            url: req.file.filename,
-                            text: sanitizeRichText(text)
-                        }
+        if (!req.file) {
+            return res.status(400).json({ ok: false, error: 'Image is required' });
+        }
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            {
+                $push: {
+                    'slideshow.images': {
+                        url: req.file.filename,
+                        text: sanitizeRichText(text)
                     }
                 }
-            );
-        }
-        if (wantsJson(req)) {
-            return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
-        }
-        res.redirect(`/admin/${req.params.slug}/slideshow`);
+            }
+        );
+        return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
     } catch (err) {
-        if (wantsJson(req)) {
-            return res.status(500).json({ ok: false, error: err.message });
-        }
-        res.status(500).send(err.message);
+        return res.status(500).json({ ok: false, error: err.message });
     }
 });
 
@@ -232,15 +224,9 @@ router.post('/:slug/slideshow/edit', requireAdmin, upload.single('image'), async
             { slug: req.params.slug, 'slideshow.images._id': slideId },
             { $set: updateFields },
         );
-        if (wantsJson(req)) {
-            return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
-        }
-        res.redirect(`/admin/${req.params.slug}/slideshow`);
+        return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
     } catch (err) {
-        if (wantsJson(req)) {
-            return res.status(500).json({ ok: false, error: err.message });
-        }
-        res.status(500).send(err.message);
+        return res.status(500).json({ ok: false, error: err.message });
     }
 });
 
@@ -248,20 +234,13 @@ router.post('/:slug/slideshow/delete', requireAdmin, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { slideId } = req.body;
-        // Use pull with _id if we had it, but images are subdocuments so they should have _id created by mongoose
         await Synagogue.updateOne(
             { slug: req.params.slug },
             { $pull: { 'slideshow.images': { _id: slideId } } }
         );
-        if (wantsJson(req)) {
-            return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
-        }
-        res.redirect(`/admin/${req.params.slug}/slideshow`);
+        return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
     } catch (err) {
-        if (wantsJson(req)) {
-            return res.status(500).json({ ok: false, error: err.message });
-        }
-        res.status(500).send(err.message);
+        return res.status(500).json({ ok: false, error: err.message });
     }
 });
 

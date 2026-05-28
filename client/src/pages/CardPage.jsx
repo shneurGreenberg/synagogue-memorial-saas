@@ -6,7 +6,6 @@ import { getBiographyDensityClass } from '../lib/text-density';
 import { PersonAvatar } from '../components/PersonAvatar';
 import { useBoardNavigation } from '../context/BoardNavigationContext';
 import { useBoardData } from '../context/BoardDataContext';
-import { formatPersonName } from '../lib/person-names';
 import { BiographyScroller } from '../components/BiographyScroller';
 
 class CardPageBase extends React.Component {
@@ -27,8 +26,8 @@ class CardPageBase extends React.Component {
   }
 
   render() {
-    const { card, uiLang } = this.props;
-    const displayName = card ? formatPersonName(card.name, uiLang) : '';
+    const { card } = this.props;
+    const displayName = card ? card.name : '';
 
     if (!card) {
       return (
@@ -82,15 +81,14 @@ const CardPageTranslated = withTranslation()(CardPageBase);
 export default function CardPage() {
   const { personId } = useParams();
   const { goToBoard } = useBoardNavigation();
-  const { data, revision, uiLang } = useBoardData();
+  const { data, revision } = useBoardData();
   const people = data.people || [];
   const card = people.find((person) => String(person.id) === String(personId));
 
   return (
     <CardPageTranslated
-      key={`card-${revision}-${uiLang}-${personId}`}
+      key={`card-${revision}-${personId}`}
       card={card}
-      uiLang={uiLang}
       onBack={goToBoard}
     />
   );

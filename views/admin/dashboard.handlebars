@@ -46,10 +46,28 @@
             </div>
             <div class="admin-panel-body">
                 <div class="form-field">
-                    <label for="settingsTitle">{{t 'title'}}</label>
+                    <label for="settingsTitle">{{t 'board_title_main'}}</label>
                     <input type="text" name="title" id="settingsTitle" class="form-control admin-input-modern"
                         value="{{synagogue.title}}">
                 </div>
+                <div class="board-titles-grid">
+                    <div class="form-field">
+                        <label for="titleRu">{{t 'board_title_ru'}}</label>
+                        <input type="text" name="titleRu" id="titleRu" class="form-control admin-input-modern"
+                            value="{{synagogue.titles.ru}}">
+                    </div>
+                    <div class="form-field">
+                        <label for="titleEn">{{t 'board_title_en'}}</label>
+                        <input type="text" name="titleEn" id="titleEn" class="form-control admin-input-modern"
+                            value="{{synagogue.titles.en}}">
+                    </div>
+                    <div class="form-field">
+                        <label for="titleHe">{{t 'board_title_he'}}</label>
+                        <input type="text" name="titleHe" id="titleHe" class="form-control admin-input-modern"
+                            value="{{synagogue.titles.he}}">
+                    </div>
+                </div>
+                <p class="field-hint board-titles-hint">{{t 'board_title_auto_hint'}}</p>
                 <div class="color-picker-row color-picker-modern">
                     <div class="color-field-modern">
                         <label for="primaryColor">{{t 'primary_color'}}</label>
@@ -212,10 +230,13 @@
             applyAdminTheme(toggle.checked);
         }
 
+        ['settingsTitle', 'titleRu', 'titleEn', 'titleHe'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', schedulePreview);
+            }
+        });
         var titleInput = document.getElementById('settingsTitle');
-        if (titleInput) {
-            titleInput.addEventListener('input', schedulePreview);
-        }
 
         function schedulePreview() {
             clearTimeout(previewDebounce);
@@ -232,6 +253,12 @@
             var text = document.getElementById('textColor');
 
             if (title) params.set('title', title);
+            var titleRu = document.getElementById('titleRu');
+            var titleEn = document.getElementById('titleEn');
+            var titleHe = document.getElementById('titleHe');
+            if (titleRu) params.set('titleRu', titleRu.value.trim());
+            if (titleEn) params.set('titleEn', titleEn.value.trim());
+            if (titleHe) params.set('titleHe', titleHe.value.trim());
             if (primary) params.set('primaryColor', primary.value);
             if (text) params.set('textColor', text.value);
 
