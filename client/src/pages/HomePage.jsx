@@ -13,7 +13,9 @@ import { sanitizeRichText } from '../lib/html-sanitize';
 import { getBoardData } from '../lib/board-data';
 import { MemorialCard } from '../components/MemorialCard';
 import { MemorialPrayersPanel } from '../components/MemorialPrayersPanel';
+import { CommunityLogo } from '../components/CommunityLogo';
 import { useBoardNavigation } from '../context/BoardNavigationContext';
+import { useBoardData } from '../context/BoardDataContext';
 
 function getAppData() {
   return getBoardData();
@@ -278,7 +280,10 @@ class HomePageBase extends React.Component {
 
     this.initPagination(initialState);
 
-    this.state = initialState;
+    this.state = {
+      ...initialState,
+      pageTurn: null,
+    };
 
     this.previousPage = this.previousPage.bind(this);
     this.nextPage = this.nextPage.bind(this);
@@ -327,12 +332,19 @@ class HomePageBase extends React.Component {
   }
 
   changePage(shift) {
-    this.setState((state) => {
-      const page = Math.min(Math.max(state.page + shift, 0), state.totalPages - 1);
-      return {
-        page,
-        pageShift: page * state.itemsPerPage,
-      };
+    const direction = shift > 0 ? 'next' : 'prev';
+
+    this.setState({ pageTurn: direction }, () => {
+      window.setTimeout(() => {
+        this.setState((state) => {
+          const page = Math.min(Math.max(state.page + shift, 0), state.totalPages - 1);
+          return {
+            page,
+            pageShift: page * state.itemsPerPage,
+            pageTurn: null,
+          };
+        });
+      }, 280);
     });
   }
 
@@ -395,8 +407,10 @@ class HomePageBase extends React.Component {
       );
     }
 
+    const turnClass = this.state.pageTurn ? ` page-turn-${this.state.pageTurn}` : '';
+
     return (
-      <div className="cards-area">
+      <div className={`cards-area${turnClass}`}>
         <div className="cards-grid">{cells}</div>
       </div>
     );
@@ -411,8 +425,10 @@ class HomePageBase extends React.Component {
       </div>
     );
 
+    const turnClass = this.state.pageTurn ? ` page-turn-${this.state.pageTurn}` : '';
+
     return (
-      <div className="cards-area">
+      <div className={`cards-area${turnClass}`}>
         <div className="cards-grid cards-grid-kadish">
         {wrap('k-r1c1', pick(pageShift + 1))}
         {wrap('k-r1c2', pick(pageShift + 2))}
@@ -454,7 +470,7 @@ class HomePageBase extends React.Component {
         <aside className="left side-panel">
           <div className="wooden-panel">
             <div className="banner-wrap">
-              <img className="banner" src={`/images/${logo}`} alt={appData.title || 'Synagogue'} />
+              <CommunityLogo src={`/images/${logo}`} alt={appData.title || 'Synagogue'} />
             </div>
             {this.state.dailyCite && (
               <div
@@ -476,11 +492,17 @@ class HomePageBase extends React.Component {
               className="pager"
               style={this.state.totalPages <= 1 ? { display: 'none' } : {}}
             >
-              <button type="button" onClick={this.previousPage} aria-label={this.props.t('previous_page')}>&larr;</button>
+              <button type="button" className="pager-btn pager-btn-prev" onClick={this.previousPage} aria-label={this.props.t('previous_page')}>
+                <span className="pager-chevron pager-chevron-up" aria-hidden="true" />
+              </button>
               <div className="currentPage" aria-live="polite">
-                {this.state.page + 1} / {this.state.totalPages}
+                <span className="pager-page-num">{this.state.page + 1}</span>
+                <span className="pager-page-sep">/</span>
+                <span className="pager-page-total">{this.state.totalPages}</span>
               </div>
-              <button type="button" onClick={this.nextPage} aria-label={this.props.t('next_page')}>&rarr;</button>
+              <button type="button" className="pager-btn pager-btn-next" onClick={this.nextPage} aria-label={this.props.t('next_page')}>
+                <span className="pager-chevron pager-chevron-down" aria-hidden="true" />
+              </button>
             </div>
           </div>
         </section>
@@ -526,7 +548,8 @@ class HomePageBase extends React.Component {
 
 function HomePageConnected(props) {
   const { goToCard } = useBoardNavigation();
-  return <HomePageBase {...props} onOpenCard={goToCard} />;
+  const { revision } = useBoardData();
+  return <HomePageBase key={`home-${revision}`} {...props} onOpenCard={goToCard} />;
 }
 
 export default withTranslation()(HomePageConnected);

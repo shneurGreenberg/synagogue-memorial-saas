@@ -13,7 +13,7 @@
         </div>
         <div class="admin-panel-body">
             <form method="POST" action="/admin/{{synagogue.slug}}/slideshow/settings" class="slideshow-settings-form">
-                <label class="toggle-switch">
+                <label class="toggle-switch slideshow-enable-toggle">
                     <input type="checkbox" name="enabled" {{#if synagogue.slideshow.enabled}}checked{{/if}}>
                     <span class="toggle-slider"></span>
                     <span class="toggle-label">{{t 'enable_slideshow'}}</span>
@@ -21,12 +21,12 @@
                 <div class="settings-two-col">
                     <div class="form-field">
                         <label for="slideInterval">{{t 'slide_duration'}}</label>
-                        <input type="number" class="form-control" name="interval" id="slideInterval"
+                        <input type="number" class="form-control admin-input-modern" name="interval" id="slideInterval"
                             value="{{synagogue.slideshow.interval}}" min="3" required>
                     </div>
                     <div class="form-field">
                         <label for="mainDuration">{{t 'main_duration'}}</label>
-                        <input type="number" class="form-control" name="mainDuration" id="mainDuration"
+                        <input type="number" class="form-control admin-input-modern" name="mainDuration" id="mainDuration"
                             value="{{synagogue.slideshow.mainDuration}}" min="10" required>
                         <span class="field-hint">{{t 'main_duration_help'}}</span>
                     </div>
@@ -56,10 +56,13 @@
                     <div class="add-slide-fields">
                         <div class="form-field">
                             <label for="slideText">{{t 'slide_caption_optional'}}</label>
-                            <input type="text" name="text" id="slideText" class="form-control"
+                            <input type="text" name="text" id="slideText" class="form-control admin-input-modern"
                                 placeholder="{{t 'text'}}">
                         </div>
-                        <button type="submit" class="btn-admin btn-admin-primary">+ {{t 'add'}}</button>
+                        <button type="submit" class="btn-admin btn-admin-primary btn-admin-submit">
+                            <span class="btn-submit-icon" aria-hidden="true">✓</span>
+                            {{t 'add_slide_submit'}}
+                        </button>
                     </div>
                 </div>
             </form>
@@ -73,7 +76,8 @@
         <div class="admin-panel-body">
             <div class="slides-grid">
                 {{#each synagogue.slideshow.images}}
-                <article class="slide-card">
+                <article class="slide-card slide-card-clickable" role="button" tabindex="0"
+                    data-slide-id="{{this._id}}">
                     <div class="slide-card-image">
                         <img src="/images/{{this.url}}" alt="{{this.text}}">
                     </div>
@@ -83,7 +87,9 @@
                         {{else}}
                         <p class="slide-caption slide-caption-muted">{{t 'slide_caption_optional'}}</p>
                         {{/if}}
+                        <span class="slide-edit-hint">{{t 'edit'}}</span>
                         <form method="POST" action="/admin/{{../synagogue.slug}}/slideshow/delete"
+                            class="slide-delete-form"
                             onsubmit="return confirm('{{t 'are_you_sure'}}');">
                             <input type="hidden" name="slideId" value="{{this._id}}">
                             <button type="submit" class="btn-admin btn-admin-danger btn-admin-sm">{{t 'delete'}}</button>
@@ -100,20 +106,90 @@
     </section>
 </div>
 
+<div class="modal fade admin-modal" id="editSlideModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="/admin/{{synagogue.slug}}/slideshow/edit" enctype="multipart/form-data"
+                id="editSlideForm">
+                <input type="hidden" name="slideId" id="editSlideId">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{t 'edit_slide'}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{t 'cancel'}}">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="media-preview media-preview-slide mb-3" id="editSlidePreview"></div>
+                    <div class="form-field">
+                        <label for="editSlideText">{{t 'slide_caption_optional'}}</label>
+                        <input type="text" name="text" id="editSlideText" class="form-control admin-input-modern">
+                    </div>
+                    <div class="form-field">
+                        <label class="file-drop-label d-inline-block">
+                            {{t 'replace_image'}}
+                            <input type="file" name="image" accept="image/*" id="editSlideImage">
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-admin btn-admin-ghost" data-dismiss="modal">{{t 'cancel'}}</button>
+                    <button type="submit" class="btn-admin btn-admin-primary">{{t 'save_slide_changes'}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script id="slides-data" type="application/json">{{{json synagogue.slideshow.images}}}</script>
 <script>
     (function () {
-        const input = document.getElementById('slideImageInput');
-        const preview = document.getElementById('slidePreview');
-        if (!input || !preview) return;
+        var input = document.getElementById('slideImageInput');
+        var preview = document.getElementById('slidePreview');
+        if (input && preview) {
+            input.addEventListener('change', function () {
+                var file = input.files && input.files[0];
+                if (!file) return;
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.innerHTML = '<img src="' + e.target.result + '" alt="">';
+                };
+                reader.readAsDataURL(file);
+            });
+        }
 
-        input.addEventListener('change', function () {
-            const file = input.files && input.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                preview.innerHTML = '<img src="' + e.target.result + '" alt="">';
-            };
-            reader.readAsDataURL(file);
+        var slidesById = {};
+        try {
+            JSON.parse(document.getElementById('slides-data').textContent).forEach(function (slide) {
+                slidesById[String(slide._id)] = slide;
+            });
+        } catch (e) { /* ignore */ }
+
+        function openEditSlide(card) {
+            var id = card.getAttribute('data-slide-id');
+            var slide = slidesById[id];
+            if (!slide) return;
+            var url = slide.url;
+            var text = slide.text || '';
+
+            document.getElementById('editSlideId').value = id;
+            document.getElementById('editSlideText').value = text;
+            document.getElementById('editSlidePreview').innerHTML =
+                '<img src="/images/' + url + '" alt="">';
+
+            $('#editSlideModal').modal('show');
+        }
+
+        document.querySelectorAll('.slide-card-clickable').forEach(function (card) {
+            card.addEventListener('click', function (event) {
+                if (event.target.closest('.slide-delete-form')) {
+                    return;
+                }
+                openEditSlide(card);
+            });
+            card.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    openEditSlide(card);
+                }
+            });
         });
     })();
 </script>

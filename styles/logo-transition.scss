@@ -1,0 +1,74 @@
+.community-logo-btn {
+  display: inline-flex;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  position: relative;
+  transition: transform 0.25s ease;
+
+  &:hover:not(.is-transitioning) {
+    transform: scale(1.04);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--primary-color, #cfaf1f);
+    outline-offset: 4px;
+  }
+
+  .community-logo-img {
+    display: block;
+    pointer-events: none;
+  }
+}
+
+body.logo-admin-transition-active::after {
+  content: '';
+  position: fixed;
+  left: var(--logo-x, 50%);
+  top: var(--logo-y, 50%);
+  width: var(--logo-size, 120px);
+  height: var(--logo-size, 120px);
+  margin-left: calc(var(--logo-size, 120px) / -2);
+  margin-top: calc(var(--logo-size, 120px) / -2);
+  border-radius: 50%;
+  background: var(--logo-bg, url('/images/banner-transparent.png')) center / cover no-repeat;
+  z-index: 10000;
+  animation: logo-to-admin 1.05s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  box-shadow: 0 0 60px rgba(207, 175, 31, 0.45);
+  pointer-events: none;
+}
+
+body.logo-admin-transition-active .community-logo-btn.is-transitioning .community-logo-img {
+  opacity: 0;
+}
+
+@keyframes logo-to-admin {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+    border-radius: 50%;
+  }
+
+  45% {
+    transform: rotate(180deg) scale(8);
+    opacity: 1;
+    border-radius: 50%;
+  }
+
+  100% {
+    transform: rotate(360deg) scale(24);
+    opacity: 0.95;
+    border-radius: 12%;
+    filter: brightness(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.logo-admin-transition-active::after {
+    animation: none;
+    opacity: 0;
+  }
+}

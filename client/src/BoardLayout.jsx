@@ -1,13 +1,14 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
 import { BoardNavigationProvider } from './context/BoardNavigationContext';
+import { BoardDataProvider } from './context/BoardDataContext';
 import { ThemeStyles } from './components/ThemeStyles';
 import { IdleReload } from './components/IdleReload';
 import { usePhotoPrefetch } from './hooks/usePhotoPrefetch';
-import { getBoardData } from './lib/board-data';
+import { useBoardData } from './context/BoardDataContext';
 
-export default function BoardLayout() {
-  const data = getBoardData();
+function BoardLayoutInner() {
+  const { data } = useBoardData();
   usePhotoPrefetch(data.people);
 
   return (
@@ -18,5 +19,15 @@ export default function BoardLayout() {
         <Outlet />
       </div>
     </BoardNavigationProvider>
+  );
+}
+
+export default function BoardLayout() {
+  const { slug } = useParams();
+
+  return (
+    <BoardDataProvider slug={slug}>
+      <BoardLayoutInner />
+    </BoardDataProvider>
   );
 }

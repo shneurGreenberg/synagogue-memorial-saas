@@ -19,23 +19,23 @@
                 <h2>{{t 'admin_panel_section'}}</h2>
             </div>
             <div class="admin-panel-body">
-                <div class="form-field color-mode-field"
+                <div class="admin-theme-setting color-mode-field"
                     data-light-label="{{t 'light_mode'}}"
                     data-dark-label="{{t 'dark_mode'}}">
-                    <span class="field-label-static">{{t 'color_mode'}}</span>
+                    <div class="admin-theme-setting-label">{{t 'color_mode'}}</div>
                     <input type="hidden" name="colorMode" id="colorModeInput"
                         value="{{#if (eq synagogue.adminColorMode 'light')}}light{{else}}dark{{/if}}">
-                    <div class="color-mode-control">
+                    <div class="admin-theme-setting-control">
                         <label class="toggle-switch color-mode-toggle" for="colorModeToggle">
                             <input type="checkbox" id="colorModeToggle"
                                 {{#if (eq synagogue.adminColorMode 'light')}}checked{{/if}}>
                             <span class="toggle-slider" aria-hidden="true"></span>
                         </label>
-                        <span class="toggle-label" id="colorModeToggleLabel">
+                        <span class="toggle-mode-text" id="colorModeToggleLabel">
                             {{#if (eq synagogue.adminColorMode 'light')}}{{t 'light_mode'}}{{else}}{{t 'dark_mode'}}{{/if}}
                         </span>
                     </div>
-                    <span class="field-hint">{{t 'color_mode_help'}}</span>
+                    <p class="field-hint admin-theme-setting-hint">{{t 'color_mode_help'}}</p>
                 </div>
             </div>
         </section>
@@ -47,32 +47,30 @@
             <div class="admin-panel-body">
                 <div class="form-field">
                     <label for="settingsTitle">{{t 'title'}}</label>
-                    <input type="text" name="title" id="settingsTitle" class="form-control"
+                    <input type="text" name="title" id="settingsTitle" class="form-control admin-input-modern"
                         value="{{synagogue.title}}">
                 </div>
-                <div class="color-picker-row">
-                    <div class="form-field">
+                <div class="color-picker-row color-picker-modern">
+                    <div class="color-field-modern">
                         <label for="primaryColor">{{t 'primary_color'}}</label>
-                        <div class="color-input-wrap">
-                            <input type="color" name="primaryColor" id="primaryColor"
+                        <div class="color-swatch-row">
+                            <input type="color" name="primaryColor" id="primaryColor" class="color-swatch-input"
                                 value="{{synagogue.theme.primaryColor}}">
-                            <span class="color-value">{{synagogue.theme.primaryColor}}</span>
+                            <input type="text" class="color-hex-display" id="primaryColorHex" readonly
+                                value="{{synagogue.theme.primaryColor}}">
                         </div>
+                        <span class="field-hint">{{t 'primary_color_help'}}</span>
                     </div>
-                    <div class="form-field">
+                    <div class="color-field-modern">
                         <label for="textColor">{{t 'text_color'}}</label>
-                        <div class="color-input-wrap">
-                            <input type="color" name="textColor" id="textColor"
+                        <div class="color-swatch-row">
+                            <input type="color" name="textColor" id="textColor" class="color-swatch-input"
                                 value="{{synagogue.theme.textColor}}">
-                            <span class="color-value">{{synagogue.theme.textColor}}</span>
+                            <input type="text" class="color-hex-display" id="textColorHex" readonly
+                                value="{{synagogue.theme.textColor}}">
                         </div>
+                        <span class="field-hint">{{t 'text_color_help'}}</span>
                     </div>
-                </div>
-                <div class="form-field grid-gap-field">
-                    <label for="gridGap">{{t 'grid_gap'}}: <span class="grid-gap-value" id="gridGapValue">{{synagogue.theme.gridGap}}</span>px</label>
-                    <input type="range" name="gridGap" id="gridGap" min="0" max="32" step="1"
-                        value="{{#if synagogue.theme.gridGap}}{{synagogue.theme.gridGap}}{{else}}8{{/if}}">
-                    <span class="field-hint">{{t 'grid_gap_help'}}</span>
                 </div>
             </div>
         </section>
@@ -148,7 +146,7 @@
                 <div class="settings-two-col">
                     <div class="form-field">
                         <label for="language">{{t 'language'}}</label>
-                        <select name="language" id="language" class="form-control">
+                        <select name="language" id="language" class="form-control admin-select-modern">
                             <option value="ru" {{#if (eq synagogue.language 'ru')}}selected{{/if}}>Russian</option>
                             <option value="en" {{#if (eq synagogue.language 'en')}}selected{{/if}}>English</option>
                             <option value="he" {{#if (eq synagogue.language 'he')}}selected{{/if}}>Hebrew</option>
@@ -156,7 +154,7 @@
                     </div>
                     <div class="form-field">
                         <label for="adminLanguage">{{t 'admin_language'}}</label>
-                        <select name="adminLanguage" id="adminLanguage" class="form-control">
+                        <select name="adminLanguage" id="adminLanguage" class="form-control admin-select-modern">
                             <option value="ru" {{#if (eq synagogue.adminLanguage 'ru')}}selected{{/if}}>Russian</option>
                             <option value="en" {{#if (eq synagogue.adminLanguage 'en')}}selected{{/if}}>English</option>
                             <option value="he" {{#if (eq synagogue.adminLanguage 'he')}}selected{{/if}}>Hebrew</option>
@@ -177,14 +175,19 @@
         var slug = '{{synagogue.slug}}';
         var previewDebounce;
 
-        document.querySelectorAll('input[type="color"]').forEach(function (input) {
-            var valueEl = input.parentElement.querySelector('.color-value');
-            if (!valueEl) return;
-            input.addEventListener('input', function () {
-                valueEl.textContent = input.value;
+        function bindColorPair(colorInputId, hexInputId) {
+            var colorInput = document.getElementById(colorInputId);
+            var hexInput = document.getElementById(hexInputId);
+            if (!colorInput || !hexInput) return;
+
+            colorInput.addEventListener('input', function () {
+                hexInput.value = colorInput.value;
                 schedulePreview();
             });
-        });
+        }
+
+        bindColorPair('primaryColor', 'primaryColorHex');
+        bindColorPair('textColor', 'textColorHex');
 
         var toggle = document.getElementById('colorModeToggle');
         var hidden = document.getElementById('colorModeInput');
@@ -209,15 +212,6 @@
             applyAdminTheme(toggle.checked);
         }
 
-        var gridGap = document.getElementById('gridGap');
-        var gridGapValue = document.getElementById('gridGapValue');
-        if (gridGap && gridGapValue) {
-            gridGap.addEventListener('input', function () {
-                gridGapValue.textContent = gridGap.value;
-                schedulePreview();
-            });
-        }
-
         var titleInput = document.getElementById('settingsTitle');
         if (titleInput) {
             titleInput.addEventListener('input', schedulePreview);
@@ -240,7 +234,6 @@
             if (title) params.set('title', title);
             if (primary) params.set('primaryColor', primary.value);
             if (text) params.set('textColor', text.value);
-            if (gridGap) params.set('gridGap', gridGap.value);
 
             var query = params.toString();
             frame.src = '/s/' + slug + (query ? '?' + query : '');

@@ -2,10 +2,10 @@ import React from 'react';
 import { withTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { sanitizeRichText } from '../lib/html-sanitize';
-import { getBoardData } from '../lib/board-data';
 import { getBiographyDensityClass } from '../lib/text-density';
 import { PersonAvatar } from '../components/PersonAvatar';
 import { useBoardNavigation } from '../context/BoardNavigationContext';
+import { useBoardData } from '../context/BoardDataContext';
 
 class CardPageBase extends React.Component {
   constructor(props) {
@@ -79,8 +79,9 @@ const CardPageTranslated = withTranslation()(CardPageBase);
 export default function CardPage() {
   const { personId } = useParams();
   const { goToBoard } = useBoardNavigation();
-  const people = getBoardData().people || [];
+  const { data, revision } = useBoardData();
+  const people = data.people || [];
   const card = people.find((person) => String(person.id) === String(personId));
 
-  return <CardPageTranslated card={card} onBack={goToBoard} />;
+  return <CardPageTranslated key={`card-${revision}-${personId}`} card={card} onBack={goToBoard} />;
 }

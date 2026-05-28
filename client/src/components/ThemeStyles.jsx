@@ -1,26 +1,33 @@
 import React from 'react';
-import { getBoardData } from '../lib/board-data';
+import { useBoardData } from '../context/BoardDataContext';
 
 export function ThemeStyles() {
-  const data = getBoardData();
+  const { data } = useBoardData();
   const theme = data.theme || {};
-  const parsedGap = parseInt(theme.gridGap, 10);
-  const gridGap = Number.isFinite(parsedGap) ? Math.min(32, Math.max(0, parsedGap)) : 8;
+  const primary = theme.primaryColor || '#cfaf1f';
+  const text = theme.textColor || '#d9d9d9';
 
   const css = `
     :root {
-      --primary-color: ${theme.primaryColor || '#cfaf1f'};
-      --text-color: ${theme.textColor || '#d9d9d9'};
-      --board-grid-gap: ${gridGap}px;
-      --card-button: color-mix(in srgb, ${theme.primaryColor || '#cfaf1f'} 85%, #000);
-      --card-button-border: color-mix(in srgb, ${theme.primaryColor || '#cfaf1f'} 70%, #000);
+      --primary-color: ${primary};
+      --text-color: ${text};
+      --tile-title-color: ${primary};
+      --tile-date-color: ${text};
+      --card-button: color-mix(in srgb, ${primary} 85%, #000);
+      --card-button-border: color-mix(in srgb, ${primary} 70%, #000);
       --card-button-text: #1a1a1a;
     }
-    .golden-text-mixin,
-    h1,
-    h2,
-    h3 {
+    .main-container .board-header h1 {
       color: var(--primary-color) !important;
+    }
+    .main-container .cards-grid .card .inner h3,
+    .main-container .cards-grid-kadish .card .inner h3 {
+      color: var(--tile-title-color) !important;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.55);
+    }
+    .main-container .cards-grid .card .inner time,
+    .main-container .cards-grid-kadish .card .inner time {
+      color: var(--tile-date-color) !important;
     }
     body {
       color: var(--text-color) !important;
@@ -32,11 +39,6 @@ export function ThemeStyles() {
     .wooden-panel {
       ${theme.tilesBackground ? `background-image: url('/images/${theme.tilesBackground}') !important;
       background-size: cover;` : ''}
-    }
-    .main-container .middle .cards-grid,
-    .main-container .middle .cards-grid-kadish {
-      gap: var(--board-grid-gap) !important;
-      padding: var(--board-grid-gap) !important;
     }
   `;
 

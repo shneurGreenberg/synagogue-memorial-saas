@@ -46,7 +46,8 @@
       margin-top: 14px;
     }
 
-    .banner {
+    .banner,
+    .community-logo-btn .banner {
       width: clamp(88px, 11vw, 150px);
       height: clamp(88px, 11vw, 150px);
       border-radius: 50%;
@@ -199,6 +200,17 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      perspective: 1200px;
+
+      &.page-turn-next .cards-grid,
+      &.page-turn-next .cards-grid-kadish {
+        animation: cards-page-next 0.55s ease-out;
+      }
+
+      &.page-turn-prev .cards-grid,
+      &.page-turn-prev .cards-grid-kadish {
+        animation: cards-page-prev 0.55s ease-out;
+      }
     }
 
     .cards-grid {
@@ -207,8 +219,8 @@
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       grid-template-rows: repeat(4, minmax(0, 1fr));
-      gap: var(--board-grid-gap, clamp(4px, 0.6vw, 10px));
-      padding: var(--board-grid-gap, clamp(4px, 0.6vw, 10px));
+      gap: clamp(4px, 0.6vw, 10px);
+      padding: clamp(4px, 0.6vw, 10px);
       width: 100%;
       box-sizing: border-box;
       overflow: hidden;
@@ -408,34 +420,84 @@
     .pager {
       flex-shrink: 0;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 6px;
       padding: 8px 12px 10px;
 
       .currentPage {
-        color: white;
-        font-size: clamp(14px, 1.2vw, 18px);
-        min-width: 4ch;
-        text-align: center;
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+        color: rgba(255, 255, 255, 0.92);
+        font-size: clamp(13px, 1.1vw, 16px);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.02em;
       }
 
-      button {
-        min-width: 40px;
-        min-height: 40px;
-        font-weight: bold;
-        font-size: 20px;
-        padding: 0 12px;
-        color: white;
+      .pager-page-num {
+        font-weight: 700;
+        color: $goldenText;
+        font-size: clamp(15px, 1.25vw, 19px);
+      }
+
+      .pager-page-sep {
+        opacity: 0.55;
+      }
+
+      .pager-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: clamp(44px, 4.5vw, 56px);
+        height: clamp(44px, 4.5vw, 56px);
+        padding: 0;
         cursor: pointer;
-        background: $cardButton;
+        background: linear-gradient(165deg, color-mix(in srgb, $cardButton 90%, #fff 8%), $cardButton);
         border: 1.5px solid $cardButtonBorder;
-        border-radius: 10px;
+        border-radius: 14px;
+        box-shadow:
+          0 4px 14px rgba(0, 0, 0, 0.35),
+          inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        transition:
+          transform 0.18s ease,
+          box-shadow 0.18s ease,
+          background 0.18s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow:
+            0 8px 20px rgba(0, 0, 0, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        }
+
+        &:active {
+          transform: translateY(0) scale(0.96);
+        }
 
         &:focus-visible {
           outline: 3px solid $goldenText;
           outline-offset: 2px;
         }
+      }
+
+      .pager-chevron {
+        display: block;
+        width: 0;
+        height: 0;
+        border-left: 9px solid transparent;
+        border-right: 9px solid transparent;
+      }
+
+      .pager-chevron-up {
+        border-bottom: 12px solid rgba(255, 255, 255, 0.95);
+        margin-bottom: 2px;
+      }
+
+      .pager-chevron-down {
+        border-top: 12px solid rgba(255, 255, 255, 0.95);
+        margin-top: 2px;
       }
     }
   }
@@ -590,6 +652,13 @@
   .main-container .cards-grid .card {
     transition: none !important;
   }
+
+  .main-container .middle .cards-area.page-turn-next .cards-grid,
+  .main-container .middle .cards-area.page-turn-prev .cards-grid,
+  .main-container .middle .cards-area.page-turn-next .cards-grid-kadish,
+  .main-container .middle .cards-area.page-turn-prev .cards-grid-kadish {
+    animation: none !important;
+  }
 }
 
 @keyframes nearest-dates-scroll {
@@ -599,6 +668,30 @@
 
   to {
     transform: translateY(-50%);
+  }
+}
+
+@keyframes cards-page-next {
+  0% {
+    opacity: 0.35;
+    transform: translateY(18px) rotateX(8deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
+  }
+}
+
+@keyframes cards-page-prev {
+  0% {
+    opacity: 0.35;
+    transform: translateY(-18px) rotateX(-8deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateX(0);
   }
 }
 

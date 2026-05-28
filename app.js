@@ -7,7 +7,7 @@ const path = require('path');
 const rimraf = require('rimraf');
 const mongoose = require('mongoose');
 const Synagogue = require('./models/Synagogue');
-const { applyBoardPreviewOverrides, ensureThemeDefaults } = require('./lib/board-preview');
+const { applyBoardPreviewOverrides } = require('./lib/board-preview');
 const adminRoutes = require('./routes/admin');
 const masterRoutes = require('./routes/master');
 const bodyParser = require('body-parser');
@@ -97,7 +97,7 @@ async function loadSynagogueBoard(slug) {
   }
 
   synagogue.baseUrl = `/s/${slug}`;
-  return ensureThemeDefaults(synagogue);
+  return synagogue;
 }
 
 function renderMemorialBoard(req, res, synagogue) {

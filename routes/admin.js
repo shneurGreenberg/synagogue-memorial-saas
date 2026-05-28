@@ -69,8 +69,10 @@ const translations = {
     en: {
         "settings": "Settings",
         "title": "Title",
-        "primary_color": "Primary Color",
-        "text_color": "Text Color",
+        "primary_color": "Tile title color",
+        "text_color": "Tile date color",
+        "primary_color_help": "Name on each memorial tile.",
+        "text_color_help": "Gregorian and Hebrew dates on each tile.",
         "logo": "Community Logo",
         "background_image": "Background Image",
         "tiles_background": "Tiles Background",
@@ -127,9 +129,6 @@ const translations = {
         "light_mode": "Light mode",
         "dark_mode": "Dark mode",
         "color_mode_help": "Changes only the admin dashboard appearance. The public memorial board keeps its original colors.",
-        "board_layout_section": "Board layout",
-        "grid_gap": "Grid gap (px)",
-        "grid_gap_help": "Space between person tiles on the memorial board.",
         "live_preview": "Live preview",
         "live_preview_help": "Preview how board colors and spacing will look before saving.",
         "import_people": "Import people",
@@ -138,6 +137,9 @@ const translations = {
         "import_submit": "Import",
         "import_done": "People imported successfully",
         "import_error": "Import failed. Check JSON format.",
+        "add_slide_submit": "Save slide",
+        "edit_slide": "Edit slide",
+        "save_slide_changes": "Save changes",
         "branding_section": "Branding & images",
         "languages_section": "Languages",
         "slideshow_settings_section": "Slideshow timing",
@@ -150,8 +152,10 @@ const translations = {
     ru: {
         "settings": "Настройки",
         "title": "Название",
-        "primary_color": "Основной цвет",
-        "text_color": "Цвет текста",
+        "primary_color": "Цвет имени на плитке",
+        "text_color": "Цвет дат на плитке",
+        "primary_color_help": "Имя на каждой мемориальной плитке.",
+        "text_color_help": "Григорианская и еврейская даты на плитке.",
         "logo": "Логотип",
         "background_image": "Фоновое изображение",
         "tiles_background": "Фон плиток",
@@ -208,9 +212,6 @@ const translations = {
         "light_mode": "Светлый режим",
         "dark_mode": "Тёмный режим",
         "color_mode_help": "Меняет только внешний вид админ-панели. Мемориальная доска остаётся с обычными цветами.",
-        "board_layout_section": "Макет доски",
-        "grid_gap": "Отступ сетки (px)",
-        "grid_gap_help": "Расстояние между плитками на мемориальной доске.",
         "live_preview": "Предпросмотр",
         "live_preview_help": "Посмотрите, как будут выглядеть цвета и отступы до сохранения.",
         "import_people": "Импорт людей",
@@ -219,6 +220,9 @@ const translations = {
         "import_submit": "Импортировать",
         "import_done": "Люди успешно импортированы",
         "import_error": "Ошибка импорта. Проверьте формат JSON.",
+        "add_slide_submit": "Сохранить слайд",
+        "edit_slide": "Редактировать слайд",
+        "save_slide_changes": "Сохранить изменения",
         "branding_section": "Брендинг и изображения",
         "languages_section": "Языки",
         "slideshow_settings_section": "Тайминг слайдшоу",
@@ -231,8 +235,10 @@ const translations = {
     he: {
         "settings": "הגדרות",
         "title": "כותרת",
-        "primary_color": "צבע ראשי",
-        "text_color": "צבע טקסט",
+        "primary_color": "צבע שם באריח",
+        "text_color": "צבע תאריכים באריח",
+        "primary_color_help": "שם המנוח בכל אריח.",
+        "text_color_help": "תאריכים לועזיים ועבריים באריח.",
         "logo": "לוגו הקהילה",
         "background_image": "תמונת רקע",
         "tiles_background": "רקע אריחים",
@@ -289,9 +295,6 @@ const translations = {
         "light_mode": "מצב בהיר",
         "dark_mode": "מצב כהה",
         "color_mode_help": "משנה רק את מראה לוח הניהול. לוח הזיכרון הציבורי נשאר בצבעים הרגילים.",
-        "board_layout_section": "פריסת הלוח",
-        "grid_gap": "ריווח רשת (px)",
-        "grid_gap_help": "מרווח בין אריחי האנשים בלוח הזיכרון.",
         "live_preview": "תצוגה מקדימה",
         "live_preview_help": "צפו איך הצבעים והריווח ייראו לפני השמירה.",
         "import_people": "ייבוא אנשים",
@@ -300,6 +303,9 @@ const translations = {
         "import_submit": "ייבוא",
         "import_done": "האנשים יובאו בהצלחה",
         "import_error": "הייבוא נכשל. בדקו את פורמט ה-JSON.",
+        "add_slide_submit": "שמור שקופית",
+        "edit_slide": "עריכת שקופית",
+        "save_slide_changes": "שמור שינויים",
         "branding_section": "מיתוג ותמונות",
         "languages_section": "שפות",
         "slideshow_settings_section": "תזמון מצגת",
@@ -344,14 +350,12 @@ router.post('/:slug/settings', requireAdmin, upload.fields([
 ]), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { title, primaryColor, textColor, language, adminLanguage, colorMode, gridGap } = req.body;
+        const { title, primaryColor, textColor, language, adminLanguage, colorMode } = req.body;
         const safeColorMode = colorMode === 'light' ? 'light' : 'dark';
-        const safeGridGap = Math.min(32, Math.max(0, parseInt(gridGap, 10) || 8));
         const updateData = {
             title,
             'theme.primaryColor': primaryColor,
             'theme.textColor': textColor,
-            'theme.gridGap': safeGridGap,
             'adminTheme.colorMode': safeColorMode,
             language,
             adminLanguage
@@ -442,6 +446,28 @@ router.post('/:slug/slideshow/add', requireAdmin, upload.single('image'), async 
                 }
             );
         }
+        res.redirect(`/admin/${req.params.slug}/slideshow`);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+router.post('/:slug/slideshow/edit', requireAdmin, upload.single('image'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { slideId, text } = req.body;
+        const updateFields = {
+            'slideshow.images.$.text': sanitizeRichText(text || ''),
+        };
+
+        if (req.file) {
+            updateFields['slideshow.images.$.url'] = req.file.filename;
+        }
+
+        await Synagogue.updateOne(
+            { slug: req.params.slug, 'slideshow.images._id': slideId },
+            { $set: updateFields },
+        );
         res.redirect(`/admin/${req.params.slug}/slideshow`);
     } catch (err) {
         res.status(500).send(err.message);
