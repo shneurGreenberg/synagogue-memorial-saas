@@ -8,6 +8,7 @@ const rimraf = require('rimraf');
 const mongoose = require('mongoose');
 const Synagogue = require('./models/Synagogue');
 const { applyBoardPreviewOverrides } = require('./lib/board-preview');
+const { getTranslator } = require('./lib/admin-translations');
 const adminRoutes = require('./routes/admin');
 const masterRoutes = require('./routes/master');
 const bodyParser = require('body-parser');
@@ -68,10 +69,33 @@ app.use('/css', (req, res, next) => {
 
 app.use('/css', express.static(cssDirectory));
 
+function getInitials(name) {
+  if (!name) {
+    return '?';
+  }
+
+  return name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase();
+}
+
 app.engine('handlebars', handlebars({
   helpers: {
     json: value => JSON.stringify(value, false, '  '),
-    eq: (a, b) => a === b
+    eq: (a, b) => a === b,
+    t(key, options) {
+      const root = options.data.root;
+      const fn = root._adminT || getTranslator((root.synagogue && root.synagogue.adminLanguage) || 'ru');
+      return typeof fn === 'function' ? fn(key) : key;
+    },
+    initials(name) {
+      return getInitials(name);
+    },
   },
   runtimeOptions: {
     allowProtoPropertiesByDefault: true,
@@ -88,6 +112,7 @@ app.use('/photos', express.static(path.join(__dirname, 'photos')));
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
 app.use('/board', express.static(path.join(__dirname, 'public/board')));
+app.use('/js', express.static(path.join(__dirname, 'public/js')));
 
 async function loadSynagogueBoard(slug) {
   const synagogue = await Synagogue.findOne({ slug }).lean();

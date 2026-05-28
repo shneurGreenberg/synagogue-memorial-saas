@@ -16,6 +16,7 @@ import { MemorialPrayersPanel } from '../components/MemorialPrayersPanel';
 import { CommunityLogo } from '../components/CommunityLogo';
 import { useBoardNavigation } from '../context/BoardNavigationContext';
 import { useBoardData } from '../context/BoardDataContext';
+import { formatPersonName } from '../lib/person-names';
 
 function getAppData() {
   return getBoardData();
@@ -95,13 +96,14 @@ class NearestDatesList extends React.Component {
   };
 
   renderPerson(card, suffix) {
+    const displayName = formatPersonName(card.name, this.props.uiLang);
     return (
       <li key={`${card.id}${suffix}`}>
         <button type="button" className="nearest-date-link" onClick={() => this.props.onPersonClick(card.id)}>
           <time dateTime={toDatetimeAttr(card.gregorianDateOfDeath)}>
             {formatGregorianDate(card.gregorianDateOfDeath)} / {formatHebrewDate(card.hebrewDateOfDeath)}
           </time>
-          <span className="name">{card.name}</span>
+          <span className="name">{displayName}</span>
         </button>
       </li>
     );
@@ -480,7 +482,7 @@ class HomePageBase extends React.Component {
             )}
             <nav className="nearest-dates" aria-label={this.props.t('nearest_dates')}>
               <h2>{this.props.t('nearest_dates')}</h2>
-              <NearestDatesList people={this.state.allPeople} onPersonClick={this.props.onOpenCard} />
+              <NearestDatesList people={this.state.allPeople} onPersonClick={this.props.onOpenCard} uiLang={this.props.uiLang} />
             </nav>
           </div>
         </aside>
@@ -548,8 +550,8 @@ class HomePageBase extends React.Component {
 
 function HomePageConnected(props) {
   const { goToCard } = useBoardNavigation();
-  const { revision } = useBoardData();
-  return <HomePageBase key={`home-${revision}`} {...props} onOpenCard={goToCard} />;
+  const { revision, uiLang } = useBoardData();
+  return <HomePageBase key={`home-${revision}-${uiLang}`} {...props} onOpenCard={goToCard} uiLang={uiLang} />;
 }
 
 export default withTranslation()(HomePageConnected);

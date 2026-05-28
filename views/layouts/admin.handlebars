@@ -32,14 +32,22 @@
                     <a class="nav-link" href="/admin/{{synagogue.slug}}/slideshow">{{t 'slideshow'}}</a>
                 </li>
             </ul>
+            <a class="btn btn-outline-light btn-admin-nav-board" href="/s/{{synagogue.slug}}" target="_blank" rel="noopener">{{t 'view_board'}}</a>
             <a class="btn btn-outline-light" href="/admin/logout">{{t 'logout'}}</a>
         </div>
     </nav>
+    <div id="adminBusyOverlay" class="admin-busy-overlay" hidden aria-hidden="true">
+        <div class="admin-busy-card">
+            <div class="admin-busy-spinner" role="status"></div>
+            <span id="adminBusyText">{{t 'saving'}}</span>
+        </div>
+    </div>
     <div class="admin-container">
         {{{body}}}
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/admin-slideshow.js"></script>
 </body>
 
 </html>

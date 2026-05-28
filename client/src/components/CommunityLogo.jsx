@@ -29,7 +29,7 @@ export function CommunityLogo({ src, alt }) {
 
     window.setTimeout(() => {
       window.location.href = target;
-    }, 1100);
+    }, 520);
   }, [transitioning]);
 
   return (

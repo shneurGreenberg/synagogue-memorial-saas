@@ -6,6 +6,8 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { getDisplayLanguage, setDisplayLanguage } from '../lib/person-names';
+import i18n from '../lib/i18n';
 
 const POLL_MS = 8000;
 
@@ -30,6 +32,14 @@ function snapshotForCompare(data) {
 export function BoardDataProvider({ slug, children }) {
   const [data, setData] = useState(() => window.data || {});
   const [revision, setRevision] = useState(0);
+  const [uiLang, setUiLangState] = useState(() => getDisplayLanguage());
+
+  const setUiLang = useCallback((lang) => {
+    const safe = ['ru', 'he', 'en'].includes(lang) ? lang : 'ru';
+    setDisplayLanguage(safe);
+    i18n.changeLanguage(safe);
+    setUiLangState(safe);
+  }, []);
 
   const applyData = useCallback((next) => {
     window.data = next;
@@ -76,7 +86,7 @@ export function BoardDataProvider({ slug, children }) {
     };
   }, [slug, applyData]);
 
-  const value = useMemo(() => ({ data, revision }), [data, revision]);
+  const value = useMemo(() => ({ data, revision, uiLang, setUiLang }), [data, revision, uiLang, setUiLang]);
 
   return (
     <BoardDataContext.Provider value={value}>

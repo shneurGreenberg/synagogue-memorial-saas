@@ -1,4 +1,5 @@
 import Hebcal from 'hebcal';
+import { getDisplayLanguage } from './person-names';
 
 const LATITUDE = 54.9833;
 const LONGITUDE = 82.8964;
@@ -255,12 +256,15 @@ export function configureNovosibirsk() {
 }
 
 export function formatHebrewDate(hewbrewDate) {
-    const lang = (typeof window !== 'undefined' && window.data && window.data.language) || 'ru';
+    const lang = getDisplayLanguage();
     let result = `${hewbrewDate.getDate()} `;
     const month = hewbrewDate.getMonth();
 
     if (lang === 'en') {
       const months = ['', 'Nisan', 'Iyar', 'Sivan', 'Tamuz', 'Av', 'Elul', 'Tishrei', 'Cheshvan', 'Kislev', 'Tevet', 'Shevat', 'Adar', 'Adar II'];
+      result += months[month];
+    } else if (lang === 'he') {
+      const months = ['', 'ניסן', 'אייר', 'סיוון', 'תמוז', 'אב', 'אלול', 'תשרי', 'חשוון', 'כסלו', 'טבת', 'שבט', 'אדר', 'אדר ב'];
       result += months[month];
     } else {
       switch (month) {
@@ -285,7 +289,7 @@ export function formatHebrewDate(hewbrewDate) {
 }
 
 export function formatGregorianDate(gregorianDate) {
-    const lang = (typeof window !== 'undefined' && window.data && window.data.language) || 'ru';
+    const lang = getDisplayLanguage();
 
     if (!gregorianDate || typeof gregorianDate.getDate !== 'function') {
       if (gregorianDate && gregorianDate.date != null) {

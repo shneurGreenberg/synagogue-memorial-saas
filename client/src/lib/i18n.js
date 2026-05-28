@@ -20,6 +20,7 @@ const resources = {
       next_page: 'Next page',
       person_not_found: 'Person not found',
       back_to_board: 'Back to memorial board',
+      language: 'Language',
     },
   },
   ru: {
@@ -40,6 +41,7 @@ const resources = {
       next_page: 'Следующая страница',
       person_not_found: 'Человек не найден',
       back_to_board: 'Вернуться к доске',
+      language: 'Язык',
     },
   },
   he: {
@@ -61,15 +63,29 @@ const resources = {
       next_page: 'עמוד הבא',
       person_not_found: 'לא נמצא',
       back_to_board: 'חזרה ללוח',
+      language: 'שפה',
     },
   },
 };
+
+function getInitialLng() {
+  try {
+    const stored = sessionStorage.getItem('boardLang');
+    if (stored) {
+      return stored;
+    }
+  } catch {
+    /* ignore */
+  }
+
+  return (window.data && window.data.language) || 'ru';
+}
 
 i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: (window.data && window.data.language) || 'ru',
+    lng: getInitialLng(),
     fallbackLng: 'ru',
     interpolation: {
       escapeValue: false,

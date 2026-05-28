@@ -76,18 +76,39 @@
       line-height: 1.2;
     }
 
-    .inner-text {
+    .biography-scroll-viewport {
       margin: 24px 0;
+      max-height: min(52vh, 520px);
+      overflow: hidden;
+      width: 100%;
+      mask-image: linear-gradient(to bottom, transparent 0, #000 5%, #000 95%, transparent 100%);
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+      }
+    }
+
+    .biography-scroll-track {
+      width: 100%;
+
+      &.is-scrolling {
+        animation-name: biography-scroll;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
+    }
+
+    .inner-text {
       font-size: clamp(18px, 2.2vw, 28px);
       color: white;
       line-height: 1.65;
       text-align: center;
-      max-height: min(52vh, 520px);
-      overflow-y: auto;
-      overflow-x: hidden;
       padding: 0 8px;
       box-sizing: border-box;
-      scrollbar-width: thin;
 
       &.inner-text-compact {
         font-size: clamp(15px, 1.8vw, 22px);
@@ -99,6 +120,16 @@
         line-height: 1.45;
       }
     }
+  }
+}
+
+@keyframes biography-scroll {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-50%);
   }
 }
 

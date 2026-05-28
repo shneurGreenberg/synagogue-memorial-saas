@@ -420,11 +420,11 @@
     .pager {
       flex-shrink: 0;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      padding: 8px 12px 10px;
+      gap: 14px;
+      padding: 6px 12px 8px;
 
       .currentPage {
         display: flex;
@@ -450,8 +450,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: clamp(44px, 4.5vw, 56px);
-        height: clamp(44px, 4.5vw, 56px);
+        width: clamp(40px, 3.8vw, 48px);
+        height: clamp(40px, 3.8vw, 48px);
         padding: 0;
         cursor: pointer;
         background: linear-gradient(165deg, color-mix(in srgb, $cardButton 90%, #fff 8%), $cardButton);
@@ -486,21 +486,65 @@
         display: block;
         width: 0;
         height: 0;
-        border-left: 9px solid transparent;
-        border-right: 9px solid transparent;
+        border-top: 8px solid transparent;
+        border-bottom: 8px solid transparent;
       }
 
       .pager-chevron-up {
-        border-bottom: 12px solid rgba(255, 255, 255, 0.95);
-        margin-bottom: 2px;
+        border-right: 12px solid rgba(255, 255, 255, 0.95);
+        border-bottom: none;
+        margin: 0;
       }
 
       .pager-chevron-down {
-        border-top: 12px solid rgba(255, 255, 255, 0.95);
-        margin-top: 2px;
+        border-left: 12px solid rgba(255, 255, 255, 0.95);
+        border-top: none;
+        margin: 0;
       }
     }
   }
+
+.board-lang-switcher {
+  position: fixed;
+  bottom: 18px;
+  left: 18px;
+  z-index: 900;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(12, 10, 8, 0.82);
+  border: 1px solid rgba(207, 175, 31, 0.45);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+}
+
+.board-lang-btn {
+  min-width: 40px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &.is-active {
+    background: rgba(207, 175, 31, 0.35);
+    color: #fff;
+  }
+
+  &:hover:not(.is-active) {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #cfaf1f;
+    outline-offset: 2px;
+  }
+}
 
   .right {
     .wooden-panel {
@@ -674,24 +718,24 @@
 @keyframes cards-page-next {
   0% {
     opacity: 0.35;
-    transform: translateY(18px) rotateX(8deg);
+    transform: translateX(22px);
   }
 
   100% {
     opacity: 1;
-    transform: translateY(0) rotateX(0);
+    transform: translateX(0);
   }
 }
 
 @keyframes cards-page-prev {
   0% {
     opacity: 0.35;
-    transform: translateY(-18px) rotateX(-8deg);
+    transform: translateX(-22px);
   }
 
   100% {
     opacity: 1;
-    transform: translateY(0) rotateX(0);
+    transform: translateX(0);
   }
 }
 

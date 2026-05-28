@@ -138,6 +138,18 @@
     </div>
 </div>
 
+<script>
+    window.slideshowAdminLabels = {
+        saving: '{{t 'saving'}}',
+        saved: '{{t 'saved'}}',
+        noSlides: '{{t 'no_slides'}}',
+        captionOptional: '{{t 'slide_caption_optional'}}',
+        edit: '{{t 'edit'}}',
+        delete: '{{t 'delete'}}',
+        areYouSure: '{{t 'are_you_sure'}}',
+        uploadPhoto: '{{t 'upload_photo'}}'
+    };
+</script>
 <script id="slides-data" type="application/json">{{{json synagogue.slideshow.images}}}</script>
 <script>
     (function () {
@@ -177,19 +189,31 @@
             $('#editSlideModal').modal('show');
         }
 
-        document.querySelectorAll('.slide-card-clickable').forEach(function (card) {
-            card.addEventListener('click', function (event) {
-                if (event.target.closest('.slide-delete-form')) {
-                    return;
-                }
-                openEditSlide(card);
-            });
-            card.addEventListener('keydown', function (event) {
-                if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
+        function bindSlideCards() {
+            document.querySelectorAll('.slide-card-clickable').forEach(function (card) {
+                card.addEventListener('click', function (event) {
+                    if (event.target.closest('.slide-delete-form')) {
+                        return;
+                    }
                     openEditSlide(card);
-                }
+                });
+                card.addEventListener('keydown', function (event) {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        openEditSlide(card);
+                    }
+                });
             });
+        }
+
+        bindSlideCards();
+        window.addEventListener('slideshow-grid-updated', function () {
+            try {
+                JSON.parse(document.getElementById('slides-data').textContent).forEach(function (slide) {
+                    slidesById[String(slide._id)] = slide;
+                });
+            } catch (e) { /* ignore */ }
+            bindSlideCards();
         });
     })();
 </script>

@@ -6,6 +6,8 @@ import { getBiographyDensityClass } from '../lib/text-density';
 import { PersonAvatar } from '../components/PersonAvatar';
 import { useBoardNavigation } from '../context/BoardNavigationContext';
 import { useBoardData } from '../context/BoardDataContext';
+import { formatPersonName } from '../lib/person-names';
+import { BiographyScroller } from '../components/BiographyScroller';
 
 class CardPageBase extends React.Component {
   constructor(props) {
@@ -25,7 +27,8 @@ class CardPageBase extends React.Component {
   }
 
   render() {
-    const { card } = this.props;
+    const { card, uiLang } = this.props;
+    const displayName = card ? formatPersonName(card.name, uiLang) : '';
 
     if (!card) {
       return (
@@ -62,10 +65,10 @@ class CardPageBase extends React.Component {
             <PersonAvatar person={card} size="xl" />
           </div>
           <div className="card-detail-text">
-            <h1>{card.name}</h1>
-            <div
+            <h1>{displayName}</h1>
+            <BiographyScroller
               className={`inner-text ${getBiographyDensityClass(card.text)}`}
-              dangerouslySetInnerHTML={{ __html: sanitizeRichText(card.text) }}
+              html={sanitizeRichText(card.text)}
             />
           </div>
         </div>
@@ -79,9 +82,16 @@ const CardPageTranslated = withTranslation()(CardPageBase);
 export default function CardPage() {
   const { personId } = useParams();
   const { goToBoard } = useBoardNavigation();
-  const { data, revision } = useBoardData();
+  const { data, revision, uiLang } = useBoardData();
   const people = data.people || [];
   const card = people.find((person) => String(person.id) === String(personId));
 
-  return <CardPageTranslated key={`card-${revision}-${personId}`} card={card} onBack={goToBoard} />;
+  return (
+    <CardPageTranslated
+      key={`card-${revision}-${uiLang}-${personId}`}
+      card={card}
+      uiLang={uiLang}
+      onBack={goToBoard}
+    />
+  );
 }

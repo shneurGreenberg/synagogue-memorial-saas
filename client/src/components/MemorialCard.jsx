@@ -4,6 +4,8 @@ import {
   formatHebrewDate,
 } from '../lib/novosibirsk';
 import { getNameDensityClass } from '../lib/text-density';
+import { formatPersonName } from '../lib/person-names';
+import { useBoardData } from '../context/BoardDataContext';
 
 const CANDLE_CYCLE_MS = 4000;
 
@@ -18,7 +20,7 @@ function toDatetimeAttr(gregorianDateOfDeath) {
   return `${gregorianDateOfDeath.year}-${month}-${day}`;
 }
 
-export class MemorialCard extends React.Component {
+class MemorialCardInner extends React.Component {
   constructor(props) {
     super(props);
     this.state = { showCandle: false };
@@ -63,7 +65,8 @@ export class MemorialCard extends React.Component {
   }
 
   render() {
-    const { entry, big } = this.props;
+    const { entry, big, uiLang } = this.props;
+    const displayName = formatPersonName(entry?.name, uiLang);
 
     if (!entry) {
       return <div className="card card-hidden" aria-hidden="true" />;
@@ -82,7 +85,7 @@ export class MemorialCard extends React.Component {
         tabIndex={0}
         onClick={this.onActivate}
         onKeyDown={this.onKeyDown}
-        aria-label={entry.name}
+        aria-label={displayName}
         style={{ '--candle-phase': entry.id % 17 }}
       >
         {this.state.showCandle && (
@@ -94,8 +97,8 @@ export class MemorialCard extends React.Component {
             decoding="async"
           />
         )}
-        <div className={`inner ${getNameDensityClass(entry.name)}`}>
-          <h3 title={entry.name}>{entry.name}</h3>
+        <div className={`inner ${getNameDensityClass(displayName)}`}>
+          <h3 title={displayName}>{displayName}</h3>
           <time dateTime={toDatetimeAttr(entry.gregorianDateOfDeath)}>
             {formatGregorianDate(entry.gregorianDateOfDeath)}
           </time>
@@ -107,4 +110,9 @@ export class MemorialCard extends React.Component {
       </article>
     );
   }
+}
+
+export function MemorialCard(props) {
+  const { uiLang } = useBoardData();
+  return <MemorialCardInner {...props} uiLang={uiLang} />;
 }
