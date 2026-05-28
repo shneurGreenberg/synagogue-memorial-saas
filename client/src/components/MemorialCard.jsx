@@ -3,6 +3,7 @@ import {
   formatGregorianDate,
   formatHebrewDate,
 } from '../lib/novosibirsk';
+import { getNameDensityClass } from '../lib/text-density';
 
 const CANDLE_CYCLE_MS = 4000;
 
@@ -93,7 +94,7 @@ export class MemorialCard extends React.Component {
             decoding="async"
           />
         )}
-        <div className="inner">
+        <div className={`inner ${getNameDensityClass(entry.name)}`}>
           <h3 title={entry.name}>{entry.name}</h3>
           <time dateTime={toDatetimeAttr(entry.gregorianDateOfDeath)}>
             {formatGregorianDate(entry.gregorianDateOfDeath)}

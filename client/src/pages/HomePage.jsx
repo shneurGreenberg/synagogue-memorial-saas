@@ -12,6 +12,7 @@ import {
 import { sanitizeRichText } from '../lib/html-sanitize';
 import { getBoardData } from '../lib/board-data';
 import { MemorialCard } from '../components/MemorialCard';
+import { MemorialPrayersPanel } from '../components/MemorialPrayersPanel';
 import { useBoardNavigation } from '../context/BoardNavigationContext';
 
 function getAppData() {
@@ -507,17 +508,14 @@ class HomePageBase extends React.Component {
                   )}
                 </div>
               )}
-              <div className={`memorial-prayers ${!appData.weeklyChapterEnabled ? 'memorial-prayers-big' : ''}`}>
-                <h2>{this.props.t('memorial_prayer')}</h2>
-                <section className="memorial-prayer-block kel-male" aria-labelledby="kel-male-heading">
-                  <h1 id="kel-male-heading">{this.props.t('kel_male_rachamim')}</h1>
-                  <div className="prayer-text">{this.props.t('kel_male_rachamim_text')}</div>
-                </section>
-                <section className="memorial-prayer-block yizkor" aria-labelledby="yizkor-heading">
-                  <h1 id="yizkor-heading">{this.props.t('izkor')}</h1>
-                  <div className="prayer-text">{this.props.t('izkor_text')}</div>
-                </section>
-              </div>
+              <MemorialPrayersPanel
+                big={!appData.weeklyChapterEnabled}
+                memorialPrayerLabel={this.props.t('memorial_prayer')}
+                kelMaleHeading={this.props.t('kel_male_rachamim')}
+                kelMaleText={this.props.t('kel_male_rachamim_text')}
+                izkorHeading={this.props.t('izkor')}
+                izkorText={this.props.t('izkor_text')}
+              />
             </div>
           </div>
         </aside>

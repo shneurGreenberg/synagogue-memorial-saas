@@ -13,7 +13,31 @@
     </div>
   {{/if}}
 
-    <form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data" class="settings-form">
+    <form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data" class="settings-form" id="settingsForm">
+        <section class="admin-panel">
+            <div class="admin-panel-header">
+                <h2>{{t 'admin_panel_section'}}</h2>
+            </div>
+            <div class="admin-panel-body">
+                <div class="form-field color-mode-field"
+                    data-light-label="{{t 'light_mode'}}"
+                    data-dark-label="{{t 'dark_mode'}}">
+                    <span class="field-label-static">{{t 'color_mode'}}</span>
+                    <input type="hidden" name="colorMode" id="colorModeInput"
+                        value="{{#if (eq synagogue.adminColorMode 'light')}}light{{else}}dark{{/if}}">
+                    <label class="toggle-switch color-mode-toggle" for="colorModeToggle">
+                        <input type="checkbox" id="colorModeToggle"
+                            {{#if (eq synagogue.adminColorMode 'light')}}checked{{/if}}>
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label" id="colorModeToggleLabel">
+                            {{#if (eq synagogue.adminColorMode 'light')}}{{t 'light_mode'}}{{else}}{{t 'dark_mode'}}{{/if}}
+                        </span>
+                    </label>
+                    <span class="field-hint">{{t 'color_mode_help'}}</span>
+                </div>
+            </div>
+        </section>
+
         <section class="admin-panel">
             <div class="admin-panel-header">
                 <h2>{{t 'appearance_section'}}</h2>
@@ -23,22 +47,6 @@
                     <label for="settingsTitle">{{t 'title'}}</label>
                     <input type="text" name="title" id="settingsTitle" class="form-control"
                         value="{{synagogue.title}}">
-                </div>
-                <div class="form-field color-mode-field"
-                    data-light-label="{{t 'light_mode'}}"
-                    data-dark-label="{{t 'dark_mode'}}">
-                    <span class="field-label-static">{{t 'color_mode'}}</span>
-                    <input type="hidden" name="colorMode" id="colorModeInput"
-                        value="{{#if (eq synagogue.theme.colorMode 'light')}}light{{else}}dark{{/if}}">
-                    <label class="toggle-switch color-mode-toggle" for="colorModeToggle">
-                        <input type="checkbox" id="colorModeToggle"
-                            {{#if (eq synagogue.theme.colorMode 'light')}}checked{{/if}}>
-                        <span class="toggle-slider"></span>
-                        <span class="toggle-label" id="colorModeToggleLabel">
-                            {{#if (eq synagogue.theme.colorMode 'light')}}{{t 'light_mode'}}{{else}}{{t 'dark_mode'}}{{/if}}
-                        </span>
-                    </label>
-                    <span class="field-hint">{{t 'color_mode_help'}}</span>
                 </div>
                 <div class="color-picker-row">
                     <div class="form-field">
@@ -58,6 +66,25 @@
                         </div>
                     </div>
                 </div>
+                <div class="form-field grid-gap-field">
+                    <label for="gridGap">{{t 'grid_gap'}}: <span class="grid-gap-value" id="gridGapValue">{{synagogue.theme.gridGap}}</span>px</label>
+                    <input type="range" name="gridGap" id="gridGap" min="0" max="32" step="1"
+                        value="{{#if synagogue.theme.gridGap}}{{synagogue.theme.gridGap}}{{else}}8{{/if}}">
+                    <span class="field-hint">{{t 'grid_gap_help'}}</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-panel settings-preview-panel">
+            <div class="admin-panel-header">
+                <h2>{{t 'live_preview'}}</h2>
+            </div>
+            <div class="admin-panel-body">
+                <div class="board-preview-frame-wrap">
+                    <iframe id="boardPreviewFrame" class="board-preview-frame" title="{{t 'live_preview'}}"
+                        src="/admin/{{synagogue.slug}}/preview-board"></iframe>
+                </div>
+                <p class="preview-hint">{{t 'live_preview_help'}}</p>
             </div>
         </section>
 
@@ -144,31 +171,78 @@
 </div>
 
 <script>
-    document.querySelectorAll('input[type="color"]').forEach(function (input) {
-        const valueEl = input.parentElement.querySelector('.color-value');
-        if (!valueEl) return;
-        input.addEventListener('input', function () {
-            valueEl.textContent = input.value;
-        });
-    });
-
     (function () {
+        var slug = '{{synagogue.slug}}';
+        var previewDebounce;
+
+        document.querySelectorAll('input[type="color"]').forEach(function (input) {
+            var valueEl = input.parentElement.querySelector('.color-value');
+            if (!valueEl) return;
+            input.addEventListener('input', function () {
+                valueEl.textContent = input.value;
+                schedulePreview();
+            });
+        });
+
         var toggle = document.getElementById('colorModeToggle');
         var hidden = document.getElementById('colorModeInput');
         var label = document.getElementById('colorModeToggleLabel');
         var field = document.querySelector('.color-mode-field');
-        if (!toggle || !hidden || !label || !field) return;
+        var body = document.body;
 
-        var lightLabel = field.dataset.lightLabel || 'Light';
-        var darkLabel = field.dataset.darkLabel || 'Dark';
+        if (toggle && hidden && label && field) {
+            var lightLabel = field.dataset.lightLabel || 'Light';
+            var darkLabel = field.dataset.darkLabel || 'Dark';
 
-        function syncColorMode() {
-            var isLight = toggle.checked;
-            hidden.value = isLight ? 'light' : 'dark';
-            label.textContent = isLight ? lightLabel : darkLabel;
+            function applyAdminTheme(isLight) {
+                body.classList.remove('admin-theme-light', 'admin-theme-dark');
+                body.classList.add(isLight ? 'admin-theme-light' : 'admin-theme-dark');
+                hidden.value = isLight ? 'light' : 'dark';
+                label.textContent = isLight ? lightLabel : darkLabel;
+            }
+
+            toggle.addEventListener('change', function () {
+                applyAdminTheme(toggle.checked);
+            });
+            applyAdminTheme(toggle.checked);
         }
 
-        toggle.addEventListener('change', syncColorMode);
-        syncColorMode();
+        var gridGap = document.getElementById('gridGap');
+        var gridGapValue = document.getElementById('gridGapValue');
+        if (gridGap && gridGapValue) {
+            gridGap.addEventListener('input', function () {
+                gridGapValue.textContent = gridGap.value;
+                schedulePreview();
+            });
+        }
+
+        var titleInput = document.getElementById('settingsTitle');
+        if (titleInput) {
+            titleInput.addEventListener('input', schedulePreview);
+        }
+
+        function schedulePreview() {
+            clearTimeout(previewDebounce);
+            previewDebounce = setTimeout(updatePreview, 350);
+        }
+
+        function updatePreview() {
+            var frame = document.getElementById('boardPreviewFrame');
+            if (!frame) return;
+
+            var params = new URLSearchParams();
+            var title = titleInput && titleInput.value.trim();
+            var primary = document.getElementById('primaryColor');
+            var text = document.getElementById('textColor');
+
+            if (title) params.set('title', title);
+            if (primary) params.set('primaryColor', primary.value);
+            if (text) params.set('textColor', text.value);
+            if (gridGap) params.set('gridGap', gridGap.value);
+
+            frame.src = '/admin/' + slug + '/preview-board?' + params.toString();
+        }
+
+        updatePreview();
     })();
 </script>

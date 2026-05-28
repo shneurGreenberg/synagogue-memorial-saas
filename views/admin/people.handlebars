@@ -9,11 +9,27 @@
                 onsubmit="return confirm('{{t 'seed_test_photos'}}?');">
                 <button type="submit" class="btn-admin btn-admin-secondary">{{t 'seed_test_photos'}}</button>
             </form>
+            <button type="button" class="btn-admin btn-admin-secondary" data-toggle="modal" data-target="#importPeopleModal">
+                {{t 'import_people'}}
+            </button>
             <button type="button" class="btn-admin btn-admin-primary" data-toggle="modal" data-target="#addPersonModal">
                 + {{t 'add_person'}}
             </button>
         </div>
     </header>
+
+    {{#if imported}}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{t 'import_done'}}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {{/if}}
+    {{#if importError}}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{t 'import_error'}}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {{/if}}
 
     {{#if seeded}}
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -64,6 +80,42 @@
 </div>
 
 <script id="people-data" type="application/json">{{{json synagogue.people}}}</script>
+
+<!-- Import People Modal -->
+<div class="modal fade admin-modal" id="importPeopleModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <form method="POST" action="/admin/{{synagogue.slug}}/people/import">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{t 'import_people'}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{t 'cancel'}}">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p class="seed-notice">{{t 'import_people_help'}}</p>
+                    <p class="seed-notice">{{t 'import_schema_hint'}}</p>
+                    <pre class="import-schema" aria-hidden="true">[
+  {
+    "name": "Example Name",
+    "gregorianDateOfDeath": { "month": 3, "date": 15, "year": 2020 },
+    "photo": "",
+    "title": "",
+    "text": "Biography text"
+  }
+]</pre>
+                    <div class="form-field">
+                        <label for="importJson">JSON</label>
+                        <textarea name="json" id="importJson" class="form-control" rows="12" required
+                            placeholder='[{"name":"...","gregorianDateOfDeath":{"month":1,"date":1,"year":2020}}]'></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-admin btn-admin-ghost" data-dismiss="modal">{{t 'cancel'}}</button>
+                    <button type="submit" class="btn-admin btn-admin-primary">{{t 'import_submit'}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- Add Person Modal -->
 <div class="modal fade admin-modal" id="addPersonModal" tabindex="-1">

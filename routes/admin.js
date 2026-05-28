@@ -7,6 +7,7 @@ const fs = require('fs');
 const { verifyPassword, ensureHashed, hashPassword } = require('../lib/password');
 const { sanitizeRichText } = require('../lib/sanitize');
 const { seedPhotosForSynagogue } = require('../lib/seed-people-photos');
+const { enrichSynagogueForAdmin } = require('../lib/admin-theme');
 
 // Configure Multer
 const storage = multer.diskStorage({
@@ -121,10 +122,22 @@ const translations = {
         "settings_subtitle": "Customize the memorial display appearance and languages.",
         "slideshow_subtitle": "Configure automatic slideshow timing and slides.",
         "appearance_section": "Appearance",
-        "color_mode": "Display mode",
+        "admin_panel_section": "Admin panel",
+        "color_mode": "Admin panel theme",
         "light_mode": "Light mode",
         "dark_mode": "Dark mode",
-        "color_mode_help": "Light mode uses a brighter board for well-lit rooms. You may want a darker text color.",
+        "color_mode_help": "Changes only the admin dashboard appearance. The public memorial board keeps its original colors.",
+        "board_layout_section": "Board layout",
+        "grid_gap": "Grid gap (px)",
+        "grid_gap_help": "Space between person tiles on the memorial board.",
+        "live_preview": "Live preview",
+        "live_preview_help": "Preview how board colors and spacing will look before saving.",
+        "import_people": "Import people",
+        "import_people_help": "Paste a JSON array of people to add in bulk. Photos are optional filenames already in /photos.",
+        "import_schema_hint": "Each person: id (optional), name, gregorianDateOfDeath { month, date, year }, photo, title, text",
+        "import_submit": "Import",
+        "import_done": "People imported successfully",
+        "import_error": "Import failed. Check JSON format.",
         "branding_section": "Branding & images",
         "languages_section": "Languages",
         "slideshow_settings_section": "Slideshow timing",
@@ -190,10 +203,22 @@ const translations = {
         "settings_subtitle": "Настройка внешнего вида мемориальной доски и языков.",
         "slideshow_subtitle": "Настройка автоматической слайдшоу и слайдов.",
         "appearance_section": "Внешний вид",
-        "color_mode": "Режим отображения",
+        "admin_panel_section": "Панель администратора",
+        "color_mode": "Тема админ-панели",
         "light_mode": "Светлый режим",
         "dark_mode": "Тёмный режим",
-        "color_mode_help": "Светлый режим удобнее при ярком освещении. Возможно, понадобится более тёмный цвет текста.",
+        "color_mode_help": "Меняет только внешний вид админ-панели. Мемориальная доска остаётся с обычными цветами.",
+        "board_layout_section": "Макет доски",
+        "grid_gap": "Отступ сетки (px)",
+        "grid_gap_help": "Расстояние между плитками на мемориальной доске.",
+        "live_preview": "Предпросмотр",
+        "live_preview_help": "Посмотрите, как будут выглядеть цвета и отступы до сохранения.",
+        "import_people": "Импорт людей",
+        "import_people_help": "Вставьте JSON-массив людей для массового добавления.",
+        "import_schema_hint": "Поля: id (необяз.), name, gregorianDateOfDeath { month, date, year }, photo, title, text",
+        "import_submit": "Импортировать",
+        "import_done": "Люди успешно импортированы",
+        "import_error": "Ошибка импорта. Проверьте формат JSON.",
         "branding_section": "Брендинг и изображения",
         "languages_section": "Языки",
         "slideshow_settings_section": "Тайминг слайдшоу",
@@ -259,10 +284,22 @@ const translations = {
         "settings_subtitle": "התאמת מראה לוח הזיכרון והשפות.",
         "slideshow_subtitle": "הגדרת מצגת אוטומטית ושקופיות.",
         "appearance_section": "מראה",
-        "color_mode": "מצב תצוגה",
+        "admin_panel_section": "לוח ניהול",
+        "color_mode": "ערכת לוח הניהול",
         "light_mode": "מצב בהיר",
         "dark_mode": "מצב כהה",
-        "color_mode_help": "מצב בהיר מתאים לחדר מואר. ייתכן שתרצו צבע טקסט כהה יותר.",
+        "color_mode_help": "משנה רק את מראה לוח הניהול. לוח הזיכרון הציבורי נשאר בצבעים הרגילים.",
+        "board_layout_section": "פריסת הלוח",
+        "grid_gap": "ריווח רשת (px)",
+        "grid_gap_help": "מרווח בין אריחי האנשים בלוח הזיכרון.",
+        "live_preview": "תצוגה מקדימה",
+        "live_preview_help": "צפו איך הצבעים והריווח ייראו לפני השמירה.",
+        "import_people": "ייבוא אנשים",
+        "import_people_help": "הדביקו מערך JSON של אנשים להוספה מרוכזת.",
+        "import_schema_hint": "שדות: id (אופציונלי), name, gregorianDateOfDeath { month, date, year }, photo, title, text",
+        "import_submit": "ייבוא",
+        "import_done": "האנשים יובאו בהצלחה",
+        "import_error": "הייבוא נכשל. בדקו את פורמט ה-JSON.",
         "branding_section": "מיתוג ותמונות",
         "languages_section": "שפות",
         "slideshow_settings_section": "תזמון מצגת",
@@ -307,13 +344,15 @@ router.post('/:slug/settings', requireAdmin, upload.fields([
 ]), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { title, primaryColor, textColor, language, adminLanguage, colorMode } = req.body;
+        const { title, primaryColor, textColor, language, adminLanguage, colorMode, gridGap } = req.body;
         const safeColorMode = colorMode === 'light' ? 'light' : 'dark';
+        const safeGridGap = Math.min(32, Math.max(0, parseInt(gridGap, 10) || 8));
         const updateData = {
             title,
             'theme.primaryColor': primaryColor,
             'theme.textColor': textColor,
-            'theme.colorMode': safeColorMode,
+            'theme.gridGap': safeGridGap,
+            'adminTheme.colorMode': safeColorMode,
             language,
             adminLanguage
         };
@@ -343,7 +382,7 @@ router.get('/:slug/dashboard', requireAdmin, async (req, res) => {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
         const t = getTranslator(synagogue.adminLanguage || 'ru');
         res.render('admin/dashboard', {
-            synagogue,
+            synagogue: enrichSynagogueForAdmin(synagogue),
             layout: 'admin',
             saved: req.query.saved === '1',
             helpers: adminViewHelpers(t)
@@ -360,7 +399,7 @@ router.get('/:slug/slideshow', requireAdmin, async (req, res) => {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
         const t = getTranslator(synagogue.adminLanguage || 'ru');
         res.render('admin/slideshow', {
-            synagogue,
+            synagogue: enrichSynagogueForAdmin(synagogue),
             layout: 'admin',
             helpers: adminViewHelpers(t)
         });
@@ -424,6 +463,52 @@ router.post('/:slug/slideshow/delete', requireAdmin, async (req, res) => {
     }
 });
 
+router.get('/:slug/preview-board', requireAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        if (!synagogue) {
+            return res.status(404).send('Synagogue not found');
+        }
+
+        const preview = enrichSynagogueForAdmin(synagogue);
+        preview.theme = { ...preview.theme };
+
+        if (req.query.title) {
+            preview.title = req.query.title;
+        }
+        if (req.query.primaryColor) {
+            preview.theme.primaryColor = req.query.primaryColor;
+        }
+        if (req.query.textColor) {
+            preview.theme.textColor = req.query.textColor;
+        }
+        if (req.query.gridGap !== undefined) {
+            preview.theme.gridGap = Math.min(32, Math.max(0, parseInt(req.query.gridGap, 10) || 8));
+        }
+
+        return res.render('board', { layout: false, data: preview });
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+});
+
+function normalizeImportedPerson(raw, fallbackId) {
+    const death = raw.gregorianDateOfDeath || raw.dateOfDeath || {};
+    return {
+        id: fallbackId,
+        name: String(raw.name || '').trim(),
+        text: sanitizeRichText(raw.text || ''),
+        title: raw.title ? String(raw.title) : '',
+        photo: raw.photo ? String(raw.photo) : '',
+        gregorianDateOfDeath: {
+            month: parseInt(death.month, 10) || 1,
+            date: parseInt(death.date, 10) || 1,
+            year: parseInt(death.year, 10) || 1900,
+        },
+    };
+}
+
 // People Management
 router.get('/:slug/people', requireAdmin, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
@@ -431,13 +516,60 @@ router.get('/:slug/people', requireAdmin, async (req, res) => {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
         const t = getTranslator(synagogue.adminLanguage || 'ru');
         res.render('admin/people', {
-            synagogue,
+            synagogue: enrichSynagogueForAdmin(synagogue),
             layout: 'admin',
             seeded: req.query.seeded === '1',
+            imported: req.query.imported === '1',
+            importError: req.query.importError === '1',
             helpers: adminViewHelpers(t)
         });
     } catch (err) {
         res.status(500).send(err.message);
+    }
+});
+
+router.post('/:slug/people/import', requireAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        let payload = req.body.people;
+
+        if (typeof req.body.json === 'string' && req.body.json.trim()) {
+            payload = JSON.parse(req.body.json);
+        }
+
+        if (!Array.isArray(payload)) {
+            throw new Error('Expected a JSON array of people');
+        }
+
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        const usedIds = new Set(synagogue.people.map((person) => person.id));
+        let maxId = synagogue.people.reduce((max, person) => (person.id > max ? person.id : max), 0);
+
+        const newPeople = payload
+            .filter((raw) => raw && String(raw.name || '').trim())
+            .map((raw) => {
+                let id = parseInt(raw.id, 10);
+                if (!Number.isFinite(id) || usedIds.has(id)) {
+                    maxId += 1;
+                    id = maxId;
+                } else {
+                    maxId = Math.max(maxId, id);
+                }
+                usedIds.add(id);
+                return normalizeImportedPerson(raw, id);
+            });
+
+        if (newPeople.length > 0) {
+            await Synagogue.updateOne(
+                { slug: req.params.slug },
+                { $push: { people: { $each: newPeople } } },
+            );
+        }
+
+        return res.redirect(`/admin/${req.params.slug}/people?imported=1`);
+    } catch (err) {
+        console.error('People import error:', err);
+        return res.redirect(`/admin/${req.params.slug}/people?importError=1`);
     }
 });
 

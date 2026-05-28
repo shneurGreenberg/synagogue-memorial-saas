@@ -9,7 +9,6 @@ import { configureNovosibirsk } from './lib/novosibirsk';
 import '../../styles/common.scss';
 import '../../styles/home.scss';
 import '../../styles/card.scss';
-import '../../styles/board-themes.scss';
 
 configureNovosibirsk();
 

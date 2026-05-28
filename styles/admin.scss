@@ -1,6 +1,29 @@
 // Admin dark theme (CSS variables)
 $admin-radius: 14px;
 
+body.admin-body.admin-theme-light,
+body.admin-login-page.admin-theme-light {
+  --admin-bg: #f4f5f8;
+  --admin-bg-subtle: #e8eaef;
+  --admin-surface: #ffffff;
+  --admin-surface-hover: #f0f2f7;
+  --admin-surface-elevated: #fafbfc;
+  --admin-border: #d4d9e3;
+  --admin-border-focus: #6366f1;
+  --admin-text: #0f172a;
+  --admin-text-muted: #64748b;
+  --admin-primary: #4f46e5;
+  --admin-primary-hover: #4338ca;
+  --admin-primary-dim: rgba(99, 102, 241, 0.15);
+  --admin-danger: #dc2626;
+  --admin-danger-bg: rgba(220, 38, 38, 0.08);
+  --admin-danger-border: rgba(220, 38, 38, 0.25);
+  --admin-success-bg: rgba(16, 185, 129, 0.1);
+  --admin-success-text: #059669;
+  --admin-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+  --admin-shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.12);
+}
+
 body.admin-body,
 body.admin-login-page {
   --admin-bg: #0c0e14;
@@ -824,6 +847,62 @@ body.admin-login-page {
 
 .slides-grid-empty {
   grid-column: 1 / -1;
+}
+
+.settings-preview-panel {
+  .board-preview-frame-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: 420px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--admin-border);
+    background: #0a0a0a;
+    box-shadow: var(--admin-shadow);
+  }
+
+  .board-preview-frame {
+    width: 200%;
+    height: 200%;
+    border: 0;
+    transform: scale(0.5);
+    transform-origin: top left;
+    pointer-events: none;
+  }
+
+  .preview-hint {
+    margin: 0.75rem 0 0;
+    font-size: 0.85rem;
+    color: var(--admin-text-muted);
+  }
+}
+
+.grid-gap-field {
+  max-width: 420px;
+
+  input[type='range'] {
+    width: 100%;
+    margin: 0.35rem 0;
+    accent-color: var(--admin-primary);
+  }
+
+  .grid-gap-value {
+    font-weight: 600;
+    color: var(--admin-primary);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.import-schema {
+  font-size: 0.8rem;
+  background: var(--admin-bg-subtle);
+  border: 1px solid var(--admin-border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  overflow-x: auto;
+  color: var(--admin-text-muted);
+  margin-bottom: 1rem;
 }
 
 // Login page

@@ -29,10 +29,13 @@ const SynagogueSchema = new mongoose.Schema({
   weeklyChapterEnabled: { type: Boolean, default: false },
   dailyCites: [DailyCiteSchema],
   people: [PersonSchema],
+  adminTheme: {
+    colorMode: { type: String, enum: ['dark', 'light'], default: 'dark' },
+  },
   theme: {
     primaryColor: { type: String, default: '#d4af37' }, // Gold default
     textColor: { type: String, default: '#ffffff' }, // White default
-    colorMode: { type: String, enum: ['dark', 'light'], default: 'dark' },
+    gridGap: { type: Number, default: 8, min: 0, max: 32 },
     backgroundImage: String,
     tilesBackground: String, // Can be color or image URL
     logo: String

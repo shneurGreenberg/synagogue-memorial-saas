@@ -3,6 +3,7 @@ import { withTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { sanitizeRichText } from '../lib/html-sanitize';
 import { getBoardData } from '../lib/board-data';
+import { getBiographyDensityClass } from '../lib/text-density';
 import { PersonAvatar } from '../components/PersonAvatar';
 import { useBoardNavigation } from '../context/BoardNavigationContext';
 
@@ -63,7 +64,7 @@ class CardPageBase extends React.Component {
           <div className="card-detail-text">
             <h1>{card.name}</h1>
             <div
-              className="inner-text"
+              className={`inner-text ${getBiographyDensityClass(card.text)}`}
               dangerouslySetInnerHTML={{ __html: sanitizeRichText(card.text) }}
             />
           </div>
