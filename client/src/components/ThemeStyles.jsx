@@ -4,7 +4,8 @@ import { getBoardData } from '../lib/board-data';
 export function ThemeStyles() {
   const data = getBoardData();
   const theme = data.theme || {};
-  const gridGap = Number.isFinite(theme.gridGap) ? theme.gridGap : 8;
+  const parsedGap = parseInt(theme.gridGap, 10);
+  const gridGap = Number.isFinite(parsedGap) ? Math.min(32, Math.max(0, parsedGap)) : 8;
 
   const css = `
     :root {
@@ -31,6 +32,11 @@ export function ThemeStyles() {
     .wooden-panel {
       ${theme.tilesBackground ? `background-image: url('/images/${theme.tilesBackground}') !important;
       background-size: cover;` : ''}
+    }
+    .main-container .middle .cards-grid,
+    .main-container .middle .cards-grid-kadish {
+      gap: var(--board-grid-gap) !important;
+      padding: var(--board-grid-gap) !important;
     }
   `;
 

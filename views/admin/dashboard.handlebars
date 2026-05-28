@@ -25,14 +25,16 @@
                     <span class="field-label-static">{{t 'color_mode'}}</span>
                     <input type="hidden" name="colorMode" id="colorModeInput"
                         value="{{#if (eq synagogue.adminColorMode 'light')}}light{{else}}dark{{/if}}">
-                    <label class="toggle-switch color-mode-toggle" for="colorModeToggle">
-                        <input type="checkbox" id="colorModeToggle"
-                            {{#if (eq synagogue.adminColorMode 'light')}}checked{{/if}}>
-                        <span class="toggle-slider"></span>
+                    <div class="color-mode-control">
+                        <label class="toggle-switch color-mode-toggle" for="colorModeToggle">
+                            <input type="checkbox" id="colorModeToggle"
+                                {{#if (eq synagogue.adminColorMode 'light')}}checked{{/if}}>
+                            <span class="toggle-slider" aria-hidden="true"></span>
+                        </label>
                         <span class="toggle-label" id="colorModeToggleLabel">
                             {{#if (eq synagogue.adminColorMode 'light')}}{{t 'light_mode'}}{{else}}{{t 'dark_mode'}}{{/if}}
                         </span>
-                    </label>
+                    </div>
                     <span class="field-hint">{{t 'color_mode_help'}}</span>
                 </div>
             </div>
@@ -82,7 +84,7 @@
             <div class="admin-panel-body">
                 <div class="board-preview-frame-wrap">
                     <iframe id="boardPreviewFrame" class="board-preview-frame" title="{{t 'live_preview'}}"
-                        src="/admin/{{synagogue.slug}}/preview-board"></iframe>
+                        src="/s/{{synagogue.slug}}"></iframe>
                 </div>
                 <p class="preview-hint">{{t 'live_preview_help'}}</p>
             </div>
@@ -240,9 +242,12 @@
             if (text) params.set('textColor', text.value);
             if (gridGap) params.set('gridGap', gridGap.value);
 
-            frame.src = '/admin/' + slug + '/preview-board?' + params.toString();
+            var query = params.toString();
+            frame.src = '/s/' + slug + (query ? '?' + query : '');
         }
 
-        updatePreview();
+        if (document.getElementById('boardPreviewFrame')) {
+            updatePreview();
+        }
     })();
 </script>

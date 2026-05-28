@@ -465,32 +465,9 @@ router.post('/:slug/slideshow/delete', requireAdmin, async (req, res) => {
 
 router.get('/:slug/preview-board', requireAdmin, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
-    try {
-        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
-        if (!synagogue) {
-            return res.status(404).send('Synagogue not found');
-        }
-
-        const preview = enrichSynagogueForAdmin(synagogue);
-        preview.theme = { ...preview.theme };
-
-        if (req.query.title) {
-            preview.title = req.query.title;
-        }
-        if (req.query.primaryColor) {
-            preview.theme.primaryColor = req.query.primaryColor;
-        }
-        if (req.query.textColor) {
-            preview.theme.textColor = req.query.textColor;
-        }
-        if (req.query.gridGap !== undefined) {
-            preview.theme.gridGap = Math.min(32, Math.max(0, parseInt(req.query.gridGap, 10) || 8));
-        }
-
-        return res.render('board', { layout: false, data: preview });
-    } catch (err) {
-        return res.status(500).send(err.message);
-    }
+    const query = new URLSearchParams(req.query).toString();
+    const target = `/s/${req.params.slug}${query ? `?${query}` : ''}`;
+    return res.redirect(target);
 });
 
 function normalizeImportedPerson(raw, fallbackId) {
