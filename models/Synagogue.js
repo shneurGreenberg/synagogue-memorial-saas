@@ -38,8 +38,8 @@ const SynagogueSchema = new mongoose.Schema({
     colorMode: { type: String, enum: ['dark', 'light'], default: 'dark' },
   },
   theme: {
-    primaryColor: { type: String, default: '#d4af37' }, // Gold default
-    textColor: { type: String, default: '#ffffff' }, // White default
+    primaryColor: { type: String, default: '#cfaf1f' },
+    textColor: { type: String, default: '#bfbfbf' },
     backgroundImage: String,
     tilesBackground: String, // Can be color or image URL
     logo: String

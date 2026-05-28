@@ -8,6 +8,11 @@ import React, {
 } from 'react';
 import { getDisplayLanguage, setDisplayLanguage } from '../lib/person-names';
 import { getPreviewLanguage, isBoardPreviewMode } from '../lib/board-preview-mode';
+import {
+  BOARD_PREVIEW_MESSAGE,
+  mergePreviewPatch,
+  previewPatchFromSearchParams,
+} from '../lib/board-preview-overrides';
 import i18n from '../lib/i18n';
 
 const POLL_MS = 8000;
@@ -31,9 +36,20 @@ function snapshotForCompare(data) {
   });
 }
 
+function initialBoardData() {
+  const base = window.data || {};
+  const patch = previewPatchFromSearchParams(new URLSearchParams(window.location.search));
+
+  if (!patch) {
+    return base;
+  }
+
+  return mergePreviewPatch(base, patch);
+}
+
 export function BoardDataProvider({ slug, children }) {
   const previewMode = isBoardPreviewMode();
-  const [data, setData] = useState(() => window.data || {});
+  const [data, setData] = useState(initialBoardData);
   const [revision, setRevision] = useState(0);
   const [uiLang, setUiLangState] = useState(() => {
     if (previewMode) {
@@ -62,6 +78,45 @@ export function BoardDataProvider({ slug, children }) {
     setData(next);
     setRevision((value) => value + 1);
   }, []);
+
+  const applyPreviewPatch = useCallback((patch) => {
+    if (!patch) {
+      return;
+    }
+
+    setData((current) => {
+      const next = mergePreviewPatch(current, patch);
+      window.data = next;
+      return next;
+    });
+    setRevision((value) => value + 1);
+
+    if (patch.previewLang && ['ru', 'en', 'he'].includes(patch.previewLang)) {
+      setUiLang(patch.previewLang);
+    }
+  }, [setUiLang]);
+
+  useEffect(() => {
+    if (!previewMode) {
+      return undefined;
+    }
+
+    function onMessage(event) {
+      if (event.origin !== window.location.origin) {
+        return;
+      }
+
+      const payload = event.data;
+      if (!payload || payload.type !== BOARD_PREVIEW_MESSAGE) {
+        return;
+      }
+
+      applyPreviewPatch(payload);
+    }
+
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, [previewMode, applyPreviewPatch]);
 
   useEffect(() => {
     if (!slug || previewMode) {
@@ -102,7 +157,10 @@ export function BoardDataProvider({ slug, children }) {
     };
   }, [slug, applyData, previewMode]);
 
-  const value = useMemo(() => ({ data, revision, uiLang, setUiLang }), [data, revision, uiLang, setUiLang]);
+  const value = useMemo(
+    () => ({ data, revision, uiLang, setUiLang, applyPreviewPatch }),
+    [data, revision, uiLang, setUiLang, applyPreviewPatch],
+  );
 
   return (
     <BoardDataContext.Provider value={value}>
@@ -115,7 +173,7 @@ export function useBoardData() {
   const ctx = useContext(BoardDataContext);
 
   if (!ctx) {
-    return { data: getBoardDataFallback(), revision: 0 };
+    return { data: getBoardDataFallback(), revision: 0, uiLang: getDisplayLanguage() };
   }
 
   return ctx;

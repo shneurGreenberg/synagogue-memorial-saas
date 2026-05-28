@@ -2,10 +2,10 @@ import React from 'react';
 import { useBoardData } from '../context/BoardDataContext';
 
 export function ThemeStyles() {
-  const { data } = useBoardData();
+  const { data, revision } = useBoardData();
   const theme = data.theme || {};
-  const primary = theme.primaryColor || '#d4af37';
-  const text = theme.textColor || '#ffffff';
+  const primary = theme.primaryColor || '#cfaf1f';
+  const text = theme.textColor || '#bfbfbf';
 
   const css = `
     :root {
@@ -54,5 +54,5 @@ export function ThemeStyles() {
     }
   `;
 
-  return <style dangerouslySetInnerHTML={{ __html: css }} />;
+  return <style key={`theme-${revision}-${primary}-${text}`} dangerouslySetInnerHTML={{ __html: css }} />;
 }

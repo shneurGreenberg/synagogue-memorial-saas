@@ -476,7 +476,7 @@ class HomePageBase extends React.Component {
         </aside>
         <section className="middle">
           <div className="wooden-panel">
-            <header className="board-header"><h1>{this.props.boardTitle || appData.title}</h1></header>
+            <header className="board-header"><h1>{this.props.boardTitle}</h1></header>
             {this.state.hasKadishToday ? this.renderKadishGrid() : this.renderStandardGrid()}
             <div
               className="pager"

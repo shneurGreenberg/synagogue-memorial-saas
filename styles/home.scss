@@ -341,7 +341,7 @@
           time {
             display: block;
             font-size: clamp(11px, 1vw, 15px);
-            color: $cardTime;
+            color: var(--tile-date-color, $cardTime);
             line-height: 1.3;
             overflow: hidden;
             text-overflow: ellipsis;

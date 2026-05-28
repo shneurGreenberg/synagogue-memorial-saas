@@ -7,7 +7,7 @@ const fs = require('fs');
 const { verifyPassword, ensureHashed, hashPassword } = require('../lib/password');
 const { sanitizeRichText } = require('../lib/sanitize');
 const { seedPhotosForSynagogue } = require('../lib/seed-people-photos');
-const { enrichSynagogueForAdmin } = require('../lib/admin-theme');
+const { enrichSynagogueForAdmin, normalizeTitles, sanitizeHexColor } = require('../lib/admin-theme');
 const { getTranslator } = require('../lib/admin-translations');
 const { BOARD_THEME_DEFAULTS } = require('../lib/board-defaults');
 
@@ -102,6 +102,30 @@ async function fetchSlideshow(slug) {
     return doc ? doc.slideshow : null;
 }
 
+async function persistTitlesIfMissing(synagogue) {
+    if (!synagogue || !synagogue.slug) {
+        return synagogue;
+    }
+
+    const normalized = normalizeTitles(synagogue);
+    const stored = synagogue.titles || {};
+    const hasStoredTitles = ['ru', 'en', 'he'].some((lang) => String(stored[lang] || '').trim());
+
+    if (!hasStoredTitles && normalized.ru) {
+        await Synagogue.updateOne({ slug: synagogue.slug }, {
+            $set: {
+                'titles.ru': normalized.ru,
+                'titles.en': normalized.en,
+                'titles.he': normalized.he,
+                title: normalized.ru,
+            },
+        });
+        synagogue.titles = normalized;
+    }
+
+    return synagogue;
+}
+
 router.post('/:slug/settings', requireAdmin, upload.fields([
     { name: 'logo', maxCount: 1 },
     { name: 'backgroundImage', maxCount: 1 },
@@ -117,10 +141,12 @@ router.post('/:slug/settings', requireAdmin, upload.fields([
             he: String(titleHe ?? '').trim(),
         };
         const updateData = {
-            titles,
+            'titles.ru': titles.ru,
+            'titles.en': titles.en,
+            'titles.he': titles.he,
             title: titles.ru,
-            'theme.primaryColor': primaryColor,
-            'theme.textColor': textColor,
+            'theme.primaryColor': sanitizeHexColor(primaryColor, BOARD_THEME_DEFAULTS.primaryColor),
+            'theme.textColor': sanitizeHexColor(textColor, BOARD_THEME_DEFAULTS.textColor),
             'adminTheme.colorMode': safeColorMode,
             language,
             adminLanguage
@@ -153,8 +179,10 @@ router.post('/:slug/settings/reset-theme', requireAdmin, async (req, res) => {
                 'theme.primaryColor': BOARD_THEME_DEFAULTS.primaryColor,
                 'theme.textColor': BOARD_THEME_DEFAULTS.textColor,
                 'theme.logo': BOARD_THEME_DEFAULTS.logo,
-                'theme.backgroundImage': BOARD_THEME_DEFAULTS.backgroundImage,
-                'theme.tilesBackground': BOARD_THEME_DEFAULTS.tilesBackground,
+            },
+            $unset: {
+                'theme.backgroundImage': '',
+                'theme.tilesBackground': '',
             },
         });
         res.redirect(`/admin/${req.params.slug}/dashboard?saved=1`);
@@ -167,7 +195,9 @@ router.get('/:slug/dashboard', requireAdmin, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
-        const enriched = enrichSynagogueForAdmin(synagogue);
+        await persistTitlesIfMissing(synagogue);
+        const refreshed = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        const enriched = enrichSynagogueForAdmin(refreshed);
         renderAdmin(res, 'admin/dashboard', {
             synagogue: enriched,
             boardTitles: enriched.titles,

@@ -63,9 +63,7 @@
                     </div>
                 </div>
                 <div class="appearance-actions">
-                    <button type="submit" class="btn-admin btn-admin-secondary reset-theme-btn"
-                        formaction="/admin/{{synagogue.slug}}/settings/reset-theme" formmethod="post"
-                        formnovalidate onclick="return confirm('{{t 'reset_theme_confirm'}}');">{{t 'reset_theme'}}</button>
+                    <button type="button" class="btn-admin btn-admin-secondary reset-theme-btn" id="resetThemeBtn">{{t 'reset_theme'}}</button>
                     <p class="field-hint">{{t 'reset_theme_help'}}</p>
                 </div>
                 <div class="color-picker-row color-picker-modern">
@@ -186,12 +184,34 @@
             <button type="submit" class="btn-admin btn-admin-primary">{{t 'save'}}</button>
         </div>
     </form>
+
+    <form method="POST" action="/admin/{{synagogue.slug}}/settings/reset-theme" id="resetThemeForm" class="visually-hidden-reset-form" aria-hidden="true"></form>
 </div>
 
 <script>
     (function () {
         var slug = '{{synagogue.slug}}';
         var previewDebounce;
+        var PREVIEW_MESSAGE = 'board-preview';
+
+        function readPreviewPatch() {
+            var primary = document.getElementById('primaryColor');
+            var text = document.getElementById('textColor');
+            var titleRu = document.getElementById('titleRu');
+            var titleEn = document.getElementById('titleEn');
+            var titleHe = document.getElementById('titleHe');
+            var languageSelect = document.getElementById('language');
+
+            return {
+                type: PREVIEW_MESSAGE,
+                titleRu: titleRu ? titleRu.value.trim() : '',
+                titleEn: titleEn ? titleEn.value.trim() : '',
+                titleHe: titleHe ? titleHe.value.trim() : '',
+                primaryColor: primary ? primary.value : '',
+                textColor: text ? text.value : '',
+                previewLang: languageSelect ? languageSelect.value : 'ru',
+            };
+        }
 
         function bindColorPair(colorInputId, hexInputId) {
             var colorInput = document.getElementById(colorInputId);
@@ -202,6 +222,7 @@
                 hexInput.value = colorInput.value;
                 schedulePreview();
             });
+            colorInput.addEventListener('change', schedulePreview);
         }
 
         bindColorPair('primaryColor', 'primaryColorHex');
@@ -242,36 +263,72 @@
             languageSelect.addEventListener('change', schedulePreview);
         }
 
+        var resetBtn = document.getElementById('resetThemeBtn');
+        var resetForm = document.getElementById('resetThemeForm');
+        if (resetBtn && resetForm) {
+            resetBtn.addEventListener('click', function () {
+                if (confirm('{{t 'reset_theme_confirm'}}')) {
+                    resetForm.submit();
+                }
+            });
+        }
+
         function schedulePreview() {
             clearTimeout(previewDebounce);
-            previewDebounce = setTimeout(updatePreview, 350);
+            previewDebounce = setTimeout(updatePreview, 120);
+        }
+
+        function postPreviewToFrame(frame) {
+            if (!frame || !frame.contentWindow) {
+                return;
+            }
+
+            try {
+                frame.contentWindow.postMessage(readPreviewPatch(), window.location.origin);
+            } catch (err) {
+                /* iframe may still be loading */
+            }
         }
 
         function updatePreview() {
             var frame = document.getElementById('boardPreviewFrame');
             if (!frame) return;
 
+            postPreviewToFrame(frame);
+
+            if (frame.dataset.previewReady === '1') {
+                return;
+            }
+
+            var patch = readPreviewPatch();
             var params = new URLSearchParams();
-            var primary = document.getElementById('primaryColor');
-            var text = document.getElementById('textColor');
-            var titleRu = document.getElementById('titleRu');
-            var titleEn = document.getElementById('titleEn');
-            var titleHe = document.getElementById('titleHe');
-
             params.set('preview', '1');
-            if (titleRu) params.set('titleRu', titleRu.value.trim());
-            if (titleEn) params.set('titleEn', titleEn.value.trim());
-            if (titleHe) params.set('titleHe', titleHe.value.trim());
-            if (primary) params.set('primaryColor', primary.value);
-            if (text) params.set('textColor', text.value);
-            if (languageSelect) params.set('previewLang', languageSelect.value);
-
-            var query = params.toString();
-            frame.src = '/s/' + slug + '?' + query + '&_=' + Date.now();
+            params.set('titleRu', patch.titleRu);
+            params.set('titleEn', patch.titleEn);
+            params.set('titleHe', patch.titleHe);
+            params.set('primaryColor', patch.primaryColor);
+            params.set('textColor', patch.textColor);
+            params.set('previewLang', patch.previewLang);
+            frame.src = '/s/' + slug + '?' + params.toString();
         }
 
-        if (document.getElementById('boardPreviewFrame')) {
-            updatePreview();
+        var frame = document.getElementById('boardPreviewFrame');
+        if (frame) {
+            frame.addEventListener('load', function () {
+                frame.dataset.previewReady = '1';
+                postPreviewToFrame(frame);
+            });
+
+            var initial = readPreviewPatch();
+            var params = new URLSearchParams();
+            params.set('preview', '1');
+            params.set('titleRu', initial.titleRu);
+            params.set('titleEn', initial.titleEn);
+            params.set('titleHe', initial.titleHe);
+            params.set('primaryColor', initial.primaryColor);
+            params.set('textColor', initial.textColor);
+            params.set('previewLang', initial.previewLang);
+            frame.src = '/s/' + slug + '?' + params.toString();
         }
     })();
 </script>

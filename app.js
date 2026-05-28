@@ -125,6 +125,7 @@ async function loadSynagogueBoard(slug) {
 
   synagogue.baseUrl = `/s/${slug}`;
   synagogue.titles = normalizeTitles(synagogue);
+  synagogue.title = synagogue.titles.ru || synagogue.title || synagogue.name || '';
   return synagogue;
 }
 
