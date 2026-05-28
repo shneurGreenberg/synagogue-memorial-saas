@@ -10,10 +10,9 @@ export function resolveBoardTitle(synagogue, lang) {
     return custom;
   }
 
-  const fallbackRu = titles.ru && String(titles.ru).trim();
-  if (fallbackRu) {
-    return fallbackRu;
+  if (lang === 'ru') {
+    return String(synagogue.title || synagogue.name || '').trim();
   }
 
-  return String(synagogue.title || synagogue.name || '').trim();
+  return '';
 }
