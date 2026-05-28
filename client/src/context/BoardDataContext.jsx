@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { getDisplayLanguage, setDisplayLanguage } from '../lib/person-names';
-import { isBoardPreviewMode } from '../lib/board-preview-mode';
+import { getPreviewLanguage, isBoardPreviewMode } from '../lib/board-preview-mode';
 import i18n from '../lib/i18n';
 
 const POLL_MS = 8000;
@@ -35,7 +35,16 @@ export function BoardDataProvider({ slug, children }) {
   const previewMode = isBoardPreviewMode();
   const [data, setData] = useState(() => window.data || {});
   const [revision, setRevision] = useState(0);
-  const [uiLang, setUiLangState] = useState(() => getDisplayLanguage());
+  const [uiLang, setUiLangState] = useState(() => {
+    if (previewMode) {
+      const previewLang = getPreviewLanguage();
+      if (previewLang) {
+        return previewLang;
+      }
+    }
+
+    return getDisplayLanguage();
+  });
 
   const setUiLang = useCallback((lang) => {
     const safe = ['ru', 'he', 'en'].includes(lang) ? lang : 'ru';
@@ -43,6 +52,10 @@ export function BoardDataProvider({ slug, children }) {
     i18n.changeLanguage(safe);
     setUiLangState(safe);
   }, []);
+
+  useEffect(() => {
+    i18n.changeLanguage(uiLang);
+  }, [uiLang]);
 
   const applyData = useCallback((next) => {
     window.data = next;
