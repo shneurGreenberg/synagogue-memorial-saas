@@ -864,13 +864,13 @@ body.admin-is-busy {
       content: '';
       position: absolute;
       top: 3px;
-      left: 3px;
+      inset-inline-start: 3px;
       width: 22px;
       height: 22px;
       background: var(--admin-text);
       border-radius: 50%;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-      transition: transform 0.2s ease;
+      transition: inset-inline-start 0.2s ease, background 0.2s ease;
     }
   }
 
@@ -878,7 +878,7 @@ body.admin-is-busy {
     background: var(--admin-primary);
 
     &::after {
-      transform: translateX(24px);
+      inset-inline-start: 27px;
       background: #fff;
     }
   }
@@ -1188,10 +1188,6 @@ body.admin-body.admin-rtl {
 
   .alert .close {
     float: left;
-  }
-
-  .toggle-switch input:checked + .toggle-slider::after {
-    transform: translateX(-24px);
   }
 
   .color-swatch-row,
