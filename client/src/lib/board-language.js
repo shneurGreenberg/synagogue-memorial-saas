@@ -5,6 +5,10 @@ export function applyBoardLanguage(lang) {
   const safe = ['ru', 'he', 'en'].includes(lang) ? lang : 'ru';
   setDisplayLanguage(safe);
   i18n.changeLanguage(safe);
+  const rtl = safe === 'he';
+  document.documentElement.lang = safe;
+  document.documentElement.dir = rtl ? 'rtl' : 'ltr';
+  document.body.classList.toggle('board-rtl', rtl);
   return safe;
 }
 
