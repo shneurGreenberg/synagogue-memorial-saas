@@ -4,6 +4,12 @@ const Synagogue = require('../models/Synagogue');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const { verifyPassword, ensureHashed, hashPassword } = require('../lib/password');
+const { sanitizeRichText } = require('../lib/sanitize');
+const { seedPhotosForSynagogue } = require('../lib/seed-people-photos');
+const { enrichSynagogueForAdmin, normalizeTitles, sanitizeHexColor } = require('../lib/admin-theme');
+const { getTranslator } = require('../lib/admin-translations');
+const { BOARD_THEME_DEFAULTS } = require('../lib/board-defaults');
 
 // Configure Multer
 const storage = multer.diskStorage({
@@ -42,7 +48,11 @@ router.post('/login', async (req, res) => {
     const { slug, password } = req.body;
     try {
         const synagogue = await Synagogue.findOne({ slug }).select('+adminPassword');
-        if (synagogue && synagogue.adminPassword === password) {
+        if (synagogue && await verifyPassword(password, synagogue.adminPassword)) {
+            const hashed = await ensureHashed(password, synagogue.adminPassword);
+            if (hashed) {
+                await Synagogue.updateOne({ slug }, { $set: { adminPassword: hashed } });
+            }
             req.session.adminSlug = slug;
             return res.redirect(`/admin/${slug}/dashboard`);
         }
@@ -57,125 +67,64 @@ router.get('/logout', (req, res) => {
     res.redirect('/admin/login');
 });
 
-const translations = {
-    en: {
-        "settings": "Settings",
-        "title": "Title",
-        "primary_color": "Primary Color",
-        "text_color": "Text Color",
-        "logo": "Community Logo",
-        "background_image": "Background Image",
-        "tiles_background": "Tiles Background",
-        "language": "Display Language",
-        "admin_language": "Admin Panel Language",
-        "save": "Save Settings",
-        "people": "People",
-        "slideshow": "Slideshow",
-        "logout": "Logout",
-        "image": "Image",
-        "text": "Text",
-        "add": "Add",
-        "delete": "Delete",
-        "current_slides": "Current Slides",
-        "no_slides": "No slides added yet.",
-        "enable_slideshow": "Enable Slideshow",
-        "slide_duration": "Slide Duration (seconds)",
-        "main_duration": "Main View Duration (seconds)",
-        "main_duration_help": "How long to show the Kadish list before switching to slides.",
-        "add_new_slide": "Add New Slide",
-        "add_person": "Add Person",
-        "date_of_death": "Date of Death",
-        "actions": "Actions",
-        "no_photo": "No Photo",
-        "edit": "Edit",
-        "current_photo": "Current Photo",
-        "change_photo": "Change Photo",
-        "delete_photo": "Delete current photo",
-        "save_changes": "Save Changes",
-        "date_gregorian": "Date of Death (Gregorian)",
-        "are_you_sure": "Are you sure?"
-    },
-    ru: {
-        "settings": "Настройки",
-        "title": "Название",
-        "primary_color": "Основной цвет",
-        "text_color": "Цвет текста",
-        "logo": "Логотип",
-        "background_image": "Фоновое изображение",
-        "tiles_background": "Фон плиток",
-        "language": "Язык отображения",
-        "admin_language": "Язык админ-панели",
-        "save": "Сохранить настройки",
-        "people": "Люди",
-        "slideshow": "Слайдшоу",
-        "logout": "Выйти",
-        "image": "Изображение",
-        "text": "Текст",
-        "add": "Добавить",
-        "delete": "Удалить",
-        "current_slides": "Текущие слайды",
-        "no_slides": "Слайды не добавлены.",
-        "enable_slideshow": "Включить слайдшоу",
-        "slide_duration": "Длительность слайда (сек)",
-        "main_duration": "Длительность главного экрана (сек)",
-        "main_duration_help": "Как долго показывать список Кадиш перед переключением на слайды.",
-        "add_new_slide": "Добавить новый слайд",
-        "add_person": "Добавить человека",
-        "date_of_death": "Дата смерти",
-        "actions": "Действия",
-        "no_photo": "Нет фото",
-        "edit": "Редактировать",
-        "current_photo": "Текущее фото",
-        "change_photo": "Изменить фото",
-        "delete_photo": "Удалить текущее фото",
-        "save_changes": "Сохранить изменения",
-        "date_gregorian": "Дата смерти (Григорианская)",
-        "are_you_sure": "Вы уверены?"
-    },
-    he: {
-        "settings": "הגדרות",
-        "title": "כותרת",
-        "primary_color": "צבע ראשי",
-        "text_color": "צבע טקסט",
-        "logo": "לוגו הקהילה",
-        "background_image": "תמונת רקע",
-        "tiles_background": "רקע אריחים",
-        "language": "שפת תצוגה",
-        "admin_language": "שפת ממשק ניהול",
-        "save": "שמור הגדרות",
-        "people": "אנשים",
-        "slideshow": "מצגת",
-        "logout": "התנתק",
-        "image": "תמונה",
-        "text": "טקסט",
-        "add": "הוסף",
-        "delete": "מחק",
-        "current_slides": "שקופיות נוכחיות",
-        "no_slides": "לא נוספו שקופיות.",
-        "enable_slideshow": "הפעל מצגת",
-        "slide_duration": "משך שקופית (שניות)",
-        "main_duration": "משך תצוגה ראשית (שניות)",
-        "main_duration_help": "כמה זמן להציג את רשימת הקדיש לפני המעבר לשקופיות.",
-        "add_new_slide": "הוסף שקופית חדשה",
-        "add_person": "הוסף אדם",
-        "date_of_death": "תאריך פטירה",
-        "actions": "פעולות",
-        "no_photo": "אין תמונה",
-        "edit": "ערוך",
-        "current_photo": "תמונה נוכחית",
-        "change_photo": "שנה תמונה",
-        "delete_photo": "מחק תמונה נוכחית",
-        "save_changes": "שמור שינויים",
-        "date_gregorian": "תאריך פטירה (לועזי)",
-        "are_you_sure": "האם אתה בטוח?"
+const getInitials = (name) => {
+    if (!name) {
+        return '?';
     }
+
+    return name
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0])
+        .join('')
+        .toUpperCase();
 };
 
-const getTranslator = (lang) => {
-    return (key) => {
-        return (translations[lang] || translations['en'])[key] || key;
-    };
-};
+function renderAdmin(res, view, options = {}) {
+    const synagogue = options.synagogue;
+    const lang = (synagogue && synagogue.adminLanguage) || 'ru';
+
+    res.render(view, {
+        ...options,
+        adminTranslate: getTranslator(lang),
+        layout: options.layout === false ? false : (options.layout || 'admin'),
+    });
+}
+
+function wantsJson(req) {
+    return req.get('X-Requested-With') === 'XMLHttpRequest' || req.query.ajax === '1';
+}
+
+async function fetchSlideshow(slug) {
+    const doc = await Synagogue.findOne({ slug }).lean();
+    return doc ? doc.slideshow : null;
+}
+
+async function persistTitlesIfMissing(synagogue) {
+    if (!synagogue || !synagogue.slug) {
+        return synagogue;
+    }
+
+    const normalized = normalizeTitles(synagogue);
+    const stored = synagogue.titles || {};
+    const hasStoredTitles = ['ru', 'en', 'he'].some((lang) => String(stored[lang] || '').trim());
+
+    if (!hasStoredTitles && normalized.ru) {
+        await Synagogue.updateOne({ slug: synagogue.slug }, {
+            $set: {
+                'titles.ru': normalized.ru,
+                'titles.en': normalized.en,
+                'titles.he': normalized.he,
+                title: normalized.ru,
+            },
+        });
+        synagogue.titles = normalized;
+    }
+
+    return synagogue;
+}
 
 router.post('/:slug/settings', requireAdmin, upload.fields([
     { name: 'logo', maxCount: 1 },
@@ -184,11 +133,21 @@ router.post('/:slug/settings', requireAdmin, upload.fields([
 ]), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { title, primaryColor, textColor, language, adminLanguage } = req.body;
+        const { titleRu, titleEn, titleHe, primaryColor, textColor, language, adminLanguage, colorMode } = req.body;
+        const safeColorMode = colorMode === 'light' ? 'light' : 'dark';
+        const titles = {
+            ru: String(titleRu ?? '').trim(),
+            en: String(titleEn ?? '').trim(),
+            he: String(titleHe ?? '').trim(),
+        };
         const updateData = {
-            title,
-            'theme.primaryColor': primaryColor,
-            'theme.textColor': textColor,
+            'titles.ru': titles.ru,
+            'titles.en': titles.en,
+            'titles.he': titles.he,
+            title: titles.ru,
+            'theme.primaryColor': sanitizeHexColor(primaryColor, BOARD_THEME_DEFAULTS.primaryColor),
+            'theme.textColor': sanitizeHexColor(textColor, BOARD_THEME_DEFAULTS.textColor),
+            'adminTheme.colorMode': safeColorMode,
             language,
             adminLanguage
         };
@@ -206,7 +165,27 @@ router.post('/:slug/settings', requireAdmin, upload.fields([
         await Synagogue.updateOne({ slug: req.params.slug }, {
             $set: updateData
         });
-        res.redirect(`/admin/${req.params.slug}/dashboard`);
+        res.redirect(`/admin/${req.params.slug}/dashboard?saved=1`);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+router.post('/:slug/settings/reset-theme', requireAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        await Synagogue.updateOne({ slug: req.params.slug }, {
+            $set: {
+                'theme.primaryColor': BOARD_THEME_DEFAULTS.primaryColor,
+                'theme.textColor': BOARD_THEME_DEFAULTS.textColor,
+                'theme.logo': BOARD_THEME_DEFAULTS.logo,
+            },
+            $unset: {
+                'theme.backgroundImage': '',
+                'theme.tilesBackground': '',
+            },
+        });
+        res.redirect(`/admin/${req.params.slug}/dashboard?saved=1`);
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -215,12 +194,14 @@ router.post('/:slug/settings', requireAdmin, upload.fields([
 router.get('/:slug/dashboard', requireAdmin, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
-        const t = getTranslator(synagogue.adminLanguage || 'ru');
-        res.render('admin/dashboard', {
-            synagogue,
-            layout: 'admin',
-            helpers: { t }
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        await persistTitlesIfMissing(synagogue);
+        const refreshed = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        const enriched = enrichSynagogueForAdmin(refreshed);
+        renderAdmin(res, 'admin/dashboard', {
+            synagogue: enriched,
+            boardTitles: enriched.titles,
+            saved: req.query.saved === '1',
         });
     } catch (err) {
         res.status(500).send(err.message);
@@ -232,11 +213,8 @@ router.get('/:slug/slideshow', requireAdmin, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
-        const t = getTranslator(synagogue.adminLanguage || 'ru');
-        res.render('admin/slideshow', {
-            synagogue,
-            layout: 'admin',
-            helpers: { t }
+        renderAdmin(res, 'admin/slideshow', {
+            synagogue: enrichSynagogueForAdmin(synagogue),
         });
     } catch (err) {
         res.status(500).send(err.message);
@@ -254,9 +232,9 @@ router.post('/:slug/slideshow/settings', requireAdmin, async (req, res) => {
                 'slideshow.mainDuration': parseInt(mainDuration)
             }
         });
-        res.redirect(`/admin/${req.params.slug}/slideshow`);
+        return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
     } catch (err) {
-        res.status(500).send(err.message);
+        return res.status(500).json({ ok: false, error: err.message });
     }
 });
 
@@ -264,22 +242,45 @@ router.post('/:slug/slideshow/add', requireAdmin, upload.single('image'), async 
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { text } = req.body;
-        if (req.file) {
-            await Synagogue.updateOne(
-                { slug: req.params.slug },
-                {
-                    $push: {
-                        'slideshow.images': {
-                            url: req.file.filename,
-                            text: text
-                        }
+        if (!req.file) {
+            return res.status(400).json({ ok: false, error: 'Image is required' });
+        }
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            {
+                $push: {
+                    'slideshow.images': {
+                        url: req.file.filename,
+                        text: sanitizeRichText(text)
                     }
                 }
-            );
-        }
-        res.redirect(`/admin/${req.params.slug}/slideshow`);
+            }
+        );
+        return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
     } catch (err) {
-        res.status(500).send(err.message);
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.post('/:slug/slideshow/edit', requireAdmin, upload.single('image'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { slideId, text } = req.body;
+        const updateFields = {
+            'slideshow.images.$.text': sanitizeRichText(text || ''),
+        };
+
+        if (req.file) {
+            updateFields['slideshow.images.$.url'] = req.file.filename;
+        }
+
+        await Synagogue.updateOne(
+            { slug: req.params.slug, 'slideshow.images._id': slideId },
+            { $set: updateFields },
+        );
+        return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
     }
 });
 
@@ -287,30 +288,97 @@ router.post('/:slug/slideshow/delete', requireAdmin, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { slideId } = req.body;
-        // Use pull with _id if we had it, but images are subdocuments so they should have _id created by mongoose
         await Synagogue.updateOne(
             { slug: req.params.slug },
             { $pull: { 'slideshow.images': { _id: slideId } } }
         );
-        res.redirect(`/admin/${req.params.slug}/slideshow`);
+        return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
     } catch (err) {
-        res.status(500).send(err.message);
+        return res.status(500).json({ ok: false, error: err.message });
     }
 });
+
+router.get('/:slug/preview-board', requireAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    const query = new URLSearchParams(req.query).toString();
+    const target = `/s/${req.params.slug}${query ? `?${query}` : ''}`;
+    return res.redirect(target);
+});
+
+function normalizeImportedPerson(raw, fallbackId) {
+    const death = raw.gregorianDateOfDeath || raw.dateOfDeath || {};
+    return {
+        id: fallbackId,
+        name: String(raw.name || '').trim(),
+        text: sanitizeRichText(raw.text || ''),
+        title: raw.title ? String(raw.title) : '',
+        photo: raw.photo ? String(raw.photo) : '',
+        gregorianDateOfDeath: {
+            month: parseInt(death.month, 10) || 1,
+            date: parseInt(death.date, 10) || 1,
+            year: parseInt(death.year, 10) || 1900,
+        },
+    };
+}
 
 // People Management
 router.get('/:slug/people', requireAdmin, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
-        const t = getTranslator(synagogue.adminLanguage || 'ru');
-        res.render('admin/people', {
-            synagogue,
-            layout: 'admin',
-            helpers: { t }
+        renderAdmin(res, 'admin/people', {
+            synagogue: enrichSynagogueForAdmin(synagogue),
+            seeded: req.query.seeded === '1',
+            imported: req.query.imported === '1',
+            importError: req.query.importError === '1',
         });
     } catch (err) {
         res.status(500).send(err.message);
+    }
+});
+
+router.post('/:slug/people/import', requireAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        let payload = req.body.people;
+
+        if (typeof req.body.json === 'string' && req.body.json.trim()) {
+            payload = JSON.parse(req.body.json);
+        }
+
+        if (!Array.isArray(payload)) {
+            throw new Error('Expected a JSON array of people');
+        }
+
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        const usedIds = new Set(synagogue.people.map((person) => person.id));
+        let maxId = synagogue.people.reduce((max, person) => (person.id > max ? person.id : max), 0);
+
+        const newPeople = payload
+            .filter((raw) => raw && String(raw.name || '').trim())
+            .map((raw) => {
+                let id = parseInt(raw.id, 10);
+                if (!Number.isFinite(id) || usedIds.has(id)) {
+                    maxId += 1;
+                    id = maxId;
+                } else {
+                    maxId = Math.max(maxId, id);
+                }
+                usedIds.add(id);
+                return normalizeImportedPerson(raw, id);
+            });
+
+        if (newPeople.length > 0) {
+            await Synagogue.updateOne(
+                { slug: req.params.slug },
+                { $push: { people: { $each: newPeople } } },
+            );
+        }
+
+        return res.redirect(`/admin/${req.params.slug}/people?imported=1`);
+    } catch (err) {
+        console.error('People import error:', err);
+        return res.redirect(`/admin/${req.params.slug}/people?importError=1`);
     }
 });
 
@@ -324,7 +392,7 @@ router.post('/:slug/people/add', requireAdmin, upload.single('photo'), async (re
         const newPerson = {
             id: maxId + 1,
             name,
-            text,
+            text: sanitizeRichText(text),
             gregorianDateOfDeath: { month: parseInt(month), date: parseInt(date), year: parseInt(year) },
             photo: req.file ? req.file.filename : '',
             title: ''
@@ -348,7 +416,7 @@ router.post('/:slug/people/edit', requireAdmin, upload.single('photo'), async (r
 
         const updateFields = {
             'people.$.name': name,
-            'people.$.text': text,
+            'people.$.text': sanitizeRichText(text),
             'people.$.gregorianDateOfDeath': { month: parseInt(month), date: parseInt(date), year: parseInt(year) }
         };
 
@@ -363,6 +431,20 @@ router.post('/:slug/people/edit', requireAdmin, upload.single('photo'), async (r
             { $set: updateFields }
         );
         res.redirect(`/admin/${req.params.slug}/people`);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+router.post('/:slug/people/seed-test-photos', requireAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        await seedPhotosForSynagogue(req.params.slug, {
+            source: 'mixed',
+            force: false,
+            limit: 25,
+        });
+        res.redirect(`/admin/${req.params.slug}/people?seeded=1`);
     } catch (err) {
         res.status(500).send(err.message);
     }

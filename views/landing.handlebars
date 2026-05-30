@@ -1,6 +1,11 @@
-<h1>Available Synagogues</h1>
-<ul>
-    {{#each synagogues}}
-        <li><a href="/s/{{this.slug}}">{{this.name}}</a></li>
-    {{/each}}
-</ul>
+<div class="landing-page">
+    <div class="landing-panel golden-panel wooden-panel">
+        <h1>Memorial Boards</h1>
+        <p>Select a community to open its display.</p>
+        <ul>
+            {{#each synagogues}}
+            <li><a href="/s/{{this.slug}}">{{this.name}}</a></li>
+            {{/each}}
+        </ul>
+    </div>
+</div>

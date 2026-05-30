@@ -1,0 +1,14 @@
+# Amvera Cloud (Russia) — https://amvera.ru
+# Deploy: connect GitHub repo → push to Amvera remote, set env vars in dashboard.
+meta:
+  environment: node
+  toolchain:
+    name: npm
+    version: "20"
+
+build:
+  additionalCommands: npm run build:board
+
+run:
+  command: sh -c "node scripts/seed.js || true && node app.js"
+  containerPort: 3000

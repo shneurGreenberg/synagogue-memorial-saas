@@ -26,12 +26,20 @@ const SynagogueSchema = new mongoose.Schema({
   name: String,
   adminPassword: { type: String, select: false }, // Store hashed password here ideally
   title: String,
+  titles: {
+    ru: { type: String, default: '' },
+    en: { type: String, default: '' },
+    he: { type: String, default: '' },
+  },
   weeklyChapterEnabled: { type: Boolean, default: false },
   dailyCites: [DailyCiteSchema],
   people: [PersonSchema],
+  adminTheme: {
+    colorMode: { type: String, enum: ['dark', 'light'], default: 'dark' },
+  },
   theme: {
-    primaryColor: { type: String, default: '#d4af37' }, // Gold default
-    textColor: { type: String, default: '#ffffff' }, // White default
+    primaryColor: { type: String, default: '#cfaf1f' },
+    textColor: { type: String, default: '#bfbfbf' },
     backgroundImage: String,
     tilesBackground: String, // Can be color or image URL
     logo: String

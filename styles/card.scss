@@ -1,38 +1,180 @@
 @import 'common';
 
 .card-view {
-  width: calc(100% - 60px);
-  height: 95vh !important;
+  width: calc(100% - clamp(16px, 4vw, 60px));
+  min-height: 70vh;
+  margin: clamp(8px, 2vw, 20px) auto;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  cursor: pointer;
+  animation: card-view-enter 0.42s ease-out both;
 
-  .golden-panel {
-    margin: 50px 150px;
+  .card-detail {
+    animation: card-detail-enter 0.48s ease-out 0.06s both;
   }
 
-  .text {
-    vertical-align: top;
+  &.card-view-missing {
+    .card-detail {
+      text-align: center;
+      padding: 40px;
+    }
+
+    h1 {
+      @include golden-text-mixin;
+    }
+
+    a,
+    .card-back-link {
+      color: $goldenText;
+      background: transparent;
+      border: none;
+      font: inherit;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: clamp(18px, 2vw, 24px);
+    }
+  }
+
+  .card-detail {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: clamp(20px, 4vw, 48px);
+    margin: clamp(16px, 3vw, 50px);
+    padding: clamp(24px, 4vw, 48px);
     width: 100%;
-    padding: 0 80px;
+    max-width: 1100px;
+    max-height: calc(100vh - clamp(32px, 6vw, 80px));
+    overflow: hidden;
+    box-sizing: border-box;
+    cursor: default;
+    border-radius: 16px;
+  }
+
+  .card-detail-photo {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+  }
+
+  .card-detail-text {
+    flex: 1 1 280px;
+    min-width: 0;
+    text-align: center;
 
     h1 {
       text-align: center;
-      font-size: 50px;
+      font-size: clamp(32px, 4.5vw, 56px);
       @include golden-text-mixin;
       font-weight: bold;
+      margin-top: 0;
+      line-height: 1.2;
+    }
+
+    .biography-scroll-viewport {
+      margin: 24px 0;
+      max-height: min(52vh, 520px);
+      overflow: hidden;
+      width: 100%;
+      mask-image: linear-gradient(to bottom, transparent 0, #000 5%, #000 95%, transparent 100%);
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+      }
+    }
+
+    .biography-scroll-track {
+      width: 100%;
+
+      &.is-scrolling {
+        animation-name: biography-scroll;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
     }
 
     .inner-text {
-      margin: 50px 0px;
-      font-size: 25px;
+      font-size: clamp(18px, 2.2vw, 28px);
       color: white;
-      line-height: 40px;
+      line-height: 1.65;
+      text-align: center;
+      padding: 0 8px;
+      box-sizing: border-box;
+
+      &.inner-text-compact {
+        font-size: clamp(15px, 1.8vw, 22px);
+        line-height: 1.55;
+      }
+
+      &.inner-text-dense {
+        font-size: clamp(13px, 1.45vw, 18px);
+        line-height: 1.45;
+      }
     }
   }
+}
 
-  .photo-container {
-    padding: 50px 120px;
-    vertical-align: top;
+@keyframes biography-scroll {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes card-view-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes card-detail-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-view,
+  .card-view .card-detail {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .card-view .card-detail {
+    flex-direction: column;
+    align-items: center;
+
+    .card-detail-text h1 {
+      font-size: clamp(26px, 6vw, 40px);
+    }
+
+    .inner-text {
+      font-size: clamp(16px, 4vw, 22px);
+    }
   }
 }

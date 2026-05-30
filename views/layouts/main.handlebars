@@ -1,15 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{#if data.language}}{{data.language}}{{else}}ru{{/if}}">
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{data.title}}</title>
     <link rel="stylesheet" href="/css/common.css">
+    {{#if (eq pageScript 'card')}}
+    <link rel="stylesheet" href="/css/card.css">
+    {{else}}
     <link rel="stylesheet" href="/css/home.css">
+    {{/if}}
     <style>
         :root {
             --primary-color: {{data.theme.primaryColor}};
             --text-color: {{data.theme.textColor}};
+            --card-button: color-mix(in srgb, {{data.theme.primaryColor}} 85%, #000);
+            --card-button-border: color-mix(in srgb, {{data.theme.primaryColor}} 70%, #000);
+            --card-button-text: #1a1a1a;
         }
 
         .golden-text-mixin,
@@ -41,17 +49,42 @@
 <body>
     <script>window.data = {{{json data}}};</script>
 
-    <script src="/js/home.js"></script>
-
-    <script>
-        setInterval(
-            () => location.reload(),
-            {{ data.reloadTimeout }},
-        );
-    </script>
     <div id="main-entry"></div>
-
     {{{body}}}
+
+    {{#if (eq pageScript 'card')}}
+    <script src="/js/card.js"></script>
+    {{else if (eq pageScript 'home')}}
+    <script src="/js/home.js"></script>
+    {{/if}}
+
+    {{#if data.reloadTimeout}}
+    <script>
+        (function () {
+            var reloadAfter = {{data.reloadTimeout}};
+            var idleMs = 0;
+            var tickMs = 60000;
+
+            function resetIdle() {
+                idleMs = 0;
+            }
+
+            ['click', 'keydown', 'touchstart', 'mousemove'].forEach(function (eventName) {
+                document.addEventListener(eventName, resetIdle, { passive: true });
+            });
+
+            setInterval(function () {
+                if (document.hidden) {
+                    return;
+                }
+                idleMs += tickMs;
+                if (idleMs >= reloadAfter) {
+                    location.reload();
+                }
+            }, tickMs);
+        })();
+    </script>
+    {{/if}}
 </body>
 
 </html>

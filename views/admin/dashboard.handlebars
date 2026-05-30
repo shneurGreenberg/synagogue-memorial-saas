@@ -1,57 +1,334 @@
-<h2>{{t 'settings'}}</h2>
-<form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data">
-    <div class="form-group">
-        <label>{{t 'title'}}</label>
-        <input type="text" name="title" class="form-control" value="{{synagogue.title}}">
-    </div>
-    <div class="form-group">
-        <label>{{t 'primary_color'}}</label>
-        <input type="color" name="primaryColor" class="form-control" value="{{synagogue.theme.primaryColor}}">
-    </div>
-    <div class="form-group">
-        <label>{{t 'text_color'}}</label>
-        <input type="color" name="textColor" class="form-control" value="{{synagogue.theme.textColor}}">
-    </div>
-    <div class="form-group">
-        <label>{{t 'logo'}}</label>
-        {{#if synagogue.theme.logo}}
-        <img src="/images/{{synagogue.theme.logo}}" style="height: 50px; margin-bottom: 10px;">
-        {{/if}}
-        <input type="file" name="logo" class="form-control-file">
-    </div>
-    <div class="form-group">
-        <label>{{t 'background_image'}}</label>
-        {{#if synagogue.theme.backgroundImage}}
-        <div class="mb-2">
-            <img src="/images/{{synagogue.theme.backgroundImage}}" style="height: 100px; object-fit: cover;">
+<div class="admin-page settings-page">
+    <header class="admin-page-header">
+        <div>
+            <h1>{{t 'settings'}}</h1>
+            <p class="admin-subtitle">{{t 'settings_subtitle'}}</p>
         </div>
-        {{/if}}
-        <input type="file" name="backgroundImage" class="form-control-file">
+    </header>
+
+  {{#if saved}}
+    <div class="alert alert-success alert-dismissible fade show admin-alert" role="alert">
+        {{t 'saved_settings'}}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div>
-    <div class="form-group">
-        <label>{{t 'tiles_background'}}</label>
-        {{#if synagogue.theme.tilesBackground}}
-        <div class="mb-2">
-            <img src="/images/{{synagogue.theme.tilesBackground}}" style="height: 100px; object-fit: cover;">
+  {{/if}}
+
+    <form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data" class="settings-form" id="settingsForm">
+        <section class="admin-panel">
+            <div class="admin-panel-header">
+                <h2>{{t 'admin_panel_section'}}</h2>
+            </div>
+            <div class="admin-panel-body">
+                <div class="admin-theme-setting color-mode-field"
+                    data-light-label="{{t 'light_mode'}}"
+                    data-dark-label="{{t 'dark_mode'}}">
+                    <div class="admin-theme-setting-label">{{t 'color_mode'}}</div>
+                    <input type="hidden" name="colorMode" id="colorModeInput"
+                        value="{{#if (eq synagogue.adminColorMode 'light')}}light{{else}}dark{{/if}}">
+                    <div class="admin-theme-setting-control">
+                        <label class="toggle-switch color-mode-toggle" for="colorModeToggle">
+                            <input type="checkbox" id="colorModeToggle"
+                                {{#if (eq synagogue.adminColorMode 'light')}}checked{{/if}}>
+                            <span class="toggle-slider" aria-hidden="true"></span>
+                        </label>
+                        <span class="toggle-mode-text" id="colorModeToggleLabel">
+                            {{#if (eq synagogue.adminColorMode 'light')}}{{t 'light_mode'}}{{else}}{{t 'dark_mode'}}{{/if}}
+                        </span>
+                    </div>
+                    <p class="field-hint admin-theme-setting-hint">{{t 'color_mode_help'}}</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-panel">
+            <div class="admin-panel-header">
+                <h2>{{t 'appearance_section'}}</h2>
+            </div>
+            <div class="admin-panel-body">
+                <div class="board-titles-grid">
+                    <div class="form-field">
+                        <label for="titleRu">{{t 'board_title_ru'}}</label>
+                        <input type="text" name="titleRu" id="titleRu" class="form-control admin-input-modern"
+                            value="{{boardTitles.ru}}">
+                    </div>
+                    <div class="form-field">
+                        <label for="titleEn">{{t 'board_title_en'}}</label>
+                        <input type="text" name="titleEn" id="titleEn" class="form-control admin-input-modern"
+                            value="{{boardTitles.en}}">
+                    </div>
+                    <div class="form-field">
+                        <label for="titleHe">{{t 'board_title_he'}}</label>
+                        <input type="text" name="titleHe" id="titleHe" class="form-control admin-input-modern"
+                            value="{{boardTitles.he}}">
+                    </div>
+                </div>
+                <div class="appearance-actions">
+                    <button type="button" class="btn-admin btn-admin-secondary reset-theme-btn" id="resetThemeBtn">{{t 'reset_theme'}}</button>
+                    <p class="field-hint">{{t 'reset_theme_help'}}</p>
+                </div>
+                <div class="color-picker-row color-picker-modern">
+                    <div class="color-field-modern">
+                        <label for="primaryColor">{{t 'primary_color'}}</label>
+                        <div class="color-swatch-row">
+                            <input type="color" name="primaryColor" id="primaryColor" class="color-swatch-input"
+                                value="{{synagogue.theme.primaryColor}}">
+                            <input type="text" class="color-hex-display" id="primaryColorHex" readonly
+                                value="{{synagogue.theme.primaryColor}}">
+                        </div>
+                        <span class="field-hint">{{t 'primary_color_help'}}</span>
+                    </div>
+                    <div class="color-field-modern">
+                        <label for="textColor">{{t 'text_color'}}</label>
+                        <div class="color-swatch-row">
+                            <input type="color" name="textColor" id="textColor" class="color-swatch-input"
+                                value="{{synagogue.theme.textColor}}">
+                            <input type="text" class="color-hex-display" id="textColorHex" readonly
+                                value="{{synagogue.theme.textColor}}">
+                        </div>
+                        <span class="field-hint">{{t 'text_color_help'}}</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-panel settings-preview-panel">
+            <div class="admin-panel-header">
+                <h2>{{t 'live_preview'}}</h2>
+            </div>
+            <div class="admin-panel-body">
+                <div class="board-preview-frame-wrap">
+                    <iframe id="boardPreviewFrame" class="board-preview-frame" title="{{t 'live_preview'}}"
+                        src="/s/{{synagogue.slug}}"></iframe>
+                </div>
+                <p class="preview-hint">{{t 'live_preview_help'}}</p>
+            </div>
+        </section>
+
+        <section class="admin-panel">
+            <div class="admin-panel-header">
+                <h2>{{t 'branding_section'}}</h2>
+            </div>
+            <div class="admin-panel-body media-upload-grid">
+                <div class="media-upload-card">
+                    <label>{{t 'logo'}}</label>
+                    <div class="media-preview media-preview-logo">
+                        {{#if synagogue.theme.logo}}
+                        <img src="/images/{{synagogue.theme.logo}}" alt="{{t 'logo'}}">
+                        {{else}}
+                        <span class="media-preview-empty">{{t 'no_photo'}}</span>
+                        {{/if}}
+                    </div>
+                    <label class="file-drop-label">
+                        {{t 'replace_image'}}
+                        <input type="file" name="logo" accept="image/*">
+                    </label>
+                </div>
+                <div class="media-upload-card">
+                    <label>{{t 'background_image'}}</label>
+                    <div class="media-preview">
+                        {{#if synagogue.theme.backgroundImage}}
+                        <img src="/images/{{synagogue.theme.backgroundImage}}" alt="{{t 'background_image'}}">
+                        {{else}}
+                        <span class="media-preview-empty">{{t 'no_photo'}}</span>
+                        {{/if}}
+                    </div>
+                    <label class="file-drop-label">
+                        {{t 'replace_image'}}
+                        <input type="file" name="backgroundImage" accept="image/*">
+                    </label>
+                </div>
+                <div class="media-upload-card">
+                    <label>{{t 'tiles_background'}}</label>
+                    <div class="media-preview">
+                        {{#if synagogue.theme.tilesBackground}}
+                        <img src="/images/{{synagogue.theme.tilesBackground}}" alt="{{t 'tiles_background'}}">
+                        {{else}}
+                        <span class="media-preview-empty">{{t 'no_photo'}}</span>
+                        {{/if}}
+                    </div>
+                    <label class="file-drop-label">
+                        {{t 'replace_image'}}
+                        <input type="file" name="tilesBackground" accept="image/*">
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-panel">
+            <div class="admin-panel-header">
+                <h2>{{t 'languages_section'}}</h2>
+            </div>
+            <div class="admin-panel-body">
+                <div class="settings-two-col">
+                    <div class="form-field">
+                        <label for="language">{{t 'language'}}</label>
+                        <select name="language" id="language" class="form-control admin-select-modern">
+                            <option value="ru" {{#if (eq synagogue.language 'ru')}}selected{{/if}}>Russian</option>
+                            <option value="en" {{#if (eq synagogue.language 'en')}}selected{{/if}}>English</option>
+                            <option value="he" {{#if (eq synagogue.language 'he')}}selected{{/if}}>Hebrew</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label for="adminLanguage">{{t 'admin_language'}}</label>
+                        <select name="adminLanguage" id="adminLanguage" class="form-control admin-select-modern">
+                            <option value="ru" {{#if (eq synagogue.adminLanguage 'ru')}}selected{{/if}}>Russian</option>
+                            <option value="en" {{#if (eq synagogue.adminLanguage 'en')}}selected{{/if}}>English</option>
+                            <option value="he" {{#if (eq synagogue.adminLanguage 'he')}}selected{{/if}}>Hebrew</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="form-actions-sticky">
+            <button type="submit" class="btn-admin btn-admin-primary">{{t 'save'}}</button>
         </div>
-        {{/if}}
-        <input type="file" name="tilesBackground" class="form-control-file">
-    </div>
-    <div class="form-group">
-        <label>{{t 'language'}}</label>
-        <select name="language" class="form-control">
-            <option value="ru" {{#if (eq synagogue.language 'ru' )}}selected{{/if}}>Russian</option>
-            <option value="en" {{#if (eq synagogue.language 'en' )}}selected{{/if}}>English</option>
-            <option value="he" {{#if (eq synagogue.language 'he' )}}selected{{/if}}>Hebrew</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label>{{t 'admin_language'}}</label>
-        <select name="adminLanguage" class="form-control">
-            <option value="ru" {{#if (eq synagogue.adminLanguage 'ru' )}}selected{{/if}}>Russian</option>
-            <option value="en" {{#if (eq synagogue.adminLanguage 'en' )}}selected{{/if}}>English</option>
-            <option value="he" {{#if (eq synagogue.adminLanguage 'he' )}}selected{{/if}}>Hebrew</option>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-success">{{t 'save'}}</button>
-</form>
+    </form>
+
+    <form method="POST" action="/admin/{{synagogue.slug}}/settings/reset-theme" id="resetThemeForm" class="visually-hidden-reset-form" aria-hidden="true"></form>
+</div>
+
+<script>
+    (function () {
+        var slug = '{{synagogue.slug}}';
+        var previewDebounce;
+        var PREVIEW_MESSAGE = 'board-preview';
+
+        function readPreviewPatch() {
+            var primary = document.getElementById('primaryColor');
+            var text = document.getElementById('textColor');
+            var titleRu = document.getElementById('titleRu');
+            var titleEn = document.getElementById('titleEn');
+            var titleHe = document.getElementById('titleHe');
+            var languageSelect = document.getElementById('language');
+
+            return {
+                type: PREVIEW_MESSAGE,
+                titleRu: titleRu ? titleRu.value.trim() : '',
+                titleEn: titleEn ? titleEn.value.trim() : '',
+                titleHe: titleHe ? titleHe.value.trim() : '',
+                primaryColor: primary ? primary.value : '',
+                textColor: text ? text.value : '',
+                previewLang: languageSelect ? languageSelect.value : 'ru',
+            };
+        }
+
+        function bindColorPair(colorInputId, hexInputId) {
+            var colorInput = document.getElementById(colorInputId);
+            var hexInput = document.getElementById(hexInputId);
+            if (!colorInput || !hexInput) return;
+
+            colorInput.addEventListener('input', function () {
+                hexInput.value = colorInput.value;
+                schedulePreview();
+            });
+            colorInput.addEventListener('change', schedulePreview);
+        }
+
+        bindColorPair('primaryColor', 'primaryColorHex');
+        bindColorPair('textColor', 'textColorHex');
+
+        var toggle = document.getElementById('colorModeToggle');
+        var hidden = document.getElementById('colorModeInput');
+        var label = document.getElementById('colorModeToggleLabel');
+        var field = document.querySelector('.color-mode-field');
+        var body = document.body;
+
+        if (toggle && hidden && label && field) {
+            var lightLabel = field.dataset.lightLabel || 'Light';
+            var darkLabel = field.dataset.darkLabel || 'Dark';
+
+            function applyAdminTheme(isLight) {
+                body.classList.remove('admin-theme-light', 'admin-theme-dark');
+                body.classList.add(isLight ? 'admin-theme-light' : 'admin-theme-dark');
+                hidden.value = isLight ? 'light' : 'dark';
+                label.textContent = isLight ? lightLabel : darkLabel;
+            }
+
+            toggle.addEventListener('change', function () {
+                applyAdminTheme(toggle.checked);
+            });
+            applyAdminTheme(toggle.checked);
+        }
+
+        ['titleRu', 'titleEn', 'titleHe'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', schedulePreview);
+            }
+        });
+
+        var languageSelect = document.getElementById('language');
+        if (languageSelect) {
+            languageSelect.addEventListener('change', schedulePreview);
+        }
+
+        var resetBtn = document.getElementById('resetThemeBtn');
+        var resetForm = document.getElementById('resetThemeForm');
+        if (resetBtn && resetForm) {
+            resetBtn.addEventListener('click', function () {
+                if (confirm('{{t 'reset_theme_confirm'}}')) {
+                    resetForm.submit();
+                }
+            });
+        }
+
+        function schedulePreview() {
+            clearTimeout(previewDebounce);
+            previewDebounce = setTimeout(updatePreview, 120);
+        }
+
+        function postPreviewToFrame(frame) {
+            if (!frame || !frame.contentWindow) {
+                return;
+            }
+
+            try {
+                frame.contentWindow.postMessage(readPreviewPatch(), window.location.origin);
+            } catch (err) {
+                /* iframe may still be loading */
+            }
+        }
+
+        function updatePreview() {
+            var frame = document.getElementById('boardPreviewFrame');
+            if (!frame) return;
+
+            postPreviewToFrame(frame);
+
+            if (frame.dataset.previewReady === '1') {
+                return;
+            }
+
+            var patch = readPreviewPatch();
+            var params = new URLSearchParams();
+            params.set('preview', '1');
+            params.set('titleRu', patch.titleRu);
+            params.set('titleEn', patch.titleEn);
+            params.set('titleHe', patch.titleHe);
+            params.set('primaryColor', patch.primaryColor);
+            params.set('textColor', patch.textColor);
+            params.set('previewLang', patch.previewLang);
+            frame.src = '/s/' + slug + '?' + params.toString();
+        }
+
+        var frame = document.getElementById('boardPreviewFrame');
+        if (frame) {
+            frame.addEventListener('load', function () {
+                frame.dataset.previewReady = '1';
+                postPreviewToFrame(frame);
+            });
+
+            var initial = readPreviewPatch();
+            var params = new URLSearchParams();
+            params.set('preview', '1');
+            params.set('titleRu', initial.titleRu);
+            params.set('titleEn', initial.titleEn);
+            params.set('titleHe', initial.titleHe);
+            params.set('primaryColor', initial.primaryColor);
+            params.set('textColor', initial.textColor);
+            params.set('previewLang', initial.previewLang);
+            frame.src = '/s/' + slug + '?' + params.toString();
+        }
+    })();
+</script>

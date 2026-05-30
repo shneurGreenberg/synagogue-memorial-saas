@@ -2,6 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const Synagogue = require('../models/Synagogue');
 const database = require('../database.json');
+const { hashPassword } = require('../lib/password');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -24,7 +25,7 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true 
         const newSynagogue = new Synagogue({
             slug: 'novosibirsk',
             name: 'Novosibirsk Synagogue',
-            adminPassword: 'admin', // TODO: Hash this
+            adminPassword: await hashPassword('admin'),
             title: database.data.title,
             weeklyChapterEnabled: database.data.weeklyChapterEnabled,
             dailyCites: database.data.dailyCites,

@@ -6,14 +6,20 @@
   "license": "license.txt",
   "private": true,
   "scripts": {
+    "start": "node app.js",
     "restart": "yarn stop && pm2 start app.js && pm2 logs",
-    "stop": "pm2 kill"
+    "stop": "pm2 kill",
+    "seed": "node scripts/seed.js",
+    "seed:photos": "node scripts/seed-photos.js --slug=novosibirsk --force",
+    "build:board": "vite build --config vite.board.config.mjs",
+    "dev:board": "vite build --config vite.board.config.mjs --watch"
   },
   "dependencies": {
     "@babel/core": "^7.13.10",
     "@babel/preset-env": "^7.13.10",
     "@babel/preset-react": "^7.12.13",
     "babelify": "^10.0.0",
+    "bcryptjs": "^3.0.3",
     "body-parser": "^1.19.0",
     "connect-mongo": "^4.0.0",
     "cookie-parser": "^1.4.0",
@@ -35,7 +41,13 @@
     "react-i18next": "^11.0.0",
     "react-live-clock": "^5.0.16",
     "react-moment": "^1.1.1",
+    "react-router-dom": "^6.30.3",
     "rimraf": "^3.0.2",
+    "sanitize-html": "^2.17.4",
     "sass": "^1.50.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
+    "vite": "^5.4.21"
   }
 }
