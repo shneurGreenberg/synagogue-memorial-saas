@@ -9,6 +9,7 @@ const { sanitizeRichText } = require('../lib/sanitize');
 const { seedPhotosForSynagogue } = require('../lib/seed-people-photos');
 const { enrichSynagogueForAdmin, normalizeTitles, sanitizeHexColor } = require('../lib/admin-theme');
 const { getTranslator } = require('../lib/admin-translations');
+const { getAdminLocaleContext } = require('../lib/admin-locale');
 const { BOARD_THEME_DEFAULTS } = require('../lib/board-defaults');
 
 // Configure Multer
@@ -84,11 +85,13 @@ const getInitials = (name) => {
 
 function renderAdmin(res, view, options = {}) {
     const synagogue = options.synagogue;
-    const lang = (synagogue && synagogue.adminLanguage) || 'ru';
+    const locale = getAdminLocaleContext(synagogue && synagogue.adminLanguage);
 
     res.render(view, {
         ...options,
-        adminTranslate: getTranslator(lang),
+        adminTranslate: getTranslator(locale.adminLanguage),
+        adminDir: locale.adminDir,
+        adminIsRtl: locale.adminIsRtl,
         layout: options.layout === false ? false : (options.layout || 'admin'),
     });
 }

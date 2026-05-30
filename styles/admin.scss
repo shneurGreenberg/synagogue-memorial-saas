@@ -981,26 +981,6 @@ body.admin-is-busy {
 }
 
 .settings-preview-panel {
-  .board-preview-frame-wrap {
-    position: relative;
-    width: 100%;
-    height: min(56vh, 520px);
-    min-height: 280px;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid var(--admin-border);
-    background: #0a0a0a;
-    box-shadow: var(--admin-shadow);
-  }
-
-  .board-preview-frame {
-    display: block;
-    width: 100%;
-    height: 100%;
-    border: 0;
-    background: #0a0a0a;
-  }
-
   .preview-hint {
     margin: 0.75rem 0 0;
     font-size: 0.85rem;
@@ -1167,5 +1147,215 @@ body.admin-login-page {
       margin-top: 0.5rem;
       padding: 0.75rem;
     }
+  }
+}
+
+// --- RTL admin (Hebrew) ---
+html[dir='rtl'] body.admin-body,
+body.admin-body.admin-rtl {
+  direction: rtl;
+  text-align: right;
+  font-family: 'Heebo', 'Inter', system-ui, -apple-system, sans-serif;
+
+  .admin-navbar .admin-nav-links.mr-auto {
+    margin-right: 0 !important;
+    margin-left: auto !important;
+  }
+
+  .admin-navbar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-right: auto;
+    margin-left: 0;
+  }
+
+  .btn-admin-nav-board {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .admin-select-modern {
+    background-position: left 0.9rem center !important;
+    padding-right: 0.95rem !important;
+    padding-left: 2.25rem !important;
+  }
+
+  .modal-header .close {
+    margin: -1rem auto -1rem -1rem;
+    padding: 1rem;
+  }
+
+  .alert .close {
+    float: left;
+  }
+
+  .toggle-switch input:checked + .toggle-slider::after {
+    transform: translateX(-24px);
+  }
+
+  .color-swatch-row,
+  .admin-theme-setting-control,
+  .header-actions,
+  .person-row,
+  .person-actions,
+  .appearance-actions {
+    flex-direction: row-reverse;
+  }
+
+  .form-actions-sticky {
+    justify-content: flex-start;
+  }
+
+  .admin-page-header {
+    text-align: right;
+  }
+
+  .file-drop-label {
+    text-align: center;
+  }
+}
+
+.admin-navbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 0.5rem;
+}
+
+// --- TV aspect live preview (16:9) ---
+.settings-preview-panel {
+  .admin-panel-header {
+    text-align: inherit;
+  }
+
+  .board-preview-stage {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .board-preview-frame-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    min-height: 160px;
+    max-height: min(70vh, calc((100vw - 2.5rem) * 9 / 16));
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--admin-border);
+    background: #000;
+    box-shadow: var(--admin-shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+
+  .board-preview-frame {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1920px;
+    height: 1080px;
+    margin: 0;
+    border: 0;
+    background: #000;
+    transform: translate(-50%, -50%) scale(var(--board-preview-scale, 0.45));
+    transform-origin: center center;
+  }
+
+  .preview-hint {
+    text-align: center;
+    max-width: 52ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+html[dir='rtl'] .settings-preview-panel .preview-hint {
+  text-align: center;
+}
+
+// --- Mobile admin polish ---
+@media (max-width: 768px) {
+  .admin-container {
+    padding: 1.25rem 0.85rem 2.5rem;
+  }
+
+  .admin-page-header {
+    flex-direction: column;
+    align-items: stretch;
+
+    h1 {
+      font-size: 1.45rem;
+      line-height: 1.25;
+    }
+  }
+
+  .header-actions {
+    width: 100%;
+
+    .btn-admin {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+  }
+
+  .admin-navbar .navbar-collapse {
+    margin-top: 0.65rem;
+  }
+
+  .admin-navbar-actions {
+    width: 100%;
+    margin: 0.5rem 0 0;
+    justify-content: stretch;
+
+    .btn {
+      flex: 1 1 auto;
+      text-align: center;
+    }
+  }
+
+  html[dir='rtl'] .admin-navbar .admin-nav-links.mr-auto {
+    margin-left: 0 !important;
+  }
+
+  .people-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+
+    .form-control {
+      max-width: none !important;
+      width: 100%;
+    }
+  }
+
+  .person-row {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .person-actions {
+    width: 100%;
+    justify-content: stretch;
+
+    .btn-admin {
+      flex: 1 1 45%;
+    }
+  }
+
+  .settings-preview-panel .board-preview-frame-wrap {
+    max-height: min(52vh, calc((100vw - 1.7rem) * 9 / 16));
+  }
+}
+
+@media (max-width: 576px) {
+  .admin-panel-header,
+  .admin-panel-body {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .form-actions-sticky .btn-admin-primary {
+    width: 100%;
   }
 }

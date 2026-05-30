@@ -267,7 +267,7 @@
           height: auto;
           max-height: 55%;
           position: absolute;
-          left: 4px;
+          inset-inline-start: 4px;
           top: 50%;
           transform: translate3d(0, -55%, 0);
           pointer-events: none;
@@ -296,8 +296,8 @@
           z-index: 1;
           flex: 1;
           min-height: 0;
-          margin-left: clamp(32px, 4vw, 48px);
-          margin-right: 6px;
+          margin-inline-start: clamp(32px, 4vw, 48px);
+          margin-inline-end: 6px;
           padding: 8px 4px 4px;
           text-align: center;
           display: flex;
@@ -497,7 +497,7 @@
 .board-lang-toggle {
   position: fixed;
   bottom: clamp(12px, 2vh, 24px);
-  right: clamp(12px, 2vw, 24px);
+  inset-inline-end: clamp(12px, 2vw, 24px);
   z-index: 900;
   width: 42px;
   height: 42px;
@@ -757,7 +757,7 @@
 .slideshow-skip {
   position: absolute;
   top: 20px;
-  right: 20px;
+  inset-inline-end: 20px;
   min-width: 48px;
   min-height: 48px;
   padding: 12px 20px;
@@ -881,5 +881,22 @@
     grid-template-rows: repeat(4, minmax(0, 1fr));
     gap: 3px;
     padding: 4px;
+  }
+}
+
+
+html[dir='rtl'] {
+  .main-container {
+    direction: rtl;
+  }
+
+  .pager-chevron-up {
+    border-right: none;
+    border-left: 12px solid rgba(255, 255, 255, 0.95);
+  }
+
+  .pager-chevron-down {
+    border-left: none;
+    border-right: 12px solid rgba(255, 255, 255, 0.95);
   }
 }

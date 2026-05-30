@@ -6,14 +6,14 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { getDisplayLanguage, setDisplayLanguage } from '../lib/person-names';
+import { getDisplayLanguage } from '../lib/person-names';
+import { applyBoardLanguage, initBoardLanguage } from '../lib/board-language';
 import { getPreviewLanguage, isBoardPreviewMode } from '../lib/board-preview-mode';
 import {
   BOARD_PREVIEW_MESSAGE,
   mergePreviewPatch,
   previewPatchFromSearchParams,
 } from '../lib/board-preview-overrides';
-import i18n from '../lib/i18n';
 
 const POLL_MS = 8000;
 
@@ -63,14 +63,12 @@ export function BoardDataProvider({ slug, children }) {
   });
 
   const setUiLang = useCallback((lang) => {
-    const safe = ['ru', 'he', 'en'].includes(lang) ? lang : 'ru';
-    setDisplayLanguage(safe);
-    i18n.changeLanguage(safe);
+    const safe = applyBoardLanguage(lang);
     setUiLangState(safe);
   }, []);
 
   useEffect(() => {
-    i18n.changeLanguage(uiLang);
+    applyBoardLanguage(uiLang);
   }, [uiLang]);
 
   const applyData = useCallback((next) => {
