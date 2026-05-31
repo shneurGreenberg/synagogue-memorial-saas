@@ -28,6 +28,7 @@
     "express-browserify": "^1.0.3",
     "express-handlebars": "^5.2.1",
     "express-session": "^1.17.0",
+    "geo-tz": "^8.1.7",
     "hebcal": "^2.3.2",
     "i18next": "^20.0.0",
     "mongoose": "^6.0.0",
