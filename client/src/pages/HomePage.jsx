@@ -1,6 +1,7 @@
 import Hebcal from 'hebcal';
 import React from 'react';
 import { LiveClock } from '../components/LiveClock';
+import { ShabbatTimes } from '../components/ShabbatTimes';
 import { withTranslation } from 'react-i18next';
 import {
   formatHebrewDate,
@@ -500,11 +501,12 @@ class HomePageBase extends React.Component {
           <div className="wooden-panel">
             <div className="inner">
               <time>
-                <h1><LiveClock timezone="Asia/Novosibirsk" /></h1>
+                <h1><LiveClock timezone={(appData.location && appData.location.timezone) || 'Asia/Novosibirsk'} /></h1>
                 <br />
                 <h2>{formatHebrewDate(this.state.hebrewDate)}</h2>
                 <h3>{formatGregorianDate(this.state.gregorianDate)}</h3>
               </time>
+              {appData.shabbatTimesEnabled && <ShabbatTimes />}
               {appData.weeklyChapterEnabled && (
                 <div>
                   {this.getWeeklyChapter(this.state.hebrewDate) && (

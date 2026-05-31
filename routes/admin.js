@@ -136,7 +136,7 @@ router.post('/:slug/settings', requireAdmin, upload.fields([
 ]), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { titleRu, titleEn, titleHe, primaryColor, textColor, language, adminLanguage, colorMode } = req.body;
+        const { titleRu, titleEn, titleHe, primaryColor, textColor, language, adminLanguage, colorMode, shabbatTimesEnabled } = req.body;
         const safeColorMode = colorMode === 'light' ? 'light' : 'dark';
         const titles = {
             ru: String(titleRu ?? '').trim(),
@@ -152,7 +152,8 @@ router.post('/:slug/settings', requireAdmin, upload.fields([
             'theme.textColor': sanitizeHexColor(textColor, BOARD_THEME_DEFAULTS.textColor),
             'adminTheme.colorMode': safeColorMode,
             language,
-            adminLanguage
+            adminLanguage,
+            shabbatTimesEnabled: !!shabbatTimesEnabled
         };
 
         if (req.files['logo']) {

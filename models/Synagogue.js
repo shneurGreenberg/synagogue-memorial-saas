@@ -32,6 +32,7 @@ const SynagogueSchema = new mongoose.Schema({
     he: { type: String, default: '' },
   },
   weeklyChapterEnabled: { type: Boolean, default: false },
+  shabbatTimesEnabled: { type: Boolean, default: false },
   dailyCites: [DailyCiteSchema],
   people: [PersonSchema],
   adminTheme: {
@@ -56,7 +57,8 @@ const SynagogueSchema = new mongoose.Schema({
   location: {
     lat: { type: Number, default: 54.9833 },
     long: { type: Number, default: 82.8964 },
-    city: { type: String, default: 'Novosibirsk' }
+    city: { type: String, default: 'Novosibirsk' },
+    timezone: { type: String, default: 'Asia/Novosibirsk' }
   },
   language: { type: String, default: 'ru' },
   adminLanguage: { type: String, default: 'ru' }, // Separate language for admin panel

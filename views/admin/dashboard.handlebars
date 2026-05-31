@@ -156,6 +156,20 @@
             </div>
         </section>
 
+
+        <section class="admin-panel">
+            <div class="admin-panel-header">
+                <h2>{{t 'board_features_section'}}</h2>
+            </div>
+            <div class="admin-panel-body">
+                <label class="form-check form-check-modern toggle-switch-wrap">
+                    <input type="checkbox" class="form-check-input" id="shabbatTimesEnabled" name="shabbatTimesEnabled" value="1" {{#if synagogue.shabbatTimesEnabled}}checked{{/if}}>
+                    <span>{{t 'enable_shabbat_times'}}</span>
+                </label>
+                <p class="field-hint admin-theme-setting-hint">{{t 'enable_shabbat_times_help'}}</p>
+            </div>
+        </section>
+
         <section class="admin-panel">
             <div class="admin-panel-header">
                 <h2>{{t 'languages_section'}}</h2>
