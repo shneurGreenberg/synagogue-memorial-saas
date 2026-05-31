@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { resolveBoardTimezone } from '../lib/timezone';
 
 function formatTime(timeZone) {
   return new Intl.DateTimeFormat('en-GB', {
@@ -10,15 +11,17 @@ function formatTime(timeZone) {
 }
 
 export function LiveClock({ timezone = 'Asia/Novosibirsk' }) {
-  const [time, setTime] = useState(() => formatTime(timezone));
+  const safeTimezone = resolveBoardTimezone({ location: { timezone } });
+  const [time, setTime] = useState(() => formatTime(safeTimezone));
 
   useEffect(() => {
+    setTime(formatTime(safeTimezone));
     const timer = window.setInterval(() => {
-      setTime(formatTime(timezone));
+      setTime(formatTime(safeTimezone));
     }, 1000);
 
     return () => window.clearInterval(timer);
-  }, [timezone]);
+  }, [safeTimezone]);
 
   return <span>{time}</span>;
 }

@@ -3,6 +3,7 @@ const router = express.Router();
 const Synagogue = require('../models/Synagogue');
 const { hashPassword } = require('../lib/password');
 const { normalizeSlug, isValidSlug } = require('../lib/normalize-slug');
+const { resolveTimezone } = require('../lib/normalize-timezone');
 const { find: findTimezone } = require('geo-tz');
 
 const NOMINATIM = 'https://nominatim.openstreetmap.org';
@@ -29,16 +30,7 @@ function parseLocation(body) {
     const lat = parseFloat(body.lat);
     const long = parseFloat(body.long);
     const city = String(body.city || '').trim();
-    let timezone = String(body.timezone || '').trim();
-
-    if (!timezone && Number.isFinite(lat) && Number.isFinite(long)) {
-        const zones = findTimezone(lat, long);
-        timezone = zones[0] || 'UTC';
-    }
-
-    if (!timezone) {
-        timezone = 'Asia/Novosibirsk';
-    }
+    const timezone = resolveTimezone(body.timezone, lat, long);
 
     return {
         lat: Number.isFinite(lat) ? lat : 54.9833,
@@ -59,7 +51,6 @@ async function nominatimFetch(path) {
 function formatPlace(item) {
     const lat = parseFloat(item.lat);
     const lng = parseFloat(item.lon);
-    const zones = findTimezone(lat, lng);
     const label = item.display_name || item.name || 'Unknown place';
 
     return {
@@ -72,7 +63,7 @@ function formatPlace(item) {
             || label.split(',')[0],
         lat,
         lng,
-        timezone: zones[0] || 'UTC',
+        timezone: resolveTimezone(null, lat, lng),
     };
 }
 

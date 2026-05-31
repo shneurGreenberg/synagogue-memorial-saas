@@ -1,3 +1,5 @@
+import { resolveBoardTimezone } from './timezone';
+
 const HEBCAL_API = 'https://www.hebcal.com/shabbat?cfg=json';
 
 const DEFAULT_TIMEZONE = 'Asia/Novosibirsk';
@@ -5,7 +7,7 @@ const DEFAULT_LAT = 54.9833;
 const DEFAULT_LNG = 82.8964;
 
 export function getBoardTimezone(data) {
-  return (data && data.location && data.location.timezone) || DEFAULT_TIMEZONE;
+  return resolveBoardTimezone(data);
 }
 
 export function getBoardLocation(data) {
