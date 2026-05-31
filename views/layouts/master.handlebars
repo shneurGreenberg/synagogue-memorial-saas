@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="{{#if masterLanguage}}{{masterLanguage}}{{else}}en{{/if}}" dir="{{#if masterDir}}{{masterDir}}{{else}}ltr{{/if}}">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Platform Master Admin</title>
+    <title>{{t 'master_title'}}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Heebo:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     {{#if showMasterMap}}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
@@ -15,18 +15,26 @@
     <link rel="stylesheet" href="/css/master.css">
 </head>
 
-<body class="master-body">
+<body class="master-body{{#if masterIsRtl}} master-rtl{{/if}}">
     {{#if showMasterNav}}
     <header class="master-topbar">
         <div class="master-topbar-inner">
             <div class="master-brand">
-                <span class="master-brand-badge">PLATFORM</span>
-                <span class="master-brand-title">Kadish Master</span>
+                <span class="master-brand-badge">{{t 'platform_badge'}}</span>
+                <span class="master-brand-title">{{t 'master_title'}}</span>
             </div>
             <nav class="master-topnav">
-                <a href="/master/dashboard" class="master-topnav-link">Communities</a>
-                <a href="/" class="master-topnav-link" target="_blank" rel="noopener">Public home</a>
-                <a href="/master/logout" class="master-topnav-link master-topnav-logout">Log out</a>
+                <a href="/master/dashboard" class="master-topnav-link">{{t 'communities'}}</a>
+                <a href="/" class="master-topnav-link" target="_blank" rel="noopener">{{t 'public_home'}}</a>
+                <form method="POST" action="/master/language" class="master-lang-form">
+                    <label class="master-lang-label" for="masterLangSelect">{{t 'master_language'}}</label>
+                    <select name="language" id="masterLangSelect" class="master-lang-select" onchange="this.form.submit()">
+                        <option value="en" {{#if (eq masterLanguage 'en')}}selected{{/if}}>{{t 'lang_en'}}</option>
+                        <option value="ru" {{#if (eq masterLanguage 'ru')}}selected{{/if}}>{{t 'lang_ru'}}</option>
+                        <option value="he" {{#if (eq masterLanguage 'he')}}selected{{/if}}>{{t 'lang_he'}}</option>
+                    </select>
+                </form>
+                <a href="/master/logout" class="master-topnav-link master-topnav-logout">{{t 'logout'}}</a>
             </nav>
         </div>
     </header>

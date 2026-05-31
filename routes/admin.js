@@ -12,26 +12,63 @@ const { getTranslator } = require('../lib/admin-translations');
 const { getAdminLocaleContext } = require('../lib/admin-locale');
 const { BOARD_THEME_DEFAULTS } = require('../lib/board-defaults');
 
-// Configure Multer
+const IMAGES_DIR = path.join(__dirname, '..', 'images');
+const PHOTOS_DIR = path.join(__dirname, '..', 'photos');
+const MIME_EXT = {
+    'image/jpeg': '.jpg',
+    'image/png': '.png',
+    'image/webp': '.webp',
+    'image/gif': '.gif',
+};
+
+function ensureDir(dir) {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+}
+
+// Configure Multer — absolute paths so uploads work regardless of process cwd
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         if (file.fieldname === 'photo') {
-            const dir = 'photos/';
-            if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-            cb(null, dir);
+            ensureDir(PHOTOS_DIR);
+            cb(null, PHOTOS_DIR);
         } else {
-            const dir = 'images/';
-            if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-            cb(null, dir);
+            ensureDir(IMAGES_DIR);
+            cb(null, IMAGES_DIR);
         }
     },
     filename: function (req, file, cb) {
-        const ext = path.extname(file.originalname);
-        cb(null, Date.now() + ext);
-    }
+        let ext = path.extname(file.originalname).toLowerCase();
+        if (!ext && file.mimetype && MIME_EXT[file.mimetype]) {
+            ext = MIME_EXT[file.mimetype];
+        }
+        cb(null, `${Date.now()}${ext || '.jpg'}`);
+    },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+    storage,
+    limits: { fileSize: 10 * 1024 * 1024 },
+    fileFilter: function (req, file, cb) {
+        if (!file.mimetype || !file.mimetype.startsWith('image/')) {
+            return cb(new Error('Only image uploads are allowed'));
+        }
+        cb(null, true);
+    },
+});
+
+function handleUpload(fields) {
+    return (req, res, next) => {
+        upload.fields(fields)(req, res, (err) => {
+            if (err) {
+                const slug = req.params.slug || req.session.adminSlug || '';
+                return res.redirect(`/admin/${slug}/dashboard?error=upload`);
+            }
+            next();
+        });
+    };
+}
 
 // Middleware to check auth
 const requireAdmin = (req, res, next) => {
@@ -129,7 +166,7 @@ async function persistTitlesIfMissing(synagogue) {
     return synagogue;
 }
 
-router.post('/:slug/settings', requireAdmin, upload.fields([
+router.post('/:slug/settings', requireAdmin, handleUpload([
     { name: 'logo', maxCount: 1 },
     { name: 'backgroundImage', maxCount: 1 },
     { name: 'tilesBackground', maxCount: 1 }
@@ -206,6 +243,7 @@ router.get('/:slug/dashboard', requireAdmin, async (req, res) => {
             synagogue: enriched,
             boardTitles: enriched.titles,
             saved: req.query.saved === '1',
+            error: req.query.error || null,
         });
     } catch (err) {
         res.status(500).send(err.message);

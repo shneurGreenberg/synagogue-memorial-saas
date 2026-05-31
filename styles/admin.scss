@@ -1355,3 +1355,21 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
     width: 100%;
   }
 }
+
+
+.shabbat-times-setting {
+  max-width: 520px;
+
+  .admin-theme-setting-control {
+    flex-shrink: 0;
+  }
+
+  .admin-theme-setting-hint {
+    margin-top: 0.25rem;
+  }
+}
+
+.file-selected-hint {
+  color: var(--admin-primary);
+  font-weight: 600;
+}

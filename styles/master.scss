@@ -459,3 +459,62 @@ body.master-body {
     height: 220px;
   }
 }
+
+
+.master-lang-form {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+}
+
+.master-lang-label {
+  margin: 0;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.72);
+  white-space: nowrap;
+}
+
+.master-lang-select {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #fff;
+  border-radius: 8px;
+  padding: 0.35rem 0.55rem;
+  font-size: 0.82rem;
+}
+
+.master-lang-block {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.master-rtl {
+  font-family: 'Heebo', 'DM Sans', sans-serif;
+
+  .master-topnav {
+    flex-direction: row-reverse;
+  }
+
+  .master-form-grid,
+  .master-coords-row {
+    direction: rtl;
+  }
+
+  .master-community-card-links {
+    flex-direction: row-reverse;
+  }
+}
+
+@media (max-width: 768px) {
+  .master-topnav {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .master-lang-form {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

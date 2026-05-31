@@ -214,7 +214,9 @@
         var open = panel.hidden;
         panel.hidden = !open;
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        btn.textContent = open ? 'Close' : 'Edit';
+        var closeLabel = btn.dataset.labelClose || 'Close';
+        var editLabel = btn.dataset.labelEdit || 'Edit';
+        btn.textContent = open ? closeLabel : editLabel;
 
         if (open) {
           var form = panel.querySelector('.master-community-form');

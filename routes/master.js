@@ -4,13 +4,32 @@ const Synagogue = require('../models/Synagogue');
 const { hashPassword } = require('../lib/password');
 const { normalizeSlug, isValidSlug } = require('../lib/normalize-slug');
 const { resolveTimezone } = require('../lib/normalize-timezone');
-const { find: findTimezone } = require('geo-tz');
+const { getAdminLocaleContext, normalizeAdminLang } = require('../lib/admin-locale');
+const { getMasterTranslator } = require('../lib/master-translations');
 
 const NOMINATIM = 'https://nominatim.openstreetmap.org';
 const NOMINATIM_HEADERS = {
   'User-Agent': 'SynagogueMemorialSaaS/1.0 (master-admin)',
   Accept: 'application/json',
 };
+
+function getMasterLang(req) {
+  return normalizeAdminLang(req.session.masterLanguage || 'en');
+}
+
+function renderMaster(req, res, view, options = {}) {
+  const masterLanguage = getMasterLang(req);
+  const locale = getAdminLocaleContext(masterLanguage);
+
+  res.render(view, {
+    ...options,
+    masterLanguage,
+    masterTranslate: getMasterTranslator(masterLanguage),
+    masterDir: locale.adminDir,
+    masterIsRtl: locale.adminIsRtl,
+    layout: options.layout === false ? false : (options.layout || 'master'),
+  });
+}
 
 function requireMaster(req, res, next) {
     if (req.session.isMasterAdmin) {
@@ -37,6 +56,13 @@ function parseLocation(body) {
         long: Number.isFinite(long) ? long : 82.8964,
         city: city || 'Community',
         timezone,
+    };
+}
+
+function parseLanguages(body) {
+    return {
+        language: normalizeAdminLang(body.language || 'ru'),
+        adminLanguage: normalizeAdminLang(body.adminLanguage || body.language || 'ru'),
     };
 }
 
@@ -68,19 +94,29 @@ function formatPlace(item) {
 }
 
 router.get('/login', (req, res) => {
-    res.render('master/login', { layout: 'master', showMasterNav: false, error: null });
+    renderMaster(req, res, 'master/login', { showMasterNav: false, error: null });
 });
 
 router.post('/login', (req, res) => {
     const { password } = req.body;
     const masterPassword = process.env.MASTER_ADMIN_PASSWORD || 'master';
+    const t = getMasterTranslator(getMasterLang(req));
 
     if (password === masterPassword) {
         req.session.isMasterAdmin = true;
+        if (!req.session.masterLanguage) {
+            req.session.masterLanguage = 'en';
+        }
         return res.redirect('/master/dashboard');
     }
 
-    res.render('master/login', { layout: 'master', showMasterNav: false, error: 'Invalid password' });
+    renderMaster(req, res, 'master/login', { showMasterNav: false, error: t('invalid_password') });
+});
+
+router.post('/language', requireMaster, (req, res) => {
+    req.session.masterLanguage = normalizeAdminLang(req.body.language);
+    const back = req.get('Referer') || '/master/dashboard';
+    res.redirect(back);
 });
 
 router.get('/api/places', requireMasterApi, async (req, res) => {
@@ -121,9 +157,8 @@ router.get('/api/reverse', requireMasterApi, async (req, res) => {
 router.get('/dashboard', requireMaster, async (req, res) => {
     try {
         const synagogues = await Synagogue.find({}).sort({ name: 1 }).lean();
-        res.render('master/dashboard', {
+        renderMaster(req, res, 'master/dashboard', {
             synagogues,
-            layout: 'master',
             showMasterNav: true,
             showMasterMap: true,
             saved: req.query.saved === '1',
@@ -139,6 +174,7 @@ router.post('/add', requireMaster, async (req, res) => {
         const name = String(req.body.name || '').trim();
         const slug = normalizeSlug(req.body.slug);
         const adminPassword = String(req.body.adminPassword || '');
+        const languages = parseLanguages(req.body);
 
         if (!name || !slug || !adminPassword) {
             return res.redirect('/master/dashboard?error=missing_fields');
@@ -161,6 +197,8 @@ router.post('/add', requireMaster, async (req, res) => {
             adminPassword: await hashPassword(adminPassword),
             title: name,
             location,
+            language: languages.language,
+            adminLanguage: languages.adminLanguage,
         });
 
         await newSynagogue.save();
@@ -177,6 +215,7 @@ router.post('/edit', requireMaster, async (req, res) => {
         const slug = normalizeSlug(req.body.slug);
         const adminPassword = String(req.body.adminPassword || '').trim();
         const location = parseLocation(req.body);
+        const languages = parseLanguages(req.body);
 
         if (!id || !name || !slug) {
             return res.redirect('/master/dashboard?error=missing_fields');
@@ -196,6 +235,8 @@ router.post('/edit', requireMaster, async (req, res) => {
             slug,
             title: name,
             location,
+            language: languages.language,
+            adminLanguage: languages.adminLanguage,
         };
 
         if (adminPassword) {

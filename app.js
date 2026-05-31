@@ -91,6 +91,9 @@ app.engine('handlebars', handlebars({
     eq: (a, b) => a === b,
     t(key, options) {
       const root = options.data && options.data.root;
+      if (root && typeof root.masterTranslate === 'function') {
+        return root.masterTranslate(key);
+      }
       const adminLang = (root && root.synagogue && root.synagogue.adminLanguage) || 'ru';
       const fn = (root && root.adminTranslate) || getTranslator(adminLang);
       return typeof fn === 'function' ? fn(key) : humanizeLabel(key);

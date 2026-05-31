@@ -1,51 +1,73 @@
 <div class="master-page">
     <header class="master-page-header">
         <div>
-            <h1>Communities</h1>
-            <p class="master-subtitle">Create and manage synagogues — login slug, password, and map location for Shabbat times.</p>
+            <h1>{{t 'communities_heading'}}</h1>
+            <p class="master-subtitle">{{t 'communities_subtitle'}}</p>
         </div>
     </header>
 
     {{#if saved}}
-    <div class="master-alert master-alert-success">Saved successfully.</div>
+    <div class="master-alert master-alert-success">{{t 'saved_success'}}</div>
     {{/if}}
     {{#if error}}
     <div class="master-alert master-alert-danger">
-        {{#if (eq error 'slug_exists')}}That login slug is already in use.
-        {{else}}{{#if (eq error 'invalid_slug')}}Slug must use lowercase letters, numbers, and hyphens (spaces are removed automatically).
-        {{else}}{{#if (eq error 'missing_fields')}}Please fill in all required fields.
+        {{#if (eq error 'slug_exists')}}{{t 'error_slug_exists'}}
+        {{else}}{{#if (eq error 'invalid_slug')}}{{t 'error_invalid_slug'}}
+        {{else}}{{#if (eq error 'missing_fields')}}{{t 'error_missing_fields'}}
         {{else}}{{error}}{{/if}}{{/if}}{{/if}}
     </div>
     {{/if}}
 
     <section class="master-panel">
         <div class="master-panel-header">
-            <h2>Add new community</h2>
+            <h2>{{t 'add_community'}}</h2>
         </div>
         <div class="master-panel-body">
             <form method="POST" action="/master/add" class="master-community-form" data-location-picker="add">
                 <div class="master-form-grid">
                     <div class="master-field">
-                        <label for="addName">Community name</label>
+                        <label for="addName">{{t 'community_name'}}</label>
                         <input type="text" name="name" id="addName" class="form-control master-input master-name-input" required placeholder="Novosibirsk Synagogue">
                     </div>
                     <div class="master-field">
-                        <label for="addSlug">Admin login (slug)</label>
+                        <label for="addSlug">{{t 'admin_slug'}}</label>
                         <input type="text" name="slug" id="addSlug" class="form-control master-input master-slug-input" required placeholder="novosibirsk">
-                        <span class="master-hint">Spaces are ignored — e.g. "novo sibirsk" becomes "novosibirsk"</span>
+                        <span class="master-hint">{{t 'slug_hint'}}</span>
                     </div>
                     <div class="master-field">
-                        <label for="addPassword">Admin password</label>
+                        <label for="addPassword">{{t 'admin_password'}}</label>
                         <input type="password" name="adminPassword" id="addPassword" class="form-control master-input" required minlength="4" autocomplete="new-password">
                     </div>
                 </div>
 
+                <div class="master-lang-block">
+                    <h3 class="master-location-title">{{t 'languages_section'}}</h3>
+                    <div class="master-form-grid">
+                        <div class="master-field">
+                            <label for="addLanguage">{{t 'display_language'}}</label>
+                            <select name="language" id="addLanguage" class="form-control master-input">
+                                <option value="ru">{{t 'lang_ru'}}</option>
+                                <option value="en">{{t 'lang_en'}}</option>
+                                <option value="he">{{t 'lang_he'}}</option>
+                            </select>
+                        </div>
+                        <div class="master-field">
+                            <label for="addAdminLanguage">{{t 'admin_language'}}</label>
+                            <select name="adminLanguage" id="addAdminLanguage" class="form-control master-input">
+                                <option value="ru">{{t 'lang_ru'}}</option>
+                                <option value="en">{{t 'lang_en'}}</option>
+                                <option value="he">{{t 'lang_he'}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="master-location-block">
-                    <h3 class="master-location-title">Location</h3>
-                    <p class="master-hint">Search for a city or click/drag the pin on the map. Lat, long, and timezone fill automatically.</p>
+                    <h3 class="master-location-title">{{t 'location'}}</h3>
+                    <p class="master-hint">{{t 'location_hint'}}</p>
                     <div class="master-location-search-wrap">
-                        <label for="addCitySearch">Search city</label>
-                        <input type="search" id="addCitySearch" class="form-control master-input master-city-search" placeholder="Start typing a city name..." autocomplete="off">
+                        <label for="addCitySearch">{{t 'search_city'}}</label>
+                        <input type="search" id="addCitySearch" class="form-control master-input master-city-search" placeholder="{{t 'search_city_placeholder'}}" autocomplete="off">
                         <div class="master-city-results" hidden></div>
                     </div>
                     <input type="hidden" name="city" class="master-city-hidden" value="">
@@ -53,15 +75,15 @@
                     <input type="hidden" name="long" class="master-lng-hidden" value="82.9318">
                     <div class="master-coords-row">
                         <div class="master-field">
-                            <label>Latitude</label>
+                            <label>{{t 'latitude'}}</label>
                             <input type="text" class="form-control master-input master-lat-display" readonly>
                         </div>
                         <div class="master-field">
-                            <label>Longitude</label>
+                            <label>{{t 'longitude'}}</label>
                             <input type="text" class="form-control master-input master-lng-display" readonly>
                         </div>
                         <div class="master-field master-field-wide">
-                            <label for="addTimezone">Timezone</label>
+                            <label for="addTimezone">{{t 'timezone'}}</label>
                             <input type="text" name="timezone" id="addTimezone" class="form-control master-input master-timezone-input" value="Asia/Novosibirsk">
                         </div>
                     </div>
@@ -69,7 +91,7 @@
                 </div>
 
                 <div class="master-form-actions">
-                    <button type="submit" class="btn master-btn master-btn-primary">Create community</button>
+                    <button type="submit" class="btn master-btn master-btn-primary">{{t 'create_community'}}</button>
                 </div>
             </form>
         </div>
@@ -77,7 +99,7 @@
 
     <section class="master-panel">
         <div class="master-panel-header">
-            <h2>Existing communities ({{synagogues.length}})</h2>
+            <h2>{{t 'existing_communities'}} ({{synagogues.length}})</h2>
         </div>
         <div class="master-panel-body">
             {{#if synagogues.length}}
@@ -89,14 +111,15 @@
                             <h3>{{this.name}}</h3>
                             <p class="master-community-meta">
                                 <code>{{this.slug}}</code>
-                                · {{#if this.location.city}}{{this.location.city}}{{else}}No city{{/if}}
+                                · {{#if this.location.city}}{{this.location.city}}{{else}}{{t 'no_city'}}{{/if}}
                                 · {{#if this.location.timezone}}{{this.location.timezone}}{{else}}Asia/Novosibirsk{{/if}}
+                                · {{this.language}}/{{this.adminLanguage}}
                             </p>
                         </div>
                         <div class="master-community-card-links">
-                            <a href="/s/{{this.slug}}" class="btn master-btn master-btn-secondary btn-sm" target="_blank" rel="noopener">Board</a>
-                            <a href="/admin/login" class="btn master-btn master-btn-secondary btn-sm" target="_blank" rel="noopener">Admin</a>
-                            <button type="button" class="btn master-btn master-btn-secondary btn-sm master-toggle-edit" aria-expanded="false">Edit</button>
+                            <a href="/s/{{this.slug}}" class="btn master-btn master-btn-secondary btn-sm" target="_blank" rel="noopener">{{t 'board'}}</a>
+                            <a href="/admin/login" class="btn master-btn master-btn-secondary btn-sm" target="_blank" rel="noopener">{{t 'admin'}}</a>
+                            <button type="button" class="btn master-btn master-btn-secondary btn-sm master-toggle-edit" data-label-edit="{{t 'edit'}}" data-label-close="{{t 'close'}}" aria-expanded="false">{{t 'edit'}}</button>
                         </div>
                     </header>
                     <div class="master-community-edit" hidden>
@@ -104,24 +127,46 @@
                             <input type="hidden" name="id" value="{{this._id}}">
                             <div class="master-form-grid">
                                 <div class="master-field">
-                                    <label>Community name</label>
+                                    <label>{{t 'community_name'}}</label>
                                     <input type="text" name="name" class="form-control master-input" value="{{this.name}}" required>
                                 </div>
                                 <div class="master-field">
-                                    <label>Admin login (slug)</label>
+                                    <label>{{t 'admin_slug'}}</label>
                                     <input type="text" name="slug" class="form-control master-input master-slug-input" value="{{this.slug}}" required>
                                 </div>
                                 <div class="master-field">
-                                    <label>New password (optional)</label>
-                                    <input type="password" name="adminPassword" class="form-control master-input" placeholder="Leave blank to keep" autocomplete="new-password">
+                                    <label>{{t 'new_password_optional'}}</label>
+                                    <input type="password" name="adminPassword" class="form-control master-input" placeholder="{{t 'new_password_placeholder'}}" autocomplete="new-password">
+                                </div>
+                            </div>
+
+                            <div class="master-lang-block">
+                                <h3 class="master-location-title">{{t 'languages_section'}}</h3>
+                                <div class="master-form-grid">
+                                    <div class="master-field">
+                                        <label>{{t 'display_language'}}</label>
+                                        <select name="language" class="form-control master-input">
+                                            <option value="ru" {{#if (eq this.language 'ru')}}selected{{/if}}>{{t 'lang_ru'}}</option>
+                                            <option value="en" {{#if (eq this.language 'en')}}selected{{/if}}>{{t 'lang_en'}}</option>
+                                            <option value="he" {{#if (eq this.language 'he')}}selected{{/if}}>{{t 'lang_he'}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="master-field">
+                                        <label>{{t 'admin_language'}}</label>
+                                        <select name="adminLanguage" class="form-control master-input">
+                                            <option value="ru" {{#if (eq this.adminLanguage 'ru')}}selected{{/if}}>{{t 'lang_ru'}}</option>
+                                            <option value="en" {{#if (eq this.adminLanguage 'en')}}selected{{/if}}>{{t 'lang_en'}}</option>
+                                            <option value="he" {{#if (eq this.adminLanguage 'he')}}selected{{/if}}>{{t 'lang_he'}}</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
 
                             <div class="master-location-block">
-                                <h3 class="master-location-title">Location</h3>
+                                <h3 class="master-location-title">{{t 'location'}}</h3>
                                 <div class="master-location-search-wrap">
-                                    <label>Search city</label>
-                                    <input type="search" class="form-control master-input master-city-search" value="{{this.location.city}}" placeholder="Search city..." autocomplete="off">
+                                    <label>{{t 'search_city'}}</label>
+                                    <input type="search" class="form-control master-input master-city-search" value="{{this.location.city}}" placeholder="{{t 'search_city_placeholder'}}" autocomplete="off">
                                     <div class="master-city-results" hidden></div>
                                 </div>
                                 <input type="hidden" name="city" class="master-city-hidden" value="{{this.location.city}}">
@@ -129,15 +174,15 @@
                                 <input type="hidden" name="long" class="master-lng-hidden" value="{{this.location.long}}">
                                 <div class="master-coords-row">
                                     <div class="master-field">
-                                        <label>Latitude</label>
+                                        <label>{{t 'latitude'}}</label>
                                         <input type="text" class="form-control master-input master-lat-display" readonly value="{{this.location.lat}}">
                                     </div>
                                     <div class="master-field">
-                                        <label>Longitude</label>
+                                        <label>{{t 'longitude'}}</label>
                                         <input type="text" class="form-control master-input master-lng-display" readonly value="{{this.location.long}}">
                                     </div>
                                     <div class="master-field master-field-wide">
-                                        <label>Timezone</label>
+                                        <label>{{t 'timezone'}}</label>
                                         <input type="text" name="timezone" class="form-control master-input master-timezone-input" value="{{#if this.location.timezone}}{{this.location.timezone}}{{else}}Asia/Novosibirsk{{/if}}">
                                     </div>
                                 </div>
@@ -145,8 +190,8 @@
                             </div>
 
                             <div class="master-edit-actions">
-                                <button type="submit" class="btn master-btn master-btn-primary">Save changes</button>
-                                <button type="submit" formaction="/master/delete" formmethod="POST" class="btn master-btn master-btn-danger" onclick="return confirm('Delete this community permanently?');">Delete</button>
+                                <button type="submit" class="btn master-btn master-btn-primary">{{t 'save_changes'}}</button>
+                                <button type="submit" formaction="/master/delete" formmethod="POST" class="btn master-btn master-btn-danger" onclick="return confirm('{{t 'delete_confirm'}}');">{{t 'delete'}}</button>
                             </div>
                         </form>
                     </div>
@@ -154,7 +199,7 @@
                 {{/each}}
             </div>
             {{else}}
-            <p class="master-empty">No communities yet. Create one above.</p>
+            <p class="master-empty">{{t 'no_communities'}}</p>
             {{/if}}
         </div>
     </section>

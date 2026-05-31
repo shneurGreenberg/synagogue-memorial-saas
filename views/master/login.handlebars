@@ -1,9 +1,9 @@
 <div class="master-login-page">
     <div class="master-login-card">
         <div class="master-login-header">
-            <span class="master-brand-badge">PLATFORM</span>
-            <h1>Master Admin</h1>
-            <p>Manage all synagogue memorial communities</p>
+            <span class="master-brand-badge">{{t 'platform_badge'}}</span>
+            <h1>{{t 'login_title'}}</h1>
+            <p>{{t 'login_subtitle'}}</p>
         </div>
         <div class="master-login-body">
             {{#if error}}
@@ -11,10 +11,10 @@
             {{/if}}
             <form method="POST" action="/master/login" class="master-form">
                 <div class="form-group">
-                    <label for="password">Master password</label>
+                    <label for="password">{{t 'login_password'}}</label>
                     <input type="password" name="password" id="password" class="form-control master-input" required autocomplete="current-password">
                 </div>
-                <button type="submit" class="btn master-btn master-btn-primary master-btn-block">Sign in</button>
+                <button type="submit" class="btn master-btn master-btn-primary master-btn-block">{{t 'sign_in'}}</button>
             </form>
         </div>
     </div>

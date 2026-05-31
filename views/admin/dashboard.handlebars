@@ -6,6 +6,13 @@
         </div>
     </header>
 
+  {{#if error}}
+    <div class="alert alert-danger alert-dismissible fade show admin-alert" role="alert">
+        {{#if (eq error 'upload')}}{{t 'upload_error'}}{{else}}{{error}}{{/if}}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+  {{/if}}
+
   {{#if saved}}
     <div class="alert alert-success alert-dismissible fade show admin-alert" role="alert">
         {{t 'saved_settings'}}
@@ -13,7 +20,7 @@
     </div>
   {{/if}}
 
-    <form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data" class="settings-form" id="settingsForm">
+    <form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data" class="settings-form" id="settingsForm" data-save-label="{{t 'save'}}">
         <section class="admin-panel">
             <div class="admin-panel-header">
                 <h2>{{t 'admin_panel_section'}}</h2>
@@ -162,11 +169,16 @@
                 <h2>{{t 'board_features_section'}}</h2>
             </div>
             <div class="admin-panel-body">
-                <label class="form-check form-check-modern toggle-switch-wrap">
-                    <input type="checkbox" class="form-check-input" id="shabbatTimesEnabled" name="shabbatTimesEnabled" value="1" {{#if synagogue.shabbatTimesEnabled}}checked{{/if}}>
-                    <span>{{t 'enable_shabbat_times'}}</span>
-                </label>
-                <p class="field-hint admin-theme-setting-hint">{{t 'enable_shabbat_times_help'}}</p>
+                <div class="admin-theme-setting shabbat-times-setting">
+                    <div class="admin-theme-setting-label">{{t 'enable_shabbat_times'}}</div>
+                    <div class="admin-theme-setting-control">
+                        <label class="toggle-switch" for="shabbatTimesEnabled">
+                            <input type="checkbox" id="shabbatTimesEnabled" name="shabbatTimesEnabled" value="1" {{#if synagogue.shabbatTimesEnabled}}checked{{/if}}>
+                            <span class="toggle-slider" aria-hidden="true"></span>
+                        </label>
+                    </div>
+                    <p class="field-hint admin-theme-setting-hint">{{t 'enable_shabbat_times_help'}}</p>
+                </div>
             </div>
         </section>
 
@@ -370,5 +382,37 @@
             frame.src = '/s/' + slug + '?' + params.toString();
             fitBoardPreviewTv();
         }
+
+        var settingsForm = document.getElementById('settingsForm');
+        if (settingsForm) {
+            settingsForm.querySelectorAll('input[type="file"]').forEach(function (input) {
+                input.addEventListener('change', function () {
+                    var card = input.closest('.media-upload-card');
+                    var hint = card && card.querySelector('.file-selected-hint');
+                    if (!hint) {
+                        hint = document.createElement('p');
+                        hint.className = 'field-hint file-selected-hint';
+                        card.appendChild(hint);
+                    }
+                    hint.textContent = input.files && input.files[0]
+                        ? input.files[0].name + ' — ' + (settingsForm.dataset.saveLabel || '')
+                        : '';
+                });
+            });
+
+            settingsForm.addEventListener('submit', function () {
+                var overlay = document.getElementById('adminBusyOverlay');
+                var busyText = document.getElementById('adminBusyText');
+                if (overlay) {
+                    overlay.hidden = false;
+                    overlay.setAttribute('aria-hidden', 'false');
+                    document.body.classList.add('admin-is-busy');
+                }
+                if (busyText) {
+                    busyText.textContent = '{{t 'saving'}}';
+                }
+            });
+        }
+
     })();
 </script>
