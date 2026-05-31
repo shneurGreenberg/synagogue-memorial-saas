@@ -1,39 +1,40 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 import { getBoardData } from '../lib/board-data';
 import {
+  fetchShabbatTimes,
   formatShabbatClockTime,
   getBoardTimezone,
-  getDisplayedShabbatTimes,
   msUntilNextRefresh,
 } from '../lib/shabbat-times';
 
 function ShabbatTimesInner({ t }) {
-  const [times, setTimes] = useState(() => getDisplayedShabbatTimes());
-
-  const refresh = useCallback(() => {
-    setTimes(getDisplayedShabbatTimes());
-  }, []);
+  const [times, setTimes] = useState(null);
 
   useEffect(() => {
-    refresh();
-    const interval = window.setInterval(refresh, 60 * 1000);
-
+    let cancelled = false;
     let timeout;
-    const schedule = () => {
+
+    async function load() {
+      const data = getBoardData();
+      const next = await fetchShabbatTimes(data);
+      if (cancelled) {
+        return;
+      }
+      setTimes(next);
       window.clearTimeout(timeout);
-      timeout = window.setTimeout(() => {
-        refresh();
-        schedule();
-      }, msUntilNextRefresh());
-    };
-    schedule();
+      timeout = window.setTimeout(load, msUntilNextRefresh(next));
+    }
+
+    load();
+    const interval = window.setInterval(load, 60 * 60 * 1000);
 
     return () => {
+      cancelled = true;
       window.clearInterval(interval);
       window.clearTimeout(timeout);
     };
-  }, [refresh]);
+  }, []);
 
   if (!times) {
     return null;

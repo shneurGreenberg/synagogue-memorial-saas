@@ -1,82 +1,73 @@
-import Hebcal from 'hebcal';
-import { configureNovosibirsk } from './novosibirsk';
+const HEBCAL_API = 'https://www.hebcal.com/shabbat?cfg=json';
 
 const DEFAULT_TIMEZONE = 'Asia/Novosibirsk';
-const CANDLE_LIGHTING_MINUTES = 18;
-const HAVDALAH_MINUTES = 42;
-
-function atNoon(date) {
-  const copy = new Date(date);
-  copy.setHours(12, 0, 0, 0);
-  return copy;
-}
-
-function addMinutes(date, minutes) {
-  if (!date) {
-    return null;
-  }
-  return new Date(new Date(date).getTime() + minutes * 60 * 1000);
-}
-
-function subtractMinutes(date, minutes) {
-  if (!date) {
-    return null;
-  }
-  return new Date(new Date(date).getTime() - minutes * 60 * 1000);
-}
+const DEFAULT_LAT = 54.9833;
+const DEFAULT_LNG = 82.8964;
 
 export function getBoardTimezone(data) {
   return (data && data.location && data.location.timezone) || DEFAULT_TIMEZONE;
 }
 
-function getShabbatEnter(hFriday) {
-  return subtractMinutes(hFriday.sunset(), CANDLE_LIGHTING_MINUTES);
+export function getBoardLocation(data) {
+  const loc = (data && data.location) || {};
+  return {
+    lat: Number.isFinite(Number(loc.lat)) ? Number(loc.lat) : DEFAULT_LAT,
+    lng: Number.isFinite(Number(loc.long)) ? Number(loc.long) : DEFAULT_LNG,
+    timezone: getBoardTimezone(data),
+  };
 }
 
-function getShabbatExit(hSaturday) {
-  return addMinutes(hSaturday.sunset(), HAVDALAH_MINUTES);
+function buildHebcalUrl(location) {
+  const params = new URLSearchParams({
+    geo: 'pos',
+    latitude: String(location.lat),
+    longitude: String(location.lng),
+    tzid: location.timezone,
+    M: 'on',
+    b: '18',
+  });
+  return `${HEBCAL_API}&${params.toString()}`;
 }
 
-export function getDisplayedShabbatTimes(now = new Date()) {
-  try {
-    configureNovosibirsk();
+function parseHebcalItems(items, now = new Date()) {
+  let enter = null;
+  let exit = null;
 
-    for (let offset = -7; offset <= 28; offset += 1) {
-      const friday = atNoon(now);
-      friday.setDate(friday.getDate() + offset);
-
-      const hFriday = new Hebcal.HDate(friday);
-      if (hFriday.getDay() !== 5) {
-        continue;
-      }
-
-      const enter = getShabbatEnter(hFriday);
-      if (!enter) {
-        continue;
-      }
-
-      const saturday = new Date(friday);
-      saturday.setDate(saturday.getDate() + 1);
-      const hSaturday = new Hebcal.HDate(atNoon(saturday));
-      const exit = getShabbatExit(hSaturday);
-      if (!exit) {
-        continue;
-      }
-
-      if (exit > now) {
-        return {
-          enter,
-          exit,
-          sunrise: hSaturday.sunrise(),
-          sunset: hFriday.sunset(),
-        };
-      }
+  for (const item of items || []) {
+    if (item.category === 'candles' && item.date) {
+      enter = new Date(item.date);
     }
-  } catch (err) {
-    console.error('Shabbat times calculation failed:', err);
+    if (item.category === 'havdalah' && item.date) {
+      exit = new Date(item.date);
+    }
   }
 
-  return null;
+  if (!enter || !exit) {
+    return null;
+  }
+
+  if (exit <= now) {
+    return null;
+  }
+
+  return { enter, exit };
+}
+
+export async function fetchShabbatTimes(data, now = new Date()) {
+  const location = getBoardLocation(data);
+  const url = buildHebcalUrl(location);
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Hebcal API ${response.status}`);
+    }
+    const payload = await response.json();
+    return parseHebcalItems(payload.items, now);
+  } catch (err) {
+    console.error('Shabbat times fetch failed:', err);
+    return null;
+  }
 }
 
 export function formatShabbatClockTime(date, timezone = DEFAULT_TIMEZONE) {
@@ -93,8 +84,7 @@ export function formatShabbatClockTime(date, timezone = DEFAULT_TIMEZONE) {
   }).format(value);
 }
 
-export function msUntilNextRefresh(now = new Date()) {
-  const times = getDisplayedShabbatTimes(now);
+export function msUntilNextRefresh(times, now = new Date()) {
   if (!times) {
     return 60 * 60 * 1000;
   }
@@ -108,5 +98,5 @@ export function msUntilNextRefresh(now = new Date()) {
     return 60 * 1000;
   }
 
-  return Math.min(...upcoming, 60 * 60 * 1000);
+  return Math.min(...upcoming, 6 * 60 * 60 * 1000);
 }
