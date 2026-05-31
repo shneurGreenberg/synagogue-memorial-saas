@@ -1,33 +1,21 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <title>Master Admin Login</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-
-<body class="bg-light">
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">Master Admin Login</div>
-                    <div class="card-body">
-                        {{#if error}}
-                        <div class="alert alert-danger">{{error}}</div>
-                        {{/if}}
-                        <form method="POST" action="/master/login">
-                            <div class="form-group">
-                                <label>Password</label>
-                                <input type="password" name="password" class="form-control" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block">Login</button>
-                        </form>
-                    </div>
+<div class="master-login-page">
+    <div class="master-login-card">
+        <div class="master-login-header">
+            <span class="master-brand-badge">PLATFORM</span>
+            <h1>Master Admin</h1>
+            <p>Manage all synagogue memorial communities</p>
+        </div>
+        <div class="master-login-body">
+            {{#if error}}
+            <div class="master-alert master-alert-danger">{{error}}</div>
+            {{/if}}
+            <form method="POST" action="/master/login" class="master-form">
+                <div class="form-group">
+                    <label for="password">Master password</label>
+                    <input type="password" name="password" id="password" class="form-control master-input" required autocomplete="current-password">
                 </div>
-            </div>
+                <button type="submit" class="btn master-btn master-btn-primary master-btn-block">Sign in</button>
+            </form>
         </div>
     </div>
-</body>
-
-</html>
+</div>

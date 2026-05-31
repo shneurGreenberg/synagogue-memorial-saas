@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Platform Master Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/master.css">
+</head>
+
+<body class="master-body">
+    {{#if showMasterNav}}
+    <header class="master-topbar">
+        <div class="master-topbar-inner">
+            <div class="master-brand">
+                <span class="master-brand-badge">PLATFORM</span>
+                <span class="master-brand-title">Kadish Master</span>
+            </div>
+            <nav class="master-topnav">
+                <a href="/master/dashboard" class="master-topnav-link">Communities</a>
+                <a href="/" class="master-topnav-link" target="_blank" rel="noopener">Public home</a>
+                <a href="/master/logout" class="master-topnav-link master-topnav-logout">Log out</a>
+            </nav>
+        </div>
+    </header>
+    {{/if}}
+    <main class="master-main">
+        {{{body}}}
+    </main>
+</body>
+
+</html>

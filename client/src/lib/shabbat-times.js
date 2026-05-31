@@ -1,6 +1,9 @@
 import Hebcal from 'hebcal';
+import { configureNovosibirsk } from './novosibirsk';
 
 const DEFAULT_TIMEZONE = 'Asia/Novosibirsk';
+const CANDLE_LIGHTING_MINUTES = 18;
+const HAVDALAH_MINUTES = 42;
 
 function atNoon(date) {
   const copy = new Date(date);
@@ -8,41 +11,69 @@ function atNoon(date) {
   return copy;
 }
 
+function addMinutes(date, minutes) {
+  if (!date) {
+    return null;
+  }
+  return new Date(new Date(date).getTime() + minutes * 60 * 1000);
+}
+
+function subtractMinutes(date, minutes) {
+  if (!date) {
+    return null;
+  }
+  return new Date(new Date(date).getTime() - minutes * 60 * 1000);
+}
+
 export function getBoardTimezone(data) {
   return (data && data.location && data.location.timezone) || DEFAULT_TIMEZONE;
 }
 
+function getShabbatEnter(hFriday) {
+  return subtractMinutes(hFriday.sunset(), CANDLE_LIGHTING_MINUTES);
+}
+
+function getShabbatExit(hSaturday) {
+  return addMinutes(hSaturday.sunset(), HAVDALAH_MINUTES);
+}
+
 export function getDisplayedShabbatTimes(now = new Date()) {
-  for (let offset = -7; offset <= 28; offset += 1) {
-    const friday = atNoon(now);
-    friday.setDate(friday.getDate() + offset);
+  try {
+    configureNovosibirsk();
 
-    const hFriday = new Hebcal.HDate(friday);
-    if (hFriday.getDay() !== 5) {
-      continue;
-    }
+    for (let offset = -7; offset <= 28; offset += 1) {
+      const friday = atNoon(now);
+      friday.setDate(friday.getDate() + offset);
 
-    const enter = hFriday.candleLighting();
-    if (!enter) {
-      continue;
-    }
+      const hFriday = new Hebcal.HDate(friday);
+      if (hFriday.getDay() !== 5) {
+        continue;
+      }
 
-    const saturday = new Date(friday);
-    saturday.setDate(saturday.getDate() + 1);
-    const hSaturday = new Hebcal.HDate(atNoon(saturday));
-    const exit = hSaturday.havdalah();
-    if (!exit) {
-      continue;
-    }
+      const enter = getShabbatEnter(hFriday);
+      if (!enter) {
+        continue;
+      }
 
-    if (exit > now) {
-      return {
-        enter,
-        exit,
-        sunrise: hSaturday.sunrise(),
-        sunset: hFriday.sunset(),
-      };
+      const saturday = new Date(friday);
+      saturday.setDate(saturday.getDate() + 1);
+      const hSaturday = new Hebcal.HDate(atNoon(saturday));
+      const exit = getShabbatExit(hSaturday);
+      if (!exit) {
+        continue;
+      }
+
+      if (exit > now) {
+        return {
+          enter,
+          exit,
+          sunrise: hSaturday.sunrise(),
+          sunset: hFriday.sunset(),
+        };
+      }
     }
+  } catch (err) {
+    console.error('Shabbat times calculation failed:', err);
   }
 
   return null;

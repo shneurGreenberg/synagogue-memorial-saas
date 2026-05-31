@@ -1,61 +1,133 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Master Dashboard</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-
-<body>
-    <nav class="navbar navbar-dark bg-dark">
-        <span class="navbar-brand mb-0 h1">Master Admin</span>
-        <a href="/master/logout" class="btn btn-outline-light">Logout</a>
-    </nav>
-
-    <div class="container mt-4">
-        <h3>Manage Communities</h3>
-
-        <div class="card mb-4">
-            <div class="card-header">Add New Community</div>
-            <div class="card-body">
-                <form method="POST" action="/master/add" class="form-inline">
-                    <input type="text" name="name" class="form-control mr-2" placeholder="Name" required>
-                    <input type="text" name="slug" class="form-control mr-2" placeholder="Slug (URL)" required>
-                    <input type="password" name="adminPassword" class="form-control mr-2" placeholder="Admin Password"
-                        required>
-                    <button type="submit" class="btn btn-success">Create</button>
-                </form>
-            </div>
+<div class="master-page">
+    <header class="master-page-header">
+        <div>
+            <h1>Communities</h1>
+            <p class="master-subtitle">Create synagogues, set admin login (slug), password, and location for Shabbat times.</p>
         </div>
+    </header>
 
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Slug</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each synagogues}}
-                <tr>
-                    <td>{{this.name}}</td>
-                    <td><a href="/s/{{this.slug}}" target="_blank">{{this.slug}}</a></td>
-                    <td>
-                        <a href="/admin/login" class="btn btn-sm btn-info" target="_blank">Admin Login</a>
-                        <form method="POST" action="/master/delete" class="d-inline"
-                            onsubmit="return confirm('Are you sure?');">
-                            <input type="hidden" name="id" value="{{this._id}}">
-                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                {{/each}}
-            </tbody>
-        </table>
+    {{#if saved}}
+    <div class="master-alert master-alert-success">Saved successfully.</div>
+    {{/if}}
+    {{#if error}}
+    <div class="master-alert master-alert-danger">
+        {{#if (eq error 'slug_exists')}}That login slug is already in use.
+        {{else}}{{#if (eq error 'invalid_slug')}}Slug must be lowercase letters, numbers, and hyphens only.
+        {{else}}{{#if (eq error 'missing_fields')}}Please fill in all required fields.
+        {{else}}{{error}}{{/if}}{{/if}}{{/if}}
     </div>
-</body>
+    {{/if}}
 
-</html>
+    <section class="master-panel">
+        <div class="master-panel-header">
+            <h2>Add new community</h2>
+        </div>
+        <div class="master-panel-body">
+            <form method="POST" action="/master/add" class="master-form-grid">
+                <div class="master-field">
+                    <label for="addName">Community name</label>
+                    <input type="text" name="name" id="addName" class="form-control master-input" required placeholder="Novosibirsk Synagogue">
+                </div>
+                <div class="master-field">
+                    <label for="addSlug">Admin login (slug)</label>
+                    <input type="text" name="slug" id="addSlug" class="form-control master-input" required pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="novosibirsk">
+                    <span class="master-hint">Used at /admin/login — lowercase, no spaces</span>
+                </div>
+                <div class="master-field">
+                    <label for="addPassword">Admin password</label>
+                    <input type="password" name="adminPassword" id="addPassword" class="form-control master-input" required minlength="4" autocomplete="new-password">
+                </div>
+                <div class="master-field">
+                    <label for="addCity">City</label>
+                    <input type="text" name="city" id="addCity" class="form-control master-input" placeholder="Novosibirsk">
+                </div>
+                <div class="master-field">
+                    <label for="addLat">Latitude</label>
+                    <input type="number" step="any" name="lat" id="addLat" class="form-control master-input" placeholder="54.9833">
+                </div>
+                <div class="master-field">
+                    <label for="addLong">Longitude</label>
+                    <input type="number" step="any" name="long" id="addLong" class="form-control master-input" placeholder="82.8964">
+                </div>
+                <div class="master-field master-field-wide">
+                    <label for="addTimezone">Timezone (IANA)</label>
+                    <input type="text" name="timezone" id="addTimezone" class="form-control master-input" placeholder="Asia/Novosibirsk">
+                    <span class="master-hint">Clock &amp; Shabbat times use this timezone</span>
+                </div>
+                <div class="master-form-actions">
+                    <button type="submit" class="btn master-btn master-btn-primary">Create community</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="master-panel">
+        <div class="master-panel-header">
+            <h2>Existing communities ({{synagogues.length}})</h2>
+        </div>
+        <div class="master-panel-body master-table-wrap">
+            {{#if synagogues.length}}
+            <table class="master-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Login slug</th>
+                        <th>Location</th>
+                        <th>Board</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each synagogues}}
+                    <tr>
+                        <td colspan="5" class="master-edit-row">
+                            <form method="POST" action="/master/edit" class="master-edit-form">
+                                <input type="hidden" name="id" value="{{this._id}}">
+                                <div class="master-edit-grid">
+                                    <div class="master-field">
+                                        <label>Name</label>
+                                        <input type="text" name="name" class="form-control master-input" value="{{this.name}}" required>
+                                    </div>
+                                    <div class="master-field">
+                                        <label>Login slug</label>
+                                        <input type="text" name="slug" class="form-control master-input" value="{{this.slug}}" required pattern="[a-z0-9]+(-[a-z0-9]+)*">
+                                    </div>
+                                    <div class="master-field">
+                                        <label>New password (optional)</label>
+                                        <input type="password" name="adminPassword" class="form-control master-input" placeholder="Leave blank to keep" autocomplete="new-password">
+                                    </div>
+                                    <div class="master-field">
+                                        <label>City</label>
+                                        <input type="text" name="city" class="form-control master-input" value="{{this.location.city}}">
+                                    </div>
+                                    <div class="master-field">
+                                        <label>Lat</label>
+                                        <input type="number" step="any" name="lat" class="form-control master-input" value="{{this.location.lat}}">
+                                    </div>
+                                    <div class="master-field">
+                                        <label>Long</label>
+                                        <input type="number" step="any" name="long" class="form-control master-input" value="{{this.location.long}}">
+                                    </div>
+                                    <div class="master-field master-field-wide">
+                                        <label>Timezone</label>
+                                        <input type="text" name="timezone" class="form-control master-input" value="{{#if this.location.timezone}}{{this.location.timezone}}{{else}}Asia/Novosibirsk{{/if}}">
+                                    </div>
+                                    <div class="master-edit-actions">
+                                        <a href="/s/{{this.slug}}" class="btn master-btn master-btn-secondary" target="_blank" rel="noopener">Open board</a>
+                                        <a href="/admin/login" class="btn master-btn master-btn-secondary" target="_blank" rel="noopener">Admin login</a>
+                                        <button type="submit" class="btn master-btn master-btn-primary">Save</button>
+                                        <button type="submit" formaction="/master/delete" formmethod="POST" class="btn master-btn master-btn-danger" onclick="return confirm('Delete this community permanently?');">Delete</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+            {{else}}
+            <p class="master-empty">No communities yet. Create one above.</p>
+            {{/if}}
+        </div>
+    </section>
+</div>
