@@ -15,7 +15,8 @@
     "build:board": "vite build --config vite.board.config.mjs",
     "dev:board": "vite build --config vite.board.config.mjs --watch",
     "verify:yizkor": "node scripts/verify-yizkor-import.js",
-    "import:yizkor": "node scripts/import-yizkor.js"
+    "import:yizkor": "node scripts/import-yizkor.js",
+    "suggest:photos": "node scripts/suggest-missing-photos.js"
   },
   "dependencies": {
     "@babel/core": "^7.13.10",

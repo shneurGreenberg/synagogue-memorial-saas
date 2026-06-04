@@ -190,13 +190,21 @@ async function main() {
   }
 
   if (missing.length) {
-    console.warn(`\nStill missing ${missing.length} files (not found under source or --photos-from):`);
-    console.warn(missing.slice(0, 12).join(', ') + (missing.length > 12 ? '...' : ''));
-    console.warn('\nPut image files inside the Yizkor folder (any subfolder), e.g.:');
-    console.warn('  C:\\Users\\user\\Downloads\\יזכור\\photos\\148.jpg');
-    console.warn('Or point to an existing photos folder:');
-    console.warn('  --photos-from="C:\\Users\\user\\synagogue-memorial-saas\\photos"');
-    console.warn('  --photos-from="C:\\path\\to\\old-project\\photos"');
+    console.warn(`\nStill missing ${missing.length} files:`);
+    console.warn(missing.join(', '));
+    const details = result.missingDetails || [];
+    for (const d of details) {
+      console.warn(`\n  [${d.id}] ${d.name} → ${d.photo}`);
+      if (d.suggestions?.length) {
+        console.warn('    Possible matches in Yizkor folder:');
+        d.suggestions.forEach((e) => {
+          console.warn(`      - ${e.relativePath || e.name}`);
+        });
+      } else {
+        console.warn('    No similar file — add photo manually to Yizkor/photos/');
+      }
+    }
+    console.warn('\nRun: node scripts/suggest-missing-photos.js --source="..."');
   }
 
   if (args.syncJson) {
