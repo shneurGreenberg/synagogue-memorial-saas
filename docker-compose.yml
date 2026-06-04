@@ -14,8 +14,11 @@ services:
     environment:
       MONGODB_URI: mongodb://mongo:27017/synagogue
       SESSION_SECRET: change-me-in-production
+    volumes:
+      - app_photos:/app/photos
     depends_on:
       - mongo
 
 volumes:
   mongo_data:
+  app_photos:

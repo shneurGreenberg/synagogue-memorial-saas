@@ -10,6 +10,7 @@
     "restart": "yarn stop && pm2 start app.js && pm2 logs",
     "stop": "pm2 kill",
     "seed": "node scripts/seed.js",
+    "import:yizkor": "node scripts/import-yizkor.js",
     "seed:photos": "node scripts/seed-photos.js --slug=novosibirsk --force",
     "build:board": "vite build --config vite.board.config.mjs",
     "dev:board": "vite build --config vite.board.config.mjs --watch"
