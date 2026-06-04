@@ -13,9 +13,9 @@ const Synagogue = require('../models/Synagogue');
 const {
   indexImagesRecursive,
   mergeImageIndexes,
-  lookupImage,
   countImageFiles,
   sampleIndexPaths,
+  countResolvedPhotos,
 } = require('../lib/yizkor-photos');
 
 const PHOTOS_DIR = path.join(__dirname, '..', 'photos');
@@ -57,18 +57,6 @@ function buildSearchIndex(sourceDir, photosFrom) {
     indexes.push(indexImagesRecursive(path.resolve(photosFrom)));
   }
   return mergeImageIndexes(...indexes);
-}
-
-function checkPhotoRefs(people, index) {
-  const missing = [];
-  let okCount = 0;
-  const withPhoto = people.filter((p) => p.photo).length;
-  for (const p of people) {
-    if (!p.photo) continue;
-    if (lookupImage(index, p.photo)) okCount += 1;
-    else missing.push({ id: p.id, name: p.name, photo: p.photo });
-  }
-  return { missing, okCount, withPhoto };
 }
 
 function listProjectPhotos() {
@@ -179,8 +167,9 @@ async function main() {
     console.log('Copy your photos into e.g. C:\\Users\\user\\Downloads\\יזכור\\photos\\');
   }
 
-  const sourceRefs = checkPhotoRefs(sourcePeople, searchIndex);
-  const projectRefs = checkProjectPhotos(sourcePeople);
+  const sourceRefs = countResolvedPhotos(searchIndex, sourcePeople);
+  const projectIndex = indexImagesRecursive(PHOTOS_DIR);
+  const projectRefs = countResolvedPhotos(projectIndex, sourcePeople);
 
   printSection('תמונות / Photos');
   console.log(

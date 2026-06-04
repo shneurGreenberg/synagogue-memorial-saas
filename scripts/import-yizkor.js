@@ -17,7 +17,7 @@ const Synagogue = require('../models/Synagogue');
 const {
   indexImagesRecursive,
   mergeImageIndexes,
-  copyReferencedPhotos,
+  copyReferencedPhotosForPeople,
   countImageFiles,
   sampleIndexPaths,
 } = require('../lib/yizkor-photos');
@@ -140,6 +140,7 @@ async function main() {
 
   const dbPath = findDatabaseFile(sourceDir);
   const data = loadDatabase(dbPath);
+  // photo refs from people
   const photoNames = data.people
     .map((p) => (p.photo && String(p.photo).trim()) || '')
     .filter(Boolean);
@@ -169,14 +170,22 @@ async function main() {
 
   if (args.allImages) {
     const allNames = [...new Set([...imageIndex.values()].map((e) => e.name))];
-    const result = copyReferencedPhotos(imageIndex, allNames, PHOTOS_DIR);
+    const result = copyReferencedPhotosForPeople(imageIndex, allNames.map((photo, id) => ({ id, photo })), PHOTOS_DIR);
     copied = result.copied;
     missing = result.missing;
+    if (result.matched?.length) {
+      console.log('Sample renames:');
+      result.matched.slice(0, 6).forEach((m) => console.log(`  ${m.photo} <- ${m.from}`));
+    }
     console.log(`Copied ALL indexed images: ${copied}`);
   } else {
-    const result = copyReferencedPhotos(imageIndex, photoNames, PHOTOS_DIR);
+    const result = copyReferencedPhotosForPeople(imageIndex, data.people, PHOTOS_DIR);
     copied = result.copied;
     missing = result.missing;
+    if (result.matched?.length) {
+      console.log('Sample renames:');
+      result.matched.slice(0, 6).forEach((m) => console.log(`  ${m.photo} <- ${m.from}`));
+    }
     console.log(`Copied ${copied}/${photoNames.length} referenced photos → ${PHOTOS_DIR}`);
   }
 
