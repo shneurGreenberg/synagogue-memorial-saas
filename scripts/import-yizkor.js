@@ -2,56 +2,56 @@
 /**
  * Import memorial data and photos from a local "יזכור" / yizkor folder.
  *
- * Expected layout (any of these work):
- *   <folder>/database.json
- *   <folder>/photos/*.jpg
- *   — or photos next to database.json
+ * Photos are searched recursively (all subfolders). Optional second folder:
+ *   --photos-from="C:\path\to\old\photos"
  *
- * Usage (Windows, from project root):
- *   node scripts/import-yizkor.js --source="C:\Users\user\Downloads\יזכור"
- *
- * Options:
- *   --source=PATH     Required. Folder with database.json and images
- *   --slug=novosibirsk   Synagogue slug (default: novosibirsk)
- *   --sync-json       Also copy database.json into the repo root
- *   --skip-db         Only copy photos; do not update MongoDB
- *   --force           Overwrite existing people in MongoDB
+ * Usage (Windows):
+ *   node scripts/import-yizkor.js --source="C:\Users\user\Downloads\יזכור" --force --sync-json
+ *   node scripts/import-yizkor.js --source="..." --photos-from="C:\...\photos" --force
  */
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
 const Synagogue = require('../models/Synagogue');
+const {
+  indexImagesRecursive,
+  mergeImageIndexes,
+  copyReferencedPhotos,
+  countImageFiles,
+  sampleIndexPaths,
+} = require('../lib/yizkor-photos');
 
-const IMAGE_EXT = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif']);
 const PHOTOS_DIR = path.join(__dirname, '..', 'photos');
 const REPO_DATABASE = path.join(__dirname, '..', 'database.json');
 
 function parseArgs() {
   const args = {
     source: '',
+    photosFrom: '',
     slug: 'novosibirsk',
     syncJson: false,
     skipDb: false,
     force: false,
+    allImages: false,
   };
   for (const arg of process.argv.slice(2)) {
     if (arg.startsWith('--source=')) args.source = arg.slice('--source='.length);
+    else if (arg.startsWith('--photos-from=')) args.photosFrom = arg.slice('--photos-from='.length);
     else if (arg.startsWith('--slug=')) args.slug = arg.slice('--slug='.length);
     else if (arg === '--sync-json') args.syncJson = true;
     else if (arg === '--skip-db') args.skipDb = true;
     else if (arg === '--force') args.force = true;
+    else if (arg === '--all-images') args.allImages = true;
   }
   return args;
 }
 
-function resolveSourceDir(raw) {
-  if (!raw) {
-    throw new Error('Missing --source=PATH (e.g. --source="C:\\Users\\user\\Downloads\\יזכור")');
-  }
+function resolveDir(raw, label) {
+  if (!raw) return null;
   const resolved = path.resolve(raw);
   if (!fs.existsSync(resolved)) {
-    throw new Error(`Source folder not found: ${resolved}`);
+    throw new Error(`${label} not found: ${resolved}`);
   }
   return resolved;
 }
@@ -82,44 +82,6 @@ function loadDatabase(dbPath) {
   return data;
 }
 
-function collectPhotoDirs(sourceDir) {
-  const dirs = [sourceDir];
-  for (const sub of ['photos', 'Images', 'images', 'תמונות']) {
-    const full = path.join(sourceDir, sub);
-    if (fs.existsSync(full) && fs.statSync(full).isDirectory()) {
-      dirs.push(full);
-    }
-  }
-  return dirs;
-}
-
-function listImageFiles(dirs) {
-  const files = new Map();
-  for (const dir of dirs) {
-    for (const name of fs.readdirSync(dir)) {
-      const ext = path.extname(name).toLowerCase();
-      if (!IMAGE_EXT.has(ext)) continue;
-      const full = path.join(dir, name);
-      if (!fs.statSync(full).isFile()) continue;
-      files.set(name, full);
-    }
-  }
-  return files;
-}
-
-function copyPhotos(imageFiles) {
-  if (!fs.existsSync(PHOTOS_DIR)) {
-    fs.mkdirSync(PHOTOS_DIR, { recursive: true });
-  }
-  let copied = 0;
-  for (const [name, src] of imageFiles) {
-    const dest = path.join(PHOTOS_DIR, name);
-    fs.copyFileSync(src, dest);
-    copied += 1;
-  }
-  return copied;
-}
-
 function normalizePeople(people) {
   return people.map((person) => ({
     id: person.id,
@@ -141,9 +103,7 @@ async function updateMongo(slug, data, force) {
 
   const synagogue = await Synagogue.findOne({ slug });
   if (!synagogue) {
-    throw new Error(
-      `Synagogue "${slug}" not found. Run: node scripts/seed.js`,
-    );
+    throw new Error(`Synagogue "${slug}" not found. Run: node scripts/seed.js`);
   }
 
   if (synagogue.people?.length > 0 && !force) {
@@ -166,36 +126,68 @@ async function updateMongo(slug, data, force) {
   }
 
   await synagogue.save();
-  console.log(
-    `MongoDB: saved ${synagogue.people.length} people for /s/${slug}`,
-  );
+  console.log(`MongoDB: saved ${synagogue.people.length} people for /s/${slug}`);
   await mongoose.disconnect();
   return true;
 }
 
 async function main() {
   const args = parseArgs();
-  const sourceDir = resolveSourceDir(args.source);
+  const sourceDir = resolveDir(args.source, 'Source folder');
+  if (!sourceDir) {
+    throw new Error('Missing --source=PATH');
+  }
+
   const dbPath = findDatabaseFile(sourceDir);
   const data = loadDatabase(dbPath);
-  const imageFiles = listImageFiles(collectPhotoDirs(sourceDir));
+  const photoNames = data.people
+    .map((p) => (p.photo && String(p.photo).trim()) || '')
+    .filter(Boolean);
 
+  const indexes = [indexImagesRecursive(sourceDir)];
+  if (args.photosFrom) {
+    indexes.push(indexImagesRecursive(resolveDir(args.photosFrom, 'Photos folder')));
+  }
+  const projectPhotos = path.join(__dirname, '..', 'photos');
+  if (fs.existsSync(projectPhotos)) {
+    indexes.push(indexImagesRecursive(projectPhotos));
+  }
+  const imageIndex = mergeImageIndexes(...indexes);
+
+  const totalOnDisk = countImageFiles(imageIndex);
   console.log(`Source: ${sourceDir}`);
-  console.log(`Database: ${dbPath} (${data.people.length} people)`);
-  console.log(`Images found: ${imageFiles.size}`);
+  if (args.photosFrom) console.log(`Extra photos: ${path.resolve(args.photosFrom)}`);
+  console.log(`Database: ${dbPath} (${data.people.length} people, ${photoNames.length} photo refs)`);
+  console.log(`Image files indexed (recursive): ${totalOnDisk}`);
+  if (totalOnDisk > 0) {
+    console.log('Sample paths:');
+    sampleIndexPaths(imageIndex, 8).forEach((p) => console.log(`  - ${p}`));
+  }
 
-  const copied = copyPhotos(imageFiles);
-  console.log(`Copied ${copied} files → ${PHOTOS_DIR}`);
+  let copied = 0;
+  let missing = [];
 
-  const referenced = data.people
-    .map((p) => p.photo)
-    .filter((name) => name && String(name).trim());
-  const missing = referenced.filter((name) => !imageFiles.has(name));
+  if (args.allImages) {
+    const allNames = [...new Set([...imageIndex.values()].map((e) => e.name))];
+    const result = copyReferencedPhotos(imageIndex, allNames, PHOTOS_DIR);
+    copied = result.copied;
+    missing = result.missing;
+    console.log(`Copied ALL indexed images: ${copied}`);
+  } else {
+    const result = copyReferencedPhotos(imageIndex, photoNames, PHOTOS_DIR);
+    copied = result.copied;
+    missing = result.missing;
+    console.log(`Copied ${copied}/${photoNames.length} referenced photos → ${PHOTOS_DIR}`);
+  }
+
   if (missing.length) {
-    console.warn(
-      `Warning: ${missing.length} photo filenames in database.json were not found in the source folder.`,
-    );
-    console.warn(`First missing: ${missing.slice(0, 8).join(', ')}`);
+    console.warn(`\nStill missing ${missing.length} files (not found under source or --photos-from):`);
+    console.warn(missing.slice(0, 12).join(', ') + (missing.length > 12 ? '...' : ''));
+    console.warn('\nPut image files inside the Yizkor folder (any subfolder), e.g.:');
+    console.warn('  C:\\Users\\user\\Downloads\\יזכור\\photos\\148.jpg');
+    console.warn('Or point to an existing photos folder:');
+    console.warn('  --photos-from="C:\\Users\\user\\synagogue-memorial-saas\\photos"');
+    console.warn('  --photos-from="C:\\path\\to\\old-project\\photos"');
   }
 
   if (args.syncJson) {
@@ -209,8 +201,8 @@ async function main() {
     console.log('Skipped MongoDB (--skip-db).');
   }
 
-  console.log('\nNext: npm run build:board && node app.js');
-  console.log(`Board: http://localhost:3000/s/${args.slug}`);
+  console.log('\nVerify: node scripts/verify-yizkor-import.js --source="..." --mongo');
+  console.log('Then: npm run build:board && node app.js');
 }
 
 main().catch((err) => {
