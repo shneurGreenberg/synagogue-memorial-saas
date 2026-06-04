@@ -13,7 +13,9 @@
     "check:mongo": "node scripts/check-mongo.js",
     "seed:photos": "node scripts/seed-photos.js --slug=novosibirsk --force",
     "build:board": "vite build --config vite.board.config.mjs",
-    "dev:board": "vite build --config vite.board.config.mjs --watch"
+    "dev:board": "vite build --config vite.board.config.mjs --watch",
+    "verify:yizkor": "node scripts/verify-yizkor-import.js",
+    "import:yizkor": "node scripts/import-yizkor.js"
   },
   "dependencies": {
     "@babel/core": "^7.13.10",
