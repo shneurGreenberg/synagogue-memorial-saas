@@ -117,7 +117,7 @@ export function BoardDataProvider({ slug, children }) {
   }, [previewMode, applyPreviewPatch]);
 
   useEffect(() => {
-    if (!slug || previewMode) {
+    if (!slug || previewMode || isStaticSite()) {
       return undefined;
     }
 

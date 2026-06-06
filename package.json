@@ -10,13 +10,10 @@
     "restart": "yarn stop && pm2 start app.js && pm2 logs",
     "stop": "pm2 kill",
     "seed": "node scripts/seed.js",
-    "check:mongo": "node scripts/check-mongo.js",
     "seed:photos": "node scripts/seed-photos.js --slug=novosibirsk --force",
     "build:board": "vite build --config vite.board.config.mjs",
-    "dev:board": "vite build --config vite.board.config.mjs --watch",
-    "verify:yizkor": "node scripts/verify-yizkor-import.js",
-    "import:yizkor": "node scripts/import-yizkor.js",
-    "suggest:photos": "node scripts/suggest-missing-photos.js"
+    "build:pages": "node scripts/build-github-pages.js",
+    "dev:board": "vite build --config vite.board.config.mjs --watch"
   },
   "dependencies": {
     "@babel/core": "^7.13.10",

@@ -32,6 +32,9 @@ images/*.webp
 
 photos/
 
+# GitHub Pages build output (deployed via Actions)
+site/
+
 # Temporary files
 *.tmp
 *.bak
