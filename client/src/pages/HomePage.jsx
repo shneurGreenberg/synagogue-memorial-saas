@@ -187,7 +187,7 @@ class Slideshow extends React.Component {
       <div className="slideshow-overlay" role="dialog" aria-label="Slideshow">
         {!this.state.loaded && <div className="slideshow-loading">{this.props.t('slideshow_loading')}</div>}
         <img
-          src={`/images/${slide.url}`}
+          src={assetUrl(`images/${slide.url}`)}
           alt={slide.text || 'Slideshow'}
           onLoad={this.onImageLoad}
           className="slideshow-image"

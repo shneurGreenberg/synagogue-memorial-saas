@@ -1,4 +1,5 @@
 import React from 'react';
+import { photoUrl } from '../lib/asset-url';
 
 function getInitials(name) {
   if (!name) {
