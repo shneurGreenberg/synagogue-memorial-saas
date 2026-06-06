@@ -14,6 +14,7 @@ import {
   mergePreviewPatch,
   previewPatchFromSearchParams,
 } from '../lib/board-preview-overrides';
+import { isStaticSite } from '../lib/asset-url';
 
 const POLL_MS = 8000;
 
@@ -117,7 +118,7 @@ export function BoardDataProvider({ slug, children }) {
   }, [previewMode, applyPreviewPatch]);
 
   useEffect(() => {
-    if (!slug || previewMode || isStaticSite()) {
+    if (!slug || previewMode) {
       return undefined;
     }
 
