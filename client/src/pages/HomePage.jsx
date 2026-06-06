@@ -13,6 +13,7 @@ import {
 import { sanitizeRichText } from '../lib/html-sanitize';
 import { getBoardData } from '../lib/board-data';
 import { MemorialCard } from '../components/MemorialCard';
+import { assetUrl } from '../lib/asset-url';
 import { MemorialPrayersPanel } from '../components/MemorialPrayersPanel';
 import { CommunityLogo } from '../components/CommunityLogo';
 import { useBoardNavigation } from '../context/BoardNavigationContext';
@@ -187,7 +188,7 @@ class Slideshow extends React.Component {
       <div className="slideshow-overlay" role="dialog" aria-label="Slideshow">
         {!this.state.loaded && <div className="slideshow-loading">{this.props.t('slideshow_loading')}</div>}
         <img
-          src={`/images/${slide.url}`}
+          src={assetUrl(`images/${slide.url}`)}
           alt={slide.text || 'Slideshow'}
           onLoad={this.onImageLoad}
           className="slideshow-image"

@@ -1,4 +1,5 @@
 import React from 'react';
+import { assetUrl } from '../lib/asset-url';
 import {
   formatGregorianDate,
   formatHebrewDate,
