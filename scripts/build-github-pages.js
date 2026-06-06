@@ -124,6 +124,7 @@ function main() {
   const html = writeIndexHtml(boardData);
   fs.writeFileSync(path.join(SITE_DIR, 'index.html'), html);
   fs.writeFileSync(path.join(SITE_DIR, '404.html'), html);
+  fs.writeFileSync(path.join(SITE_DIR, '.nojekyll'), '');
 
   console.log(
     `Done → ${SITE_DIR} | ${boardData.people.length} people | ${photoCount} photos | ${imageCount} theme images`,
