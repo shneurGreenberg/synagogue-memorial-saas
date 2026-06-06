@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 
+import { photoUrl } from '../lib/asset-url';
+
 export function usePhotoPrefetch(people) {
   useEffect(() => {
     if (!people || !people.length) {

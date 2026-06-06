@@ -43,13 +43,13 @@ export function ThemeStyles() {
     body,
     .main-container {
       color: var(--text-color) !important;
-      ${theme.backgroundImage ? `background-image: url('/images/${theme.backgroundImage}') !important;
+      ${theme.backgroundImage ? `background-image: url('${assetUrl(`images/${theme.backgroundImage}`)}') !important;
       background-size: cover;
       background-position: center;
       background-attachment: fixed;` : ''}
     }
     .wooden-panel {
-      ${theme.tilesBackground ? `background-image: url('/images/${theme.tilesBackground}') !important;
+      ${theme.tilesBackground ? `background-image: url('${assetUrl(`images/${theme.tilesBackground}`)}') !important;
       background-size: cover;` : ''}
     }
   `;

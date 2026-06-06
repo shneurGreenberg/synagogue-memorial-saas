@@ -11,7 +11,7 @@ export default function App() {
         <Route index element={<HomePage />} />
         <Route path="card/:personId" element={<CardPage />} />
       </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/s/novosibirsk" replace />} />
     </Routes>
   );
 }
