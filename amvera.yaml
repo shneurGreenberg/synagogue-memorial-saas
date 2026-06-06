@@ -12,3 +12,5 @@ build:
 run:
   command: sh -c "node scripts/seed.js || true && node app.js"
   containerPort: 3000
+  # Set in Amvera dashboard: MONGODB_URI, SESSION_SECRET, NODE_ENV=production, TRUST_PROXY=1
+  # Push photos/ to GitHub before deploy: git add -f photos/ && git push
