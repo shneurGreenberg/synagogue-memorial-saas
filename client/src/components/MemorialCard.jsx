@@ -1,5 +1,4 @@
 import React from 'react';
-import { assetUrl } from '../lib/asset-url';
 import {
   formatGregorianDate,
   formatHebrewDate,
@@ -89,7 +88,7 @@ class MemorialCardInner extends React.Component {
         {this.state.showCandle && (
           <img
             className="candle"
-            src="/images/candle.webp"
+            src={assetUrl('images/candle.webp')}
             alt=""
             aria-hidden="true"
             decoding="async"

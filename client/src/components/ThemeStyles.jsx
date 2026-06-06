@@ -1,5 +1,6 @@
 import React from 'react';
 import { useBoardData } from '../context/BoardDataContext';
+import { assetUrl } from '../lib/asset-url';
 
 export function ThemeStyles() {
   const { data, revision } = useBoardData();

@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-
 import { photoUrl } from '../lib/asset-url';
 
 export function usePhotoPrefetch(people) {
@@ -17,7 +16,7 @@ export function usePhotoPrefetch(people) {
         }
 
         const img = new Image();
-        img.src = `/photos/${person.photo}`;
+        img.src = photoUrl(person.photo);
       });
     });
   }, [people]);

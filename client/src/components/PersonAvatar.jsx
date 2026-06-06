@@ -47,7 +47,7 @@ export class PersonAvatar extends React.Component {
     if (showPhoto) {
       return (
         <img
-          src={`/photos/${person.photo}`}
+          src={photoUrl(person.photo)}
           alt={name}
           className={classes}
           onError={this.onImageError}

@@ -187,7 +187,7 @@ class Slideshow extends React.Component {
       <div className="slideshow-overlay" role="dialog" aria-label="Slideshow">
         {!this.state.loaded && <div className="slideshow-loading">{this.props.t('slideshow_loading')}</div>}
         <img
-          src={assetUrl(`images/${slide.url}`)}
+          src={`/images/${slide.url}`}
           alt={slide.text || 'Slideshow'}
           onLoad={this.onImageLoad}
           className="slideshow-image"
@@ -461,7 +461,7 @@ class HomePageBase extends React.Component {
         <aside className="left side-panel">
           <div className="wooden-panel">
             <div className="banner-wrap">
-              <CommunityLogo src={`/images/${logo}`} alt={appData.title || 'Synagogue'} />
+              <CommunityLogo src={assetUrl(`images/${logo}`)} alt={appData.title || 'Synagogue'} />
             </div>
             {this.state.dailyCite && (
               <div
