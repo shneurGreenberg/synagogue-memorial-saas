@@ -10,6 +10,10 @@ import {
   DAYS_IN_YEAR,
   gregorianDayOfYear,
 } from '../lib/novosibirsk';
+import {
+  applySearchToPaginationState,
+  attachNameComponents,
+} from '../lib/name-search';
 import { sanitizeRichText } from '../lib/html-sanitize';
 import { getBoardData } from '../lib/board-data';
 import { MemorialCard } from '../components/MemorialCard';
@@ -241,7 +245,7 @@ class HomePageBase extends React.Component {
     const allPeople = (appData.people || [])
       .slice(0)
       .map((a) => {
-        const person = { ...a };
+        const person = attachNameComponents({ ...a });
         person.gregorianDayOfMemory = gregorianDayOfYear(
           person.gregorianDateOfDeath.month,
           person.gregorianDateOfDeath.date,
@@ -280,9 +284,10 @@ class HomePageBase extends React.Component {
       itemsPerPage: 16,
       page: 0,
       pageShift: 0,
+      filterString: '',
     };
 
-    this.initPagination(initialState);
+    applySearchToPaginationState(initialState, '');
 
     this.state = {
       ...initialState,
@@ -290,6 +295,8 @@ class HomePageBase extends React.Component {
 
     this.previousPage = this.previousPage.bind(this);
     this.nextPage = this.nextPage.bind(this);
+    this.search = this.search.bind(this);
+    this.clearSearch = this.clearSearch.bind(this);
     this.finishSlideshow = this.finishSlideshow.bind(this);
   }
 
@@ -313,27 +320,6 @@ class HomePageBase extends React.Component {
     this.startMainTimer();
   }
 
-  initPagination(state) {
-    const people = state.allPeople;
-
-    const hasKadishToday =
-      people.length == 1
-      || people.filter((a) => a.passedToday).length == 1;
-
-    const totalNonKadishItems = hasKadishToday
-      ? people.length - 1
-      : people.length;
-
-    const itemsPerPage = hasKadishToday ? 12 : 16;
-
-    state.people = people;
-    state.hasKadishToday = hasKadishToday;
-    state.totalPages = Math.max(1, Math.ceil(totalNonKadishItems / itemsPerPage));
-    state.itemsPerPage = itemsPerPage;
-    state.page = 0;
-    state.pageShift = 0;
-  }
-
   changePage(shift) {
     this.setState((state) => {
       const page = Math.min(Math.max(state.page + shift, 0), state.totalPages - 1);
@@ -352,41 +338,22 @@ class HomePageBase extends React.Component {
     this.changePage(1);
   }
 
-  getChapterOrHoliday(hebrewDate) {
-    const name = hebrewDate.getParsha()[0];
+  search(event) {
+    const string = event.target.value;
 
-    switch (name) {
-      case 'Rosh Hashana':
-        return [null, 'Рош ха-Шана'];
-      case 'Yom Kippur':
-        return [null, 'Йом Кипур'];
-      case 'Sukkot':
-        return [null, 'Суккот'];
-      case 'Chol hamoed Sukkot':
-        return [null, 'Холь ха-Моэд Суккот'];
-      case 'Shmini Atzeret':
-        return [null, 'Шмини Ацерет'];
-      case 'End-of-year: Simchat-Torah, Sukkot':
-        return [null, 'Симхат Тора'];
-      case 'Pesach':
-        return [null, 'Песах'];
-      case 'Chol hamoed Pesach':
-        return [null, 'Холь ха-Моэд Песах'];
-      case 'Second days of Pesach':
-        return [null, 'Второй день Песаха'];
-      case 'Shavuot':
-        return [null, 'Шавуот'];
-      default:
-        return [name, null];
-    }
+    this.setState((state) => {
+      const next = { ...state };
+      applySearchToPaginationState(next, string);
+      return next;
+    });
   }
 
-  getWeeklyChapter(hebrewDate) {
-    return this.getChapterOrHoliday(hebrewDate)[0];
-  }
-
-  getHoliday(hebrewDate) {
-    return this.getChapterOrHoliday(hebrewDate)[1];
+  clearSearch() {
+    this.setState((state) => {
+      const next = { ...state };
+      applySearchToPaginationState(next, '');
+      return next;
+    });
   }
 
   renderStandardGrid() {
@@ -480,51 +447,57 @@ class HomePageBase extends React.Component {
           <div className="wooden-panel">
             <header className="board-header"><h1>{this.props.boardTitle}</h1></header>
             {this.state.hasKadishToday ? this.renderKadishGrid() : this.renderStandardGrid()}
-            <div
-              className="pager"
-              style={this.state.totalPages <= 1 ? { display: 'none' } : {}}
-            >
-              <button type="button" className="pager-btn pager-btn-prev" onClick={this.previousPage} aria-label={this.props.t('previous_page')}>
-                <span className="pager-chevron pager-chevron-up" aria-hidden="true" />
-              </button>
-              <div className="currentPage" aria-live="polite">
-                <span className="pager-page-num">{this.state.page + 1}</span>
-                <span className="pager-page-sep">/</span>
-                <span className="pager-page-total">{this.state.totalPages}</span>
+            <div className={`board-footer${this.state.totalPages <= 1 ? ' board-footer-search-only' : ''}`}>
+              <div className="search">
+                <button
+                  type="button"
+                  className="search-clear"
+                  onClick={this.clearSearch}
+                  style={this.state.filterString.length === 0 ? { display: 'none' } : {}}
+                  aria-label={this.props.t('clear_search')}
+                >
+                  &#x2715;
+                </button>
+                <input
+                  type="search"
+                  value={this.state.filterString}
+                  onChange={this.search}
+                  placeholder={this.props.t('search_placeholder')}
+                  aria-label={this.props.t('search_placeholder')}
+                />
               </div>
-              <button type="button" className="pager-btn pager-btn-next" onClick={this.nextPage} aria-label={this.props.t('next_page')}>
-                <span className="pager-chevron pager-chevron-down" aria-hidden="true" />
-              </button>
+              <div
+                className="pager"
+                style={this.state.totalPages <= 1 ? { display: 'none' } : {}}
+              >
+                <button type="button" className="pager-btn pager-btn-prev" onClick={this.previousPage} aria-label={this.props.t('previous_page')}>
+                  <span className="pager-chevron pager-chevron-up" aria-hidden="true" />
+                </button>
+                <div className="currentPage" aria-live="polite">
+                  <span className="pager-page-num">{this.state.page + 1}</span>
+                  <span className="pager-page-sep">/</span>
+                  <span className="pager-page-total">{this.state.totalPages}</span>
+                </div>
+                <button type="button" className="pager-btn pager-btn-next" onClick={this.nextPage} aria-label={this.props.t('next_page')}>
+                  <span className="pager-chevron pager-chevron-down" aria-hidden="true" />
+                </button>
+              </div>
             </div>
           </div>
         </section>
         <aside className="right side-panel">
           <div className="wooden-panel">
             <div className="inner">
-              <time>
-                <h1><LiveClock timezone={(appData.location && appData.location.timezone) || 'Asia/Novosibirsk'} /></h1>
-                <br />
-                <h2>{formatHebrewDate(this.state.hebrewDate)}</h2>
-                <h3>{formatGregorianDate(this.state.gregorianDate)}</h3>
-              </time>
-              {appData.shabbatTimesEnabled && <ShabbatTimes />}
-              {appData.weeklyChapterEnabled && (
-                <div>
-                  {this.getWeeklyChapter(this.state.hebrewDate) && (
-                    <div className="weekly-chapter">
-                      <h1>{this.getWeeklyChapter(this.state.hebrewDate)}</h1>
-                      <h3>{this.props.t('weekly_chapter')}</h3>
-                    </div>
-                  )}
-                  {this.getHoliday(this.state.hebrewDate) && (
-                    <div className="weekly-chapter">
-                      <h1>{this.getHoliday(this.state.hebrewDate)}</h1>
-                    </div>
-                  )}
-                </div>
-              )}
+              <div className="board-accent">
+                <time>
+                  <h1><LiveClock timezone={(appData.location && appData.location.timezone) || 'Asia/Novosibirsk'} /></h1>
+                  <h2>{formatHebrewDate(this.state.hebrewDate)}</h2>
+                  <h3>{formatGregorianDate(this.state.gregorianDate)}</h3>
+                </time>
+                {appData.shabbatTimesEnabled && <ShabbatTimes />}
+              </div>
               <MemorialPrayersPanel
-                big={!appData.weeklyChapterEnabled}
+                big={!appData.shabbatTimesEnabled}
                 memorialPrayerLabel={this.props.t('memorial_prayer')}
                 kelMaleHeading={this.props.t('kel_male_rachamim')}
                 kelMaleText={this.props.t('kel_male_rachamim_text')}

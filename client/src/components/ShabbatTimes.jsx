@@ -7,9 +7,15 @@ import {
   getBoardTimezone,
   msUntilNextRefresh,
 } from '../lib/shabbat-times';
+import { createHebrewDate, getHolidayName, getWeeklyParshaName } from '../lib/weekly-parsha';
+import { useBoardData } from '../context/BoardDataContext';
 
 function ShabbatTimesInner({ t }) {
   const [times, setTimes] = useState(null);
+  const { uiLang } = useBoardData();
+  const hebrewDate = createHebrewDate();
+  const parshaName = getWeeklyParshaName(hebrewDate, uiLang);
+  const holidayName = getHolidayName(hebrewDate, uiLang);
 
   useEffect(() => {
     let cancelled = false;
@@ -41,18 +47,25 @@ function ShabbatTimesInner({ t }) {
   }
 
   const timezone = getBoardTimezone(getBoardData());
+  const weeklyLabel = holidayName || parshaName;
 
   return (
     <div className="shabbat-times">
-      <div className="shabbat-times-row">
-        <div className="shabbat-times-item">
+      <div className="shabbat-times-enter-row">
+        <div className="shabbat-times-item shabbat-candles">
           <span className="shabbat-label">{t('shabbat_enter')}</span>
           <span className="shabbat-time">{formatShabbatClockTime(times.enter, timezone)}</span>
         </div>
-        <div className="shabbat-times-item">
-          <span className="shabbat-label">{t('shabbat_exit')}</span>
-          <span className="shabbat-time">{formatShabbatClockTime(times.exit, timezone)}</span>
-        </div>
+        {weeklyLabel && (
+          <div className="shabbat-times-item shabbat-parsha">
+            <span className="shabbat-label">{t('weekly_chapter')}</span>
+            <span className="shabbat-parsha-name" title={weeklyLabel}>{weeklyLabel}</span>
+          </div>
+        )}
+      </div>
+      <div className="shabbat-times-item shabbat-exit">
+        <span className="shabbat-label">{t('shabbat_exit')}</span>
+        <span className="shabbat-time">{formatShabbatClockTime(times.exit, timezone)}</span>
       </div>
     </div>
   );

@@ -407,6 +407,78 @@
       }
     }
 
+    .board-footer {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: clamp(10px, 1.5vw, 20px);
+      padding: 8px clamp(10px, 1.5vw, 20px) 10px;
+      width: 100%;
+      box-sizing: border-box;
+
+      &.board-footer-search-only {
+        justify-content: center;
+      }
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      position: relative;
+      flex: 1;
+      min-width: 0;
+      max-width: min(100%, 520px);
+
+      input {
+        width: 100%;
+        min-width: 0;
+        height: clamp(40px, 3.8vw, 48px);
+        border-radius: 14px;
+        font-size: clamp(15px, 1.35vw, 20px);
+        letter-spacing: 0.02em;
+        background: linear-gradient(165deg, color-mix(in srgb, $cardButton 90%, #fff 8%), $cardButton);
+        border: 1.5px solid $cardButtonBorder;
+        padding: 0 14px 0 42px;
+        color: $cardButtonText;
+        box-shadow:
+          0 4px 14px rgba(0, 0, 0, 0.28),
+          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+        &:focus-visible {
+          outline: 3px solid $goldenText;
+          outline-offset: 2px;
+        }
+
+        &::placeholder {
+          color: color-mix(in srgb, $cardButtonText 55%, transparent);
+        }
+      }
+
+      .search-clear {
+        position: absolute;
+        left: 6px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        color: $cardButtonText;
+        font-size: 20px;
+        line-height: 1;
+        z-index: 1;
+        border-radius: 8px;
+
+        &:hover,
+        &:focus-visible {
+          background: rgba(0, 0, 0, 0.08);
+        }
+      }
+    }
+
     .pager {
       flex-shrink: 0;
       display: flex;
@@ -414,7 +486,7 @@
       align-items: center;
       justify-content: center;
       gap: 14px;
-      padding: 6px 12px 8px;
+      padding: 0;
 
       .currentPage {
         display: flex;
@@ -550,31 +622,41 @@
       align-items: center;
       min-height: 0;
 
-      time {
+      .board-accent {
         width: 100%;
         flex-shrink: 0;
+        padding-bottom: 10px;
+        margin-bottom: 8px;
+        border-bottom: 1px solid $goldenPanelBorder;
       }
 
-      .weekly-chapter {
-        margin-top: 18px;
+      time {
         width: 100%;
+        display: block;
       }
 
-      h1 {
-        font-size: clamp(26px, 2.8vw, 44px);
-        margin: 0;
-        @include golden-text-mixin;
+      .board-accent h1 {
+        font-size: clamp(30px, 3.2vw, 50px);
+        margin: 0 0 6px;
+        line-height: 1.1;
+        white-space: nowrap;
       }
 
-      h2 {
-        font-size: clamp(18px, 1.9vw, 26px);
-        margin: 0;
-        @include golden-text-mixin;
+      .board-accent h2 {
+        font-size: clamp(20px, 2.2vw, 32px);
+        margin: 0 0 4px;
+        line-height: 1.25;
+        white-space: normal;
+        overflow: visible;
+        word-wrap: break-word;
       }
 
-      h3 {
-        font-size: clamp(14px, 1.25vw, 17px);
+      .board-accent h3 {
+        font-size: clamp(16px, 1.5vw, 22px);
         margin: 0;
+        line-height: 1.3;
+        white-space: normal;
+        overflow: visible;
       }
 
       .memorial-prayers {
@@ -865,6 +947,19 @@
       grid-column: 2 / span 2;
       grid-row: 2 / span 2;
     }
+
+    .middle .board-footer {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .middle .search {
+      max-width: none;
+    }
+
+    .middle .pager {
+      justify-content: center;
+    }
   }
 }
 
@@ -894,43 +989,80 @@ body.board-lang-he {
   .middle .holiday,
   .card .inner h3,
   .card .inner time,
-  .card .inner p {
+  .card .inner p,
+  .board-accent,
+  .board-accent time,
+  .shabbat-times,
+  .shabbat-times-item {
     direction: rtl;
     unicode-bidi: plaintext;
+  }
+
+  .search input {
+    padding: 0 42px 0 14px;
+  }
+
+  .search .search-clear {
+    left: auto;
+    right: 6px;
   }
 }
 
 .shabbat-times {
-  margin-top: 0.65rem;
+  margin-top: 0.75rem;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  align-items: center;
 
-  .shabbat-times-row {
+  .shabbat-times-enter-row {
     display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    align-items: center;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: clamp(10px, 1.5vw, 22px);
+    width: 100%;
   }
 
   .shabbat-times-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.1rem;
-    line-height: 1.25;
+    gap: 0.15rem;
+    line-height: 1.3;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .shabbat-parsha {
+    flex: 1 1 140px;
+    max-width: min(100%, 220px);
   }
 
   .shabbat-label {
-    font-size: clamp(11px, 1vw, 15px);
-    opacity: 0.88;
+    font-size: clamp(12px, 1.1vw, 16px);
+    opacity: 0.92;
+    white-space: normal;
+    text-align: center;
   }
 
   .shabbat-time {
-    font-size: clamp(14px, 1.25vw, 20px);
+    font-size: clamp(18px, 1.8vw, 28px);
     font-weight: 700;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
   }
-}
 
-body.board-lang-he .shabbat-times-item {
-  direction: rtl;
+  .shabbat-parsha-name {
+    font-size: clamp(16px, 1.55vw, 24px);
+    font-weight: 700;
+    line-height: 1.35;
+    text-align: center;
+    white-space: normal;
+    overflow: visible;
+    word-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+  }
 }

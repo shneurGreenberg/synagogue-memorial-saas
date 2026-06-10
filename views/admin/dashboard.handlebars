@@ -94,6 +94,16 @@
                         </div>
                         <span class="field-hint">{{t 'text_color_help'}}</span>
                     </div>
+                    <div class="color-field-modern">
+                        <label for="accentColor">{{t 'accent_color'}}</label>
+                        <div class="color-swatch-row">
+                            <input type="color" name="accentColor" id="accentColor" class="color-swatch-input"
+                                value="{{synagogue.theme.accentColor}}">
+                            <input type="text" class="color-hex-display" id="accentColorHex" readonly
+                                value="{{synagogue.theme.accentColor}}">
+                        </div>
+                        <span class="field-hint">{{t 'accent_color_help'}}</span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -247,6 +257,7 @@
         function readPreviewPatch() {
             var primary = document.getElementById('primaryColor');
             var text = document.getElementById('textColor');
+            var accent = document.getElementById('accentColor');
             var titleRu = document.getElementById('titleRu');
             var titleEn = document.getElementById('titleEn');
             var titleHe = document.getElementById('titleHe');
@@ -259,6 +270,7 @@
                 titleHe: titleHe ? titleHe.value.trim() : '',
                 primaryColor: primary ? primary.value : '',
                 textColor: text ? text.value : '',
+                accentColor: accent ? accent.value : '',
                 previewLang: languageSelect ? languageSelect.value : 'ru',
             };
         }
@@ -277,6 +289,7 @@
 
         bindColorPair('primaryColor', 'primaryColorHex');
         bindColorPair('textColor', 'textColorHex');
+        bindColorPair('accentColor', 'accentColorHex');
 
         var toggle = document.getElementById('colorModeToggle');
         var hidden = document.getElementById('colorModeInput');
@@ -358,6 +371,7 @@
             params.set('titleHe', patch.titleHe);
             params.set('primaryColor', patch.primaryColor);
             params.set('textColor', patch.textColor);
+            params.set('accentColor', patch.accentColor);
             params.set('previewLang', patch.previewLang);
             frame.src = '/s/' + slug + '?' + params.toString();
         }
@@ -378,6 +392,7 @@
             params.set('titleHe', initial.titleHe);
             params.set('primaryColor', initial.primaryColor);
             params.set('textColor', initial.textColor);
+            params.set('accentColor', initial.accentColor);
             params.set('previewLang', initial.previewLang);
             frame.src = '/s/' + slug + '?' + params.toString();
             fitBoardPreviewTv();

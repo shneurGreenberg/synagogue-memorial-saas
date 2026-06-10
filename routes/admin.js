@@ -173,7 +173,7 @@ router.post('/:slug/settings', requireAdmin, handleUpload([
 ]), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { titleRu, titleEn, titleHe, primaryColor, textColor, language, adminLanguage, colorMode, shabbatTimesEnabled } = req.body;
+        const { titleRu, titleEn, titleHe, primaryColor, textColor, accentColor, language, adminLanguage, colorMode, shabbatTimesEnabled } = req.body;
         const safeColorMode = colorMode === 'light' ? 'light' : 'dark';
         const titles = {
             ru: String(titleRu ?? '').trim(),
@@ -187,6 +187,7 @@ router.post('/:slug/settings', requireAdmin, handleUpload([
             title: titles.ru,
             'theme.primaryColor': sanitizeHexColor(primaryColor, BOARD_THEME_DEFAULTS.primaryColor),
             'theme.textColor': sanitizeHexColor(textColor, BOARD_THEME_DEFAULTS.textColor),
+            'theme.accentColor': sanitizeHexColor(accentColor, BOARD_THEME_DEFAULTS.accentColor),
             'adminTheme.colorMode': safeColorMode,
             language,
             adminLanguage,
@@ -219,6 +220,7 @@ router.post('/:slug/settings/reset-theme', requireAdmin, async (req, res) => {
             $set: {
                 'theme.primaryColor': BOARD_THEME_DEFAULTS.primaryColor,
                 'theme.textColor': BOARD_THEME_DEFAULTS.textColor,
+                'theme.accentColor': BOARD_THEME_DEFAULTS.accentColor,
                 'theme.logo': BOARD_THEME_DEFAULTS.logo,
             },
             $unset: {

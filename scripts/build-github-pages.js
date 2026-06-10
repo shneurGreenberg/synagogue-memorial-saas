@@ -46,11 +46,14 @@ function loadBoardData() {
     slug: SLUG,
     title: db.data.title,
     titles: { ru: db.data.title, en: '', he: '' },
-    weeklyChapterEnabled: Boolean(db.data.weeklyChapterEnabled),
+    weeklyChapterEnabled: true,
     shabbatTimesEnabled: true,
     dailyCites: db.data.dailyCites || [],
     people: db.data.people || [],
-    theme: { ...BOARD_THEME_DEFAULTS },
+    theme: {
+      ...BOARD_THEME_DEFAULTS,
+      accentColor: BOARD_THEME_DEFAULTS.accentColor,
+    },
     language: 'ru',
     location: {
       lat: 54.9833,
