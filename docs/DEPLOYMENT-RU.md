@@ -1,5 +1,9 @@
 # Развёртывание для пользователей из России
 
+**Бесплатный хостинг + опция с бэкендом:** см. **[FREE-RU-PROVIDER.md](./FREE-RU-PROVIDER.md)** (GitHub Pages — только лист; Amvera + Atlas M0 — полный сервер).
+
+Сводка провайдеров: [`providers.yml`](../providers.yml).
+
 ## Почему не открывается trycloudflare.com
 
 Временный URL через **Cloudflare Tunnel** (`trycloudflare.com`) в России часто **не работает без VPN**: провайдеры ограничивают доступ к инфраструктуре Cloudflare.
@@ -8,9 +12,9 @@
 
 ## Постоянный хостинг в России (рекомендуется)
 
-### Amvera Cloud (Москва)
+### Amvera Cloud (Москва) — бэкенд + админка
 
-1. Регистрация: https://amvera.ru (есть стартовый баланс)
+1. Регистрация: https://amvera.ru (стартовый баланс **111 ₽**, тариф **Пробный** ~170 ₽/мес)
 2. Создать приложение → привязать GitHub `synagogue-memorial-saas`, ветка **`main`**
 3. В корне репозитория уже есть `amvera.yaml`
 4. **Перед деплоем** загрузите фото в Git: `git add -f photos/ && git push` (см. `docs/GO-LIVE.md`)

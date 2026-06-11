@@ -1,0 +1,90 @@
+# Deployment providers for Kadish / Synagogue Memorial SaaS
+# Pick one mode below. All Russia-friendly options avoid Cloudflare tunnels.
+
+recommended:
+  russia_free_with_backend: amvera
+  russia_free_board_only: github-pages
+
+providers:
+  - id: github-pages
+    name: GitHub Pages
+    url: https://pages.github.com
+    works_in_russia: partial
+    cost: free
+    backend: false
+    admin_panel: false
+    config: .github/workflows/deploy-github-pages.yml
+    build: npm run build:pages
+    docs: docs/GITHUB-PAGES.md
+    notes: >
+      Free static memorial board only. Updates via git push to database.json and photos/.
+      No admin panel, no MongoDB, no photo uploads in browser.
+
+  - id: amvera
+    name: Amvera Cloud
+    url: https://amvera.ru
+    works_in_russia: true
+    region: Moscow
+    cost: starter_balance
+    backend: true
+    admin_panel: true
+    config: amvera.yaml
+    build: npm run build:board
+    start: node app.js
+    docs: docs/FREE-RU-PROVIDER.md
+    env:
+      - MONGODB_URI
+      - SESSION_SECRET
+      - NODE_ENV=production
+      - TRUST_PROXY=1
+    notes: >
+      Best Russia option with full Node.js backend. 111₽ starter balance on signup;
+      use Пробный plan (~170₽/month after balance). Pair with free MongoDB Atlas M0.
+
+  - id: atlas-m0
+    name: MongoDB Atlas M0
+    url: https://www.mongodb.com/cloud/atlas/register
+    works_in_russia: true
+    cost: free
+    backend: database
+    config: .env
+    docs: docs/FREE-RU-PROVIDER.md
+    notes: >
+      Free cloud database for Amvera backend. Set Network Access to 0.0.0.0/0 for Amvera.
+
+  - id: docker-vps
+    name: Docker on Russian VPS
+    url: null
+    works_in_russia: true
+    cost: paid
+    backend: true
+    admin_panel: true
+    config: docker-compose.yml
+    build: docker compose up -d --build
+    docs: docs/DEPLOYMENT-RU.md
+    notes: >
+      Full backend on Timeweb, Selectel, etc. Includes local MongoDB. Not free but stable.
+
+  - id: render
+    name: Render
+    url: https://render.com
+    works_in_russia: false
+    cost: free
+    backend: true
+    admin_panel: true
+    config: render.yaml
+    docs: docs/GO-LIVE.md
+    notes: >
+      Free web tier but often blocked or slow in Russia (Cloudflare). Use outside RU only.
+
+  - id: serveo-tunnel
+    name: Serveo (dev tunnel)
+    url: https://serveo.net
+    works_in_russia: true
+    cost: free
+    backend: true
+    admin_panel: true
+    config: scripts/start-dual-tunnels.sh
+    docs: docs/DUAL-ENV.md
+    notes: >
+      Temporary public URL for testing from Russia without VPN. Not for production.

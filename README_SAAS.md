@@ -48,9 +48,16 @@ This project has been transformed from a static single-tenant application into a
     - **Password:** `admin` (Default from seed script)
 
 ## Deployment
-This app is ready for deployment on platforms like Render, Vercel, or Heroku.
-- Ensure `MONGODB_URI` is set in the production environment.
-- Ensure `NODE_ENV` is set to `production`.
+
+| Mode | Provider | Russia | Backend |
+|------|----------|--------|---------|
+| Free board only | GitHub Pages | partial | no |
+| Free start + full app | **Amvera** + MongoDB Atlas M0 | yes | yes |
+
+See **[docs/FREE-RU-PROVIDER.md](docs/FREE-RU-PROVIDER.md)** (Russian guide) and **[providers.yml](providers.yml)**.
+
+- **Russia:** use Amvera (`amvera.yaml`), not Cloudflare tunnels or Render.
+- Set `MONGODB_URI`, `SESSION_SECRET`, `NODE_ENV=production`, `TRUST_PROXY=1` in production.
 
 ## Architecture
 - **Backend:** Node.js, Express, Mongoose.

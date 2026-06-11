@@ -23,7 +23,8 @@ PORT=3000 SESSION_SECRET=your-secret node app.js
 Temporary tunnels are for demos only. For a stable Russian host:
 
 1. [Amvera Cloud](https://amvera.ru) + `amvera.yaml` in repo  
-2. Set `MONGODB_URI`, `SESSION_SECRET`, `NODE_ENV=production`  
-3. URL: `https://<project>.amvera.io/s/novosibirsk`
+2. Free DB: MongoDB Atlas M0  
+3. Set `MONGODB_URI`, `SESSION_SECRET`, `NODE_ENV=production`, `TRUST_PROXY=1`  
+4. URL: `https://<project>.amvera.io/s/novosibirsk`
 
-See [DEPLOYMENT-RU.md](./DEPLOYMENT-RU.md).
+See [FREE-RU-PROVIDER.md](./FREE-RU-PROVIDER.md) (free + backend option) or [DEPLOYMENT-RU.md](./DEPLOYMENT-RU.md).

@@ -71,17 +71,20 @@ The server will start at: http://localhost:3000
 
 ## 🌐 Deployment to Cloud
 
-### Render.com (Recommended)
-1. Push code to GitHub
-2. Create new Web Service on Render
-3. Connect your repository
-4. Set environment variables:
-   - `MONGODB_URI`: Your MongoDB Atlas connection string
-   - `SESSION_SECRET`: A random secure string
-5. Deploy!
+### Russia (free start + backend) — Amvera + Atlas M0
+1. Free MongoDB Atlas M0 cluster → copy `MONGODB_URI`
+2. Register at https://amvera.ru (111₽ starter balance)
+3. Connect this GitHub repo; `amvera.yaml` is already in the repo root
+4. Set env: `MONGODB_URI`, `SESSION_SECRET`, `NODE_ENV=production`, `TRUST_PROXY=1`
+5. Push photos: `git add -f photos/ && git push` before deploy
 
-### Vercel
-Similar process, but may need adjustments for session storage.
+Full guide: **[docs/FREE-RU-PROVIDER.md](docs/FREE-RU-PROVIDER.md)**
+
+### Free board only (no admin) — GitHub Pages
+See **[docs/GITHUB-PAGES.md](docs/GITHUB-PAGES.md)** — static memorial, updates via git.
+
+### Render.com (outside Russia only)
+Often blocked in Russia. Use `render.yaml` only if your audience is outside RU.
 
 ---
 

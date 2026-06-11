@@ -1,5 +1,7 @@
 # Amvera Cloud (Russia) — https://amvera.ru
-# Deploy: connect GitHub repo → push to Amvera remote, set env vars in dashboard.
+# Free to start: 111₽ signup balance; use Пробный plan (~170₽/month after).
+# Pair with free MongoDB Atlas M0. Guide: docs/FREE-RU-PROVIDER.md
+# Deploy: connect GitHub repo → set env vars in dashboard → Deploy.
 meta:
   environment: node
   toolchain:
@@ -10,7 +12,7 @@ build:
   additionalCommands: npm run build:board
 
 run:
-  command: sh -c "node scripts/seed.js || true && node app.js"
+  command: npm run start:prod
   containerPort: 3000
   # Set in Amvera dashboard: MONGODB_URI, SESSION_SECRET, NODE_ENV=production, TRUST_PROXY=1
   # Push photos/ to GitHub before deploy: git add -f photos/ && git push

@@ -7,6 +7,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
+    "start:prod": "node scripts/seed.js || true && node app.js",
     "restart": "yarn stop && pm2 start app.js && pm2 logs",
     "stop": "pm2 kill",
     "seed": "node scripts/seed.js",
