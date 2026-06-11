@@ -7,6 +7,7 @@ import { IdleReload } from './components/IdleReload';
 import { usePhotoPrefetch } from './hooks/usePhotoPrefetch';
 import { useBoardData } from './context/BoardDataContext';
 import { BoardLanguageSwitcher } from './components/BoardLanguageSwitcher';
+import { BoardVersionBadge } from './components/BoardVersionBadge';
 import HomePage from './pages/HomePage';
 import CardPage from './pages/CardPage';
 
@@ -21,6 +22,7 @@ function BoardLayoutInner() {
     <BoardNavigationProvider>
       <ThemeStyles />
       <IdleReload />
+      <BoardVersionBadge />
       <BoardLanguageSwitcher />
       <div id="main-entry">
         <HomePage />
