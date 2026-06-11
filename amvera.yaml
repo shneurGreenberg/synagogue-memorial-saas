@@ -14,5 +14,6 @@ build:
 run:
   command: npm run start:prod
   containerPort: 3000
+  persistenceMount: /data
   # Set in Amvera dashboard: MONGODB_URI, SESSION_SECRET, NODE_ENV=production, TRUST_PROXY=1
   # Push photos/ to GitHub before deploy: git add -f photos/ && git push
