@@ -12,9 +12,22 @@ export function assetUrl(relativePath) {
   return `${siteBasePath()}${clean}`;
 }
 
-export function photoUrl(filename) {
+export function photoUrl(filename, options = {}) {
   if (!filename) return '';
-  return assetUrl(`photos/${filename}`);
+
+  const width = options.width ? Number(options.width) : 0;
+  const base = assetUrl(`photos/${filename}`);
+
+  if (!width || Number.isNaN(width)) {
+    return base;
+  }
+
+  if (isStaticSite()) {
+    return base;
+  }
+
+  const separator = base.includes('?') ? '&' : '?';
+  return `${base}${separator}w=${Math.round(width)}`;
 }
 
 export function isStaticSite() {

@@ -1,34 +1,31 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-
-const BOARD_LEAVE_MS = 280;
+import React, { createContext, useCallback, useContext, useMemo } from 'react';
+import { useMatch, useNavigate, useParams } from 'react-router-dom';
 
 const BoardNavigationContext = createContext(null);
 
 export function BoardNavigationProvider({ children }) {
   const navigate = useNavigate();
-  const location = useLocation();
   const { slug } = useParams();
+  const cardMatch = useMatch('/s/:slug/card/:personId');
+  const isCardOpen = Boolean(cardMatch);
 
-  useEffect(() => {
-    document.documentElement.classList.remove('board-leaving');
-  }, [location.pathname]);
+  const goToCard = useCallback((personId) => {
+    navigate(`card/${personId}`);
+  }, [navigate]);
 
-  const navigateWithTransition = useCallback((to) => {
-    if (document.documentElement.classList.contains('board-leaving')) {
+  const goToBoard = useCallback(() => {
+    if (!isCardOpen) {
       return;
     }
 
-    document.documentElement.classList.add('board-leaving');
-    window.setTimeout(() => {
-      navigate(to);
-    }, BOARD_LEAVE_MS);
-  }, [navigate]);
+    navigate(`/s/${slug}`, { replace: true });
+  }, [isCardOpen, navigate, slug]);
 
   const value = useMemo(() => ({
-    goToCard: (personId) => navigateWithTransition(`card/${personId}`),
-    goToBoard: () => navigateWithTransition(`/s/${slug}`),
-  }), [navigateWithTransition, slug]);
+    goToCard,
+    goToBoard,
+    isCardOpen,
+  }), [goToCard, goToBoard, isCardOpen]);
 
   return (
     <BoardNavigationContext.Provider value={value}>
