@@ -5,6 +5,7 @@ import {
   formatHebrewDate,
 } from '../lib/novosibirsk';
 import { getNameDensityClass } from '../lib/text-density';
+
 const CANDLE_CYCLE_MS = 4000;
 
 function toDatetimeAttr(gregorianDateOfDeath) {
@@ -84,24 +85,31 @@ class MemorialCardInner extends React.Component {
         onClick={this.onActivate}
         onKeyDown={this.onKeyDown}
         aria-label={displayName}
-        style={{ '--candle-phase': entry.id % 17 }}
       >
         {this.state.showCandle && (
-          <img
-            className="candle"
-            src={assetUrl('images/candle.webp')}
-            alt=""
-            aria-hidden="true"
-            decoding="async"
-          />
+          <div className="candle-stack" aria-hidden="true">
+            <img
+              className="candle-flame"
+              src={assetUrl('images/candle-flame.webp')}
+              alt=""
+              decoding="async"
+            />
+            <img
+              className="candle-base"
+              src={assetUrl('images/candle-base.webp')}
+              alt=""
+              decoding="async"
+            />
+          </div>
         )}
         <div className={`inner ${getNameDensityClass(displayName)}`}>
           <h3 title={displayName}>{displayName}</h3>
-          <time dateTime={toDatetimeAttr(entry.gregorianDateOfDeath)}>
-            {formatGregorianDate(entry.gregorianDateOfDeath)}
-          </time>
-          <br />
-          <time>{formatHebrewDate(entry.hebrewDateOfDeath)}</time>
+          <div className="card-dates">
+            <time dateTime={toDatetimeAttr(entry.gregorianDateOfDeath)}>
+              {formatGregorianDate(entry.gregorianDateOfDeath)}
+            </time>
+            <time>{formatHebrewDate(entry.hebrewDateOfDeath)}</time>
+          </div>
           {entry.title && big && <div className="title">{entry.title}</div>}
           <div className="placeholder" />
         </div>

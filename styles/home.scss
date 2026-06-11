@@ -237,6 +237,13 @@
         display: flex;
         flex-direction: column;
         padding: 0;
+        background: linear-gradient(
+          80deg,
+          rgba(0, 0, 0, 100%) 0%,
+          rgba(0, 0, 0, 100%) 24%,
+          $goldenPanelDark 48%,
+          $goldenPanelLight
+        ), url('/images/gold.png');
         transition:
           transform 0.22s ease,
           box-shadow 0.22s ease,
@@ -262,27 +269,40 @@
           pointer-events: none;
         }
 
-        .candle {
-          width: clamp(32px, 3.2vw, 46px);
-          height: auto;
-          max-height: 55%;
+        .candle-stack {
           position: absolute;
-          left: 4px;
-          top: 50%;
-          transform: translate3d(0, -55%, 0);
+          left: 3px;
+          bottom: 8%;
+          width: clamp(22px, 2.1vw, 32px);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: flex-end;
           pointer-events: none;
-          object-fit: contain;
-          object-position: center bottom;
           contain: layout style paint;
-          --candle-flicker-delay: calc(var(--candle-phase, 0) * -0.41s);
-          animation: candle-soft-flicker 2.6s ease-in-out infinite;
-          animation-delay: var(--candle-flicker-delay);
+          z-index: 0;
+        }
+
+        .candle-base,
+        .candle-flame {
+          display: block;
+          width: 100%;
+          height: auto;
+          object-fit: contain;
+        }
+
+        .candle-flame {
+          flex-shrink: 0;
+          margin-bottom: -2px;
+        }
+
+        .candle-base {
+          flex-shrink: 0;
         }
 
         &.card-big {
-          .candle {
-            width: clamp(52px, 5.5vw, 78px);
-            max-height: 65%;
+          .candle-stack {
+            width: clamp(34px, 3.6vw, 52px);
           }
         }
 
@@ -296,7 +316,7 @@
           z-index: 1;
           flex: 1;
           min-height: 0;
-          margin-left: clamp(32px, 4vw, 48px);
+          margin-left: clamp(24px, 2.8vw, 36px);
           margin-right: 6px;
           padding: 8px 4px 4px;
           text-align: center;
@@ -305,9 +325,16 @@
           justify-content: center;
           overflow: hidden;
 
+          .card-dates {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-top: 1px;
+          }
+
           h3 {
             font-size: clamp(16px, 1.5vw, 26px);
-            margin: 0 0 6px;
+            margin: 0 0 4px;
             line-height: 1.28;
             @include golden-text-mixin;
             font-weight: bold;
@@ -330,24 +357,22 @@
             -webkit-line-clamp: 5;
           }
 
-          &.card-text-compact time {
+          &.card-text-compact .card-dates time {
             font-size: clamp(13px, 1.1vw, 17px);
           }
 
-          &.card-text-dense time {
+          &.card-text-dense .card-dates time {
             font-size: clamp(12px, 1vw, 15px);
           }
 
-          time {
+          .card-dates time {
             display: block;
             font-size: clamp(14px, 1.2vw, 19px);
             color: var(--tile-date-color, #f0f0f0);
-            line-height: 1.35;
+            line-height: 1.1;
             overflow: hidden;
             text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
+            white-space: nowrap;
           }
 
           .title {
@@ -373,7 +398,7 @@
 
           time {
             font-size: clamp(16px, 1.45vw, 24px);
-            -webkit-line-clamp: 2;
+            line-height: 1.1;
           }
 
           .title {
@@ -737,28 +762,9 @@
   }
 }
 
-@keyframes candle-soft-flicker {
-  0%,
-  100% {
-    opacity: 1;
-    filter: brightness(1);
-  }
-
-  38% {
-    opacity: 0.9;
-    filter: brightness(0.94);
-  }
-
-  72% {
-    opacity: 0.97;
-    filter: brightness(1.05);
-  }
-}
-
-/* Softer candle motion on low-end devices */
 @media (prefers-reduced-motion: reduce) {
-  .main-container .cards-grid .card .candle {
-    animation: none !important;
+  .main-container .cards-grid .card .candle-flame {
+    visibility: hidden;
   }
 
   .main-container .cards-grid .card {
