@@ -100,28 +100,3 @@ body {
   outline-offset: 2px;
 }
 
-html.board-leaving .main-container,
-html.board-leaving .card-view {
-  animation: board-leave 0.28s ease-in forwards;
-  pointer-events: none;
-}
-
-@keyframes board-leave {
-  from {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  to {
-    opacity: 0;
-    transform: scale(0.985);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html.board-leaving .main-container,
-  html.board-leaving .card-view {
-    animation: none;
-    opacity: 0.6;
-  }
-}

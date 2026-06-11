@@ -35,6 +35,9 @@ photos/
 # GitHub Pages build output (deployed via Actions)
 site/
 
+# Generated photo thumbnails
+.photo-cache/
+
 # Temporary files
 *.tmp
 *.bak

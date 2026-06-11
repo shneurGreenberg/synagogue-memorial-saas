@@ -112,6 +112,30 @@ app.set('view engine', 'handlebars');
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
+const { getResizedPhoto } = require('./lib/photo-resize');
+
+app.get('/photos/:filename', async (req, res, next) => {
+  const width = Number(req.query.w);
+
+  if (!width || Number.isNaN(width)) {
+    return next();
+  }
+
+  try {
+    const filePath = await getResizedPhoto(req.params.filename, width);
+
+    if (!filePath) {
+      return res.status(404).send('Photo not found');
+    }
+
+    res.setHeader('Cache-Control', 'public, max-age=604800, immutable');
+    return res.sendFile(filePath);
+  } catch (err) {
+    console.error('Photo resize error:', err);
+    return next();
+  }
+});
+
 app.use('/photos', express.static(path.join(__dirname, 'photos')));
 
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));

@@ -1,6 +1,13 @@
 import React from 'react';
 import { photoUrl } from '../lib/asset-url';
 
+const PHOTO_WIDTH_BY_SIZE = {
+  sm: 96,
+  md: 128,
+  lg: 192,
+  xl: 400,
+};
+
 function getInitials(name) {
   if (!name) {
     return '?';
@@ -43,11 +50,12 @@ export class PersonAvatar extends React.Component {
     const classes = `person-avatar person-avatar-${size} ${className}`.trim();
     const name = person.name || '';
     const showPhoto = person.photo && !this.state.imageFailed;
+    const photoWidth = PHOTO_WIDTH_BY_SIZE[size] || PHOTO_WIDTH_BY_SIZE.md;
 
     if (showPhoto) {
       return (
         <img
-          src={photoUrl(person.photo)}
+          src={photoUrl(person.photo, { width: photoWidth })}
           alt={name}
           className={classes}
           onError={this.onImageError}
