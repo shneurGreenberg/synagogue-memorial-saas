@@ -1,0 +1,43 @@
+name: Auto-merge cursor PRs
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    if: >-
+      github.event.pull_request.draft == false &&
+      startsWith(github.event.pull_request.head.ref, 'cursor/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable auto-merge
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pullNumber = context.payload.pull_request.number;
+            try {
+              await github.graphql(
+                `mutation($pullRequestId: ID!) {
+                  enablePullRequestAutoMerge(input: {
+                    pullRequestId: $pullRequestId,
+                    mergeMethod: SQUASH
+                  }) {
+                    pullRequest { autoMergeRequest { enabledAt } }
+                  }
+                }`,
+                {
+                  pullRequestId: context.payload.pull_request.node_id,
+                },
+              );
+              core.info(`Auto-merge enabled for PR #${pullNumber}`);
+            } catch (error) {
+              core.warning(`Auto-merge not enabled: ${error.message}`);
+              core.info('In GitHub: Settings → General → Pull Requests → enable "Allow auto-merge".');
+              core.info('If branch protection requires reviews, add an exception or reduce required reviewers.');
+            }

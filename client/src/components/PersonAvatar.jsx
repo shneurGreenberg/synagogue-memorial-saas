@@ -78,7 +78,7 @@ export class PersonAvatar extends React.Component {
         : photoUrl(person.photo, { width: photoWidth });
 
       return (
-        <span className={`${classes} person-avatar-wrap`} aria-label={name}>
+        <span className={`${classes} person-avatar-wrap${imageLoaded ? ' is-loaded' : ''}`} aria-label={name}>
           <span className="person-avatar-placeholder person-avatar-inner" aria-hidden="true">
             {initials}
           </span>
