@@ -44,6 +44,7 @@ export function ThemeStyles() {
     .main-container .board-accent time,
     .main-container .shabbat-times .shabbat-label,
     .main-container .shabbat-times .shabbat-time,
+    .main-container .shabbat-times .shabbat-parsha-heading,
     .main-container .shabbat-times .shabbat-parsha-name {
       color: var(--accent-color) !important;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);

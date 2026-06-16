@@ -203,7 +203,6 @@
     }
 
     .cards-grid {
-      animation: cards-page-fade 0.28s ease-out;
       flex: 1;
       min-height: 0;
       display: grid;
@@ -244,24 +243,9 @@
           $goldenPanelDark 48%,
           $goldenPanelLight
         ), url('/images/gold.png');
-        transition:
-          transform 0.22s ease,
-          box-shadow 0.22s ease,
-          filter 0.22s ease;
-
-        @media (hover: hover) {
-          &:hover {
-            transform: translateY(-2px) scale(1.012);
-            box-shadow:
-              0 8px 18px rgba(0, 0, 0, 0.42),
-              inset 0 0 0 1px rgba(207, 175, 31, 0.22);
-            z-index: 2;
-          }
-        }
 
         &:active {
-          transform: translateY(0) scale(0.995);
-          transition-duration: 0.1s;
+          transform: scale(0.995);
         }
 
         &.card-hidden {
@@ -1005,9 +989,13 @@ body.board-lang-he {
   .card .inner time,
   .card .inner p,
   .board-accent,
-  .board-accent time,
-  .shabbat-times,
-  .shabbat-times-item {
+  .board-accent time {
+    direction: rtl;
+    unicode-bidi: plaintext;
+  }
+
+  .shabbat-parsha-heading,
+  .shabbat-parsha-name {
     direction: rtl;
     unicode-bidi: plaintext;
   }
@@ -1027,56 +1015,76 @@ body.board-lang-he {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 0.45rem;
   align-items: center;
+  justify-content: center;
+  text-align: center;
+  direction: ltr;
+  unicode-bidi: isolate;
 
-  .shabbat-times-enter-row {
+  .shabbat-parsha-block {
     display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    gap: clamp(10px, 1.5vw, 22px);
+    gap: 0.12rem;
     width: 100%;
+    text-align: center;
+  }
+
+  .shabbat-parsha-heading {
+    font-size: clamp(11px, 0.95vw, 14px);
+    opacity: 0.88;
+    text-align: center;
+    width: 100%;
+  }
+
+  .shabbat-parsha-name {
+    font-size: clamp(17px, 1.55vw, 24px);
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: center;
+    width: 100%;
+    white-space: normal;
+    overflow: visible;
+    word-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+  }
+
+  .shabbat-times-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: clamp(20px, 3vw, 36px);
+    width: 100%;
+    margin-top: 0.1rem;
   }
 
   .shabbat-times-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.15rem;
-    line-height: 1.3;
+    justify-content: center;
+    gap: 0.08rem;
+    line-height: 1.2;
     min-width: 0;
-    max-width: 100%;
-  }
-
-  .shabbat-parsha {
-    flex: 1 1 140px;
-    max-width: min(100%, 220px);
+    text-align: center;
   }
 
   .shabbat-label {
-    font-size: clamp(11px, 0.95vw, 14px);
+    font-size: clamp(11px, 0.9vw, 13px);
     opacity: 0.9;
-    white-space: normal;
+    white-space: nowrap;
     text-align: center;
   }
 
   .shabbat-time {
-    font-size: clamp(14px, 1.2vw, 19px);
+    font-size: clamp(14px, 1.15vw, 18px);
     font-weight: 700;
     letter-spacing: 0.02em;
     white-space: nowrap;
-  }
-
-  .shabbat-parsha-name {
-    font-size: clamp(13px, 1.15vw, 17px);
-    font-weight: 700;
-    line-height: 1.3;
     text-align: center;
-    white-space: normal;
-    overflow: visible;
-    word-wrap: break-word;
-    hyphens: auto;
-    max-width: 100%;
+    font-variant-numeric: tabular-nums;
   }
 }

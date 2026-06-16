@@ -137,7 +137,7 @@ app.get('/photos/:filename', async (req, res, next) => {
     const filePath = await getResizedPhoto(req.params.filename, width);
 
     if (!filePath) {
-      return res.status(404).send('Photo not found');
+      return next();
     }
 
     res.setHeader('Cache-Control', 'public, max-age=604800, immutable');

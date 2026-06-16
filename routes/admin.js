@@ -15,6 +15,7 @@ const {
   IMAGES_DIR,
   PHOTOS_DIR,
 } = require('../lib/storage-paths');
+const { optimizeUploadedImage } = require('../lib/image-optimize');
 
 const MIME_EXT = {
     'image/jpeg': '.jpg',
@@ -197,13 +198,13 @@ router.post('/:slug/settings', requireAdmin, handleUpload([
         };
 
         if (req.files['logo']) {
-            updateData['theme.logo'] = req.files['logo'][0].filename;
+            updateData['theme.logo'] = await optimizeUploadedImage(req.files['logo'][0].path, 'logo');
         }
         if (req.files['backgroundImage']) {
-            updateData['theme.backgroundImage'] = req.files['backgroundImage'][0].filename;
+            updateData['theme.backgroundImage'] = await optimizeUploadedImage(req.files['backgroundImage'][0].path, 'background');
         }
         if (req.files['tilesBackground']) {
-            updateData['theme.tilesBackground'] = req.files['tilesBackground'][0].filename;
+            updateData['theme.tilesBackground'] = await optimizeUploadedImage(req.files['tilesBackground'][0].path, 'tilesBackground');
         }
 
         await Synagogue.updateOne({ slug: req.params.slug }, {
@@ -291,12 +292,13 @@ router.post('/:slug/slideshow/add', requireAdmin, upload.single('image'), async 
         if (!req.file) {
             return res.status(400).json({ ok: false, error: 'Image is required' });
         }
+        const optimizedFilename = await optimizeUploadedImage(req.file.path, 'slideshow');
         await Synagogue.updateOne(
             { slug: req.params.slug },
             {
                 $push: {
                     'slideshow.images': {
-                        url: req.file.filename,
+                        url: optimizedFilename,
                         text: sanitizeRichText(text)
                     }
                 }
@@ -317,7 +319,7 @@ router.post('/:slug/slideshow/edit', requireAdmin, upload.single('image'), async
         };
 
         if (req.file) {
-            updateFields['slideshow.images.$.url'] = req.file.filename;
+            updateFields['slideshow.images.$.url'] = await optimizeUploadedImage(req.file.path, 'slideshow');
         }
 
         await Synagogue.updateOne(
@@ -440,7 +442,7 @@ router.post('/:slug/people/add', requireAdmin, upload.single('photo'), async (re
             name,
             text: sanitizeRichText(text),
             gregorianDateOfDeath: { month: parseInt(month), date: parseInt(date), year: parseInt(year) },
-            photo: req.file ? req.file.filename : '',
+            photo: req.file ? await optimizeUploadedImage(req.file.path, 'photo') : '',
             title: ''
         };
 
@@ -467,7 +469,7 @@ router.post('/:slug/people/edit', requireAdmin, upload.single('photo'), async (r
         };
 
         if (req.file) {
-            updateFields['people.$.photo'] = req.file.filename;
+            updateFields['people.$.photo'] = await optimizeUploadedImage(req.file.path, 'photo');
         } else if (deletePhoto) {
             updateFields['people.$.photo'] = '';
         }
