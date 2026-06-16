@@ -11,7 +11,6 @@
   box-sizing: border-box;
   background: rgba(0, 0, 0, 55%);
   cursor: pointer;
-  animation: card-backdrop-enter 0.2s ease-out both;
 }
 
 .card-popup {
@@ -20,7 +19,6 @@
   width: min(1100px, 100%);
   max-height: calc(100vh - clamp(16px, 4vw, 40px));
   cursor: default;
-  animation: card-view-enter 0.28s ease-out both;
 }
 
 .card-view {
@@ -69,7 +67,6 @@
     box-sizing: border-box;
     cursor: default;
     border-radius: 16px;
-    animation: card-detail-enter 0.32s ease-out 0.04s both;
   }
 
   .card-detail-photo {

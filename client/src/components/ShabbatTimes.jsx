@@ -48,24 +48,27 @@ function ShabbatTimesInner({ t }) {
 
   const timezone = getBoardTimezone(getBoardData());
   const weeklyLabel = holidayName || parshaName;
+  const showParshaHeading = Boolean(parshaName && !holidayName);
 
   return (
     <div className="shabbat-times">
-      <div className="shabbat-times-enter-row">
-        <div className="shabbat-times-item shabbat-candles">
-          <span className="shabbat-label">{t('shabbat_enter')}</span>
+      {weeklyLabel && (
+        <div className="shabbat-parsha-block">
+          {showParshaHeading && (
+            <span className="shabbat-parsha-heading">{t('weekly_chapter')}</span>
+          )}
+          <span className="shabbat-parsha-name" title={weeklyLabel}>{weeklyLabel}</span>
+        </div>
+      )}
+      <div className="shabbat-times-row">
+        <div className="shabbat-times-item">
+          <span className="shabbat-label">{t('shabbat_enter_short')}</span>
           <span className="shabbat-time">{formatShabbatClockTime(times.enter, timezone)}</span>
         </div>
-        {weeklyLabel && (
-          <div className="shabbat-times-item shabbat-parsha">
-            <span className="shabbat-label">{t('weekly_chapter')}</span>
-            <span className="shabbat-parsha-name" title={weeklyLabel}>{weeklyLabel}</span>
-          </div>
-        )}
-      </div>
-      <div className="shabbat-times-item shabbat-exit">
-        <span className="shabbat-label">{t('shabbat_exit')}</span>
-        <span className="shabbat-time">{formatShabbatClockTime(times.exit, timezone)}</span>
+        <div className="shabbat-times-item">
+          <span className="shabbat-label">{t('shabbat_exit_short')}</span>
+          <span className="shabbat-time">{formatShabbatClockTime(times.exit, timezone)}</span>
+        </div>
       </div>
     </div>
   );

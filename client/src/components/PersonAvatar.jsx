@@ -26,18 +26,26 @@ function getInitials(name) {
 export class PersonAvatar extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { imageFailed: false };
+    this.state = {
+      imageFailed: false,
+      imageLoaded: false,
+    };
     this.onImageError = this.onImageError.bind(this);
+    this.onImageLoad = this.onImageLoad.bind(this);
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.person !== this.props.person || prevProps.person?.photo !== this.props.person?.photo) {
-      this.setState({ imageFailed: false });
+      this.setState({ imageFailed: false, imageLoaded: false });
     }
   }
 
   onImageError() {
-    this.setState({ imageFailed: true });
+    this.setState({ imageFailed: true, imageLoaded: false });
+  }
+
+  onImageLoad() {
+    this.setState({ imageLoaded: true });
   }
 
   render() {
@@ -51,23 +59,32 @@ export class PersonAvatar extends React.Component {
     const name = person.name || '';
     const showPhoto = person.photo && !this.state.imageFailed;
     const photoWidth = PHOTO_WIDTH_BY_SIZE[size] || PHOTO_WIDTH_BY_SIZE.md;
+    const initials = getInitials(name);
 
     if (showPhoto) {
+      const { imageLoaded } = this.state;
+
       return (
-        <img
-          src={photoUrl(person.photo, { width: photoWidth })}
-          alt={name}
-          className={classes}
-          onError={this.onImageError}
-          loading="eager"
-          decoding="async"
-        />
+        <span className={`${classes} person-avatar-wrap`} aria-label={name}>
+          <span className="person-avatar-placeholder person-avatar-inner" aria-hidden="true">
+            {initials}
+          </span>
+          <img
+            src={photoUrl(person.photo, { width: photoWidth })}
+            alt=""
+            className={`person-avatar-photo ${imageLoaded ? 'is-loaded' : 'is-loading'}`.trim()}
+            onError={this.onImageError}
+            onLoad={this.onImageLoad}
+            loading="lazy"
+            decoding="async"
+          />
+        </span>
       );
     }
 
     return (
       <span className={`${classes} person-avatar-placeholder`} aria-hidden="true">
-        {getInitials(name)}
+        {initials}
       </span>
     );
   }

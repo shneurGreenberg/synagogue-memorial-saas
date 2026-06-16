@@ -95,6 +95,33 @@ body {
   background: linear-gradient(145deg, #3d3424, #1f1a12);
 }
 
+.person-avatar-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.person-avatar-inner {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.person-avatar-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: inherit;
+  opacity: 0;
+
+  &.is-loaded {
+    opacity: 1;
+  }
+}
+
 :focus-visible {
   outline: 3px solid $goldenText;
   outline-offset: 2px;

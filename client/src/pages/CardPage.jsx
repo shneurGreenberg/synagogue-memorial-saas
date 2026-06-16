@@ -103,13 +103,13 @@ const CardPageTranslated = withTranslation()(CardPageBase);
 
 export default function CardPage({ personId }) {
   const { goToBoard } = useBoardNavigation();
-  const { data, revision } = useBoardData();
+  const { data } = useBoardData();
   const people = data.people || [];
   const card = people.find((person) => String(person.id) === String(personId));
 
   return (
     <CardPageTranslated
-      key={`card-${revision}-${personId}`}
+      key={`card-${personId}`}
       card={card}
       onBack={goToBoard}
     />
