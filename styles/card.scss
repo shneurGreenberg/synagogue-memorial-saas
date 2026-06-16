@@ -1,5 +1,13 @@
 @import 'common';
 
+.card-overlay,
+.card-popup,
+.card-view,
+.card-view * {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 .card-overlay {
   position: fixed;
   inset: 0;
