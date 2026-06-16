@@ -11,9 +11,11 @@ const { enrichSynagogueForAdmin, normalizeTitles, sanitizeHexColor } = require('
 const { getTranslator } = require('../lib/admin-translations');
 const { getAdminLocaleContext } = require('../lib/admin-locale');
 const { BOARD_THEME_DEFAULTS } = require('../lib/board-defaults');
+const {
+  IMAGES_DIR,
+  PHOTOS_DIR,
+} = require('../lib/storage-paths');
 
-const IMAGES_DIR = path.join(__dirname, '..', 'images');
-const PHOTOS_DIR = path.join(__dirname, '..', 'photos');
 const MIME_EXT = {
     'image/jpeg': '.jpg',
     'image/png': '.png',
