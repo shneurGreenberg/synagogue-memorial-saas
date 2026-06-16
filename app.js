@@ -110,9 +110,21 @@ app.engine('handlebars', handlebars({
 
 app.set('view engine', 'handlebars');
 
-app.use('/images', express.static(path.join(__dirname, 'images')));
-
 const { getResizedPhoto } = require('./lib/photo-resize');
+const {
+  BUNDLED_IMAGES_DIR,
+  BUNDLED_PHOTOS_DIR,
+  IMAGES_DIR,
+  PHOTOS_DIR,
+  isPersistent,
+} = require('./lib/storage-paths');
+
+if (isPersistent) {
+  console.log('Persistent uploads enabled:', IMAGES_DIR, PHOTOS_DIR);
+}
+
+app.use('/images', express.static(IMAGES_DIR));
+app.use('/images', express.static(BUNDLED_IMAGES_DIR));
 
 app.get('/photos/:filename', async (req, res, next) => {
   const width = Number(req.query.w);
@@ -136,7 +148,8 @@ app.get('/photos/:filename', async (req, res, next) => {
   }
 });
 
-app.use('/photos', express.static(path.join(__dirname, 'photos')));
+app.use('/photos', express.static(PHOTOS_DIR));
+app.use('/photos', express.static(BUNDLED_PHOTOS_DIR));
 
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
