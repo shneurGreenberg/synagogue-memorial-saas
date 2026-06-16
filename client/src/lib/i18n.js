@@ -73,7 +73,7 @@ const resources = {
       person_not_found: 'לא נמצא',
       back_to_board: 'חזרה ללוח',
       shabbat_enter: 'כניסת שבת',
-      shabbat_exit: 'צאת שבת',
+      shabbat_exit: 'יציאת שבת',
       shabbat_enter_short: 'כניסה',
       shabbat_exit_short: 'יציאה',
       language: 'שפה',

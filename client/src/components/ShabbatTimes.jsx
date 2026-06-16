@@ -62,12 +62,11 @@ function ShabbatTimesInner({ t }) {
       )}
       <div className="shabbat-times-row">
         <div className="shabbat-times-item shabbat-enter">
-          <span className="shabbat-label">{t('shabbat_enter_short')}</span>
+          <span className="shabbat-label">{t('shabbat_enter')}</span>
           <span className="shabbat-time">{formatShabbatClockTime(times.enter, timezone)}</span>
         </div>
-        <div className="shabbat-times-sep" aria-hidden="true" />
         <div className="shabbat-times-item shabbat-exit">
-          <span className="shabbat-label">{t('shabbat_exit_short')}</span>
+          <span className="shabbat-label">{t('shabbat_exit')}</span>
           <span className="shabbat-time">{formatShabbatClockTime(times.exit, timezone)}</span>
         </div>
       </div>
