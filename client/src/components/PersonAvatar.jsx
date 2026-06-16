@@ -29,6 +29,7 @@ export class PersonAvatar extends React.Component {
     this.state = {
       imageFailed: false,
       imageLoaded: false,
+      useFullSize: false,
     };
     this.onImageError = this.onImageError.bind(this);
     this.onImageLoad = this.onImageLoad.bind(this);
@@ -36,11 +37,20 @@ export class PersonAvatar extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.person !== this.props.person || prevProps.person?.photo !== this.props.person?.photo) {
-      this.setState({ imageFailed: false, imageLoaded: false });
+      this.setState({
+        imageFailed: false,
+        imageLoaded: false,
+        useFullSize: false,
+      });
     }
   }
 
   onImageError() {
+    if (!this.state.useFullSize) {
+      this.setState({ useFullSize: true, imageLoaded: false });
+      return;
+    }
+
     this.setState({ imageFailed: true, imageLoaded: false });
   }
 
@@ -60,9 +70,12 @@ export class PersonAvatar extends React.Component {
     const showPhoto = person.photo && !this.state.imageFailed;
     const photoWidth = PHOTO_WIDTH_BY_SIZE[size] || PHOTO_WIDTH_BY_SIZE.md;
     const initials = getInitials(name);
+    const { imageLoaded, useFullSize } = this.state;
 
     if (showPhoto) {
-      const { imageLoaded } = this.state;
+      const src = useFullSize
+        ? photoUrl(person.photo)
+        : photoUrl(person.photo, { width: photoWidth });
 
       return (
         <span className={`${classes} person-avatar-wrap`} aria-label={name}>
@@ -70,12 +83,13 @@ export class PersonAvatar extends React.Component {
             {initials}
           </span>
           <img
-            src={photoUrl(person.photo, { width: photoWidth })}
+            key={src}
+            src={src}
             alt=""
             className={`person-avatar-photo ${imageLoaded ? 'is-loaded' : 'is-loading'}`.trim()}
             onError={this.onImageError}
             onLoad={this.onImageLoad}
-            loading="lazy"
+            loading="eager"
             decoding="async"
           />
         </span>

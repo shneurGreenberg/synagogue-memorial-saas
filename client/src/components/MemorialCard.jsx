@@ -103,7 +103,7 @@ class MemorialCardInner extends React.Component {
           </div>
         )}
         <div className={`inner ${getNameDensityClass(displayName)}`}>
-          <h3 title={displayName}>{displayName}</h3>
+          <h3>{displayName}</h3>
           <div className="card-dates">
             <time dateTime={toDatetimeAttr(entry.gregorianDateOfDeath)}>
               {formatGregorianDate(entry.gregorianDateOfDeath)}

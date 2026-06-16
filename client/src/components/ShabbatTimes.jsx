@@ -57,7 +57,7 @@ function ShabbatTimesInner({ t }) {
           {showParshaHeading && (
             <span className="shabbat-parsha-heading">{t('weekly_chapter')}</span>
           )}
-          <span className="shabbat-parsha-name" title={weeklyLabel}>{weeklyLabel}</span>
+          <span className="shabbat-parsha-name">{weeklyLabel}</span>
         </div>
       )}
       <div className="shabbat-times-row">
