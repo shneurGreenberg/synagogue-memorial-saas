@@ -4,7 +4,7 @@ const Synagogue = require('../models/Synagogue');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { verifyPassword, ensureHashed, hashPassword } = require('../lib/password');
+const { verifyPassword, ensureHashed } = require('../lib/password');
 const { sanitizeRichText } = require('../lib/sanitize');
 const { seedPhotosForSynagogue } = require('../lib/seed-people-photos');
 const { enrichSynagogueForAdmin, normalizeTitles, sanitizeHexColor } = require('../lib/admin-theme');
@@ -21,6 +21,19 @@ const {
   buildCommunityEventPayload,
   categorizeCommunityEvents,
 } = require('../lib/community-events');
+const {
+  parseSlugAndUsername,
+  normalizeAdminUsername,
+  findAdminUser,
+  resolveAdminPermissions,
+  getDefaultLandingPath,
+  applyUserDisplaySettings,
+  parsePermissionsFromBody,
+  buildPermissionToggles,
+  serializeAdminUsers,
+  FULL_ADMIN_PERMISSIONS,
+} = require('../lib/admin-users');
+const { normalizeAdminLang } = require('../lib/admin-locale');
 
 const BOARD_FEATURE_TOGGLE_META = [
   { key: 'sidebarNames', labelKey: 'feature_sidebar_names', helpKey: 'feature_sidebar_names_help' },
@@ -108,12 +121,55 @@ const requireAdmin = (req, res, next) => {
     res.redirect('/admin/login');
 };
 
+const requireFullAdmin = (req, res, next) => {
+    if (req.session.adminUsername) {
+        return res.status(403).send('Forbidden');
+    }
+    return next();
+};
+
+async function loadAdminContext(req, res, next) {
+    const slug = req.params.slug || req.session.adminSlug;
+    if (!req.session.adminSlug || slug !== req.session.adminSlug) {
+        req.adminPermissions = null;
+        req.adminUser = null;
+        return next();
+    }
+
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.session.adminSlug }).lean();
+        req.adminPermissions = resolveAdminPermissions(req.session, synagogue);
+        req.adminUser = req.session.adminUsername
+            ? findAdminUser(synagogue, req.session.adminUsername)
+            : null;
+        return next();
+    } catch (err) {
+        return next(err);
+    }
+}
+
+function requirePermission(permission) {
+    return (req, res, next) => {
+        if (req.params.slug !== req.session.adminSlug) {
+            return res.status(403).send('Forbidden');
+        }
+
+        const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
+        if (!permissions[permission]) {
+            return res.redirect(getDefaultLandingPath(req.params.slug, permissions));
+        }
+
+        return next();
+    };
+}
+
 router.get('/login', (req, res) => {
     res.render('admin/login', { layout: false });
 });
 
 router.post('/login', async (req, res) => {
-    const { slug, password } = req.body;
+    const { slug: slugInput, password } = req.body;
+    const { slug, username } = parseSlugAndUsername(slugInput);
     try {
         const synagogue = await Synagogue.findOne({ slug }).select('+adminPassword');
         if (synagogue && await verifyPassword(password, synagogue.adminPassword)) {
@@ -121,7 +177,20 @@ router.post('/login', async (req, res) => {
             if (hashed) {
                 await Synagogue.updateOne({ slug }, { $set: { adminPassword: hashed } });
             }
+
+            if (username) {
+                const adminUser = findAdminUser(synagogue, username);
+                if (!adminUser) {
+                    return res.render('admin/login', { error: 'Unknown user for this synagogue', layout: false });
+                }
+                req.session.adminSlug = slug;
+                req.session.adminUsername = normalizeAdminUsername(username);
+                const permissions = resolveAdminPermissions(req.session, synagogue);
+                return res.redirect(getDefaultLandingPath(slug, permissions));
+            }
+
             req.session.adminSlug = slug;
+            req.session.adminUsername = null;
             return res.redirect(`/admin/${slug}/dashboard`);
         }
         res.render('admin/login', { error: 'Invalid credentials', layout: false });
@@ -134,6 +203,8 @@ router.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/admin/login');
 });
+
+router.use('/:slug', loadAdminContext);
 
 const getInitials = (name) => {
     if (!name) {
@@ -152,10 +223,18 @@ const getInitials = (name) => {
 
 function renderAdmin(res, view, options = {}) {
     const synagogue = options.synagogue;
-    const locale = getAdminLocaleContext(synagogue && synagogue.adminLanguage);
+    const adminUser = options.adminUser || null;
+    const displaySynagogue = applyUserDisplaySettings(
+        enrichSynagogueForAdmin(synagogue),
+        adminUser,
+    );
+    const locale = getAdminLocaleContext(displaySynagogue && displaySynagogue.adminLanguage);
 
     res.render(view, {
         ...options,
+        synagogue: displaySynagogue,
+        adminUser,
+        adminPermissions: options.adminPermissions || FULL_ADMIN_PERMISSIONS,
         adminTranslate: getTranslator(locale.adminLanguage),
         adminDir: locale.adminDir,
         adminIsRtl: locale.adminIsRtl,
@@ -201,7 +280,7 @@ async function persistTitlesIfMissing(synagogue) {
     return synagogue;
 }
 
-router.post('/:slug/settings', requireAdmin, handleUpload([
+router.post('/:slug/settings', requireAdmin, requirePermission('settings'), handleUpload([
     { name: 'logo', maxCount: 1 },
     { name: 'backgroundImage', maxCount: 1 },
     { name: 'tilesBackground', maxCount: 1 }
@@ -224,12 +303,28 @@ router.post('/:slug/settings', requireAdmin, handleUpload([
             'theme.primaryColor': sanitizeHexColor(primaryColor, BOARD_THEME_DEFAULTS.primaryColor),
             'theme.textColor': sanitizeHexColor(textColor, BOARD_THEME_DEFAULTS.textColor),
             'theme.accentColor': sanitizeHexColor(accentColor, BOARD_THEME_DEFAULTS.accentColor),
-            'adminTheme.colorMode': safeColorMode,
             language,
-            adminLanguage,
             shabbatTimesEnabled: !!shabbatTimesEnabled,
             boardFeatures,
         };
+
+        if (req.session.adminUsername && req.adminUser) {
+            await Synagogue.updateOne(
+                {
+                    slug: req.params.slug,
+                    'adminUsers._id': req.adminUser._id,
+                },
+                {
+                    $set: {
+                        'adminUsers.$.adminLanguage': normalizeAdminLang(adminLanguage),
+                        'adminUsers.$.adminTheme.colorMode': safeColorMode,
+                    },
+                },
+            );
+        } else {
+            updateData['adminTheme.colorMode'] = safeColorMode;
+            updateData.adminLanguage = adminLanguage;
+        }
 
         if (req.files['logo']) {
             updateData['theme.logo'] = await optimizeUploadedImage(req.files['logo'][0].path, 'logo');
@@ -250,7 +345,7 @@ router.post('/:slug/settings', requireAdmin, handleUpload([
     }
 });
 
-router.post('/:slug/settings/reset-theme', requireAdmin, async (req, res) => {
+router.post('/:slug/settings/reset-theme', requireAdmin, requirePermission('settings'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         await Synagogue.updateOne({ slug: req.params.slug }, {
@@ -271,7 +366,50 @@ router.post('/:slug/settings/reset-theme', requireAdmin, async (req, res) => {
     }
 });
 
-router.get('/:slug/dashboard', requireAdmin, async (req, res) => {
+router.post('/:slug/my-preferences', requireAdmin, parseFormBody, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { adminLanguage, colorMode } = req.body;
+        const safeColorMode = colorMode === 'light' ? 'light' : 'dark';
+        const safeLanguage = normalizeAdminLang(adminLanguage);
+
+        if (req.session.adminUsername && req.adminUser) {
+            await Synagogue.updateOne(
+                {
+                    slug: req.params.slug,
+                    'adminUsers._id': req.adminUser._id,
+                },
+                {
+                    $set: {
+                        'adminUsers.$.adminLanguage': safeLanguage,
+                        'adminUsers.$.adminTheme.colorMode': safeColorMode,
+                    },
+                },
+            );
+        } else {
+            await Synagogue.updateOne({ slug: req.params.slug }, {
+                $set: {
+                    adminLanguage: safeLanguage,
+                    'adminTheme.colorMode': safeColorMode,
+                },
+            });
+        }
+
+        if (wantsJson(req)) {
+            return res.json({ ok: true, adminLanguage: safeLanguage, colorMode: safeColorMode });
+        }
+
+        const referer = req.get('Referer') || `/admin/${req.params.slug}/dashboard`;
+        return res.redirect(referer);
+    } catch (err) {
+        if (wantsJson(req)) {
+            return res.status(500).json({ ok: false, error: err.message });
+        }
+        return res.status(500).send(err.message);
+    }
+});
+
+router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
@@ -280,6 +418,8 @@ router.get('/:slug/dashboard', requireAdmin, async (req, res) => {
         const enriched = enrichSynagogueForAdmin(refreshed);
         renderAdmin(res, 'admin/dashboard', {
             synagogue: enriched,
+            adminUser: req.adminUser,
+            adminPermissions: req.adminPermissions,
             boardTitles: enriched.titles,
             boardFeatureToggles: buildBoardFeatureToggles(enriched.boardFeatures),
             saved: req.query.saved === '1',
@@ -291,19 +431,21 @@ router.get('/:slug/dashboard', requireAdmin, async (req, res) => {
 });
 
 // Slideshow Management
-router.get('/:slug/slideshow', requireAdmin, async (req, res) => {
+router.get('/:slug/slideshow', requireAdmin, requirePermission('slideshow'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
         renderAdmin(res, 'admin/slideshow', {
             synagogue: enrichSynagogueForAdmin(synagogue),
+            adminUser: req.adminUser,
+            adminPermissions: req.adminPermissions,
         });
     } catch (err) {
         res.status(500).send(err.message);
     }
 });
 
-router.post('/:slug/slideshow/settings', requireAdmin, async (req, res) => {
+router.post('/:slug/slideshow/settings', requireAdmin, requirePermission('slideshow'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { enabled, interval, mainDuration } = req.body;
@@ -320,7 +462,7 @@ router.post('/:slug/slideshow/settings', requireAdmin, async (req, res) => {
     }
 });
 
-router.post('/:slug/slideshow/add', requireAdmin, upload.single('image'), async (req, res) => {
+router.post('/:slug/slideshow/add', requireAdmin, requirePermission('slideshow'), upload.single('image'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { text } = req.body;
@@ -345,7 +487,7 @@ router.post('/:slug/slideshow/add', requireAdmin, upload.single('image'), async 
     }
 });
 
-router.post('/:slug/slideshow/edit', requireAdmin, upload.single('image'), async (req, res) => {
+router.post('/:slug/slideshow/edit', requireAdmin, requirePermission('slideshow'), upload.single('image'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { slideId, text } = req.body;
@@ -367,7 +509,7 @@ router.post('/:slug/slideshow/edit', requireAdmin, upload.single('image'), async
     }
 });
 
-router.post('/:slug/slideshow/delete', requireAdmin, async (req, res) => {
+router.post('/:slug/slideshow/delete', requireAdmin, requirePermission('slideshow'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { slideId } = req.body;
@@ -381,7 +523,7 @@ router.post('/:slug/slideshow/delete', requireAdmin, async (req, res) => {
     }
 });
 
-router.get('/:slug/preview-board', requireAdmin, async (req, res) => {
+router.get('/:slug/preview-board', requireAdmin, requirePermission('settings'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     const query = new URLSearchParams(req.query).toString();
     const target = `/s/${req.params.slug}${query ? `?${query}` : ''}`;
@@ -405,12 +547,14 @@ function normalizeImportedPerson(raw, fallbackId) {
 }
 
 // People Management
-router.get('/:slug/people', requireAdmin, async (req, res) => {
+router.get('/:slug/people', requireAdmin, requirePermission('people'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
         renderAdmin(res, 'admin/people', {
             synagogue: enrichSynagogueForAdmin(synagogue),
+            adminUser: req.adminUser,
+            adminPermissions: req.adminPermissions,
             seeded: req.query.seeded === '1',
             imported: req.query.imported === '1',
             importError: req.query.importError === '1',
@@ -420,7 +564,7 @@ router.get('/:slug/people', requireAdmin, async (req, res) => {
     }
 });
 
-router.post('/:slug/people/import', requireAdmin, async (req, res) => {
+router.post('/:slug/people/import', requireAdmin, requirePermission('people'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         let payload = req.body.people;
@@ -465,7 +609,7 @@ router.post('/:slug/people/import', requireAdmin, async (req, res) => {
     }
 });
 
-router.post('/:slug/people/add', requireAdmin, upload.single('photo'), async (req, res) => {
+router.post('/:slug/people/add', requireAdmin, requirePermission('people'), upload.single('photo'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { name, text, month, date, year } = req.body;
@@ -491,7 +635,7 @@ router.post('/:slug/people/add', requireAdmin, upload.single('photo'), async (re
     }
 });
 
-router.post('/:slug/people/edit', requireAdmin, upload.single('photo'), async (req, res) => {
+router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upload.single('photo'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { id, name, text, month, date, year, deletePhoto } = req.body;
@@ -519,7 +663,7 @@ router.post('/:slug/people/edit', requireAdmin, upload.single('photo'), async (r
     }
 });
 
-router.post('/:slug/people/seed-test-photos', requireAdmin, async (req, res) => {
+router.post('/:slug/people/seed-test-photos', requireAdmin, requirePermission('people'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         await seedPhotosForSynagogue(req.params.slug, {
@@ -533,7 +677,7 @@ router.post('/:slug/people/seed-test-photos', requireAdmin, async (req, res) => 
     }
 });
 
-router.post('/:slug/people/delete', requireAdmin, async (req, res) => {
+router.post('/:slug/people/delete', requireAdmin, requirePermission('people'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { id } = req.body;
@@ -548,7 +692,7 @@ router.post('/:slug/people/delete', requireAdmin, async (req, res) => {
 });
 
 // Community events (special days & announcements)
-router.get('/:slug/events', requireAdmin, async (req, res) => {
+router.get('/:slug/events', requireAdmin, requirePermission('events'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
@@ -556,6 +700,8 @@ router.get('/:slug/events', requireAdmin, async (req, res) => {
         const categorized = categorizeCommunityEvents(events);
         renderAdmin(res, 'admin/events', {
             synagogue: enrichSynagogueForAdmin(synagogue),
+            adminUser: req.adminUser,
+            adminPermissions: req.adminPermissions,
             events: categorized,
         });
     } catch (err) {
@@ -563,7 +709,7 @@ router.get('/:slug/events', requireAdmin, async (req, res) => {
     }
 });
 
-router.post('/:slug/events/add', requireAdmin, parseFormBody, async (req, res) => {
+router.post('/:slug/events/add', requireAdmin, requirePermission('events'), parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const publishNow = req.body.publishNow === '1' || req.body.publishNow === 'true';
@@ -586,7 +732,7 @@ router.post('/:slug/events/add', requireAdmin, parseFormBody, async (req, res) =
     }
 });
 
-router.post('/:slug/events/edit', requireAdmin, parseFormBody, async (req, res) => {
+router.post('/:slug/events/edit', requireAdmin, requirePermission('events'), parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { eventId } = req.body;
@@ -618,7 +764,7 @@ router.post('/:slug/events/edit', requireAdmin, parseFormBody, async (req, res) 
     }
 });
 
-router.post('/:slug/events/publish-now', requireAdmin, parseFormBody, async (req, res) => {
+router.post('/:slug/events/publish-now', requireAdmin, requirePermission('events'), parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { eventId } = req.body;
@@ -634,7 +780,7 @@ router.post('/:slug/events/publish-now', requireAdmin, parseFormBody, async (req
     }
 });
 
-router.post('/:slug/events/end-now', requireAdmin, parseFormBody, async (req, res) => {
+router.post('/:slug/events/end-now', requireAdmin, requirePermission('events'), parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { eventId } = req.body;
@@ -650,7 +796,7 @@ router.post('/:slug/events/end-now', requireAdmin, parseFormBody, async (req, re
     }
 });
 
-router.post('/:slug/events/delete', requireAdmin, parseFormBody, async (req, res) => {
+router.post('/:slug/events/delete', requireAdmin, requirePermission('events'), parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { eventId } = req.body;
@@ -663,6 +809,123 @@ router.post('/:slug/events/delete', requireAdmin, parseFormBody, async (req, res
         return res.json({ ok: true, events: categorizeCommunityEvents(events) });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.get('/:slug/users', requireAdmin, requireFullAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        const translator = getTranslator(synagogue.adminLanguage || 'ru');
+        renderAdmin(res, 'admin/users', {
+            synagogue: enrichSynagogueForAdmin(synagogue),
+            adminUser: req.adminUser,
+            adminPermissions: req.adminPermissions,
+            adminUsers: serializeAdminUsers(synagogue.adminUsers),
+            permissionToggles: buildPermissionToggles({}, translator),
+            saved: req.query.saved === '1',
+            error: req.query.error || null,
+        });
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+router.post('/:slug/users/add', requireAdmin, requireFullAdmin, parseFormBody, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const username = normalizeAdminUsername(req.body.username);
+        const displayName = String(req.body.displayName || req.body.username || '').trim();
+        if (!username) {
+            return res.redirect(`/admin/${req.params.slug}/users?error=missing_username`);
+        }
+
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        const existing = findAdminUser(synagogue, username);
+        if (existing) {
+            return res.redirect(`/admin/${req.params.slug}/users?error=duplicate_username`);
+        }
+
+        const permissions = parsePermissionsFromBody(req.body);
+        const adminLanguage = normalizeAdminLang(req.body.adminLanguage);
+        const colorMode = req.body.colorMode === 'light' ? 'light' : 'dark';
+
+        await Synagogue.updateOne({ slug: req.params.slug }, {
+            $push: {
+                adminUsers: {
+                    username,
+                    displayName: displayName || username,
+                    permissions,
+                    adminLanguage,
+                    adminTheme: { colorMode },
+                },
+            },
+        });
+
+        return res.redirect(`/admin/${req.params.slug}/users?saved=1`);
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+});
+
+router.post('/:slug/users/edit', requireAdmin, requireFullAdmin, parseFormBody, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { userId } = req.body;
+        const username = normalizeAdminUsername(req.body.username);
+        const displayName = String(req.body.displayName || req.body.username || '').trim();
+        if (!userId || !username) {
+            return res.redirect(`/admin/${req.params.slug}/users?error=missing_fields`);
+        }
+
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        const duplicate = (synagogue.adminUsers || []).find(
+            (user) => String(user._id) !== String(userId)
+                && normalizeAdminUsername(user.username) === username,
+        );
+        if (duplicate) {
+            return res.redirect(`/admin/${req.params.slug}/users?error=duplicate_username`);
+        }
+
+        const permissions = parsePermissionsFromBody(req.body);
+        const adminLanguage = normalizeAdminLang(req.body.adminLanguage);
+        const colorMode = req.body.colorMode === 'light' ? 'light' : 'dark';
+
+        await Synagogue.updateOne(
+            { slug: req.params.slug, 'adminUsers._id': userId },
+            {
+                $set: {
+                    'adminUsers.$.username': username,
+                    'adminUsers.$.displayName': displayName || username,
+                    'adminUsers.$.permissions': permissions,
+                    'adminUsers.$.adminLanguage': adminLanguage,
+                    'adminUsers.$.adminTheme.colorMode': colorMode,
+                },
+            },
+        );
+
+        return res.redirect(`/admin/${req.params.slug}/users?saved=1`);
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+});
+
+router.post('/:slug/users/delete', requireAdmin, requireFullAdmin, parseFormBody, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { userId } = req.body;
+        if (!userId) {
+            return res.redirect(`/admin/${req.params.slug}/users?error=missing_fields`);
+        }
+
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            { $pull: { adminUsers: { _id: userId } } },
+        );
+
+        return res.redirect(`/admin/${req.params.slug}/users?saved=1`);
+    } catch (err) {
+        return res.status(500).send(err.message);
     }
 });
 

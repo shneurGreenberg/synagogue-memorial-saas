@@ -1,0 +1,149 @@
+<div class="admin-page users-page">
+    <header class="admin-page-header">
+        <div>
+            <h1>{{t 'user_management'}}</h1>
+            <p class="admin-subtitle">{{t 'user_management_subtitle'}}</p>
+        </div>
+        <div class="header-actions">
+            <button type="button" class="btn-admin btn-admin-primary" data-toggle="modal" data-target="#addUserModal">
+                + {{t 'add_user'}}
+            </button>
+        </div>
+    </header>
+
+    {{#if saved}}
+    <div class="alert alert-success alert-dismissible fade show admin-alert" role="alert">
+        {{t 'saved_settings'}}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {{/if}}
+
+    {{#if error}}
+    <div class="alert alert-danger alert-dismissible fade show admin-alert" role="alert">
+        {{#if (eq error 'duplicate_username')}}{{t 'user_duplicate_error'}}{{else if (eq error 'missing_username')}}{{t 'user_missing_username'}}{{else}}{{t 'user_save_error'}}{{/if}}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {{/if}}
+
+    <p class="seed-notice">{{t 'user_login_hint'}}</p>
+
+    <div class="admin-panel">
+        <div class="admin-panel-header">
+            <h2>{{t 'current_users'}}</h2>
+        </div>
+        <div class="admin-panel-body">
+            {{#if adminUsers.length}}
+            <div class="table-responsive">
+                <table class="table admin-table">
+                    <thead>
+                        <tr>
+                            <th>{{t 'user_display_name'}}</th>
+                            <th>{{t 'user_username'}}</th>
+                            <th>{{t 'user_permissions'}}</th>
+                            <th>{{t 'admin_language'}}</th>
+                            <th>{{t 'color_mode'}}</th>
+                            <th>{{t 'actions'}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each adminUsers}}
+                        <tr>
+                            <td>{{this.displayName}}</td>
+                            <td><code>{{../synagogue.slug}}/{{this.username}}</code></td>
+                            <td>
+                                {{#if this.permissions.settings}}{{t 'perm_settings_short'}}{{/if}}
+                                {{#if this.permissions.people}}{{#if this.permissions.settings}}, {{/if}}{{t 'perm_people_short'}}{{/if}}
+                                {{#if this.permissions.slideshow}}{{#if (or this.permissions.settings this.permissions.people)}}, {{/if}}{{t 'perm_slideshow_short'}}{{/if}}
+                                {{#if this.permissions.events}}{{#if (or this.permissions.settings this.permissions.people this.permissions.slideshow)}}, {{/if}}{{t 'perm_events_short'}}{{/if}}
+                            </td>
+                            <td>{{this.adminLanguage}}</td>
+                            <td>{{#if (eq this.adminColorMode 'light')}}{{t 'light_mode'}}{{else}}{{t 'dark_mode'}}{{/if}}</td>
+                            <td>
+                                <button type="button" class="btn-admin btn-admin-secondary btn-sm" data-toggle="modal"
+                                    data-target="#editUserModal"
+                                    data-user-id="{{this.id}}"
+                                    data-username="{{this.username}}"
+                                    data-display-name="{{this.displayName}}"
+                                    data-admin-language="{{this.adminLanguage}}"
+                                    data-color-mode="{{this.adminColorMode}}"
+                                    data-perm-settings="{{this.permissions.settings}}"
+                                    data-perm-people="{{this.permissions.people}}"
+                                    data-perm-slideshow="{{this.permissions.slideshow}}"
+                                    data-perm-events="{{this.permissions.events}}">
+                                    {{t 'edit'}}
+                                </button>
+                                <form method="POST" action="/admin/{{../synagogue.slug}}/users/delete" class="d-inline"
+                                    onsubmit="return confirm('{{t 'are_you_sure'}}');">
+                                    <input type="hidden" name="userId" value="{{this.id}}">
+                                    <button type="submit" class="btn-admin btn-admin-danger btn-sm">{{t 'delete'}}</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+            {{else}}
+            <p class="text-muted mb-0">{{t 'no_users_yet'}}</p>
+            {{/if}}
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content admin-modal">
+            <form method="POST" action="/admin/{{synagogue.slug}}/users/add">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{t 'add_user'}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{t 'cancel'}}">&times;</button>
+                </div>
+                <div class="modal-body">
+                    {{> user-form-fields permissionToggles=permissionToggles}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-admin btn-admin-secondary" data-dismiss="modal">{{t 'cancel'}}</button>
+                    <button type="submit" class="btn-admin btn-admin-primary">{{t 'add'}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content admin-modal">
+            <form method="POST" action="/admin/{{synagogue.slug}}/users/edit" id="editUserForm">
+                <input type="hidden" name="userId" id="editUserId">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{t 'edit_user'}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{t 'cancel'}}">&times;</button>
+                </div>
+                <div class="modal-body">
+                    {{> user-form-fields permissionToggles=permissionToggles prefix="edit"}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-admin btn-admin-secondary" data-dismiss="modal">{{t 'cancel'}}</button>
+                    <button type="submit" class="btn-admin btn-admin-primary">{{t 'save_changes'}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    $('#editUserModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        $('#editUserId').val(button.data('user-id'));
+        $('#editUsername').val(button.data('username'));
+        $('#editDisplayName').val(button.data('display-name'));
+        $('#editAdminLanguage').val(button.data('admin-language'));
+        $('#editColorMode').val(button.data('color-mode'));
+        $('#editPermissionSettings').prop('checked', !!button.data('perm-settings'));
+        $('#editPermissionPeople').prop('checked', !!button.data('perm-people'));
+        $('#editPermissionSlideshow').prop('checked', !!button.data('perm-slideshow'));
+        $('#editPermissionEvents').prop('checked', !!button.data('perm-events'));
+    });
+})();
+</script>

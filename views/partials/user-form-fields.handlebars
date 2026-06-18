@@ -1,0 +1,62 @@
+<div class="form-row">
+    <div class="form-group col-md-6">
+        <label for="{{#if prefix}}{{prefix}}{{else}}new{{/if}}Username">{{t 'user_username'}}</label>
+        <input type="text" class="form-control admin-input" name="username"
+            id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}Username" required
+            placeholder="{{t 'user_username_placeholder'}}">
+        <small class="form-text text-muted">{{t 'user_username_help'}}</small>
+    </div>
+    <div class="form-group col-md-6">
+        <label for="{{#if prefix}}{{prefix}}{{else}}new{{/if}}DisplayName">{{t 'user_display_name'}}</label>
+        <input type="text" class="form-control admin-input" name="displayName"
+            id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}DisplayName"
+            placeholder="{{t 'user_display_name_placeholder'}}">
+    </div>
+</div>
+
+<div class="form-group">
+    <label>{{t 'user_permissions'}}</label>
+    <div class="permission-grid">
+        <label class="permission-item">
+            <input type="checkbox" name="permission_people" value="1"
+                id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionPeople" checked>
+            <span>{{t 'perm_people'}}</span>
+        </label>
+        <label class="permission-item">
+            <input type="checkbox" name="permission_settings" value="1"
+                id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionSettings">
+            <span>{{t 'perm_settings'}}</span>
+        </label>
+        <label class="permission-item">
+            <input type="checkbox" name="permission_slideshow" value="1"
+                id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionSlideshow">
+            <span>{{t 'perm_slideshow'}}</span>
+        </label>
+        <label class="permission-item">
+            <input type="checkbox" name="permission_events" value="1"
+                id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionEvents">
+            <span>{{t 'perm_events'}}</span>
+        </label>
+    </div>
+    <small class="form-text text-muted">{{t 'user_permissions_help'}}</small>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-md-6">
+        <label for="{{#if prefix}}{{prefix}}{{else}}new{{/if}}AdminLanguage">{{t 'admin_language'}}</label>
+        <select class="form-control admin-input" name="adminLanguage"
+            id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}AdminLanguage">
+            <option value="ru">Русский</option>
+            <option value="en">English</option>
+            <option value="he">עברית</option>
+        </select>
+    </div>
+    <div class="form-group col-md-6">
+        <label for="{{#if prefix}}{{prefix}}{{else}}new{{/if}}ColorMode">{{t 'color_mode'}}</label>
+        <select class="form-control admin-input" name="colorMode"
+            id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}ColorMode">
+            <option value="dark">{{t 'dark_mode'}}</option>
+            <option value="light">{{t 'light_mode'}}</option>
+        </select>
+    </div>
+</div>
