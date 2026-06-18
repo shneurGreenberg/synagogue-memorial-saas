@@ -25,11 +25,16 @@ const AdminUserSchema = new mongoose.Schema({
   username: { type: String, required: true },
   displayName: { type: String, default: '' },
   permissions: {
-    settings: { type: Boolean, default: false },
     people: { type: Boolean, default: true },
     slideshow: { type: Boolean, default: false },
     events: { type: Boolean, default: false },
-    userManagement: { type: Boolean, default: false },
+    settings: { type: Boolean, default: false },
+    settingsPreview: { type: Boolean, default: false },
+    settingsAppearance: { type: Boolean, default: false },
+    settingsBranding: { type: Boolean, default: false },
+    settingsFeatures: { type: Boolean, default: false },
+    settingsLanguages: { type: Boolean, default: false },
+    settingsAdminPanel: { type: Boolean, default: false },
   },
   adminLanguage: { type: String, default: 'ru' },
   adminTheme: {

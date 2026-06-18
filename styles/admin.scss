@@ -1531,6 +1531,20 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
   gap: 0.75rem;
 }
 
+.permission-grid-settings {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.user-settings-perms {
+  font-size: 0.85rem;
+  color: var(--admin-muted, #6c757d);
+  margin-top: 0.25rem;
+}
+
+.user-permissions-cell {
+  max-width: 280px;
+}
+
 .permission-item {
   display: flex;
   align-items: center;

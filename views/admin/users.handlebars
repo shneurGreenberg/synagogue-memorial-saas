@@ -50,11 +50,20 @@
                         <tr>
                             <td>{{this.displayName}}</td>
                             <td><code>{{../synagogue.slug}}/{{this.username}}</code></td>
-                            <td>
-                                {{#if this.permissions.settings}}{{t 'perm_settings_short'}}{{/if}}
-                                {{#if this.permissions.people}}{{#if this.permissions.settings}}, {{/if}}{{t 'perm_people_short'}}{{/if}}
-                                {{#if this.permissions.slideshow}}{{#if (or this.permissions.settings this.permissions.people)}}, {{/if}}{{t 'perm_slideshow_short'}}{{/if}}
-                                {{#if this.permissions.events}}{{#if (or this.permissions.settings this.permissions.people this.permissions.slideshow)}}, {{/if}}{{t 'perm_events_short'}}{{/if}}
+                            <td class="user-permissions-cell">
+                                {{#if this.permissions.people}}{{t 'perm_people_short'}}{{/if}}
+                                {{#if this.permissions.slideshow}}{{#if this.permissions.people}}, {{/if}}{{t 'perm_slideshow_short'}}{{/if}}
+                                {{#if this.permissions.events}}{{#if (or this.permissions.people this.permissions.slideshow)}}, {{/if}}{{t 'perm_events_short'}}{{/if}}
+                                {{#if this.permissions.settings}}
+                                <div class="user-settings-perms">{{t 'settings_sections_label'}}:
+                                    {{#if this.permissions.settingsPreview}}{{t 'perm_settings_preview_short'}}{{/if}}
+                                    {{#if this.permissions.settingsAppearance}}{{#if this.permissions.settingsPreview}}, {{/if}}{{t 'perm_settings_appearance_short'}}{{/if}}
+                                    {{#if this.permissions.settingsBranding}}{{#if (or this.permissions.settingsPreview this.permissions.settingsAppearance)}}, {{/if}}{{t 'perm_settings_branding_short'}}{{/if}}
+                                    {{#if this.permissions.settingsFeatures}}{{#if (or this.permissions.settingsPreview this.permissions.settingsAppearance this.permissions.settingsBranding)}}, {{/if}}{{t 'perm_settings_features_short'}}{{/if}}
+                                    {{#if this.permissions.settingsLanguages}}{{#if (or this.permissions.settingsPreview this.permissions.settingsAppearance this.permissions.settingsBranding this.permissions.settingsFeatures)}}, {{/if}}{{t 'perm_settings_languages_short'}}{{/if}}
+                                    {{#if this.permissions.settingsAdminPanel}}{{#if (or this.permissions.settingsPreview this.permissions.settingsAppearance this.permissions.settingsBranding this.permissions.settingsFeatures this.permissions.settingsLanguages)}}, {{/if}}{{t 'perm_settings_admin_panel_short'}}{{/if}}
+                                </div>
+                                {{/if}}
                             </td>
                             <td>{{this.adminLanguage}}</td>
                             <td>{{#if (eq this.adminColorMode 'light')}}{{t 'light_mode'}}{{else}}{{t 'dark_mode'}}{{/if}}</td>
@@ -66,10 +75,15 @@
                                     data-display-name="{{this.displayName}}"
                                     data-admin-language="{{this.adminLanguage}}"
                                     data-color-mode="{{this.adminColorMode}}"
-                                    data-perm-settings="{{this.permissions.settings}}"
                                     data-perm-people="{{this.permissions.people}}"
                                     data-perm-slideshow="{{this.permissions.slideshow}}"
-                                    data-perm-events="{{this.permissions.events}}">
+                                    data-perm-events="{{this.permissions.events}}"
+                                    data-perm-settings-preview="{{this.permissions.settingsPreview}}"
+                                    data-perm-settings-appearance="{{this.permissions.settingsAppearance}}"
+                                    data-perm-settings-branding="{{this.permissions.settingsBranding}}"
+                                    data-perm-settings-features="{{this.permissions.settingsFeatures}}"
+                                    data-perm-settings-languages="{{this.permissions.settingsLanguages}}"
+                                    data-perm-settings-admin-panel="{{this.permissions.settingsAdminPanel}}">
                                     {{t 'edit'}}
                                 </button>
                                 <form method="POST" action="/admin/{{../synagogue.slug}}/users/delete" class="d-inline"
@@ -99,7 +113,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="{{t 'cancel'}}">&times;</button>
                 </div>
                 <div class="modal-body">
-                    {{> user-form-fields permissionToggles=permissionToggles}}
+                    {{> user-form-fields}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-admin btn-admin-secondary" data-dismiss="modal">{{t 'cancel'}}</button>
@@ -120,7 +134,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="{{t 'cancel'}}">&times;</button>
                 </div>
                 <div class="modal-body">
-                    {{> user-form-fields permissionToggles=permissionToggles prefix="edit"}}
+                    {{> user-form-fields prefix="edit"}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-admin btn-admin-secondary" data-dismiss="modal">{{t 'cancel'}}</button>
@@ -130,20 +144,3 @@
         </div>
     </div>
 </div>
-
-<script>
-(function () {
-    $('#editUserModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        $('#editUserId').val(button.data('user-id'));
-        $('#editUsername').val(button.data('username'));
-        $('#editDisplayName').val(button.data('display-name'));
-        $('#editAdminLanguage').val(button.data('admin-language'));
-        $('#editColorMode').val(button.data('color-mode'));
-        $('#editPermissionSettings').prop('checked', !!button.data('perm-settings'));
-        $('#editPermissionPeople').prop('checked', !!button.data('perm-people'));
-        $('#editPermissionSlideshow').prop('checked', !!button.data('perm-slideshow'));
-        $('#editPermissionEvents').prop('checked', !!button.data('perm-events'));
-    });
-})();
-</script>
