@@ -183,16 +183,37 @@
     return response.json();
   }
 
+  function formBodyFromForm(form) {
+    var params = new URLSearchParams();
+    var formData = new FormData(form);
+
+    formData.forEach(function (value, key) {
+      if (typeof value === 'string') {
+        params.append(key, value);
+      }
+    });
+
+    if (form.id === 'addEventForm') {
+      var publishNowInput = form.querySelector('input[name="publishNow"]');
+      if (publishNowInput) {
+        params.set('publishNow', publishNowInput.value);
+      }
+    }
+
+    return params;
+  }
+
   async function submitAjax(form, message) {
     showBusy(message);
 
     try {
       var response = await fetch(form.action, {
         method: 'POST',
-        body: new FormData(form),
+        body: formBodyFromForm(form),
         headers: {
           'X-Requested-With': 'XMLHttpRequest',
           Accept: 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
         },
         credentials: 'same-origin',
       });
@@ -248,12 +269,27 @@
       event.preventDefault();
 
       if (form.id === 'addEventForm') {
-        var publishNowInput = form.querySelector('input[name="publishNow"]');
-        var publishNow = publishNowInput && publishNowInput.value === '1';
-        var startAt = form.querySelector('[name="startAt"]');
+        var submitter = event.submitter;
+        var publishNow = submitter && submitter.getAttribute('data-publish-now') === '1';
+        var existing = form.querySelector('input[name="publishNow"]');
+        if (existing) {
+          existing.remove();
+        }
 
-        if (!publishNow && startAt && !startAt.value) {
-          window.alert(labels.eventStartAt || 'Publish from date is required');
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'publishNow';
+        input.value = publishNow ? '1' : '0';
+        form.appendChild(input);
+
+        var startAt = form.querySelector('[name="startAt"]');
+        var eventMonth = form.querySelector('[name="eventMonth"]');
+        var eventDay = form.querySelector('[name="eventDate"]');
+        var hasEventDate = eventMonth && eventMonth.value && eventDay && eventDay.value;
+        var hasStartAt = startAt && startAt.value;
+
+        if (!publishNow && !hasStartAt && !hasEventDate) {
+          window.alert(labels.eventStartRequired || labels.eventStartAt || 'Publish from date is required');
           return;
         }
       }
@@ -262,24 +298,26 @@
     });
   });
 
-  document.getElementById('addEventForm').addEventListener('click', function (event) {
-    var button = event.target.closest('button[type="submit"][data-publish-now]');
-    if (!button) {
-      return;
-    }
+  var addEventForm = document.getElementById('addEventForm');
+  if (addEventForm) {
+    addEventForm.addEventListener('click', function (event) {
+      var button = event.target.closest('button[type="submit"][data-publish-now]');
+      if (!button) {
+        return;
+      }
 
-    var form = document.getElementById('addEventForm');
-    var existing = form.querySelector('input[name="publishNow"]');
-    if (existing) {
-      existing.remove();
-    }
+      var existing = addEventForm.querySelector('input[name="publishNow"]');
+      if (existing) {
+        existing.remove();
+      }
 
-    var input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'publishNow';
-    input.value = button.getAttribute('data-publish-now');
-    form.appendChild(input);
-  });
+      var input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'publishNow';
+      input.value = button.getAttribute('data-publish-now');
+      addEventForm.appendChild(input);
+    });
+  }
 
   document.addEventListener('submit', function (event) {
     var form = event.target;

@@ -65,6 +65,8 @@ const upload = multer({
     },
 });
 
+const parseFormBody = upload.none();
+
 function handleUpload(fields) {
     return (req, res, next) => {
         upload.fields(fields)(req, res, (err) => {
@@ -537,7 +539,7 @@ router.get('/:slug/events', requireAdmin, async (req, res) => {
     }
 });
 
-router.post('/:slug/events/add', requireAdmin, async (req, res) => {
+router.post('/:slug/events/add', requireAdmin, parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const publishNow = req.body.publishNow === '1' || req.body.publishNow === 'true';
@@ -560,7 +562,7 @@ router.post('/:slug/events/add', requireAdmin, async (req, res) => {
     }
 });
 
-router.post('/:slug/events/edit', requireAdmin, async (req, res) => {
+router.post('/:slug/events/edit', requireAdmin, parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { eventId } = req.body;
@@ -592,7 +594,7 @@ router.post('/:slug/events/edit', requireAdmin, async (req, res) => {
     }
 });
 
-router.post('/:slug/events/publish-now', requireAdmin, async (req, res) => {
+router.post('/:slug/events/publish-now', requireAdmin, parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { eventId } = req.body;
@@ -608,7 +610,7 @@ router.post('/:slug/events/publish-now', requireAdmin, async (req, res) => {
     }
 });
 
-router.post('/:slug/events/end-now', requireAdmin, async (req, res) => {
+router.post('/:slug/events/end-now', requireAdmin, parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { eventId } = req.body;
@@ -624,7 +626,7 @@ router.post('/:slug/events/end-now', requireAdmin, async (req, res) => {
     }
 });
 
-router.post('/:slug/events/delete', requireAdmin, async (req, res) => {
+router.post('/:slug/events/delete', requireAdmin, parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { eventId } = req.body;
