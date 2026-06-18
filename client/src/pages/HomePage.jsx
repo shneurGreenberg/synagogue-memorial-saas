@@ -577,13 +577,19 @@ class HomePageBase extends React.Component {
         <aside className="right side-panel">
           <div className="wooden-panel">
             <div className="inner">
-              <div className="board-accent">
-                <time>
-                  <h1><LiveClock timezone={(appData.location && appData.location.timezone) || 'Asia/Novosibirsk'} /></h1>
-                  <h2>{formatHebrewDate(this.state.hebrewDate)}</h2>
-                  <h3>{formatGregorianDate(this.state.gregorianDate)}</h3>
-                </time>
-                {appData.shabbatTimesEnabled && <ShabbatTimes />}
+              <div className="board-right-header">
+                <div className="board-clock-block">
+                  <time>
+                    <h1><LiveClock timezone={(appData.location && appData.location.timezone) || 'Asia/Novosibirsk'} /></h1>
+                    <h2>{formatHebrewDate(this.state.hebrewDate)}</h2>
+                    <h3>{formatGregorianDate(this.state.gregorianDate)}</h3>
+                  </time>
+                </div>
+                {appData.shabbatTimesEnabled && (
+                  <div className="board-shabbat-block">
+                    <ShabbatTimes />
+                  </div>
+                )}
               </div>
               <MemorialPrayersPanel
                 big={!appData.shabbatTimesEnabled}

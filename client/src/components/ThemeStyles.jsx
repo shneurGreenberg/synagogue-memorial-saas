@@ -37,15 +37,18 @@ export function ThemeStyles() {
     .main-container .daily-cite {
       color: var(--tile-date-color) !important;
     }
-    .main-container .board-accent,
-    .main-container .board-accent h1,
-    .main-container .board-accent h2,
-    .main-container .board-accent h3,
-    .main-container .board-accent time,
-    .main-container .shabbat-times .shabbat-label,
-    .main-container .shabbat-times .shabbat-time,
-    .main-container .shabbat-times .shabbat-parsha-heading,
-    .main-container .shabbat-times .shabbat-parsha-name {
+    .main-container .board-clock-block,
+    .main-container .board-clock-block h1,
+    .main-container .board-clock-block h2,
+    .main-container .board-clock-block h3,
+    .main-container .board-clock-block time {
+      color: #ffffff !important;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+    }
+    .main-container .board-shabbat-block .shabbat-times .shabbat-label,
+    .main-container .board-shabbat-block .shabbat-times .shabbat-time,
+    .main-container .board-shabbat-block .shabbat-times .shabbat-parsha-heading,
+    .main-container .board-shabbat-block .shabbat-times .shabbat-parsha-name {
       color: var(--accent-color) !important;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
     }

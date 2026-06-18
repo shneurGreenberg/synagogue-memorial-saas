@@ -699,11 +699,21 @@
       align-items: center;
       min-height: 0;
 
-      .board-accent {
+      .board-right-header {
         width: 100%;
         flex-shrink: 0;
+      }
+
+      .board-clock-block {
+        width: 100%;
         padding-bottom: 10px;
-        margin-bottom: 8px;
+        border-bottom: 1px solid $goldenPanelBorder;
+      }
+
+      .board-shabbat-block {
+        width: 100%;
+        padding-top: 10px;
+        padding-bottom: 10px;
         border-bottom: 1px solid $goldenPanelBorder;
       }
 
@@ -712,14 +722,14 @@
         display: block;
       }
 
-      .board-accent h1 {
+      .board-clock-block h1 {
         font-size: clamp(24px, 2.5vw, 40px);
         margin: 0 0 4px;
         line-height: 1.1;
         white-space: nowrap;
       }
 
-      .board-accent h2 {
+      .board-clock-block h2 {
         font-size: clamp(17px, 1.75vw, 24px);
         margin: 0 0 3px;
         line-height: 1.22;
@@ -728,7 +738,7 @@
         word-wrap: break-word;
       }
 
-      .board-accent h3 {
+      .board-clock-block h3 {
         font-size: clamp(13px, 1.15vw, 16px);
         margin: 0;
         line-height: 1.25;
@@ -744,8 +754,7 @@
         flex-direction: column;
         overflow: hidden;
         padding-top: 12px;
-        margin-top: 14px;
-        border-top: 1px solid $goldenPanelBorder;
+        margin-top: 8px;
 
         .memorial-prayers-scroll {
           flex: 1;
@@ -1048,8 +1057,8 @@ body.board-lang-he {
   .card .inner h3,
   .card .inner time,
   .card .inner p,
-  .board-accent,
-  .board-accent time {
+  .board-clock-block,
+  .board-clock-block time {
     direction: rtl;
     unicode-bidi: plaintext;
   }
@@ -1071,7 +1080,7 @@ body.board-lang-he {
 }
 
 .shabbat-times {
-  margin-top: 0.75rem;
+  margin-top: 0;
   width: 100%;
   display: flex;
   flex-direction: column;
