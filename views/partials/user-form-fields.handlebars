@@ -23,6 +23,11 @@
             <span>{{t 'perm_people'}}</span>
         </label>
         <label class="permission-item">
+            <input type="checkbox" name="permission_peopleImport" value="1"
+                id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionPeopleImport">
+            <span>{{t 'perm_people_import'}}</span>
+        </label>
+        <label class="permission-item">
             <input type="checkbox" name="permission_slideshow" value="1"
                 id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionSlideshow">
             <span>{{t 'perm_slideshow'}}</span>

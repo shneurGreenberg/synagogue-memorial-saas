@@ -5,13 +5,11 @@
             <p class="admin-subtitle">{{t 'people_subtitle'}}</p>
         </div>
         <div class="header-actions">
-            <form method="POST" action="/admin/{{synagogue.slug}}/people/seed-test-photos" class="d-inline"
-                onsubmit="return confirm('{{t 'seed_test_photos'}}?');">
-                <button type="submit" class="btn-admin btn-admin-secondary">{{t 'seed_test_photos'}}</button>
-            </form>
+            {{#if adminPermissions.peopleImport}}
             <button type="button" class="btn-admin btn-admin-secondary" data-toggle="modal" data-target="#importPeopleModal">
                 {{t 'import_people'}}
             </button>
+            {{/if}}
             <button type="button" class="btn-admin btn-admin-primary" data-toggle="modal" data-target="#addPersonModal">
                 + {{t 'add_person'}}
             </button>
@@ -31,22 +29,12 @@
     </div>
     {{/if}}
 
-    {{#if seeded}}
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{t 'seed_photos_done'}}
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-    </div>
-    {{/if}}
-
-    <p class="seed-notice">{{t 'seed_test_photos_help'}}</p>
-
     <div class="people-toolbar">
         <input type="search" id="peopleSearch" class="form-control admin-input" style="max-width: 300px; flex: 1;"
             placeholder="{{t 'search_people'}}" aria-label="{{t 'search_people'}}">
         <select id="peopleSort" class="form-control admin-input" style="max-width: 200px;" aria-label="{{t 'sort_label'}}">
             <option value="name">{{t 'sort_by_name'}}</option>
             <option value="date">{{t 'sort_by_date'}}</option>
-            <option value="id">ID</option>
         </select>
     </div>
 
@@ -63,7 +51,7 @@
             {{/if}}
             <div class="person-meta">
                 <strong>{{this.name}}</strong>
-                <small>ID {{this.id}} · {{t 'date_of_death'}}:
+                <small>{{t 'date_of_death'}}:
                     {{this.gregorianDateOfDeath.date}}/{{this.gregorianDateOfDeath.month}}/{{this.gregorianDateOfDeath.year}}</small>
             </div>
             <div class="person-actions">
@@ -81,6 +69,7 @@
 
 <script id="people-data" type="application/json">{{{json synagogue.people}}}</script>
 
+{{#if adminPermissions.peopleImport}}
 <!-- Import People Modal -->
 <div class="modal fade admin-modal" id="importPeopleModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -116,6 +105,7 @@
         </div>
     </div>
 </div>
+{{/if}}
 
 <!-- Add Person Modal -->
 <div class="modal fade admin-modal" id="addPersonModal" tabindex="-1">
@@ -234,19 +224,9 @@
         const list = document.getElementById('peopleList');
         const searchInput = document.getElementById('peopleSearch');
         const sortSelect = document.getElementById('peopleSort');
-        const urlParams = new URLSearchParams(window.location.search);
-
-        if (urlParams.get('seeded')) {
-            const clean = window.location.pathname;
-            window.history.replaceState({}, '', clean);
-        }
 
         function setPreviewImage(container, src, alt) {
             container.innerHTML = '<img src="' + src + '" alt="' + (alt || '') + '">';
-        }
-
-        function clearPreview(container) {
-            container.innerHTML = '<span class="photo-preview-empty">{{t "upload_photo"}}</span>';
         }
 
         document.querySelectorAll('input[type="file"][data-preview-target]').forEach(function (input) {
@@ -277,9 +257,6 @@
             const visible = rows.filter(function (row) { return row.style.display !== 'none'; });
 
             visible.sort(function (a, b) {
-                if (sortBy === 'id') {
-                    return Number(a.getAttribute('data-id')) - Number(b.getAttribute('data-id'));
-                }
                 if (sortBy === 'date') {
                     return a.getAttribute('data-date').localeCompare(b.getAttribute('data-date'));
                 }
