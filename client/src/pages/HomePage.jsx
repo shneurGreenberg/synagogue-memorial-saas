@@ -23,6 +23,7 @@ import { CommunityLogo } from '../components/CommunityLogo';
 import { useBoardNavigation } from '../context/BoardNavigationContext';
 import { useBoardData } from '../context/BoardDataContext';
 import { resolveBoardTitle } from '../lib/board-title';
+import { getVisibleCommunityEvents } from '../lib/community-events';
 
 function getAppData() {
   return getBoardData();
@@ -37,6 +38,66 @@ function toDatetimeAttr(gregorianDateOfDeath) {
   const day = String(gregorianDateOfDeath.date).padStart(2, '0');
 
   return `${gregorianDateOfDeath.year}-${month}-${day}`;
+}
+
+function toEventDatetimeAttr(eventDate) {
+  if (!eventDate || !eventDate.month || !eventDate.date) {
+    return undefined;
+  }
+
+  const year = eventDate.year || new Date().getFullYear();
+  const month = String(eventDate.month).padStart(2, '0');
+  const day = String(eventDate.date).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+function prepareCommunityEvents(events) {
+  return getVisibleCommunityEvents(events).map((event) => {
+    const month = event.eventDate?.month || 1;
+    const day = event.eventDate?.date || 1;
+    const year = event.eventDate?.year || new Date().getFullYear();
+
+    let gregorianDayOfMemory = gregorianDayOfYear(month, day) - CURRENT_DAY_OF_YEAR;
+
+    if (gregorianDayOfMemory < 0) {
+      gregorianDayOfMemory += DAYS_IN_YEAR;
+    }
+
+    const gregorianDate = new Date(year, month - 1, day);
+
+    return {
+      ...event,
+      listType: 'event',
+      id: `event-${event._id}`,
+      gregorianDayOfMemory,
+      gregorianDate,
+      hebrewDate: new Hebcal.HDate(gregorianDate),
+      eventDate: { month, date: day, year },
+    };
+  });
+}
+
+function mergeSidebarItems(people, events) {
+  return [...people, ...events].sort((a, b) => {
+    if (a.gregorianDayOfMemory < b.gregorianDayOfMemory) {
+      return -1;
+    }
+
+    if (a.gregorianDayOfMemory > b.gregorianDayOfMemory) {
+      return 1;
+    }
+
+    if (a.listType === 'event' && b.listType !== 'event') {
+      return -1;
+    }
+
+    if (a.listType !== 'event' && b.listType === 'event') {
+      return 1;
+    }
+
+    return 0;
+  });
 }
 
 class NearestDatesList extends React.Component {
@@ -56,7 +117,7 @@ class NearestDatesList extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.people !== this.props.people) {
+    if (prevProps.items !== this.props.items) {
       this.updateScrollBehavior();
     }
   }
@@ -101,6 +162,22 @@ class NearestDatesList extends React.Component {
     });
   };
 
+  renderEvent(card, suffix) {
+    return (
+      <li key={`${card.id}${suffix}`} className="community-event-item">
+        <div className="community-event-link" role="note">
+          <time dateTime={toEventDatetimeAttr(card.eventDate)}>
+            {formatGregorianDate(card.eventDate)} / {formatHebrewDate(card.hebrewDate)}
+          </time>
+          <span className="community-event-title">{card.title}</span>
+          {card.text && (
+            <span className="community-event-text">{card.text}</span>
+          )}
+        </div>
+      </li>
+    );
+  }
+
   renderPerson(card, suffix) {
     const displayName = card.name || '';
     return (
@@ -115,9 +192,17 @@ class NearestDatesList extends React.Component {
     );
   }
 
+  renderItem(card, suffix) {
+    if (card.listType === 'event') {
+      return this.renderEvent(card, suffix);
+    }
+
+    return this.renderPerson(card, suffix);
+  }
+
   render() {
-    const { people } = this.props;
-    const items = people.map((card) => this.renderPerson(card, ''));
+    const { items } = this.props;
+    const listItems = items.map((card) => this.renderItem(card, ''));
 
     return (
       <div className="nearest-dates-scroll" ref={this.viewportRef}>
@@ -126,8 +211,8 @@ class NearestDatesList extends React.Component {
           ref={this.trackRef}
           style={this.state.shouldScroll ? { animationDuration: `${this.state.durationSec}s` } : undefined}
         >
-          {items}
-          {this.state.shouldScroll && people.map((card) => this.renderPerson(card, '-dup'))}
+          {listItems}
+          {this.state.shouldScroll && items.map((card) => this.renderItem(card, '-dup'))}
         </ul>
       </div>
     );
@@ -272,11 +357,15 @@ class HomePageBase extends React.Component {
       })
       .map(setDates);
 
+    const communityEvents = prepareCommunityEvents(appData.communityEvents);
+    const sidebarItems = mergeSidebarItems(allPeople, communityEvents);
+
     const initialState = {
       hebrewDate,
       gregorianDate: new Date(),
       dailyCite,
       allPeople,
+      sidebarItems,
       mode: 'main',
       people: [],
       hasKadishToday: false,
@@ -439,7 +528,7 @@ class HomePageBase extends React.Component {
             )}
             <nav className="nearest-dates" aria-label={this.props.t('nearest_dates')}>
               <h2>{this.props.t('nearest_dates')}</h2>
-              <NearestDatesList people={this.state.allPeople} onPersonClick={this.props.onOpenCard} />
+              <NearestDatesList items={this.state.sidebarItems} onPersonClick={this.props.onOpenCard} />
             </nav>
           </div>
         </aside>

@@ -21,6 +21,19 @@ const DailyCiteSchema = new mongoose.Schema({
   text: String
 });
 
+const CommunityEventSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  text: { type: String, default: '' },
+  eventDate: {
+    month: Number,
+    date: Number,
+    year: Number,
+  },
+  startAt: { type: Date, required: true },
+  endAt: Date,
+  createdAt: { type: Date, default: Date.now },
+});
+
 const SynagogueSchema = new mongoose.Schema({
   slug: { type: String, required: true, unique: true },
   name: String,
@@ -34,6 +47,7 @@ const SynagogueSchema = new mongoose.Schema({
   weeklyChapterEnabled: { type: Boolean, default: false },
   shabbatTimesEnabled: { type: Boolean, default: false },
   dailyCites: [DailyCiteSchema],
+  communityEvents: [CommunityEventSchema],
   people: [PersonSchema],
   adminTheme: {
     colorMode: { type: String, enum: ['dark', 'light'], default: 'dark' },
