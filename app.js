@@ -88,9 +88,11 @@ function getInitials(name) {
 }
 
 app.engine('handlebars', handlebars({
+  partialsDir: path.join(__dirname, 'views/partials'),
   helpers: {
     json: value => JSON.stringify(value, false, '  '),
     eq: (a, b) => a === b,
+    or: (...args) => args.slice(0, -1).some(Boolean),
     t(key, options) {
       const root = options.data && options.data.root;
       if (root && typeof root.masterTranslate === 'function') {

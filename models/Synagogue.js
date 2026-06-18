@@ -21,6 +21,22 @@ const DailyCiteSchema = new mongoose.Schema({
   text: String
 });
 
+const AdminUserSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  displayName: { type: String, default: '' },
+  permissions: {
+    settings: { type: Boolean, default: false },
+    people: { type: Boolean, default: true },
+    slideshow: { type: Boolean, default: false },
+    events: { type: Boolean, default: false },
+    userManagement: { type: Boolean, default: false },
+  },
+  adminLanguage: { type: String, default: 'ru' },
+  adminTheme: {
+    colorMode: { type: String, enum: ['dark', 'light'], default: 'dark' },
+  },
+});
+
 const CommunityEventSchema = new mongoose.Schema({
   title: { type: String, required: true },
   text: { type: String, default: '' },
@@ -59,6 +75,7 @@ const SynagogueSchema = new mongoose.Schema({
   dailyCites: [DailyCiteSchema],
   communityEvents: [CommunityEventSchema],
   people: [PersonSchema],
+  adminUsers: [AdminUserSchema],
   adminTheme: {
     colorMode: { type: String, enum: ['dark', 'light'], default: 'dark' },
   },

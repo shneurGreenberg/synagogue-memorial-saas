@@ -22,20 +22,48 @@
         </button>
         <div class="collapse navbar-collapse" id="adminNavbar">
             <ul class="navbar-nav admin-nav-links mr-auto">
+                {{#if adminPermissions.settings}}
                 <li class="nav-item">
                     <a class="nav-link" href="/admin/{{synagogue.slug}}/dashboard">{{t 'settings'}}</a>
                 </li>
+                {{/if}}
+                {{#if adminPermissions.people}}
                 <li class="nav-item">
                     <a class="nav-link" href="/admin/{{synagogue.slug}}/people">{{t 'people'}}</a>
                 </li>
+                {{/if}}
+                {{#if adminPermissions.slideshow}}
                 <li class="nav-item">
                     <a class="nav-link" href="/admin/{{synagogue.slug}}/slideshow">{{t 'slideshow'}}</a>
                 </li>
+                {{/if}}
+                {{#if adminPermissions.events}}
                 <li class="nav-item">
                     <a class="nav-link" href="/admin/{{synagogue.slug}}/events">{{t 'community_events'}}</a>
                 </li>
+                {{/if}}
+                {{#unless adminUser}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/{{synagogue.slug}}/users">{{t 'user_management'}}</a>
+                </li>
+                {{/unless}}
             </ul>
             <div class="admin-navbar-actions">
+                <form method="POST" action="/admin/{{synagogue.slug}}/my-preferences" class="admin-preferences-form" id="adminPreferencesForm">
+                    <select name="adminLanguage" id="navbarAdminLanguage" class="form-control form-control-sm admin-input admin-pref-select" aria-label="{{t 'admin_language'}}">
+                        <option value="ru" {{#if (eq synagogue.adminLanguage 'ru')}}selected{{/if}}>RU</option>
+                        <option value="en" {{#if (eq synagogue.adminLanguage 'en')}}selected{{/if}}>EN</option>
+                        <option value="he" {{#if (eq synagogue.adminLanguage 'he')}}selected{{/if}}>HE</option>
+                    </select>
+                    <select name="colorMode" id="navbarColorMode" class="form-control form-control-sm admin-input admin-pref-select" aria-label="{{t 'color_mode'}}">
+                        <option value="dark" {{#if (eq synagogue.adminColorMode 'dark')}}selected{{/if}}>{{t 'dark_mode'}}</option>
+                        <option value="light" {{#if (eq synagogue.adminColorMode 'light')}}selected{{/if}}>{{t 'light_mode'}}</option>
+                    </select>
+                    <button type="submit" class="btn btn-outline-light btn-sm admin-pref-save" data-save-label="{{t 'save'}}" data-saved-label="{{t 'saved'}}">{{t 'save'}}</button>
+                </form>
+                {{#if adminUser}}
+                <span class="admin-user-badge">{{#if adminUser.displayName}}{{adminUser.displayName}}{{else}}{{adminUser.username}}{{/if}}</span>
+                {{/if}}
                 <a class="btn btn-outline-light btn-admin-nav-board" href="/s/{{synagogue.slug}}" target="_blank" rel="noopener">{{t 'view_board'}}</a>
                 <a class="btn btn-outline-light" href="/admin/logout">{{t 'logout'}}</a>
             </div>
@@ -55,6 +83,7 @@
     <script src="/js/admin-slideshow.js"></script>
     <script src="/js/admin-events.js"></script>
     <script src="/js/admin-locale.js"></script>
+    <script src="/js/admin-preferences.js"></script>
 </body>
 
 </html>
