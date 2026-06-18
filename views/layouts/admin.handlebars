@@ -49,18 +49,6 @@
                 {{/unless}}
             </ul>
             <div class="admin-navbar-actions">
-                <form method="POST" action="/admin/{{synagogue.slug}}/my-preferences" class="admin-preferences-form" id="adminPreferencesForm">
-                    <select name="adminLanguage" id="navbarAdminLanguage" class="form-control form-control-sm admin-input admin-pref-select" aria-label="{{t 'admin_language'}}">
-                        <option value="ru" {{#if (eq synagogue.adminLanguage 'ru')}}selected{{/if}}>RU</option>
-                        <option value="en" {{#if (eq synagogue.adminLanguage 'en')}}selected{{/if}}>EN</option>
-                        <option value="he" {{#if (eq synagogue.adminLanguage 'he')}}selected{{/if}}>HE</option>
-                    </select>
-                    <select name="colorMode" id="navbarColorMode" class="form-control form-control-sm admin-input admin-pref-select" aria-label="{{t 'color_mode'}}">
-                        <option value="dark" {{#if (eq synagogue.adminColorMode 'dark')}}selected{{/if}}>{{t 'dark_mode'}}</option>
-                        <option value="light" {{#if (eq synagogue.adminColorMode 'light')}}selected{{/if}}>{{t 'light_mode'}}</option>
-                    </select>
-                    <button type="submit" class="btn btn-outline-light btn-sm admin-pref-save" data-save-label="{{t 'save'}}" data-saved-label="{{t 'saved'}}">{{t 'save'}}</button>
-                </form>
                 {{#if adminUser}}
                 <span class="admin-user-badge">{{#if adminUser.displayName}}{{adminUser.displayName}}{{else}}{{adminUser.username}}{{/if}}</span>
                 {{/if}}
@@ -83,7 +71,7 @@
     <script src="/js/admin-slideshow.js"></script>
     <script src="/js/admin-events.js"></script>
     <script src="/js/admin-locale.js"></script>
-    <script src="/js/admin-preferences.js"></script>
+    <script src="/js/admin-users.js"></script>
 </body>
 
 </html>

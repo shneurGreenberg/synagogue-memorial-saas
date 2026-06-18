@@ -30,8 +30,11 @@ const {
   applyUserDisplaySettings,
   parsePermissionsFromBody,
   buildPermissionToggles,
+  buildSettingsSectionToggles,
   serializeAdminUsers,
   FULL_ADMIN_PERMISSIONS,
+  canSaveBoardSettings,
+  permissionAllows,
 } = require('../lib/admin-users');
 const { normalizeAdminLang } = require('../lib/admin-locale');
 
@@ -155,7 +158,7 @@ function requirePermission(permission) {
         }
 
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
-        if (!permissions[permission]) {
+        if (!permissionAllows(permissions, permission)) {
             return res.redirect(getDefaultLandingPath(req.params.slug, permissions));
         }
 
@@ -287,58 +290,53 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
 ]), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { titleRu, titleEn, titleHe, primaryColor, textColor, accentColor, language, adminLanguage, colorMode, shabbatTimesEnabled } = req.body;
-        const safeColorMode = colorMode === 'light' ? 'light' : 'dark';
+        const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
+        const {
+            titleRu, titleEn, titleHe, primaryColor, textColor, accentColor,
+            language, shabbatTimesEnabled,
+        } = req.body;
         const boardFeatures = parseBoardFeaturesFromBody(req.body);
-        const titles = {
-            ru: String(titleRu ?? '').trim(),
-            en: String(titleEn ?? '').trim(),
-            he: String(titleHe ?? '').trim(),
-        };
-        const updateData = {
-            'titles.ru': titles.ru,
-            'titles.en': titles.en,
-            'titles.he': titles.he,
-            title: titles.ru,
-            'theme.primaryColor': sanitizeHexColor(primaryColor, BOARD_THEME_DEFAULTS.primaryColor),
-            'theme.textColor': sanitizeHexColor(textColor, BOARD_THEME_DEFAULTS.textColor),
-            'theme.accentColor': sanitizeHexColor(accentColor, BOARD_THEME_DEFAULTS.accentColor),
-            language,
-            shabbatTimesEnabled: !!shabbatTimesEnabled,
-            boardFeatures,
-        };
+        const updateData = {};
 
-        if (req.session.adminUsername && req.adminUser) {
-            await Synagogue.updateOne(
-                {
-                    slug: req.params.slug,
-                    'adminUsers._id': req.adminUser._id,
-                },
-                {
-                    $set: {
-                        'adminUsers.$.adminLanguage': normalizeAdminLang(adminLanguage),
-                        'adminUsers.$.adminTheme.colorMode': safeColorMode,
-                    },
-                },
-            );
-        } else {
-            updateData['adminTheme.colorMode'] = safeColorMode;
-            updateData.adminLanguage = adminLanguage;
+        if (permissions.settingsAppearance) {
+            const titles = {
+                ru: String(titleRu ?? '').trim(),
+                en: String(titleEn ?? '').trim(),
+                he: String(titleHe ?? '').trim(),
+            };
+            updateData['titles.ru'] = titles.ru;
+            updateData['titles.en'] = titles.en;
+            updateData['titles.he'] = titles.he;
+            updateData.title = titles.ru;
+            updateData['theme.primaryColor'] = sanitizeHexColor(primaryColor, BOARD_THEME_DEFAULTS.primaryColor);
+            updateData['theme.textColor'] = sanitizeHexColor(textColor, BOARD_THEME_DEFAULTS.textColor);
+            updateData['theme.accentColor'] = sanitizeHexColor(accentColor, BOARD_THEME_DEFAULTS.accentColor);
         }
 
-        if (req.files['logo']) {
+        if (permissions.settingsLanguages) {
+            updateData.language = language;
+        }
+
+        if (permissions.settingsFeatures) {
+            updateData.shabbatTimesEnabled = !!shabbatTimesEnabled;
+            Object.assign(updateData, Object.fromEntries(
+                Object.entries(boardFeatures).map(([key, value]) => [`boardFeatures.${key}`, value]),
+            ));
+        }
+
+        if (permissions.settingsBranding && req.files['logo']) {
             updateData['theme.logo'] = await optimizeUploadedImage(req.files['logo'][0].path, 'logo');
         }
-        if (req.files['backgroundImage']) {
+        if (permissions.settingsBranding && req.files['backgroundImage']) {
             updateData['theme.backgroundImage'] = await optimizeUploadedImage(req.files['backgroundImage'][0].path, 'background');
         }
-        if (req.files['tilesBackground']) {
+        if (permissions.settingsBranding && req.files['tilesBackground']) {
             updateData['theme.tilesBackground'] = await optimizeUploadedImage(req.files['tilesBackground'][0].path, 'tilesBackground');
         }
 
-        await Synagogue.updateOne({ slug: req.params.slug }, {
-            $set: updateData
-        });
+        if (Object.keys(updateData).length > 0) {
+            await Synagogue.updateOne({ slug: req.params.slug }, { $set: updateData });
+        }
         res.redirect(`/admin/${req.params.slug}/dashboard?saved=1`);
     } catch (err) {
         res.status(500).send(err.message);
@@ -347,6 +345,10 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
 
 router.post('/:slug/settings/reset-theme', requireAdmin, requirePermission('settings'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
+    if (!permissions.settingsAppearance) {
+        return res.status(403).send('Forbidden');
+    }
     try {
         await Synagogue.updateOne({ slug: req.params.slug }, {
             $set: {
@@ -368,6 +370,10 @@ router.post('/:slug/settings/reset-theme', requireAdmin, requirePermission('sett
 
 router.post('/:slug/my-preferences', requireAdmin, parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
+    if (!permissions.settingsAdminPanel && req.session.adminUsername) {
+        return res.status(403).json({ ok: false, error: 'Forbidden' });
+    }
     try {
         const { adminLanguage, colorMode } = req.body;
         const safeColorMode = colorMode === 'light' ? 'light' : 'dark';
@@ -420,6 +426,7 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             synagogue: enriched,
             adminUser: req.adminUser,
             adminPermissions: req.adminPermissions,
+            canSaveBoardSettings: canSaveBoardSettings(req.adminPermissions),
             boardTitles: enriched.titles,
             boardFeatureToggles: buildBoardFeatureToggles(enriched.boardFeatures),
             saved: req.query.saved === '1',
@@ -823,6 +830,7 @@ router.get('/:slug/users', requireAdmin, requireFullAdmin, async (req, res) => {
             adminPermissions: req.adminPermissions,
             adminUsers: serializeAdminUsers(synagogue.adminUsers),
             permissionToggles: buildPermissionToggles({}, translator),
+            settingsSectionToggles: buildSettingsSectionToggles({}, translator),
             saved: req.query.saved === '1',
             error: req.query.error || null,
         });

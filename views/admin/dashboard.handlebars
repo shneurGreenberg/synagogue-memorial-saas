@@ -20,12 +20,23 @@
     </div>
   {{/if}}
 
-    <form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data" class="settings-form" id="settingsForm" data-save-label="{{t 'save'}}">
+    <form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data" class="settings-form" id="settingsForm" data-save-label="{{t 'save'}}" data-slug="{{synagogue.slug}}">
+        {{#if adminPermissions.settingsAdminPanel}}
         <section class="admin-panel">
             <div class="admin-panel-header">
                 <h2>{{t 'admin_panel_section'}}</h2>
             </div>
             <div class="admin-panel-body">
+                <div class="settings-two-col">
+                    <div class="form-field">
+                        <label for="adminLanguage">{{t 'admin_language'}}</label>
+                        <select name="adminLanguage" id="adminLanguage" class="form-control admin-select-modern">
+                            <option value="ru" {{#if (eq synagogue.adminLanguage 'ru')}}selected{{/if}}>Russian</option>
+                            <option value="en" {{#if (eq synagogue.adminLanguage 'en')}}selected{{/if}}>English</option>
+                            <option value="he" {{#if (eq synagogue.adminLanguage 'he')}}selected{{/if}}>Hebrew</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="admin-theme-setting color-mode-field"
                     data-light-label="{{t 'light_mode'}}"
                     data-dark-label="{{t 'dark_mode'}}">
@@ -46,7 +57,9 @@
                 </div>
             </div>
         </section>
+        {{/if}}
 
+        {{#if adminPermissions.settingsAppearance}}
         <section class="admin-panel">
             <div class="admin-panel-header">
                 <h2>{{t 'appearance_section'}}</h2>
@@ -107,7 +120,9 @@
                 </div>
             </div>
         </section>
+        {{/if}}
 
+        {{#if adminPermissions.settingsPreview}}
         <section class="admin-panel settings-preview-panel">
             <div class="admin-panel-header">
                 <h2>{{t 'live_preview'}}</h2>
@@ -122,7 +137,9 @@
                 <p class="preview-hint">{{t 'live_preview_help'}}</p>
             </div>
         </section>
+        {{/if}}
 
+        {{#if adminPermissions.settingsBranding}}
         <section class="admin-panel">
             <div class="admin-panel-header">
                 <h2>{{t 'branding_section'}}</h2>
@@ -172,8 +189,9 @@
                 </div>
             </div>
         </section>
+        {{/if}}
 
-
+        {{#if adminPermissions.settingsFeatures}}
         <section class="admin-panel">
             <div class="admin-panel-header">
                 <h2>{{t 'board_features_section'}}</h2>
@@ -203,36 +221,31 @@
                 {{/each}}
             </div>
         </section>
+        {{/if}}
 
+        {{#if adminPermissions.settingsLanguages}}
         <section class="admin-panel">
             <div class="admin-panel-header">
                 <h2>{{t 'languages_section'}}</h2>
             </div>
             <div class="admin-panel-body">
-                <div class="settings-two-col">
-                    <div class="form-field">
-                        <label for="language">{{t 'language'}}</label>
-                        <select name="language" id="language" class="form-control admin-select-modern">
-                            <option value="ru" {{#if (eq synagogue.language 'ru')}}selected{{/if}}>Russian</option>
-                            <option value="en" {{#if (eq synagogue.language 'en')}}selected{{/if}}>English</option>
-                            <option value="he" {{#if (eq synagogue.language 'he')}}selected{{/if}}>Hebrew</option>
-                        </select>
-                    </div>
-                    <div class="form-field">
-                        <label for="adminLanguage">{{t 'admin_language'}}</label>
-                        <select name="adminLanguage" id="adminLanguage" class="form-control admin-select-modern">
-                            <option value="ru" {{#if (eq synagogue.adminLanguage 'ru')}}selected{{/if}}>Russian</option>
-                            <option value="en" {{#if (eq synagogue.adminLanguage 'en')}}selected{{/if}}>English</option>
-                            <option value="he" {{#if (eq synagogue.adminLanguage 'he')}}selected{{/if}}>Hebrew</option>
-                        </select>
-                    </div>
+                <div class="form-field">
+                    <label for="language">{{t 'language'}}</label>
+                    <select name="language" id="language" class="form-control admin-select-modern">
+                        <option value="ru" {{#if (eq synagogue.language 'ru')}}selected{{/if}}>Russian</option>
+                        <option value="en" {{#if (eq synagogue.language 'en')}}selected{{/if}}>English</option>
+                        <option value="he" {{#if (eq synagogue.language 'he')}}selected{{/if}}>Hebrew</option>
+                    </select>
                 </div>
             </div>
         </section>
+        {{/if}}
 
+        {{#if canSaveBoardSettings}}
         <div class="form-actions-sticky">
             <button type="submit" class="btn-admin btn-admin-primary">{{t 'save'}}</button>
         </div>
+        {{/if}}
     </form>
 
     <form method="POST" action="/admin/{{synagogue.slug}}/settings/reset-theme" id="resetThemeForm" class="visually-hidden-reset-form" aria-hidden="true"></form>
@@ -240,7 +253,34 @@
 
 <script>
     (function () {
-        var slug = '{{synagogue.slug}}';
+        var settingsForm = document.getElementById('settingsForm');
+        var slug = (settingsForm && settingsForm.dataset.slug) || '{{synagogue.slug}}';
+
+        function savePersonalPreferences(reloadPage) {
+            var adminLanguage = document.getElementById('adminLanguage');
+            var colorModeInput = document.getElementById('colorModeInput');
+            if (!adminLanguage || !colorModeInput) {
+                return Promise.resolve();
+            }
+
+            return fetch('/admin/' + slug + '/my-preferences', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: new URLSearchParams({
+                    adminLanguage: adminLanguage.value,
+                    colorMode: colorModeInput.value,
+                }).toString(),
+            }).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                if (data && data.ok && reloadPage) {
+                    window.location.reload();
+                }
+            }).catch(function () { /* ignore */ });
+        }
 
         var TV_PREVIEW_W = 1920;
         var TV_PREVIEW_H = 1080;
@@ -322,8 +362,19 @@
 
             toggle.addEventListener('change', function () {
                 applyAdminTheme(toggle.checked);
+                savePersonalPreferences(false);
             });
             applyAdminTheme(toggle.checked);
+        }
+
+        var adminLanguageSelect = document.getElementById('adminLanguage');
+        if (adminLanguageSelect) {
+            adminLanguageSelect.addEventListener('change', function () {
+                if (window.AdminLocale) {
+                    window.AdminLocale.apply(adminLanguageSelect.value);
+                }
+                savePersonalPreferences(true);
+            });
         }
 
         ['titleRu', 'titleEn', 'titleHe'].forEach(function (id) {

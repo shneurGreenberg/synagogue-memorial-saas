@@ -23,11 +23,6 @@
             <span>{{t 'perm_people'}}</span>
         </label>
         <label class="permission-item">
-            <input type="checkbox" name="permission_settings" value="1"
-                id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionSettings">
-            <span>{{t 'perm_settings'}}</span>
-        </label>
-        <label class="permission-item">
             <input type="checkbox" name="permission_slideshow" value="1"
                 id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionSlideshow">
             <span>{{t 'perm_slideshow'}}</span>
@@ -36,6 +31,42 @@
             <input type="checkbox" name="permission_events" value="1"
                 id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionEvents">
             <span>{{t 'perm_events'}}</span>
+        </label>
+    </div>
+</div>
+
+<div class="form-group">
+    <label>{{t 'settings_sections_label'}}</label>
+    <div class="permission-grid permission-grid-settings">
+        <label class="permission-item">
+            <input type="checkbox" name="permission_settingsPreview" value="1"
+                id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionSettingsPreview">
+            <span>{{t 'perm_settings_preview'}}</span>
+        </label>
+        <label class="permission-item">
+            <input type="checkbox" name="permission_settingsAppearance" value="1"
+                id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionSettingsAppearance">
+            <span>{{t 'perm_settings_appearance'}}</span>
+        </label>
+        <label class="permission-item">
+            <input type="checkbox" name="permission_settingsBranding" value="1"
+                id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionSettingsBranding">
+            <span>{{t 'perm_settings_branding'}}</span>
+        </label>
+        <label class="permission-item">
+            <input type="checkbox" name="permission_settingsFeatures" value="1"
+                id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionSettingsFeatures">
+            <span>{{t 'perm_settings_features'}}</span>
+        </label>
+        <label class="permission-item">
+            <input type="checkbox" name="permission_settingsLanguages" value="1"
+                id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionSettingsLanguages">
+            <span>{{t 'perm_settings_languages'}}</span>
+        </label>
+        <label class="permission-item">
+            <input type="checkbox" name="permission_settingsAdminPanel" value="1"
+                id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionSettingsAdminPanel">
+            <span>{{t 'perm_settings_admin_panel'}}</span>
         </label>
     </div>
     <small class="form-text text-muted">{{t 'user_permissions_help'}}</small>
