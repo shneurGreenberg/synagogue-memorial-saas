@@ -839,6 +839,16 @@ body.admin-is-busy {
   max-width: 52ch;
 }
 
+.board-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem 1.5rem;
+
+  .admin-theme-setting {
+    max-width: none;
+  }
+}
+
 .toggle-mode-text {
   font-weight: 600;
   font-size: 0.95rem;

@@ -7,6 +7,8 @@ const path = require('path');
 const rimraf = require('rimraf');
 const mongoose = require('mongoose');
 const Synagogue = require('./models/Synagogue');
+const { normalizeBoardFeatures } = require('./lib/board-features');
+const { getJewishFeed } = require('./lib/jewish-feed');
 const { applyBoardPreviewOverrides } = require('./lib/board-preview');
 const { normalizeTitles } = require('./lib/admin-theme');
 const { getTranslator, humanizeLabel } = require('./lib/admin-translations');
@@ -166,6 +168,7 @@ async function loadSynagogueBoard(slug) {
   synagogue.baseUrl = `/s/${slug}`;
   synagogue.titles = normalizeTitles(synagogue);
   synagogue.title = synagogue.titles.ru || synagogue.title || synagogue.name || '';
+  synagogue.boardFeatures = normalizeBoardFeatures(synagogue.boardFeatures);
   return synagogue;
 }
 
@@ -194,6 +197,23 @@ app.get('/s/:slug/api/board', async (req, res) => {
     }
 
     return res.json(synagogue);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/s/:slug/api/jewish-content', async (req, res) => {
+  try {
+    const synagogue = await loadSynagogueBoard(req.params.slug);
+
+    if (!synagogue) {
+      return res.status(404).json({ error: 'Synagogue not found' });
+    }
+
+    const lang = ['ru', 'en', 'he'].includes(req.query.lang) ? req.query.lang : synagogue.language || 'ru';
+    const feed = await getJewishFeed(lang);
+
+    return res.json(feed);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }

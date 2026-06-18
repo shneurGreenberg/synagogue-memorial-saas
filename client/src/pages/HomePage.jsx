@@ -24,6 +24,9 @@ import { useBoardNavigation } from '../context/BoardNavigationContext';
 import { useBoardData } from '../context/BoardDataContext';
 import { resolveBoardTitle } from '../lib/board-title';
 import { getVisibleCommunityEvents } from '../lib/community-events';
+import { buildSidebarItems } from '../lib/sidebar-items';
+import { resolveBoardFeatures } from '../lib/board-features';
+import { JewishContentPanels } from '../components/JewishContentPanels';
 
 function getAppData() {
   return getBoardData();
@@ -75,28 +78,6 @@ function prepareCommunityEvents(events) {
       hebrewDate: new Hebcal.HDate(gregorianDate),
       eventDate: { month, date: day, year },
     };
-  });
-}
-
-function mergeSidebarItems(people, events) {
-  return [...people, ...events].sort((a, b) => {
-    if (a.gregorianDayOfMemory < b.gregorianDayOfMemory) {
-      return -1;
-    }
-
-    if (a.gregorianDayOfMemory > b.gregorianDayOfMemory) {
-      return 1;
-    }
-
-    if (a.listType === 'event' && b.listType !== 'event') {
-      return -1;
-    }
-
-    if (a.listType !== 'event' && b.listType === 'event') {
-      return 1;
-    }
-
-    return 0;
   });
 }
 
@@ -357,8 +338,9 @@ class HomePageBase extends React.Component {
       })
       .map(setDates);
 
+    const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
     const communityEvents = prepareCommunityEvents(appData.communityEvents);
-    const sidebarItems = mergeSidebarItems(allPeople, communityEvents);
+    const sidebarItems = buildSidebarItems(allPeople, communityEvents, boardFeatures);
 
     const initialState = {
       hebrewDate,
@@ -512,6 +494,8 @@ class HomePageBase extends React.Component {
     }
 
     const logo = (appData.theme && appData.theme.logo) || 'banner-transparent.png';
+    const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
+    const showSidebarScroll = this.state.sidebarItems.length > 0;
 
     return (
       <main className="main-container">
@@ -526,10 +510,13 @@ class HomePageBase extends React.Component {
                 dangerouslySetInnerHTML={{ __html: sanitizeRichText(this.state.dailyCite.text) }}
               />
             )}
-            <nav className="nearest-dates" aria-label={this.props.t('nearest_dates')}>
-              <h2>{this.props.t('nearest_dates')}</h2>
-              <NearestDatesList items={this.state.sidebarItems} onPersonClick={this.props.onOpenCard} />
-            </nav>
+            <JewishContentPanels uiLang={this.props.uiLang} />
+            {showSidebarScroll && (
+              <nav className="nearest-dates" aria-label={this.props.t('nearest_dates')}>
+                <h2>{boardFeatures.sidebarNames ? this.props.t('nearest_dates') : this.props.t('community_announcements')}</h2>
+                <NearestDatesList items={this.state.sidebarItems} onPersonClick={this.props.onOpenCard} />
+              </nav>
+            )}
           </div>
         </aside>
         <section className="middle">

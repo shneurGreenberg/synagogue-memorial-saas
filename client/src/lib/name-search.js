@@ -1,14 +1,63 @@
 import { translitSplit } from './novosibirsk';
 
+const WORD_SPLIT = /\s+/;
+
+function tokenizeName(name) {
+  const normalized = String(name || '').toLowerCase().trim();
+  const tokens = new Set();
+
+  if (!normalized) {
+    return [];
+  }
+
+  normalized.split(WORD_SPLIT).forEach((word) => {
+    if (word) {
+      tokens.add(word);
+    }
+  });
+
+  translitSplit(name).forEach((part) => {
+    if (part) {
+      tokens.add(part);
+    }
+  });
+
+  return [...tokens];
+}
+
+export function parseSearchComponents(string) {
+  const query = String(string || '').trim().toLowerCase();
+
+  if (!query) {
+    return [];
+  }
+
+  const components = new Set();
+
+  query.split(WORD_SPLIT).forEach((word) => {
+    if (word) {
+      components.add(word);
+    }
+  });
+
+  translitSplit(query).forEach((part) => {
+    if (part) {
+      components.add(part);
+    }
+  });
+
+  return [...components];
+}
+
 export function attachNameComponents(person) {
   return {
     ...person,
-    nameComponents: translitSplit(person.name || ''),
+    nameComponents: tokenizeName(person.name),
   };
 }
 
 export function searchPeopleByString(string, allPeople) {
-  const searchComponents = translitSplit(string);
+  const searchComponents = parseSearchComponents(string);
 
   if (searchComponents.length === 0) {
     return allPeople;
