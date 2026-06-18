@@ -1,0 +1,171 @@
+<div class="admin-page events-page">
+    <header class="admin-page-header">
+        <div>
+            <h1>{{t 'community_events'}}</h1>
+            <p class="admin-subtitle">{{t 'community_events_subtitle'}}</p>
+        </div>
+    </header>
+
+    <section class="admin-panel">
+        <div class="admin-panel-header">
+            <h2>{{t 'add_community_event'}}</h2>
+            <p class="admin-panel-desc">{{t 'community_events_add_help'}}</p>
+        </div>
+        <div class="admin-panel-body">
+            <form method="POST" action="/admin/{{synagogue.slug}}/events/add" class="add-event-form" id="addEventForm">
+                <div class="form-field">
+                    <label for="eventTitle">{{t 'event_title'}}</label>
+                    <input type="text" name="title" id="eventTitle" class="form-control admin-input-modern" required
+                        placeholder="{{t 'event_title_placeholder'}}">
+                </div>
+                <div class="form-field">
+                    <label for="eventText">{{t 'event_description_optional'}}</label>
+                    <textarea name="text" id="eventText" class="form-control admin-input-modern" rows="2"
+                        placeholder="{{t 'event_description_placeholder'}}"></textarea>
+                </div>
+                <div class="form-field">
+                    <label>{{t 'event_date_label'}}</label>
+                    <div class="date-inputs-row">
+                        <div class="date-input-group">
+                            <label for="eventMonth" class="sr-only">{{t 'month'}}</label>
+                            <input type="number" name="eventMonth" id="eventMonth" class="form-control admin-input-modern"
+                                min="1" max="12" required placeholder="{{t 'month'}}">
+                        </div>
+                        <div class="date-input-group">
+                            <label for="eventDay" class="sr-only">{{t 'day'}}</label>
+                            <input type="number" name="eventDate" id="eventDay" class="form-control admin-input-modern"
+                                min="1" max="31" required placeholder="{{t 'day'}}">
+                        </div>
+                        <div class="date-input-group">
+                            <label for="eventYear" class="sr-only">{{t 'year'}}</label>
+                            <input type="number" name="eventYear" id="eventYear" class="form-control admin-input-modern"
+                                min="1900" max="2100" placeholder="{{t 'year'}}">
+                        </div>
+                    </div>
+                    <span class="field-hint">{{t 'event_date_help'}}</span>
+                </div>
+                <div class="settings-two-col">
+                    <div class="form-field">
+                        <label for="eventStartAt">{{t 'event_start_at'}}</label>
+                        <input type="datetime-local" name="startAt" id="eventStartAt"
+                            class="form-control admin-input-modern">
+                        <span class="field-hint">{{t 'event_start_at_help'}}</span>
+                    </div>
+                    <div class="form-field">
+                        <label for="eventEndAt">{{t 'event_end_at'}}</label>
+                        <input type="datetime-local" name="endAt" id="eventEndAt"
+                            class="form-control admin-input-modern">
+                        <span class="field-hint">{{t 'event_end_at_help'}}</span>
+                    </div>
+                </div>
+                <div class="event-form-actions">
+                    <button type="submit" class="btn-admin btn-admin-primary" data-publish-now="0">
+                        {{t 'schedule_event'}}
+                    </button>
+                    <button type="submit" class="btn-admin btn-admin-accent" data-publish-now="1">
+                        {{t 'publish_now'}}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <section class="admin-panel" id="activeEventsPanel">
+        <div class="admin-panel-header">
+            <h2>{{t 'active_events'}}</h2>
+        </div>
+        <div class="admin-panel-body">
+            <div class="events-list" id="activeEventsList" data-section="active"></div>
+        </div>
+    </section>
+
+    <section class="admin-panel" id="scheduledEventsPanel">
+        <div class="admin-panel-header">
+            <h2>{{t 'scheduled_events'}}</h2>
+        </div>
+        <div class="admin-panel-body">
+            <div class="events-list" id="scheduledEventsList" data-section="scheduled"></div>
+        </div>
+    </section>
+
+    <section class="admin-panel" id="historyEventsPanel">
+        <div class="admin-panel-header">
+            <h2>{{t 'events_history'}}</h2>
+            <p class="admin-panel-desc">{{t 'events_history_help'}}</p>
+        </div>
+        <div class="admin-panel-body">
+            <div class="events-list events-list-history" id="historyEventsList" data-section="history"></div>
+        </div>
+    </section>
+</div>
+
+<div class="modal fade admin-modal" id="editEventModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST" action="/admin/{{synagogue.slug}}/events/edit" id="editEventForm">
+                <input type="hidden" name="eventId" id="editEventId">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{t 'edit_event'}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{t 'cancel'}}">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-field">
+                        <label for="editEventTitle">{{t 'event_title'}}</label>
+                        <input type="text" name="title" id="editEventTitle" class="form-control admin-input-modern" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="editEventText">{{t 'event_description_optional'}}</label>
+                        <textarea name="text" id="editEventText" class="form-control admin-input-modern" rows="2"></textarea>
+                    </div>
+                    <div class="form-field">
+                        <label>{{t 'event_date_label'}}</label>
+                        <div class="date-inputs-row">
+                            <input type="number" name="eventMonth" id="editEventMonth" class="form-control admin-input-modern"
+                                min="1" max="12" required placeholder="{{t 'month'}}">
+                            <input type="number" name="eventDate" id="editEventDay" class="form-control admin-input-modern"
+                                min="1" max="31" required placeholder="{{t 'day'}}">
+                            <input type="number" name="eventYear" id="editEventYear" class="form-control admin-input-modern"
+                                min="1900" max="2100" placeholder="{{t 'year'}}">
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <label for="editEventStartAt">{{t 'event_start_at'}}</label>
+                        <input type="datetime-local" name="startAt" id="editEventStartAt"
+                            class="form-control admin-input-modern">
+                    </div>
+                    <div class="form-field">
+                        <label for="editEventEndAt">{{t 'event_end_at'}}</label>
+                        <input type="datetime-local" name="endAt" id="editEventEndAt"
+                            class="form-control admin-input-modern">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-admin btn-admin-ghost" data-dismiss="modal">{{t 'cancel'}}</button>
+                    <button type="submit" class="btn-admin btn-admin-primary">{{t 'save_changes'}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.eventsAdminLabels = {
+        saving: '{{t 'saving'}}',
+        saved: '{{t 'saved'}}',
+        areYouSure: '{{t 'are_you_sure'}}',
+        edit: '{{t 'edit'}}',
+        delete: '{{t 'delete'}}',
+        publishNow: '{{t 'publish_now'}}',
+        endNow: '{{t 'end_now'}}',
+        noActiveEvents: '{{t 'no_active_events'}}',
+        noScheduledEvents: '{{t 'no_scheduled_events'}}',
+        noHistoryEvents: '{{t 'no_history_events'}}',
+        eventStartAt: '{{t 'event_start_at'}}',
+        eventEndAt: '{{t 'event_end_at'}}',
+        month: '{{t 'month'}}',
+        day: '{{t 'day'}}',
+        year: '{{t 'year'}}',
+    };
+    window.eventsAdminSlug = '{{synagogue.slug}}';
+</script>
+<script id="events-data" type="application/json">{{{json events}}}</script>

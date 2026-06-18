@@ -16,6 +16,10 @@ const {
   PHOTOS_DIR,
 } = require('../lib/storage-paths');
 const { optimizeUploadedImage } = require('../lib/image-optimize');
+const {
+  buildCommunityEventPayload,
+  categorizeCommunityEvents,
+} = require('../lib/community-events');
 
 const MIME_EXT = {
     'image/jpeg': '.jpg',
@@ -143,6 +147,11 @@ function wantsJson(req) {
 async function fetchSlideshow(slug) {
     const doc = await Synagogue.findOne({ slug }).lean();
     return doc ? doc.slideshow : null;
+}
+
+async function fetchCommunityEvents(slug) {
+    const doc = await Synagogue.findOne({ slug }).lean();
+    return doc ? (doc.communityEvents || []) : [];
 }
 
 async function persistTitlesIfMissing(synagogue) {
@@ -509,6 +518,125 @@ router.post('/:slug/people/delete', requireAdmin, async (req, res) => {
         res.redirect(`/admin/${req.params.slug}/people`);
     } catch (err) {
         res.status(500).send(err.message);
+    }
+});
+
+// Community events (special days & announcements)
+router.get('/:slug/events', requireAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        const events = synagogue.communityEvents || [];
+        const categorized = categorizeCommunityEvents(events);
+        renderAdmin(res, 'admin/events', {
+            synagogue: enrichSynagogueForAdmin(synagogue),
+            events: categorized,
+        });
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+router.post('/:slug/events/add', requireAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const publishNow = req.body.publishNow === '1' || req.body.publishNow === 'true';
+        const payload = buildCommunityEventPayload(req.body, { publishNow });
+        payload.text = sanitizeRichText(payload.text);
+
+        if (!payload.title) {
+            return res.status(400).json({ ok: false, error: 'Title is required' });
+        }
+
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            { $push: { communityEvents: payload } },
+        );
+
+        const events = await fetchCommunityEvents(req.params.slug);
+        return res.json({ ok: true, events: categorizeCommunityEvents(events) });
+    } catch (err) {
+        return res.status(400).json({ ok: false, error: err.message });
+    }
+});
+
+router.post('/:slug/events/edit', requireAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { eventId } = req.body;
+        const publishNow = req.body.publishNow === '1' || req.body.publishNow === 'true';
+        const payload = buildCommunityEventPayload(req.body, { publishNow });
+        payload.text = sanitizeRichText(payload.text);
+
+        if (!payload.title) {
+            return res.status(400).json({ ok: false, error: 'Title is required' });
+        }
+
+        await Synagogue.updateOne(
+            { slug: req.params.slug, 'communityEvents._id': eventId },
+            {
+                $set: {
+                    'communityEvents.$.title': payload.title,
+                    'communityEvents.$.text': payload.text,
+                    'communityEvents.$.eventDate': payload.eventDate,
+                    'communityEvents.$.startAt': payload.startAt,
+                    'communityEvents.$.endAt': payload.endAt,
+                },
+            },
+        );
+
+        const events = await fetchCommunityEvents(req.params.slug);
+        return res.json({ ok: true, events: categorizeCommunityEvents(events) });
+    } catch (err) {
+        return res.status(400).json({ ok: false, error: err.message });
+    }
+});
+
+router.post('/:slug/events/publish-now', requireAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { eventId } = req.body;
+        await Synagogue.updateOne(
+            { slug: req.params.slug, 'communityEvents._id': eventId },
+            { $set: { 'communityEvents.$.startAt': new Date() } },
+        );
+
+        const events = await fetchCommunityEvents(req.params.slug);
+        return res.json({ ok: true, events: categorizeCommunityEvents(events) });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.post('/:slug/events/end-now', requireAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { eventId } = req.body;
+        await Synagogue.updateOne(
+            { slug: req.params.slug, 'communityEvents._id': eventId },
+            { $set: { 'communityEvents.$.endAt': new Date() } },
+        );
+
+        const events = await fetchCommunityEvents(req.params.slug);
+        return res.json({ ok: true, events: categorizeCommunityEvents(events) });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.post('/:slug/events/delete', requireAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { eventId } = req.body;
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            { $pull: { communityEvents: { _id: eventId } } },
+        );
+
+        const events = await fetchCommunityEvents(req.params.slug);
+        return res.json({ ok: true, events: categorizeCommunityEvents(events) });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
     }
 });
 
