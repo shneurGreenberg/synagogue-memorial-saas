@@ -24,6 +24,7 @@ import { useBoardNavigation } from '../context/BoardNavigationContext';
 import { useBoardData } from '../context/BoardDataContext';
 import { resolveBoardTitle } from '../lib/board-title';
 import { getVisibleCommunityEvents } from '../lib/community-events';
+import { buildSidebarScrollItems } from '../lib/sidebar-items';
 
 function getAppData() {
   return getBoardData();
@@ -75,28 +76,6 @@ function prepareCommunityEvents(events) {
       hebrewDate: new Hebcal.HDate(gregorianDate),
       eventDate: { month, date: day, year },
     };
-  });
-}
-
-function mergeSidebarItems(people, events) {
-  return [...people, ...events].sort((a, b) => {
-    if (a.gregorianDayOfMemory < b.gregorianDayOfMemory) {
-      return -1;
-    }
-
-    if (a.gregorianDayOfMemory > b.gregorianDayOfMemory) {
-      return 1;
-    }
-
-    if (a.listType === 'event' && b.listType !== 'event') {
-      return -1;
-    }
-
-    if (a.listType !== 'event' && b.listType === 'event') {
-      return 1;
-    }
-
-    return 0;
   });
 }
 
@@ -358,7 +337,7 @@ class HomePageBase extends React.Component {
       .map(setDates);
 
     const communityEvents = prepareCommunityEvents(appData.communityEvents);
-    const sidebarItems = mergeSidebarItems(allPeople, communityEvents);
+    const sidebarItems = buildSidebarScrollItems(allPeople, communityEvents);
 
     const initialState = {
       hebrewDate,
