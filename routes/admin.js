@@ -29,6 +29,7 @@ const {
   getDefaultLandingPath,
   applyUserDisplaySettings,
   parsePermissionsFromBody,
+  permissionsForStorage,
   buildPermissionToggles,
   buildSettingsSectionToggles,
   serializeAdminUsers,
@@ -854,7 +855,7 @@ router.post('/:slug/users/add', requireAdmin, requireFullAdmin, parseFormBody, a
             return res.redirect(`/admin/${req.params.slug}/users?error=duplicate_username`);
         }
 
-        const permissions = parsePermissionsFromBody(req.body);
+        const permissions = permissionsForStorage(req.body);
         const adminLanguage = normalizeAdminLang(req.body.adminLanguage);
         const colorMode = req.body.colorMode === 'light' ? 'light' : 'dark';
 
@@ -895,7 +896,7 @@ router.post('/:slug/users/edit', requireAdmin, requireFullAdmin, parseFormBody, 
             return res.redirect(`/admin/${req.params.slug}/users?error=duplicate_username`);
         }
 
-        const permissions = parsePermissionsFromBody(req.body);
+        const permissions = permissionsForStorage(req.body);
         const adminLanguage = normalizeAdminLang(req.body.adminLanguage);
         const colorMode = req.body.colorMode === 'light' ? 'light' : 'dark';
 
