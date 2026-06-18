@@ -6,7 +6,6 @@ const path = require('path');
 const fs = require('fs');
 const { verifyPassword, ensureHashed } = require('../lib/password');
 const { sanitizeRichText } = require('../lib/sanitize');
-const { seedPhotosForSynagogue } = require('../lib/seed-people-photos');
 const { enrichSynagogueForAdmin, normalizeTitles, sanitizeHexColor } = require('../lib/admin-theme');
 const { getTranslator } = require('../lib/admin-translations');
 const { getAdminLocaleContext } = require('../lib/admin-locale');
@@ -563,7 +562,6 @@ router.get('/:slug/people', requireAdmin, requirePermission('people'), async (re
             synagogue: enrichSynagogueForAdmin(synagogue),
             adminUser: req.adminUser,
             adminPermissions: req.adminPermissions,
-            seeded: req.query.seeded === '1',
             imported: req.query.imported === '1',
             importError: req.query.importError === '1',
         });
@@ -572,7 +570,7 @@ router.get('/:slug/people', requireAdmin, requirePermission('people'), async (re
     }
 });
 
-router.post('/:slug/people/import', requireAdmin, requirePermission('people'), async (req, res) => {
+router.post('/:slug/people/import', requireAdmin, requirePermission('people'), requirePermission('peopleImport'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         let payload = req.body.people;
@@ -666,20 +664,6 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
             { $set: updateFields }
         );
         res.redirect(`/admin/${req.params.slug}/people`);
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
-});
-
-router.post('/:slug/people/seed-test-photos', requireAdmin, requirePermission('people'), async (req, res) => {
-    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
-    try {
-        await seedPhotosForSynagogue(req.params.slug, {
-            source: 'mixed',
-            force: false,
-            limit: 25,
-        });
-        res.redirect(`/admin/${req.params.slug}/people?seeded=1`);
     } catch (err) {
         res.status(500).send(err.message);
     }

@@ -23,6 +23,7 @@
     document.getElementById('editColorMode').value = readData(button, 'color-mode') || 'dark';
 
     setChecked('editPermissionPeople', readData(button, 'perm-people'));
+    setChecked('editPermissionPeopleImport', readData(button, 'perm-people-import'));
     setChecked('editPermissionSlideshow', readData(button, 'perm-slideshow'));
     setChecked('editPermissionEvents', readData(button, 'perm-events'));
     setChecked('editPermissionSettingsPreview', readData(button, 'perm-settings-preview'));

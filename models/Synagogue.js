@@ -26,6 +26,7 @@ const AdminUserSchema = new mongoose.Schema({
   displayName: { type: String, default: '' },
   permissions: {
     people: { type: Boolean, default: true },
+    peopleImport: { type: Boolean, default: false },
     slideshow: { type: Boolean, default: false },
     events: { type: Boolean, default: false },
     settings: { type: Boolean, default: false },
