@@ -11,6 +11,7 @@ const { enrichSynagogueForAdmin, normalizeTitles, sanitizeHexColor } = require('
 const { getTranslator } = require('../lib/admin-translations');
 const { getAdminLocaleContext } = require('../lib/admin-locale');
 const { BOARD_THEME_DEFAULTS } = require('../lib/board-defaults');
+const { parseBoardFeaturesFromBody } = require('../lib/board-features');
 const {
   IMAGES_DIR,
   PHOTOS_DIR,
@@ -20,6 +21,26 @@ const {
   buildCommunityEventPayload,
   categorizeCommunityEvents,
 } = require('../lib/community-events');
+
+const BOARD_FEATURE_TOGGLE_META = [
+  { key: 'sidebarNames', labelKey: 'feature_sidebar_names', helpKey: 'feature_sidebar_names_help' },
+  { key: 'dailyChumash', labelKey: 'feature_daily_chumash', helpKey: 'feature_daily_chumash_help' },
+  { key: 'dailyTehillim', labelKey: 'feature_daily_tehillim', helpKey: 'feature_daily_tehillim_help' },
+  { key: 'dailyTanya', labelKey: 'feature_daily_tanya', helpKey: 'feature_daily_tanya_help' },
+  { key: 'dailyRambam', labelKey: 'feature_daily_rambam', helpKey: 'feature_daily_rambam_help' },
+  { key: 'hayomYom', labelKey: 'feature_hayom_yom', helpKey: 'feature_hayom_yom_help' },
+  { key: 'upcomingHolidays', labelKey: 'feature_upcoming_holidays', helpKey: 'feature_upcoming_holidays_help' },
+  { key: 'communityEvents', labelKey: 'feature_community_events', helpKey: 'feature_community_events_help' },
+];
+
+function buildBoardFeatureToggles(boardFeatures) {
+  const features = boardFeatures || {};
+
+  return BOARD_FEATURE_TOGGLE_META.map((entry) => ({
+    ...entry,
+    enabled: features[entry.key] !== false,
+  }));
+}
 
 const MIME_EXT = {
     'image/jpeg': '.jpg',
@@ -189,6 +210,7 @@ router.post('/:slug/settings', requireAdmin, handleUpload([
     try {
         const { titleRu, titleEn, titleHe, primaryColor, textColor, accentColor, language, adminLanguage, colorMode, shabbatTimesEnabled } = req.body;
         const safeColorMode = colorMode === 'light' ? 'light' : 'dark';
+        const boardFeatures = parseBoardFeaturesFromBody(req.body);
         const titles = {
             ru: String(titleRu ?? '').trim(),
             en: String(titleEn ?? '').trim(),
@@ -205,7 +227,8 @@ router.post('/:slug/settings', requireAdmin, handleUpload([
             'adminTheme.colorMode': safeColorMode,
             language,
             adminLanguage,
-            shabbatTimesEnabled: !!shabbatTimesEnabled
+            shabbatTimesEnabled: !!shabbatTimesEnabled,
+            boardFeatures,
         };
 
         if (req.files['logo']) {
@@ -258,6 +281,7 @@ router.get('/:slug/dashboard', requireAdmin, async (req, res) => {
         renderAdmin(res, 'admin/dashboard', {
             synagogue: enriched,
             boardTitles: enriched.titles,
+            boardFeatureToggles: buildBoardFeatureToggles(enriched.boardFeatures),
             saved: req.query.saved === '1',
             error: req.query.error || null,
         });
