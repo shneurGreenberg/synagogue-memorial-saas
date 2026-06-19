@@ -38,17 +38,11 @@
         }
 
         .main-container .left .wooden-panel,
+        .main-container .middle .wooden-panel,
         .main-container .right .wooden-panel {
             {{#if data.theme.tilesBackground}}
             background-image: url('/images/{{data.theme.tilesBackground}}') !important;
             background-size: cover;
-            {{/if}}
-        }
-
-        .main-container .middle .cards-grid .card,
-        .main-container .middle .cards-grid-kadish .card {
-            {{#if data.theme.tilesBackground}}
-            background: url('/images/{{data.theme.tilesBackground}}') center / cover no-repeat !important;
             {{/if}}
         }
     </style>

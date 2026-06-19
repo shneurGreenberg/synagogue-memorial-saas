@@ -61,13 +61,10 @@ export function ThemeStyles() {
       background-attachment: fixed;` : ''}
     }
     .main-container .left .wooden-panel,
+    .main-container .middle .wooden-panel,
     .main-container .right .wooden-panel {
       ${theme.tilesBackground ? `background-image: url('${assetUrl(`images/${theme.tilesBackground}`)}') !important;
       background-size: cover;` : ''}
-    }
-    .main-container .middle .cards-grid .card,
-    .main-container .middle .cards-grid-kadish .card {
-      ${theme.tilesBackground ? `background: url('${assetUrl(`images/${theme.tilesBackground}`)}') center / cover no-repeat !important;` : ''}
     }
   `;
 
