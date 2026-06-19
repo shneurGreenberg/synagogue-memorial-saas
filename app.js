@@ -12,6 +12,7 @@ const { getJewishFeed } = require('./lib/jewish-feed');
 const { applyBoardPreviewOverrides } = require('./lib/board-preview');
 const { BOARD_VERSION } = require('./lib/board-version');
 const { photoCropToInlineStyle } = require('./lib/photo-crop');
+const { buildPhotoThumbUrl } = require('./lib/photo-url');
 const { normalizeTitles } = require('./lib/admin-theme');
 const { getTranslator, humanizeLabel } = require('./lib/admin-translations');
 const adminRoutes = require('./routes/admin');
@@ -110,6 +111,9 @@ app.engine('handlebars', handlebars({
     photoCropStyle(photoCrop) {
       return photoCropToInlineStyle(photoCrop);
     },
+    photoThumbUrl(photo, photoCrop) {
+      return buildPhotoThumbUrl(photo, photoCrop);
+    },
   },
   runtimeOptions: {
     allowProtoPropertiesByDefault: true,
@@ -142,8 +146,16 @@ app.get('/photos/:filename', async (req, res, next) => {
     return next();
   }
 
+  const crop = req.query.cx !== undefined || req.query.cy !== undefined || req.query.cz !== undefined
+    ? {
+      x: req.query.cx,
+      y: req.query.cy,
+      zoom: req.query.cz,
+    }
+    : null;
+
   try {
-    const filePath = await getResizedPhoto(req.params.filename, width);
+    const filePath = await getResizedPhoto(req.params.filename, width, crop);
 
     if (!filePath) {
       return next();
