@@ -237,6 +237,7 @@
 </div>
 
 <script>
+    window.addEventListener('load', function () {
     (function () {
         const people = JSON.parse(document.getElementById('people-data').textContent);
         const peopleById = {};
@@ -557,15 +558,6 @@
             }
         });
 
-        $('#editPersonModal').on('hidden.bs.modal', function () {
-            if (!editFormSubmitted && activeEditPersonId != null && editListSnapshot) {
-                updateListRowPhoto(activeEditPersonId, editListSnapshot.crop, editListSnapshot.src);
-            }
-            editFormSubmitted = false;
-            activeEditPersonId = null;
-            editListSnapshot = null;
-        });
-
         document.querySelectorAll('.edit-btn').forEach(function (button) {
             button.addEventListener('click', function () {
                 const id = Number(button.getAttribute('data-id'));
@@ -594,8 +586,22 @@
                     cropEditors.edit.clearCrop();
                 }
 
-                $('#editPersonModal').modal('show');
+                if (typeof window.jQuery !== 'undefined') {
+                    window.jQuery('#editPersonModal').modal('show');
+                }
             });
         });
+
+        if (typeof window.jQuery !== 'undefined') {
+            window.jQuery('#editPersonModal').on('hidden.bs.modal', function () {
+                if (!editFormSubmitted && activeEditPersonId != null && editListSnapshot) {
+                    updateListRowPhoto(activeEditPersonId, editListSnapshot.crop, editListSnapshot.src);
+                }
+                editFormSubmitted = false;
+                activeEditPersonId = null;
+                editListSnapshot = null;
+            });
+        }
     })();
+    });
 </script>
