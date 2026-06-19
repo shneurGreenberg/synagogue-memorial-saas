@@ -7,6 +7,8 @@ export function isBoardPreviewMode() {
   return params.get('preview') === '1'
     || params.has('primaryColor')
     || params.has('textColor')
+    || params.has('accentColor')
+    || params.has('tileColor')
     || params.has('titleRu')
     || params.has('titleEn')
     || params.has('titleHe')

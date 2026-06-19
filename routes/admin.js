@@ -293,7 +293,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
     try {
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
         const {
-            titleRu, titleEn, titleHe, primaryColor, textColor, accentColor,
+            titleRu, titleEn, titleHe, primaryColor, textColor, accentColor, tileColor,
             language, shabbatTimesEnabled,
         } = req.body;
         const boardFeatures = parseBoardFeaturesFromBody(req.body);
@@ -312,6 +312,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             updateData['theme.primaryColor'] = sanitizeHexColor(primaryColor, BOARD_THEME_DEFAULTS.primaryColor);
             updateData['theme.textColor'] = sanitizeHexColor(textColor, BOARD_THEME_DEFAULTS.textColor);
             updateData['theme.accentColor'] = sanitizeHexColor(accentColor, BOARD_THEME_DEFAULTS.accentColor);
+            updateData['theme.tileColor'] = sanitizeHexColor(tileColor, BOARD_THEME_DEFAULTS.tileColor);
         }
 
         if (permissions.settingsLanguages) {
@@ -356,6 +357,7 @@ router.post('/:slug/settings/reset-theme', requireAdmin, requirePermission('sett
                 'theme.primaryColor': BOARD_THEME_DEFAULTS.primaryColor,
                 'theme.textColor': BOARD_THEME_DEFAULTS.textColor,
                 'theme.accentColor': BOARD_THEME_DEFAULTS.accentColor,
+                'theme.tileColor': BOARD_THEME_DEFAULTS.tileColor,
             },
             $unset: {
                 'theme.backgroundImage': '',

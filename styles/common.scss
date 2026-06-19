@@ -39,10 +39,10 @@ body {
 }
 
 .golden-panel {
-  background: linear-gradient(80deg, rgba(0, 0, 0, 100%) 0%, rgba(0, 0, 0, 100%) 20%, $goldenPanelDark 40%, $goldenPanelLight), url('/images/gold.png');
+  background: linear-gradient(80deg, rgba(0, 0, 0, 100%) 0%, rgba(0, 0, 0, 100%) 20%, var(--tile-panel-mid, $goldenPanelDark) 40%, var(--tile-panel-fade, $goldenPanelLight)), url('/images/gold.png');
   border-radius: 12px;
   padding: 10px;
-  border: 1px solid $goldenPanelBorder;
+  border: 1px solid var(--tile-panel-border, $goldenPanelBorder);
   box-shadow: 1px 1px 10px #000;
   overflow: hidden;
 }

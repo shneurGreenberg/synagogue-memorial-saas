@@ -15,6 +15,13 @@
         :root {
             --primary-color: {{data.theme.primaryColor}};
             --text-color: {{data.theme.textColor}};
+            --tile-color: {{#if data.theme.tileColor}}{{data.theme.tileColor}}{{else}}#b89a22{{/if}};
+            --tile-panel-mid: color-mix(in srgb, var(--tile-color) 50%, transparent);
+            --tile-panel-fade: color-mix(in srgb, var(--tile-color) 35%, transparent);
+            --tile-surface-light: color-mix(in srgb, var(--tile-color) 88%, #fff);
+            --tile-surface-dark: color-mix(in srgb, var(--tile-color) 78%, #000);
+            --tile-surface-border: color-mix(in srgb, var(--tile-color) 58%, #000);
+            --tile-panel-border: color-mix(in srgb, var(--tile-color) 72%, #000);
             --card-button: color-mix(in srgb, {{data.theme.primaryColor}} 85%, #000);
             --card-button-border: color-mix(in srgb, {{data.theme.primaryColor}} 70%, #000);
             --card-button-text: #1a1a1a;
@@ -39,7 +46,8 @@
 
         .main-container .left .wooden-panel,
         .main-container .middle .wooden-panel,
-        .main-container .right .wooden-panel {
+        .main-container .right .wooden-panel,
+        .card-view.wooden-panel {
             {{#if data.theme.tilesBackground}}
             background-image: url('/images/{{data.theme.tilesBackground}}') !important;
             background-size: cover;

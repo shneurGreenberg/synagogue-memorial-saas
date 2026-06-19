@@ -2,20 +2,30 @@ import React from 'react';
 import { useBoardData } from '../context/BoardDataContext';
 import { assetUrl } from '../lib/asset-url';
 
+const DEFAULT_TILE_COLOR = '#b89a22';
+
 export function ThemeStyles() {
   const { data, revision } = useBoardData();
   const theme = data.theme || {};
   const primary = theme.primaryColor || '#cfaf1f';
   const text = theme.textColor || '#bfbfbf';
   const accent = theme.accentColor || '#ffd54f';
+  const tile = theme.tileColor || DEFAULT_TILE_COLOR;
 
   const css = `
     :root {
       --primary-color: ${primary};
       --text-color: ${text};
       --accent-color: ${accent};
+      --tile-color: ${tile};
       --tile-title-color: ${primary};
       --tile-date-color: ${text};
+      --tile-panel-mid: color-mix(in srgb, ${tile} 50%, transparent);
+      --tile-panel-fade: color-mix(in srgb, ${tile} 35%, transparent);
+      --tile-surface-light: color-mix(in srgb, ${tile} 88%, #fff);
+      --tile-surface-dark: color-mix(in srgb, ${tile} 78%, #000);
+      --tile-surface-border: color-mix(in srgb, ${tile} 58%, #000);
+      --tile-panel-border: color-mix(in srgb, ${tile} 72%, #000);
       --card-button: color-mix(in srgb, ${primary} 85%, #000);
       --card-button-border: color-mix(in srgb, ${primary} 70%, #000);
       --card-button-text: #1a1a1a;
@@ -62,11 +72,30 @@ export function ThemeStyles() {
     }
     .main-container .left .wooden-panel,
     .main-container .middle .wooden-panel,
-    .main-container .right .wooden-panel {
+    .main-container .right .wooden-panel,
+    .card-view.wooden-panel {
       ${theme.tilesBackground ? `background-image: url('${assetUrl(`images/${theme.tilesBackground}`)}') !important;
       background-size: cover;` : ''}
     }
+    .main-container .cards-grid .card,
+    .main-container .cards-grid-kadish .card,
+    .golden-panel {
+      background: linear-gradient(
+        80deg,
+        rgba(0, 0, 0, 100%) 0%,
+        rgba(0, 0, 0, 100%) 24%,
+        var(--tile-panel-mid) 48%,
+        var(--tile-panel-fade)
+      ), url('${assetUrl('images/gold.png')}') !important;
+      border-color: var(--tile-panel-border) !important;
+    }
+    .main-container .search input,
+    .main-container .pager .pager-btn {
+      background: linear-gradient(165deg, var(--tile-surface-light), var(--tile-surface-dark)) !important;
+      background-color: var(--tile-surface-dark) !important;
+      border-color: var(--tile-surface-border) !important;
+    }
   `;
 
-  return <style key={`theme-${revision}-${primary}-${text}-${accent}`} dangerouslySetInnerHTML={{ __html: css }} />;
+  return <style key={`theme-${revision}-${primary}-${text}-${accent}-${tile}`} dangerouslySetInnerHTML={{ __html: css }} />;
 }

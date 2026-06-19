@@ -497,8 +497,8 @@
           80deg,
           rgba(0, 0, 0, 100%) 0%,
           rgba(0, 0, 0, 100%) 24%,
-          $goldenPanelDark 48%,
-          $goldenPanelLight
+          var(--tile-panel-mid, $goldenPanelDark) 48%,
+          var(--tile-panel-fade, $goldenPanelLight)
         ), url('/images/gold.png');
 
         &:active {
@@ -696,9 +696,9 @@
         letter-spacing: 0.02em;
         user-select: text;
         -webkit-user-select: text;
-        background: linear-gradient(165deg, #b89a22, #a68f19);
-        background-color: #a68f19;
-        border: 1.5px solid #7a6812;
+        background: linear-gradient(165deg, var(--tile-surface-light, #b89a22), var(--tile-surface-dark, #a68f19));
+        background-color: var(--tile-surface-dark, #a68f19);
+        border: 1.5px solid var(--tile-surface-border, #7a6812);
         padding: 0 14px 0 42px;
         color: #3d3d3d;
         box-shadow:
@@ -776,9 +776,9 @@
         height: clamp(40px, 3.8vw, 48px);
         padding: 0;
         cursor: pointer;
-        background: linear-gradient(165deg, #b89a22, #a68f19);
-        background-color: #a68f19;
-        border: 1.5px solid #7a6812;
+        background: linear-gradient(165deg, var(--tile-surface-light, #b89a22), var(--tile-surface-dark, #a68f19));
+        background-color: var(--tile-surface-dark, #a68f19);
+        border: 1.5px solid var(--tile-surface-border, #7a6812);
         border-radius: 14px;
         box-shadow:
           0 4px 14px rgba(0, 0, 0, 0.35),

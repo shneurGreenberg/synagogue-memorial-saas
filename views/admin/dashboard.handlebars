@@ -117,6 +117,16 @@
                         </div>
                         <span class="field-hint">{{t 'accent_color_help'}}</span>
                     </div>
+                    <div class="color-field-modern">
+                        <label for="tileColor">{{t 'tile_color'}}</label>
+                        <div class="color-swatch-row">
+                            <input type="color" name="tileColor" id="tileColor" class="color-swatch-input"
+                                value="{{synagogue.theme.tileColor}}">
+                            <input type="text" class="color-hex-display" id="tileColorHex" readonly
+                                value="{{synagogue.theme.tileColor}}">
+                        </div>
+                        <span class="field-hint">{{t 'tile_color_help'}}</span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -312,6 +322,7 @@
             var primary = document.getElementById('primaryColor');
             var text = document.getElementById('textColor');
             var accent = document.getElementById('accentColor');
+            var tile = document.getElementById('tileColor');
             var titleRu = document.getElementById('titleRu');
             var titleEn = document.getElementById('titleEn');
             var titleHe = document.getElementById('titleHe');
@@ -325,6 +336,7 @@
                 primaryColor: primary ? primary.value : '',
                 textColor: text ? text.value : '',
                 accentColor: accent ? accent.value : '',
+                tileColor: tile ? tile.value : '',
                 previewLang: languageSelect ? languageSelect.value : 'ru',
             };
         }
@@ -344,6 +356,7 @@
         bindColorPair('primaryColor', 'primaryColorHex');
         bindColorPair('textColor', 'textColorHex');
         bindColorPair('accentColor', 'accentColorHex');
+        bindColorPair('tileColor', 'tileColorHex');
 
         var toggle = document.getElementById('colorModeToggle');
         var hidden = document.getElementById('colorModeInput');
@@ -437,6 +450,7 @@
             params.set('primaryColor', patch.primaryColor);
             params.set('textColor', patch.textColor);
             params.set('accentColor', patch.accentColor);
+            params.set('tileColor', patch.tileColor);
             params.set('previewLang', patch.previewLang);
             frame.src = '/s/' + slug + '?' + params.toString();
         }
@@ -458,6 +472,7 @@
             params.set('primaryColor', initial.primaryColor);
             params.set('textColor', initial.textColor);
             params.set('accentColor', initial.accentColor);
+            params.set('tileColor', initial.tileColor);
             params.set('previewLang', initial.previewLang);
             frame.src = '/s/' + slug + '?' + params.toString();
             fitBoardPreviewTv();

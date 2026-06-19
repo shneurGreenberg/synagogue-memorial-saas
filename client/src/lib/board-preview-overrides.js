@@ -29,6 +29,9 @@ export function mergePreviewPatch(data, patch) {
   if (patch.accentColor) {
     next.theme.accentColor = patch.accentColor;
   }
+  if (patch.tileColor) {
+    next.theme.tileColor = patch.tileColor;
+  }
   if (patch.previewLang && PREVIEW_LANGS.includes(patch.previewLang)) {
     next.language = patch.previewLang;
   }
@@ -45,6 +48,7 @@ export function previewPatchFromSearchParams(params) {
     || params.has('primaryColor')
     || params.has('textColor')
     || params.has('accentColor')
+    || params.has('tileColor')
     || params.has('titleRu')
     || params.has('titleEn')
     || params.has('titleHe')
@@ -61,6 +65,7 @@ export function previewPatchFromSearchParams(params) {
   if (params.has('primaryColor')) patch.primaryColor = params.get('primaryColor');
   if (params.has('textColor')) patch.textColor = params.get('textColor');
   if (params.has('accentColor')) patch.accentColor = params.get('accentColor');
+  if (params.has('tileColor')) patch.tileColor = params.get('tileColor');
   if (params.has('previewLang')) patch.previewLang = params.get('previewLang');
 
   return patch;
