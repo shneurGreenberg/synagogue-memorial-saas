@@ -60,7 +60,8 @@ export function ThemeStyles() {
       background-position: center;
       background-attachment: fixed;` : ''}
     }
-    .wooden-panel {
+    .main-container .left .wooden-panel,
+    .main-container .right .wooden-panel {
       ${theme.tilesBackground ? `background-image: url('${assetUrl(`images/${theme.tilesBackground}`)}') !important;
       background-size: cover;` : ''}
     }

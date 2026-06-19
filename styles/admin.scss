@@ -424,11 +424,18 @@ body.admin-login-page {
   align-items: center;
   justify-content: center;
   position: relative;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    user-select: none;
+    pointer-events: none;
   }
 
   .photo-preview-empty {
@@ -437,6 +444,24 @@ body.admin-login-page {
     font-size: 0.8rem;
     padding: 1rem;
     line-height: 1.3;
+  }
+}
+
+.photo-crop-controls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  .photo-crop-zoom-label {
+    font-size: 0.8rem;
+    color: var(--admin-text-muted);
+    margin: 0;
+  }
+
+  .photo-crop-zoom {
+    width: 100%;
+    accent-color: var(--admin-primary);
   }
 }
 

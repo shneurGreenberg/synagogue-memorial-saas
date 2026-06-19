@@ -23,6 +23,20 @@ function getInitials(name) {
     .toUpperCase();
 }
 
+function getPhotoCropStyle(person) {
+  const crop = person && person.photoCrop;
+  const x = typeof crop?.x === 'number' ? crop.x : 50;
+  const y = typeof crop?.y === 'number' ? crop.y : 50;
+  const zoom = typeof crop?.zoom === 'number' ? crop.zoom : 1;
+
+  return {
+    objectFit: 'cover',
+    objectPosition: `${x}% ${y}%`,
+    transform: zoom !== 1 ? `scale(${zoom})` : undefined,
+    transformOrigin: `${x}% ${y}%`,
+  };
+}
+
 export class PersonAvatar extends React.Component {
   constructor(props) {
     super(props);
@@ -36,7 +50,11 @@ export class PersonAvatar extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.person !== this.props.person || prevProps.person?.photo !== this.props.person?.photo) {
+    if (
+      prevProps.person !== this.props.person
+      || prevProps.person?.photo !== this.props.person?.photo
+      || prevProps.person?.photoCrop !== this.props.person?.photoCrop
+    ) {
       this.setState({
         imageFailed: false,
         imageLoaded: false,
@@ -71,6 +89,7 @@ export class PersonAvatar extends React.Component {
     const photoWidth = PHOTO_WIDTH_BY_SIZE[size] || PHOTO_WIDTH_BY_SIZE.md;
     const initials = getInitials(name);
     const { imageLoaded, useFullSize } = this.state;
+    const cropStyle = getPhotoCropStyle(person);
 
     if (showPhoto) {
       const src = useFullSize
@@ -87,6 +106,7 @@ export class PersonAvatar extends React.Component {
             src={src}
             alt=""
             className={`person-avatar-photo ${imageLoaded ? 'is-loaded' : 'is-loading'}`.trim()}
+            style={cropStyle}
             onError={this.onImageError}
             onLoad={this.onImageLoad}
             loading="eager"

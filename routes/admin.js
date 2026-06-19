@@ -10,6 +10,7 @@ const { enrichSynagogueForAdmin, normalizeTitles, sanitizeHexColor } = require('
 const { getTranslator } = require('../lib/admin-translations');
 const { getAdminLocaleContext } = require('../lib/admin-locale');
 const { BOARD_THEME_DEFAULTS } = require('../lib/board-defaults');
+const { parsePhotoCropFromBody } = require('../lib/photo-crop');
 const { parseBoardFeaturesFromBody } = require('../lib/board-features');
 const {
   IMAGES_DIR,
@@ -628,6 +629,7 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
             text: sanitizeRichText(text),
             gregorianDateOfDeath: { month: parseInt(month), date: parseInt(date), year: parseInt(year) },
             photo: req.file ? await optimizeUploadedImage(req.file.path, 'photo') : '',
+            photoCrop: req.file ? parsePhotoCropFromBody(req.body) : undefined,
             title: ''
         };
 
@@ -655,8 +657,12 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
 
         if (req.file) {
             updateFields['people.$.photo'] = await optimizeUploadedImage(req.file.path, 'photo');
+            updateFields['people.$.photoCrop'] = parsePhotoCropFromBody(req.body);
         } else if (deletePhoto) {
             updateFields['people.$.photo'] = '';
+            updateFields['people.$.photoCrop'] = { x: 50, y: 50, zoom: 1 };
+        } else {
+            updateFields['people.$.photoCrop'] = parsePhotoCropFromBody(req.body);
         }
 
         await Synagogue.updateOne(

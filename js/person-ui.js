@@ -15,6 +15,20 @@ function getInitials(name) {
     .toUpperCase();
 }
 
+function getPhotoCropStyle(person) {
+  const crop = person && person.photoCrop;
+  const x = typeof crop?.x === 'number' ? crop.x : 50;
+  const y = typeof crop?.y === 'number' ? crop.y : 50;
+  const zoom = typeof crop?.zoom === 'number' ? crop.zoom : 1;
+
+  return {
+    objectFit: 'cover',
+    objectPosition: `${x}% ${y}%`,
+    transform: zoom !== 1 ? `scale(${zoom})` : undefined,
+    transformOrigin: `${x}% ${y}%`,
+  };
+}
+
 class PersonAvatar extends React.Component {
   constructor(props) {
     super(props);
@@ -23,7 +37,11 @@ class PersonAvatar extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.person !== this.props.person || prevProps.person?.photo !== this.props.person?.photo) {
+    if (
+      prevProps.person !== this.props.person
+      || prevProps.person?.photo !== this.props.person?.photo
+      || prevProps.person?.photoCrop !== this.props.person?.photoCrop
+    ) {
       this.setState({ imageFailed: false });
     }
   }
@@ -49,6 +67,7 @@ class PersonAvatar extends React.Component {
           src={`/photos/${person.photo}`}
           alt={name}
           className={classes}
+          style={getPhotoCropStyle(person)}
           onError={this.onImageError}
         />
       );
