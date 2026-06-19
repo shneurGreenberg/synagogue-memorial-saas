@@ -1,8 +1,19 @@
 import React from 'react';
 import { useBoardData } from '../context/BoardDataContext';
 import { assetUrl } from '../lib/asset-url';
+import { buildTileThemeVars } from '../lib/tile-theme-colors';
 
-const DEFAULT_TILE_COLOR = '#b89a22';
+const TILE_GLASS_GRADIENT = `
+  linear-gradient(
+    80deg,
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.95) 24%,
+    rgba(0, 0, 0, 0.82) 32%,
+    var(--tile-glass-mid) 52%,
+    var(--tile-glass-fade) 78%,
+    var(--tile-glass-frost) 100%
+  )
+`;
 
 export function ThemeStyles() {
   const { data, revision } = useBoardData();
@@ -10,24 +21,26 @@ export function ThemeStyles() {
   const primary = theme.primaryColor || '#cfaf1f';
   const text = theme.textColor || '#bfbfbf';
   const accent = theme.accentColor || '#ffd54f';
-  const tile = theme.tileColor || DEFAULT_TILE_COLOR;
+  const tileVars = buildTileThemeVars(theme.tileColor, primary);
 
   const css = `
     :root {
       --primary-color: ${primary};
       --text-color: ${text};
       --accent-color: ${accent};
-      --tile-color: ${tile};
+      --tile-color: ${tileVars.tileColor};
       --tile-title-color: ${primary};
       --tile-date-color: ${text};
-      --tile-panel-mid: color-mix(in srgb, ${tile} 50%, transparent);
-      --tile-panel-fade: color-mix(in srgb, ${tile} 35%, transparent);
-      --tile-surface-light: color-mix(in srgb, ${tile} 88%, #fff);
-      --tile-surface-dark: color-mix(in srgb, ${tile} 78%, #000);
-      --tile-surface-border: color-mix(in srgb, ${tile} 58%, #000);
-      --tile-panel-border: color-mix(in srgb, ${tile} 72%, #000);
-      --card-button: color-mix(in srgb, ${primary} 85%, #000);
-      --card-button-border: color-mix(in srgb, ${primary} 70%, #000);
+      --tile-glass-base: ${tileVars.tileGlassBase};
+      --tile-glass-mid: ${tileVars.tileGlassMid};
+      --tile-glass-fade: ${tileVars.tileGlassFade};
+      --tile-glass-frost: ${tileVars.tileGlassFrost};
+      --tile-glass-border: ${tileVars.tileGlassBorder};
+      --tile-surface-light: ${tileVars.tileSurfaceLight};
+      --tile-surface-dark: ${tileVars.tileSurfaceDark};
+      --tile-surface-border: ${tileVars.tileSurfaceBorder};
+      --card-button: ${tileVars.cardButton};
+      --card-button-border: ${tileVars.cardButtonBorder};
       --card-button-text: #1a1a1a;
     }
     .main-container .board-header h1 {
@@ -80,14 +93,11 @@ export function ThemeStyles() {
     .main-container .cards-grid .card,
     .main-container .cards-grid-kadish .card,
     .golden-panel {
-      background: linear-gradient(
-        80deg,
-        rgba(0, 0, 0, 100%) 0%,
-        rgba(0, 0, 0, 100%) 24%,
-        var(--tile-panel-mid) 48%,
-        var(--tile-panel-fade)
-      ), url('${assetUrl('images/gold.png')}') !important;
-      border-color: var(--tile-panel-border) !important;
+      background-color: var(--tile-glass-base) !important;
+      background-image: ${TILE_GLASS_GRADIENT} !important;
+      border-color: var(--tile-glass-border) !important;
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
     }
     .main-container .search input,
     .main-container .pager .pager-btn {
@@ -97,5 +107,10 @@ export function ThemeStyles() {
     }
   `;
 
-  return <style key={`theme-${revision}-${primary}-${text}-${accent}-${tile}`} dangerouslySetInnerHTML={{ __html: css }} />;
+  return (
+    <style
+      key={`theme-${revision}-${primary}-${text}-${accent}-${tileVars.tileColor}`}
+      dangerouslySetInnerHTML={{ __html: css }}
+    />
+  );
 }

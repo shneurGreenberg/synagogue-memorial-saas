@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const handlebars = require('express-handlebars');
+const { buildTileThemeVars } = require('./lib/tile-theme-colors');
+const { BOARD_THEME_DEFAULTS } = require('./lib/board-defaults');
 const sass = require('sass');
 const fs = require('fs');
 const path = require('path');
@@ -113,6 +115,12 @@ app.engine('handlebars', handlebars({
     },
     photoThumbUrl(photo) {
       return buildPhotoThumbUrl(photo);
+    },
+    tileThemeVars(theme) {
+      return buildTileThemeVars(
+        (theme && theme.tileColor) || BOARD_THEME_DEFAULTS.tileColor,
+        (theme && theme.primaryColor) || BOARD_THEME_DEFAULTS.primaryColor,
+      );
     },
   },
   runtimeOptions: {

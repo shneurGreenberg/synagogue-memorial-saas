@@ -15,15 +15,19 @@
         :root {
             --primary-color: {{data.theme.primaryColor}};
             --text-color: {{data.theme.textColor}};
-            --tile-color: {{#if data.theme.tileColor}}{{data.theme.tileColor}}{{else}}#b89a22{{/if}};
-            --tile-panel-mid: color-mix(in srgb, var(--tile-color) 50%, transparent);
-            --tile-panel-fade: color-mix(in srgb, var(--tile-color) 35%, transparent);
-            --tile-surface-light: color-mix(in srgb, var(--tile-color) 88%, #fff);
-            --tile-surface-dark: color-mix(in srgb, var(--tile-color) 78%, #000);
-            --tile-surface-border: color-mix(in srgb, var(--tile-color) 58%, #000);
-            --tile-panel-border: color-mix(in srgb, var(--tile-color) 72%, #000);
-            --card-button: color-mix(in srgb, {{data.theme.primaryColor}} 85%, #000);
-            --card-button-border: color-mix(in srgb, {{data.theme.primaryColor}} 70%, #000);
+            {{#with (tileThemeVars data.theme)}}
+            --tile-color: {{tileColor}};
+            --tile-glass-base: {{tileGlassBase}};
+            --tile-glass-mid: {{tileGlassMid}};
+            --tile-glass-fade: {{tileGlassFade}};
+            --tile-glass-frost: {{tileGlassFrost}};
+            --tile-glass-border: {{tileGlassBorder}};
+            --tile-surface-light: {{tileSurfaceLight}};
+            --tile-surface-dark: {{tileSurfaceDark}};
+            --tile-surface-border: {{tileSurfaceBorder}};
+            --card-button: {{cardButton}};
+            --card-button-border: {{cardButtonBorder}};
+            {{/with}}
             --card-button-text: #1a1a1a;
         }
 
