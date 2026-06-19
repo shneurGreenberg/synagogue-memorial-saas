@@ -98,13 +98,17 @@
       }
     }
 
+    .daily-gates-panel {
+      padding: 6px 0;
+    }
+
     .daily-gates-grid {
       list-style: none;
       margin: 0;
       padding: 0;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 10px;
       text-align: start;
     }
 
@@ -123,7 +127,7 @@
 
     .daily-gate-tile {
       margin: 0;
-      padding: 6px 7px;
+      padding: 8px 7px;
       border: 1px solid rgba(207, 175, 31, 0.2);
       border-radius: 6px;
       background: rgba(0, 0, 0, 0.12);
@@ -447,12 +451,13 @@
           position: absolute;
           left: 6px;
           top: 46%;
-          transform: translate3d(0, calc(-50% + 8px), 0);
+          transform: translate3d(0, calc(-50% + 16px), 0);
           pointer-events: none;
           object-fit: contain;
           object-position: center bottom;
-          contain: layout style paint;
           z-index: 0;
+          backface-visibility: hidden;
+          will-change: transform, opacity, filter;
           --candle-flicker-delay: calc(var(--candle-phase, 0) * -0.41s);
           animation: candle-soft-flicker 2.6s ease-in-out infinite;
           animation-delay: var(--candle-flicker-delay);
@@ -463,7 +468,7 @@
             width: clamp(56px, 6vw, 84px);
             max-height: 72%;
             top: 44%;
-            transform: translate3d(0, calc(-50% + 8px), 0);
+            transform: translate3d(0, calc(-50% + 16px), 0);
           }
         }
 
@@ -954,16 +959,25 @@
   100% {
     opacity: 1;
     filter: brightness(1);
+    transform: translate3d(0, calc(-50% + 16px), 0) scale(1);
   }
 
-  38% {
+  25% {
+    opacity: 0.94;
+    filter: brightness(0.96);
+    transform: translate3d(0.4px, calc(-50% + 15px), 0) scale(0.995);
+  }
+
+  50% {
     opacity: 0.9;
-    filter: brightness(0.94);
+    filter: brightness(0.93);
+    transform: translate3d(-0.3px, calc(-50% + 17px), 0) scale(1.005);
   }
 
-  72% {
-    opacity: 0.97;
-    filter: brightness(1.05);
+  75% {
+    opacity: 0.96;
+    filter: brightness(1.04);
+    transform: translate3d(0.2px, calc(-50% + 15.5px), 0) scale(0.998);
   }
 }
 
