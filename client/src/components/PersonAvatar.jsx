@@ -109,7 +109,7 @@ export class PersonAvatar extends React.Component {
             style={cropStyle}
             onError={this.onImageError}
             onLoad={this.onImageLoad}
-            loading="eager"
+            loading="lazy"
             decoding="async"
           />
         </span>

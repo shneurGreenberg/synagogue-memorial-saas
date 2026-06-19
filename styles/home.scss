@@ -102,38 +102,26 @@
       padding: 4px 0 6px;
     }
 
-    .daily-gates-grid {
+    .daily-gates-list {
       list-style: none;
       margin: 0;
       padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
       text-align: start;
     }
 
-    .daily-gates-row {
+    .daily-gate-item {
       list-style: none;
       margin: 0;
-      padding: 0;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 5px 4px;
-
-      &--single {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .daily-gate-tile {
-      margin: 0;
-      padding: 5px 4px;
-      border: 1px solid rgba(207, 175, 31, 0.2);
-      border-radius: 6px;
-      background: rgba(0, 0, 0, 0.12);
+      padding: 7px 2px;
+      border-bottom: 1px solid rgba(207, 175, 31, 0.28);
       font-size: clamp(11px, 0.95vw, 14px);
       line-height: 1.3;
       min-width: 0;
+
+      &:last-child {
+        border-bottom: none;
+        padding-bottom: 2px;
+      }
     }
 
     .daily-gate-label {
@@ -226,7 +214,7 @@
 
         li {
           list-style: none;
-          margin: 8px 0 12px;
+          margin: 0;
           padding: 0;
           width: 100%;
           max-width: 100%;
@@ -238,17 +226,20 @@
             width: 100%;
             color: white;
             text-decoration: none;
-            padding: 4px 6px;
-            border-radius: 8px;
+            padding: 10px 4px;
+            border-bottom: 1px solid rgba(207, 175, 31, 0.28);
+            border-radius: 0;
             background: transparent;
-            border: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
             font: inherit;
             cursor: pointer;
             text-align: center;
 
             &:hover,
             &:focus-visible {
-              background: rgba(0, 0, 0, 0.25);
+              background: rgba(0, 0, 0, 0.12);
             }
 
             time {
@@ -279,44 +270,44 @@
           }
 
           &.community-event-item {
-            margin: 8px 0 12px;
+            margin: 0;
+            padding: 0;
 
             .community-event-link {
               display: block;
               width: 100%;
               box-sizing: border-box;
-              padding: 8px 8px;
-              border-radius: 10px;
+              padding: 10px 4px;
+              border-bottom: 1px solid rgba(207, 175, 31, 0.28);
+              border-radius: 0;
               text-align: center;
-              background: linear-gradient(
-                135deg,
-                color-mix(in srgb, var(--accent-color, #ffd54f) 35%, transparent) 0%,
-                color-mix(in srgb, var(--primary-color, #cfaf1f) 22%, transparent) 100%
-              );
-              border: 2px solid color-mix(in srgb, var(--accent-color, #ffd54f) 75%, transparent);
-              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+              background: transparent;
+              border-top: none;
+              border-left: none;
+              border-right: none;
+              box-shadow: none;
 
               time {
                 color: var(--accent-color, #ffd54f);
-                font-weight: 700;
+                font-weight: 600;
                 text-decoration: none;
                 -webkit-line-clamp: 3;
               }
 
               .community-event-title {
                 display: block;
-                margin-top: 6px;
-                font-size: clamp(15px, 1.35vw, 20px);
-                font-weight: 700;
+                margin-top: 4px;
+                font-size: clamp(14px, 1.2vw, 18px);
+                font-weight: 600;
                 line-height: 1.25;
                 color: $goldenText;
-                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+                text-shadow: none;
                 -webkit-line-clamp: 3;
               }
 
               .community-event-text {
                 display: block;
-                margin-top: 4px;
+                margin-top: 3px;
                 font-size: clamp(12px, 1vw, 15px);
                 line-height: 1.35;
                 color: var(--text-color, #d0d0d0);
@@ -327,22 +318,26 @@
           }
 
           &.sidebar-holiday-item {
-            margin: 8px 0 12px;
+            margin: 0;
+            padding: 0;
 
             .sidebar-holiday-link {
               display: block;
               width: 100%;
               box-sizing: border-box;
-              padding: 8px 8px;
-              border-radius: 8px;
+              padding: 10px 4px;
+              border-bottom: 1px solid rgba(207, 175, 31, 0.28);
+              border-radius: 0;
               text-align: center;
-              background: rgba(0, 0, 0, 0.18);
-              border: 1px solid rgba(207, 175, 31, 0.25);
+              background: transparent;
+              border-top: none;
+              border-left: none;
+              border-right: none;
 
               time {
                 display: block;
                 margin-bottom: 4px;
-                text-decoration: underline;
+                text-decoration: none;
                 color: $textColor;
                 font-size: clamp(13px, 1.1vw, 17px);
                 line-height: 1.3;
@@ -358,22 +353,26 @@
           }
 
           &.sidebar-chabad-item {
-            margin: 8px 0 12px;
+            margin: 0;
+            padding: 0;
 
             .sidebar-chabad-link {
               display: block;
               width: 100%;
               box-sizing: border-box;
-              padding: 8px 8px;
-              border-radius: 8px;
+              padding: 10px 4px;
+              border-bottom: 1px solid rgba(207, 175, 31, 0.28);
+              border-radius: 0;
               text-align: center;
-              background: rgba(0, 0, 0, 0.22);
-              border: 1px solid rgba(207, 175, 31, 0.35);
+              background: transparent;
+              border-top: none;
+              border-left: none;
+              border-right: none;
 
               time {
                 display: block;
                 margin-bottom: 4px;
-                text-decoration: underline;
+                text-decoration: none;
                 color: $textColor;
                 font-size: clamp(13px, 1.1vw, 17px);
                 line-height: 1.3;
@@ -385,6 +384,15 @@
                 line-height: 1.3;
                 color: $goldenText;
               }
+            }
+          }
+
+          &:last-child {
+            .community-event-link,
+            .sidebar-holiday-link,
+            .sidebar-chabad-link,
+            .nearest-date-link {
+              border-bottom: none;
             }
           }
         }
@@ -422,6 +430,11 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      position: relative;
+    }
+
+    .cards-grid-hidden {
+      display: none !important;
     }
 
     .cards-grid {

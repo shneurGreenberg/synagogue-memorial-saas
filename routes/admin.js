@@ -356,7 +356,6 @@ router.post('/:slug/settings/reset-theme', requireAdmin, requirePermission('sett
                 'theme.primaryColor': BOARD_THEME_DEFAULTS.primaryColor,
                 'theme.textColor': BOARD_THEME_DEFAULTS.textColor,
                 'theme.accentColor': BOARD_THEME_DEFAULTS.accentColor,
-                'theme.logo': BOARD_THEME_DEFAULTS.logo,
             },
             $unset: {
                 'theme.backgroundImage': '',

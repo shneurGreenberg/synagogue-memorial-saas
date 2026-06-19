@@ -4,7 +4,6 @@ import { BoardNavigationProvider } from './context/BoardNavigationContext';
 import { BoardDataProvider } from './context/BoardDataContext';
 import { ThemeStyles } from './components/ThemeStyles';
 import { IdleReload } from './components/IdleReload';
-import { usePhotoPrefetch } from './hooks/usePhotoPrefetch';
 import { useBoardData } from './context/BoardDataContext';
 import { BoardLanguageSwitcher } from './components/BoardLanguageSwitcher';
 import { BoardVersionBadge } from './components/BoardVersionBadge';
@@ -15,8 +14,6 @@ function BoardLayoutInner() {
   const { data } = useBoardData();
   const cardMatch = useMatch('/s/:slug/card/:personId');
   const personId = cardMatch?.params?.personId;
-
-  usePhotoPrefetch(data.people);
 
   return (
     <BoardNavigationProvider>
