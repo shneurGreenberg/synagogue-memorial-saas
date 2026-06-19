@@ -10,6 +10,7 @@ const Synagogue = require('./models/Synagogue');
 const { normalizeBoardFeatures } = require('./lib/board-features');
 const { getJewishFeed } = require('./lib/jewish-feed');
 const { applyBoardPreviewOverrides } = require('./lib/board-preview');
+const { BOARD_VERSION } = require('./lib/board-version');
 const { normalizeTitles } = require('./lib/admin-theme');
 const { getTranslator, humanizeLabel } = require('./lib/admin-translations');
 const adminRoutes = require('./routes/admin');
@@ -157,7 +158,13 @@ app.use('/photos', express.static(BUNDLED_PHOTOS_DIR));
 
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
-app.use('/board', express.static(path.join(__dirname, 'public/board')));
+app.use('/board', express.static(path.join(__dirname, 'public/board'), {
+  setHeaders(res, filePath) {
+    if (filePath.endsWith('memorial.js') || filePath.endsWith('memorial.css')) {
+      res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+    }
+  },
+}));
 app.use('/js', express.static(path.join(__dirname, 'public/js')));
 
 async function loadSynagogueBoard(slug) {
@@ -178,6 +185,7 @@ function renderMemorialBoard(req, res, synagogue) {
   res.render('board', {
     layout: false,
     data: synagogue,
+    boardVersion: BOARD_VERSION,
   });
 }
 
