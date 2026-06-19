@@ -120,12 +120,22 @@
                 <div class="modal-body">
                     <div class="person-form-layout">
                         <div class="photo-upload-zone">
-                            <div class="photo-preview-wrap" id="addPhotoPreview">
-                                <span class="photo-preview-empty">{{t 'upload_photo'}}</span>
+                            <div class="photo-crop-editor" data-form="add">
+                                <div class="photo-preview-wrap photo-crop-viewport" id="addPhotoPreview">
+                                    <span class="photo-preview-empty">{{t 'upload_photo'}}</span>
+                                </div>
+                                <div class="photo-crop-controls" hidden>
+                                    <label class="photo-crop-zoom-label" for="addPhotoCropZoom">{{t 'photo_crop_zoom'}}</label>
+                                    <input type="range" id="addPhotoCropZoom" class="photo-crop-zoom" min="1" max="3" step="0.05" value="1">
+                                    <span class="seed-notice">{{t 'photo_crop_hint'}}</span>
+                                </div>
+                                <input type="hidden" name="photoCropX" class="photo-crop-x" value="50">
+                                <input type="hidden" name="photoCropY" class="photo-crop-y" value="50">
+                                <input type="hidden" name="photoCropZoom" class="photo-crop-zoom-value" value="1">
                             </div>
                             <label class="file-drop-label">
                                 {{t 'upload_photo'}}
-                                <input type="file" name="photo" accept="image/*" data-preview-target="addPhotoPreview">
+                                <input type="file" name="photo" accept="image/*" data-crop-editor="add">
                             </label>
                             <span class="seed-notice">{{t 'photo_hint'}}</span>
                         </div>
@@ -172,12 +182,22 @@
                 <div class="modal-body">
                     <div class="person-form-layout">
                         <div class="photo-upload-zone">
-                            <div class="photo-preview-wrap" id="editPhotoPreview">
-                                <span class="photo-preview-empty">{{t 'no_photo'}}</span>
+                            <div class="photo-crop-editor" data-form="edit">
+                                <div class="photo-preview-wrap photo-crop-viewport" id="editPhotoPreview">
+                                    <span class="photo-preview-empty">{{t 'no_photo'}}</span>
+                                </div>
+                                <div class="photo-crop-controls" hidden>
+                                    <label class="photo-crop-zoom-label" for="editPhotoCropZoom">{{t 'photo_crop_zoom'}}</label>
+                                    <input type="range" id="editPhotoCropZoom" class="photo-crop-zoom" min="1" max="3" step="0.05" value="1">
+                                    <span class="seed-notice">{{t 'photo_crop_hint'}}</span>
+                                </div>
+                                <input type="hidden" name="photoCropX" class="photo-crop-x" value="50">
+                                <input type="hidden" name="photoCropY" class="photo-crop-y" value="50">
+                                <input type="hidden" name="photoCropZoom" class="photo-crop-zoom-value" value="1">
                             </div>
                             <label class="file-drop-label">
                                 {{t 'change_photo'}}
-                                <input type="file" name="photo" accept="image/*" data-preview-target="editPhotoPreview">
+                                <input type="file" name="photo" accept="image/*" data-crop-editor="edit">
                             </label>
                             <div class="form-check-modern mt-2">
                                 <input type="checkbox" name="deletePhoto" id="deletePhotoCheck">
@@ -225,20 +245,172 @@
         const searchInput = document.getElementById('peopleSearch');
         const sortSelect = document.getElementById('peopleSort');
 
-        function setPreviewImage(container, src, alt) {
-            container.innerHTML = '<img src="' + src + '" alt="' + (alt || '') + '">';
+        function clamp(value, min, max) {
+            return Math.min(max, Math.max(min, value));
         }
 
-        document.querySelectorAll('input[type="file"][data-preview-target]').forEach(function (input) {
+        function applyCropStyles(img, crop) {
+            const x = clamp(Number(crop.x) || 50, 0, 100);
+            const y = clamp(Number(crop.y) || 50, 0, 100);
+            const zoom = clamp(Number(crop.zoom) || 1, 1, 3);
+            img.style.objectFit = 'cover';
+            img.style.objectPosition = x + '% ' + y + '%';
+            img.style.transform = 'scale(' + zoom + ')';
+            img.style.transformOrigin = x + '% ' + y + '%';
+            return { x: x, y: y, zoom: zoom };
+        }
+
+        function initPhotoCropEditor(editor) {
+            const viewport = editor.querySelector('.photo-crop-viewport');
+            const controls = editor.querySelector('.photo-crop-controls');
+            const zoomInput = editor.querySelector('.photo-crop-zoom');
+            const hiddenX = editor.querySelector('.photo-crop-x');
+            const hiddenY = editor.querySelector('.photo-crop-y');
+            const hiddenZoom = editor.querySelector('.photo-crop-zoom-value');
+            const emptyHtml = viewport.innerHTML;
+            let img = null;
+            let posX = 50;
+            let posY = 50;
+            let zoom = 1;
+            let dragging = false;
+            let startX = 0;
+            let startY = 0;
+            let startPosX = 50;
+            let startPosY = 50;
+
+            function syncHidden() {
+                hiddenX.value = String(posX);
+                hiddenY.value = String(posY);
+                hiddenZoom.value = String(zoom);
+                if (zoomInput) {
+                    zoomInput.value = String(zoom);
+                }
+            }
+
+            function setCrop(crop, src, alt) {
+                posX = clamp(Number(crop && crop.x) || 50, 0, 100);
+                posY = clamp(Number(crop && crop.y) || 50, 0, 100);
+                zoom = clamp(Number(crop && crop.zoom) || 1, 1, 3);
+                viewport.innerHTML = '';
+                img = document.createElement('img');
+                img.src = src;
+                img.alt = alt || '';
+                img.draggable = false;
+                applyCropStyles(img, { x: posX, y: posY, zoom: zoom });
+                viewport.appendChild(img);
+                controls.hidden = false;
+                syncHidden();
+            }
+
+            function clearCrop() {
+                img = null;
+                dragging = false;
+                viewport.innerHTML = emptyHtml;
+                controls.hidden = true;
+                posX = 50;
+                posY = 50;
+                zoom = 1;
+                syncHidden();
+            }
+
+            function onPointerMove(clientX, clientY) {
+                if (!dragging || !img) {
+                    return;
+                }
+                const rect = viewport.getBoundingClientRect();
+                const dx = ((clientX - startX) / rect.width) * 100;
+                const dy = ((clientY - startY) / rect.height) * 100;
+                posX = clamp(startPosX - dx, 0, 100);
+                posY = clamp(startPosY - dy, 0, 100);
+                applyCropStyles(img, { x: posX, y: posY, zoom: zoom });
+                syncHidden();
+            }
+
+            viewport.addEventListener('mousedown', function (event) {
+                if (!img || event.button !== 0) {
+                    return;
+                }
+                dragging = true;
+                startX = event.clientX;
+                startY = event.clientY;
+                startPosX = posX;
+                startPosY = posY;
+                event.preventDefault();
+            });
+
+            viewport.addEventListener('touchstart', function (event) {
+                if (!img || !event.touches[0]) {
+                    return;
+                }
+                dragging = true;
+                startX = event.touches[0].clientX;
+                startY = event.touches[0].clientY;
+                startPosX = posX;
+                startPosY = posY;
+            }, { passive: true });
+
+            document.addEventListener('mousemove', function (event) {
+                onPointerMove(event.clientX, event.clientY);
+            });
+
+            document.addEventListener('mouseup', function () {
+                dragging = false;
+            });
+
+            document.addEventListener('touchmove', function (event) {
+                if (!event.touches[0]) {
+                    return;
+                }
+                onPointerMove(event.touches[0].clientX, event.touches[0].clientY);
+            }, { passive: true });
+
+            document.addEventListener('touchend', function () {
+                dragging = false;
+            });
+
+            if (zoomInput) {
+                zoomInput.addEventListener('input', function () {
+                    if (!img) {
+                        return;
+                    }
+                    zoom = clamp(Number(zoomInput.value) || 1, 1, 3);
+                    applyCropStyles(img, { x: posX, y: posY, zoom: zoom });
+                    syncHidden();
+                });
+            }
+
+            return {
+                setCrop: setCrop,
+                clearCrop: clearCrop,
+                resetCrop: function () {
+                    posX = 50;
+                    posY = 50;
+                    zoom = 1;
+                    if (img) {
+                        applyCropStyles(img, { x: posX, y: posY, zoom: zoom });
+                    }
+                    syncHidden();
+                },
+            };
+        }
+
+        const cropEditors = {};
+        document.querySelectorAll('.photo-crop-editor').forEach(function (editor) {
+            const key = editor.getAttribute('data-form');
+            cropEditors[key] = initPhotoCropEditor(editor);
+        });
+
+        document.querySelectorAll('input[type="file"][data-crop-editor]').forEach(function (input) {
             input.addEventListener('change', function () {
-                const container = document.getElementById(input.getAttribute('data-preview-target'));
+                const key = input.getAttribute('data-crop-editor');
+                const editor = cropEditors[key];
                 const file = input.files && input.files[0];
-                if (!file) {
+                if (!editor || !file) {
                     return;
                 }
                 const reader = new FileReader();
                 reader.onload = function (e) {
-                    setPreviewImage(container, e.target.result, file.name);
+                    editor.setCrop({ x: 50, y: 50, zoom: 1 }, e.target.result, file.name);
                 };
                 reader.readAsDataURL(file);
             });
@@ -271,6 +443,12 @@
         searchInput.addEventListener('input', applyFilters);
         sortSelect.addEventListener('change', applyFilters);
 
+        document.getElementById('deletePhotoCheck').addEventListener('change', function (event) {
+            if (event.target.checked) {
+                cropEditors.edit.clearCrop();
+            }
+        });
+
         document.querySelectorAll('.edit-btn').forEach(function (button) {
             button.addEventListener('click', function () {
                 const id = Number(button.getAttribute('data-id'));
@@ -287,11 +465,10 @@
                 document.getElementById('editText').value = person.text || '';
                 document.getElementById('deletePhotoCheck').checked = false;
 
-                const preview = document.getElementById('editPhotoPreview');
                 if (person.photo) {
-                    setPreviewImage(preview, '/photos/' + person.photo, person.name || '');
+                    cropEditors.edit.setCrop(person.photoCrop || { x: 50, y: 50, zoom: 1 }, '/photos/' + person.photo, person.name || '');
                 } else {
-                    preview.innerHTML = '<span class="photo-preview-empty">{{t "no_photo"}}</span>';
+                    cropEditors.edit.clearCrop();
                 }
 
                 $('#editPersonModal').modal('show');

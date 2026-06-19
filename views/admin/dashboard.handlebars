@@ -161,11 +161,12 @@
                 </div>
                 <div class="media-upload-card">
                     <label>{{t 'background_image'}}</label>
+                    <p class="field-hint">{{t 'background_image_help'}}</p>
                     <div class="media-preview">
                         {{#if synagogue.theme.backgroundImage}}
                         <img src="/images/{{synagogue.theme.backgroundImage}}" alt="{{t 'background_image'}}">
                         {{else}}
-                        <span class="media-preview-empty">{{t 'no_photo'}}</span>
+                        <img src="/images/brickwall.jpg" alt="{{t 'background_image'}}">
                         {{/if}}
                     </div>
                     <label class="file-drop-label">
@@ -175,11 +176,12 @@
                 </div>
                 <div class="media-upload-card">
                     <label>{{t 'tiles_background'}}</label>
+                    <p class="field-hint">{{t 'tiles_background_help'}}</p>
                     <div class="media-preview">
                         {{#if synagogue.theme.tilesBackground}}
                         <img src="/images/{{synagogue.theme.tilesBackground}}" alt="{{t 'tiles_background'}}">
                         {{else}}
-                        <span class="media-preview-empty">{{t 'no_photo'}}</span>
+                        <img src="/images/wood2.png" alt="{{t 'tiles_background'}}">
                         {{/if}}
                     </div>
                     <label class="file-drop-label">

@@ -9,6 +9,11 @@ const PersonSchema = new mongoose.Schema({
     year: Number
   },
   photo: String,
+  photoCrop: {
+    x: { type: Number, default: 50 },
+    y: { type: Number, default: 50 },
+    zoom: { type: Number, default: 1 },
+  },
   title: String,
   text: String
 });
