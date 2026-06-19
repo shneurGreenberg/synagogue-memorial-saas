@@ -1,12 +1,13 @@
 (function () {
+  const page = document.querySelector('.people-page');
   const list = document.getElementById('peopleList');
   const peopleDataEl = document.getElementById('people-data');
 
-  if (!list || !peopleDataEl) {
+  if (!page || !list || !peopleDataEl) {
     return;
   }
 
-  const people = JSON.parse(peopleDataEl.textContent);
+  let people = JSON.parse(peopleDataEl.textContent);
   const peopleById = {};
   people.forEach(function (person) {
     peopleById[person.id] = person;
@@ -33,20 +34,42 @@
     };
   }
 
-  function buildThumbUrl(photo, crop) {
+  function getPanLimits(naturalWidth, naturalHeight, zoom) {
+    if (!naturalWidth || !naturalHeight) {
+      return { minX: 50, maxX: 50, minY: 50, maxY: 50 };
+    }
+
+    const aspect = naturalWidth / naturalHeight;
+    let minX = 50;
+    let maxX = 50;
+    let minY = 50;
+    let maxY = 50;
+
+    if (aspect > 1) {
+      const excess = Math.max(0, (aspect * zoom - 1) / (2 * aspect * zoom));
+      minX = 50 - excess * 100;
+      maxX = 50 + excess * 100;
+    } else if (aspect < 1) {
+      const excess = Math.max(0, (zoom / aspect - 1) / ((2 / aspect) * zoom));
+      minY = 50 - excess * 100;
+      maxY = 50 + excess * 100;
+    } else if (zoom > 1) {
+      const excess = (zoom - 1) / (2 * zoom);
+      minX = 50 - excess * 100;
+      maxX = 50 + excess * 100;
+      minY = 50 - excess * 100;
+      maxY = 50 + excess * 100;
+    }
+
+    return { minX: minX, maxX: maxX, minY: minY, maxY: maxY };
+  }
+
+  function buildThumbUrl(photo) {
     if (!photo) {
       return '';
     }
 
-    const normalized = normalizeCrop(crop);
-    const params = new URLSearchParams({
-      w: String(THUMB_WIDTH),
-      cx: String(normalized.x),
-      cy: String(normalized.y),
-      cz: String(normalized.zoom),
-    });
-
-    return '/photos/' + encodeURIComponent(photo) + '?' + params.toString();
+    return '/photos/' + encodeURIComponent(photo) + '?w=' + THUMB_WIDTH;
   }
 
   function buildFullUrl(photo) {
@@ -62,6 +85,25 @@
     return normalized;
   }
 
+  function syncPeopleData() {
+    peopleDataEl.textContent = JSON.stringify(people);
+  }
+
+  function getRowCrop(personId) {
+    const person = peopleById[personId];
+    return normalizeCrop(person && person.photoCrop);
+  }
+
+  function applyListPhotoCrop(img) {
+    const row = img.closest('.person-row');
+    if (!row) {
+      return;
+    }
+
+    const personId = Number(row.getAttribute('data-id'));
+    applyCropStyles(img, getRowCrop(personId));
+  }
+
   function loadLazyPhoto(img) {
     const thumbSrc = img.getAttribute('data-thumb-src');
     if (!thumbSrc || img.getAttribute('data-loaded') === '1') {
@@ -69,6 +111,20 @@
     }
 
     img.setAttribute('data-loaded', '1');
+    img.onload = function () {
+      applyListPhotoCrop(img);
+    };
+    img.onerror = function () {
+      const wrap = img.closest('.person-photo-wrap');
+      const row = img.closest('.person-row');
+      if (wrap) {
+        wrap.classList.add('d-none');
+      }
+      const placeholder = row && row.querySelector('.person-photo-placeholder');
+      if (placeholder) {
+        placeholder.classList.remove('d-none');
+      }
+    };
     img.src = thumbSrc;
   }
 
@@ -153,14 +209,14 @@
       wrap.appendChild(img);
     }
 
-    const thumbSrc = buildThumbUrl(photoFilename, crop);
+    const thumbSrc = buildThumbUrl(photoFilename);
+    const sameThumb = img.getAttribute('data-thumb-src') === thumbSrc && img.getAttribute('src');
+
     img.setAttribute('data-thumb-src', thumbSrc);
     img.setAttribute('data-full-src', buildFullUrl(photoFilename));
-    img.removeAttribute('style');
-    img.removeAttribute('data-loaded');
 
-    if (img.src) {
-      img.removeAttribute('src');
+    if (peopleById[personId]) {
+      peopleById[personId].photoCrop = normalizeCrop(crop);
     }
 
     wrap.classList.remove('d-none');
@@ -168,11 +224,44 @@
       placeholder.classList.add('d-none');
     }
 
-    if (peopleById[personId]) {
-      peopleById[personId].photoCrop = crop;
+    if (sameThumb) {
+      applyCropStyles(img, crop);
+      return;
+    }
+
+    img.removeAttribute('data-loaded');
+    if (img.getAttribute('src')) {
+      img.removeAttribute('src');
     }
 
     initLazyPhotos(wrap);
+    if (img.complete && img.naturalWidth) {
+      applyCropStyles(img, crop);
+    }
+  }
+
+  function updateListRowMeta(person) {
+    const row = list.querySelector('.person-row[data-id="' + person.id + '"]');
+    if (!row) {
+      return;
+    }
+
+    row.setAttribute('data-name', person.name || '');
+    row.setAttribute(
+      'data-date',
+      person.gregorianDateOfDeath.year + '-' + person.gregorianDateOfDeath.month + '-' + person.gregorianDateOfDeath.date,
+    );
+
+    const strong = row.querySelector('.person-meta strong');
+    const small = row.querySelector('.person-meta small');
+    if (strong) {
+      strong.textContent = person.name || '';
+    }
+    if (small) {
+      const parts = person.gregorianDateOfDeath;
+      const dateLabel = page.getAttribute('data-date-label') || 'Date of death';
+      small.textContent = dateLabel + ': ' + parts.date + '/' + parts.month + '/' + parts.year;
+    }
   }
 
   function initPhotoCropEditor(editor) {
@@ -194,6 +283,20 @@
     let startPosX = 50;
     let startPosY = 50;
 
+    function currentPanLimits() {
+      if (!img || !img.naturalWidth) {
+        return { minX: 0, maxX: 100, minY: 0, maxY: 100 };
+      }
+
+      return getPanLimits(img.naturalWidth, img.naturalHeight, zoom);
+    }
+
+    function clampPosition() {
+      const limits = currentPanLimits();
+      posX = clamp(posX, limits.minX, limits.maxX);
+      posY = clamp(posY, limits.minY, limits.maxY);
+    }
+
     function syncHidden() {
       hiddenX.value = String(posX);
       hiddenY.value = String(posY);
@@ -206,19 +309,35 @@
       }
     }
 
+    function renderCrop() {
+      if (!img) {
+        return;
+      }
+
+      clampPosition();
+      applyCropStyles(img, { x: posX, y: posY, zoom: zoom });
+      syncHidden();
+    }
+
     function setCrop(crop, src, alt) {
-      posX = clamp(Number(crop && crop.x) || 50, 0, 100);
-      posY = clamp(Number(crop && crop.y) || 50, 0, 100);
-      zoom = clamp(Number(crop && crop.zoom) || 1, 1, 3);
+      posX = Number(crop && crop.x) || 50;
+      posY = Number(crop && crop.y) || 50;
+      zoom = Number(crop && crop.zoom) || 1;
       viewport.innerHTML = '';
       img = document.createElement('img');
       img.src = src;
       img.alt = alt || '';
       img.draggable = false;
-      applyCropStyles(img, { x: posX, y: posY, zoom: zoom });
+      img.onload = function () {
+        clampPosition();
+        renderCrop();
+      };
+      if (img.complete) {
+        clampPosition();
+        renderCrop();
+      }
       viewport.appendChild(img);
       controls.hidden = false;
-      syncHidden();
     }
 
     function clearCrop() {
@@ -238,10 +357,13 @@
       }
 
       const rect = viewport.getBoundingClientRect();
-      const dx = ((clientX - startX) / rect.width) * 100;
-      const dy = ((clientY - startY) / rect.height) * 100;
-      posX = clamp(startPosX - dx, 0, 100);
-      posY = clamp(startPosY - dy, 0, 100);
+      const clampedX = clamp(clientX, rect.left, rect.right);
+      const clampedY = clamp(clientY, rect.top, rect.bottom);
+      const dx = ((clampedX - startX) / rect.width) * 100;
+      const dy = ((clampedY - startY) / rect.height) * 100;
+      const limits = currentPanLimits();
+      posX = clamp(startPosX - dx, limits.minX, limits.maxX);
+      posY = clamp(startPosY - dy, limits.minY, limits.maxY);
       applyCropStyles(img, { x: posX, y: posY, zoom: zoom });
       syncHidden();
     }
@@ -298,8 +420,7 @@
         }
 
         zoom = clamp(Number(zoomInput.value) || 1, 1, 3);
-        applyCropStyles(img, { x: posX, y: posY, zoom: zoom });
-        syncHidden();
+        renderCrop();
       });
     }
 
@@ -358,9 +479,15 @@
     initLazyPhotos(list);
   }
 
-  function showEditModal() {
+  function showModal(modalId) {
     if (typeof window.jQuery !== 'undefined') {
-      window.jQuery('#editPersonModal').modal('show');
+      window.jQuery(modalId).modal('show');
+    }
+  }
+
+  function hideModal(modalId) {
+    if (typeof window.jQuery !== 'undefined') {
+      window.jQuery(modalId).modal('hide');
     }
   }
 
@@ -384,11 +511,224 @@
     });
   }
 
+  async function submitPersonForm(form) {
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+    }
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          Accept: 'application/json',
+        },
+        credentials: 'same-origin',
+      });
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      return response.json();
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+      }
+    }
+  }
+
+  function getInitials(name) {
+    if (!name) {
+      return '?';
+    }
+
+    return name
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(function (part) { return part[0]; })
+      .join('')
+      .toUpperCase();
+  }
+
+  function createPersonRow(person) {
+    const slug = page.getAttribute('data-synagogue-slug');
+    const dateLabel = page.getAttribute('data-date-label') || 'Date of death';
+    const deleteConfirm = page.getAttribute('data-delete-confirm') || 'Are you sure?';
+    const row = document.createElement('article');
+    row.className = 'person-row';
+    row.setAttribute('data-name', person.name || '');
+    row.setAttribute('data-id', String(person.id));
+    row.setAttribute(
+      'data-date',
+      person.gregorianDateOfDeath.year + '-' + person.gregorianDateOfDeath.month + '-' + person.gregorianDateOfDeath.date,
+    );
+
+    if (person.photo) {
+      const wrap = document.createElement('span');
+      wrap.className = 'person-photo-wrap';
+      const img = document.createElement('img');
+      img.className = 'person-photo lazy-person-photo';
+      img.alt = person.name || '';
+      img.decoding = 'async';
+      img.setAttribute('data-thumb-src', buildThumbUrl(person.photo));
+      img.setAttribute('data-full-src', buildFullUrl(person.photo));
+      wrap.appendChild(img);
+
+      const hiddenPlaceholder = document.createElement('span');
+      hiddenPlaceholder.className = 'person-photo-placeholder d-none';
+      hiddenPlaceholder.setAttribute('aria-hidden', 'true');
+      hiddenPlaceholder.textContent = getInitials(person.name);
+
+      row.appendChild(wrap);
+      row.appendChild(hiddenPlaceholder);
+    } else {
+      const placeholder = document.createElement('span');
+      placeholder.className = 'person-photo-placeholder';
+      placeholder.setAttribute('aria-hidden', 'true');
+      placeholder.textContent = getInitials(person.name);
+      row.appendChild(placeholder);
+    }
+
+    const meta = document.createElement('div');
+    meta.className = 'person-meta';
+    const strong = document.createElement('strong');
+    strong.textContent = person.name || '';
+    const small = document.createElement('small');
+    const parts = person.gregorianDateOfDeath;
+    small.textContent = dateLabel + ': ' + parts.date + '/' + parts.month + '/' + parts.year;
+    meta.appendChild(strong);
+    meta.appendChild(small);
+
+    const actions = document.createElement('div');
+    actions.className = 'person-actions';
+    const editBtn = document.createElement('button');
+    editBtn.type = 'button';
+    editBtn.className = 'btn-admin btn-admin-secondary edit-btn';
+    editBtn.setAttribute('data-id', String(person.id));
+    editBtn.textContent = document.querySelector('.edit-btn') ? document.querySelector('.edit-btn').textContent : 'Edit';
+    editBtn.addEventListener('click', function () {
+      openEditModal(person.id);
+    });
+
+    const deleteForm = document.createElement('form');
+    deleteForm.method = 'POST';
+    deleteForm.action = '/admin/' + slug + '/people/delete';
+    deleteForm.className = 'd-inline';
+    deleteForm.addEventListener('submit', function (event) {
+      if (!window.confirm(deleteConfirm)) {
+        event.preventDefault();
+      }
+    });
+    const hiddenId = document.createElement('input');
+    hiddenId.type = 'hidden';
+    hiddenId.name = 'id';
+    hiddenId.value = String(person.id);
+    const deleteBtn = document.createElement('button');
+    deleteBtn.type = 'submit';
+    deleteBtn.className = 'btn-admin btn-admin-danger';
+    deleteBtn.textContent = document.querySelector('.btn-admin-danger') ? document.querySelector('.btn-admin-danger').textContent : 'Delete';
+    deleteForm.appendChild(hiddenId);
+    deleteForm.appendChild(deleteBtn);
+
+    actions.appendChild(editBtn);
+    actions.appendChild(deleteForm);
+    row.appendChild(meta);
+    row.appendChild(actions);
+    return row;
+  }
+
+  function openEditModal(id) {
+    const person = peopleById[id];
+    if (!person) {
+      return;
+    }
+
+    activeEditPersonId = id;
+    editListSnapshot = {
+      crop: normalizeCrop(person.photoCrop),
+      photo: person.photo || null,
+    };
+
+    document.getElementById('editId').value = person.id;
+    document.getElementById('editName').value = person.name || '';
+    document.getElementById('editDate').value = person.gregorianDateOfDeath.date;
+    document.getElementById('editMonth').value = person.gregorianDateOfDeath.month;
+    document.getElementById('editYear').value = person.gregorianDateOfDeath.year;
+    document.getElementById('editText').value = person.text || '';
+    document.getElementById('deletePhotoCheck').checked = false;
+
+    if (person.photo) {
+      cropEditors.edit.setCrop(
+        person.photoCrop || { x: 50, y: 50, zoom: 1 },
+        buildFullUrl(person.photo),
+        person.name || '',
+      );
+    } else {
+      cropEditors.edit.clearCrop();
+    }
+
+    showModal('#editPersonModal');
+  }
+
+  function upsertPerson(person) {
+    const normalized = Object.assign({}, person, {
+      photoCrop: normalizeCrop(person.photoCrop),
+    });
+    const existingIndex = people.findIndex(function (item) { return item.id === normalized.id; });
+
+    if (existingIndex === -1) {
+      people.push(normalized);
+    } else {
+      people[existingIndex] = normalized;
+    }
+
+    peopleById[normalized.id] = normalized;
+    syncPeopleData();
+    return normalized;
+  }
+
   function initPeoplePage() {
     const editForm = document.querySelector('#editPersonModal form');
     if (editForm) {
-      editForm.addEventListener('submit', function () {
-        editFormSubmitted = true;
+      editForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        try {
+          const result = await submitPersonForm(editForm);
+          const person = upsertPerson(result.person);
+          editFormSubmitted = true;
+          updateListRowMeta(person);
+          updateListRowPhoto(person.id, person.photoCrop, person.photo || null);
+          hideModal('#editPersonModal');
+        } catch (err) {
+          window.alert(err.message || 'Save failed');
+        }
+      });
+    }
+
+    const addForm = document.querySelector('#addPersonModal form');
+    if (addForm) {
+      addForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        try {
+          const result = await submitPersonForm(addForm);
+          const person = upsertPerson(result.person);
+          const row = createPersonRow(person);
+          list.appendChild(row);
+          updateListRowPhoto(person.id, person.photoCrop, person.photo || null);
+          addForm.reset();
+          cropEditors.add.clearCrop();
+          hideModal('#addPersonModal');
+          applyFilters();
+        } catch (err) {
+          window.alert(err.message || 'Save failed');
+        }
       });
     }
 
@@ -435,37 +775,7 @@
 
     document.querySelectorAll('.edit-btn').forEach(function (button) {
       button.addEventListener('click', function () {
-        const id = Number(button.getAttribute('data-id'));
-        const person = peopleById[id];
-        if (!person) {
-          return;
-        }
-
-        activeEditPersonId = id;
-        editListSnapshot = {
-          crop: person.photoCrop || { x: 50, y: 50, zoom: 1 },
-          photo: person.photo || null,
-        };
-
-        document.getElementById('editId').value = person.id;
-        document.getElementById('editName').value = person.name || '';
-        document.getElementById('editDate').value = person.gregorianDateOfDeath.date;
-        document.getElementById('editMonth').value = person.gregorianDateOfDeath.month;
-        document.getElementById('editYear').value = person.gregorianDateOfDeath.year;
-        document.getElementById('editText').value = person.text || '';
-        document.getElementById('deletePhotoCheck').checked = false;
-
-        if (person.photo) {
-          cropEditors.edit.setCrop(
-            person.photoCrop || { x: 50, y: 50, zoom: 1 },
-            buildFullUrl(person.photo),
-            person.name || '',
-          );
-        } else {
-          cropEditors.edit.clearCrop();
-        }
-
-        showEditModal();
+        openEditModal(Number(button.getAttribute('data-id')));
       });
     });
 
