@@ -73,7 +73,15 @@ function JewishContentPanelsBase({ t, uiLang }) {
 
   const hayomYom = learning.hayomYom || {};
   const lessons5703 = hayomYom.lessons5703 || {};
+  const chumashItem = lessons5703.chumash?.label ? lessons5703.chumash : learning.chumash;
   const tanyaItem = lessons5703.tanya?.label ? lessons5703.tanya : learning.tanya;
+
+  const chumashTile = boardFeatures.dailyChumash && (
+    <LearningTile label={t('daily_chumash')} item={chumashItem} />
+  );
+  const tanyaTile = boardFeatures.dailyTanya && (
+    <LearningTile label={t('daily_tanya')} item={tanyaItem} />
+  );
 
   return (
     <div className="jewish-sidebar-panels">
@@ -81,14 +89,10 @@ function JewishContentPanelsBase({ t, uiLang }) {
         <section className="daily-gates-panel" aria-label={t('daily_gates_title')}>
           <h2>{t('daily_gates_title')}</h2>
           <ul className="daily-gates-grid">
-            {(boardFeatures.dailyChumash || boardFeatures.dailyTanya) && (
-              <li className="daily-gates-row">
-                {boardFeatures.dailyChumash && (
-                  <LearningTile label={t('daily_chumash')} item={learning.chumash} />
-                )}
-                {boardFeatures.dailyTanya && (
-                  <LearningTile label={t('daily_tanya')} item={tanyaItem} />
-                )}
+            {(chumashTile || tanyaTile) && (
+              <li className={`daily-gates-row${chumashTile && tanyaTile ? '' : ' daily-gates-row--single'}`}>
+                {chumashTile}
+                {tanyaTile}
               </li>
             )}
             {boardFeatures.dailyTehillim && (
