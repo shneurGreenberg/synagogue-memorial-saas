@@ -40,8 +40,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-left: clamp(12px, 1.2vw, 18px);
-      padding-right: clamp(12px, 1.2vw, 18px);
+      padding-left: 6px;
+      padding-right: 6px;
       box-sizing: border-box;
     }
 
@@ -67,7 +67,7 @@
 
     .daily-cite {
       margin-top: 14px;
-      padding: 0 clamp(10px, 1vw, 16px);
+      padding: 0 4px;
       font-size: clamp(14px, 1.35vw, 20px);
       line-height: 1.45;
       flex-shrink: 0;
@@ -80,7 +80,7 @@
       width: 100%;
       flex-shrink: 0;
       margin-top: 10px;
-      padding: 0 clamp(10px, 1vw, 16px);
+      padding: 0;
       text-align: center;
       box-sizing: border-box;
 
@@ -102,10 +102,23 @@
       list-style: none;
       margin: 0;
       padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      text-align: start;
+    }
+
+    .daily-gates-row {
+      list-style: none;
+      margin: 0;
+      padding: 0;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 6px 8px;
-      text-align: start;
+
+      &--single {
+        grid-template-columns: 1fr;
+      }
     }
 
     .daily-gate-tile {
@@ -163,17 +176,19 @@
       align-items: center;
       width: 100%;
       margin-top: 12px;
-      padding: 0 clamp(6px, 0.8vw, 12px);
+      padding: 0;
       box-sizing: border-box;
 
       h2 {
-        font-size: clamp(20px, 2vw, 32px);
+        font-size: clamp(15px, 1.35vw, 22px);
         font-weight: bold;
         @include golden-text-mixin;
         flex-shrink: 0;
-        margin: 0 0 8px;
+        margin: 0 0 6px;
         text-align: center;
         width: 100%;
+        padding: 0 2px;
+        line-height: 1.2;
       }
 
       .nearest-dates-scroll {
@@ -181,6 +196,8 @@
         min-height: 0;
         width: 100%;
         overflow: hidden;
+        box-sizing: border-box;
+        padding: 0 4px;
         scrollbar-width: none;
         -ms-overflow-style: none;
         mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
@@ -205,8 +222,11 @@
 
         li {
           list-style: none;
-          margin: 8px 10px 12px;
+          margin: 8px 0 12px;
           padding: 0;
+          width: 100%;
+          max-width: 100%;
+          box-sizing: border-box;
 
           a,
           .nearest-date-link {
@@ -255,12 +275,13 @@
           }
 
           &.community-event-item {
-            margin: 10px 8px 14px;
+            margin: 8px 0 12px;
 
             .community-event-link {
               display: block;
               width: 100%;
-              padding: 10px 12px;
+              box-sizing: border-box;
+              padding: 8px 8px;
               border-radius: 10px;
               text-align: center;
               background: linear-gradient(
@@ -269,7 +290,7 @@
                 color-mix(in srgb, var(--primary-color, #cfaf1f) 22%, transparent) 100%
               );
               border: 2px solid color-mix(in srgb, var(--accent-color, #ffd54f) 75%, transparent);
-              box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 
               time {
                 color: var(--accent-color, #ffd54f);
@@ -302,12 +323,13 @@
           }
 
           &.sidebar-holiday-item {
-            margin: 8px 10px 12px;
+            margin: 8px 0 12px;
 
             .sidebar-holiday-link {
               display: block;
               width: 100%;
-              padding: 8px 10px;
+              box-sizing: border-box;
+              padding: 8px 8px;
               border-radius: 8px;
               text-align: center;
               background: rgba(0, 0, 0, 0.18);
@@ -424,8 +446,8 @@
           max-height: 62%;
           position: absolute;
           left: 6px;
-          top: 42%;
-          transform: translate3d(0, -50%, 0);
+          top: 46%;
+          transform: translate3d(0, calc(-50% + 8px), 0);
           pointer-events: none;
           object-fit: contain;
           object-position: center bottom;
@@ -440,7 +462,8 @@
           .candle {
             width: clamp(56px, 6vw, 84px);
             max-height: 72%;
-            top: 40%;
+            top: 44%;
+            transform: translate3d(0, calc(-50% + 8px), 0);
           }
         }
 
