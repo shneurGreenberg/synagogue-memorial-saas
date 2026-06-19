@@ -11,6 +11,7 @@ const { normalizeBoardFeatures } = require('./lib/board-features');
 const { getJewishFeed } = require('./lib/jewish-feed');
 const { applyBoardPreviewOverrides } = require('./lib/board-preview');
 const { BOARD_VERSION } = require('./lib/board-version');
+const { photoCropToInlineStyle } = require('./lib/photo-crop');
 const { normalizeTitles } = require('./lib/admin-theme');
 const { getTranslator, humanizeLabel } = require('./lib/admin-translations');
 const adminRoutes = require('./routes/admin');
@@ -105,6 +106,9 @@ app.engine('handlebars', handlebars({
     },
     initials(name) {
       return getInitials(name);
+    },
+    photoCropStyle(photoCrop) {
+      return photoCropToInlineStyle(photoCrop);
     },
   },
   runtimeOptions: {

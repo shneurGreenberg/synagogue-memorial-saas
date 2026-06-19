@@ -322,9 +322,12 @@ body.admin-login-page {
   border: 3px solid var(--admin-border);
   background: var(--admin-surface-elevated);
   position: relative;
+  display: block;
 }
 
 .person-photo {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -332,6 +335,7 @@ body.admin-login-page {
   border: none;
   border-radius: 0;
   background: var(--admin-surface-elevated);
+  box-sizing: border-box;
 }
 
 .person-photo-placeholder {

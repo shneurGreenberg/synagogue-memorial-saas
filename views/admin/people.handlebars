@@ -45,6 +45,7 @@
             {{#if this.photo}}
             <span class="person-photo-wrap">
                 <img src="/photos/{{this.photo}}" class="person-photo" alt="{{this.name}}"
+                    style="{{photoCropStyle this.photoCrop}}"
                     onerror="this.closest('.person-photo-wrap').classList.add('d-none'); this.closest('.person-row').querySelector('.person-photo-placeholder').classList.remove('d-none');">
             </span>
             <span class="person-photo person-photo-placeholder d-none" aria-hidden="true">{{initials this.name}}</span>
@@ -257,26 +258,43 @@
             const zoom = clamp(Number(crop.zoom) || 1, 1, 3);
             img.style.objectFit = 'cover';
             img.style.objectPosition = x + '% ' + y + '%';
-            img.style.transform = 'scale(' + zoom + ')';
             img.style.transformOrigin = x + '% ' + y + '%';
+            img.style.transform = zoom !== 1 ? 'scale(' + zoom + ')' : '';
             return { x: x, y: y, zoom: zoom };
         }
 
         let activeEditPersonId = null;
         let editListSnapshot = null;
+        let editFormSubmitted = false;
 
-        function getPersonRow(personId) {
-            return list.querySelector('.person-row[data-id="' + personId + '"]');
+        function getListRowElements(personId) {
+            const row = list.querySelector('.person-row[data-id="' + personId + '"]');
+            if (!row) {
+                return null;
+            }
+
+            let wrap = row.querySelector('.person-photo-wrap');
+            let img = wrap ? wrap.querySelector('.person-photo') : row.querySelector('img.person-photo');
+            const placeholder = row.querySelector('.person-photo-placeholder');
+
+            if (!wrap && img) {
+                wrap = document.createElement('span');
+                wrap.className = 'person-photo-wrap';
+                img.parentNode.insertBefore(wrap, img);
+                wrap.appendChild(img);
+            }
+
+            return { row: row, wrap: wrap, img: img, placeholder: placeholder };
         }
 
         function updateListRowPhoto(personId, crop, src) {
-            const row = getPersonRow(personId);
-            if (!row) {
+            const elements = getListRowElements(personId);
+            if (!elements) {
                 return;
             }
 
-            const wrap = row.querySelector('.person-photo-wrap');
-            const placeholder = row.querySelector('.person-photo-placeholder');
+            const wrap = elements.wrap;
+            const placeholder = elements.placeholder;
 
             if (!src) {
                 if (wrap) {
@@ -292,7 +310,7 @@
                 return;
             }
 
-            let img = wrap.querySelector('.person-photo');
+            let img = elements.img;
             if (!img) {
                 img = document.createElement('img');
                 img.className = 'person-photo';
@@ -300,8 +318,8 @@
                 wrap.appendChild(img);
             }
 
-            if (img.src !== src) {
-                img.src = src;
+            if (img.getAttribute('src') !== src && img.src !== src) {
+                img.setAttribute('src', src);
             }
 
             applyCropStyles(img, crop);
@@ -472,10 +490,14 @@
         document.querySelectorAll('.person-row').forEach(function (row) {
             const personId = Number(row.getAttribute('data-id'));
             const person = peopleById[personId];
-            const img = row.querySelector('.person-photo-wrap .person-photo');
+            const img = row.querySelector('.person-photo-wrap .person-photo') || row.querySelector('img.person-photo');
             if (person && person.photo && img) {
                 applyCropStyles(img, person.photoCrop || { x: 50, y: 50, zoom: 1 });
             }
+        });
+
+        document.querySelector('#editPersonModal form').addEventListener('submit', function () {
+            editFormSubmitted = true;
         });
 
         document.querySelectorAll('input[type="file"][data-crop-editor]').forEach(function (input) {
@@ -540,9 +562,10 @@
         });
 
         $('#editPersonModal').on('hidden.bs.modal', function () {
-            if (activeEditPersonId != null && editListSnapshot) {
+            if (!editFormSubmitted && activeEditPersonId != null && editListSnapshot) {
                 updateListRowPhoto(activeEditPersonId, editListSnapshot.crop, editListSnapshot.src);
             }
+            editFormSubmitted = false;
             activeEditPersonId = null;
             editListSnapshot = null;
         });
