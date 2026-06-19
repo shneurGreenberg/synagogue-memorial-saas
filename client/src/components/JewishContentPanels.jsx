@@ -11,11 +11,11 @@ function LearningTile({ label, item, sublabel }) {
   }
 
   return (
-    <li className="daily-gate-tile">
+    <div className="daily-gate-tile">
       <span className="daily-gate-label">{label}</span>
       {sublabel && <span className="daily-gate-sublabel">{sublabel}</span>}
       <span className="daily-gate-value">{item.label}</span>
-    </li>
+    </div>
   );
 }
 
@@ -81,28 +81,38 @@ function JewishContentPanelsBase({ t, uiLang }) {
         <section className="daily-gates-panel" aria-label={t('daily_gates_title')}>
           <h2>{t('daily_gates_title')}</h2>
           <ul className="daily-gates-grid">
-            {boardFeatures.dailyChumash && (
-              <LearningTile label={t('daily_chumash')} item={learning.chumash} />
+            {(boardFeatures.dailyChumash || boardFeatures.dailyTanya) && (
+              <li className="daily-gates-row">
+                {boardFeatures.dailyChumash && (
+                  <LearningTile label={t('daily_chumash')} item={learning.chumash} />
+                )}
+                {boardFeatures.dailyTanya && (
+                  <LearningTile label={t('daily_tanya')} item={tanyaItem} />
+                )}
+              </li>
             )}
             {boardFeatures.dailyTehillim && (
-              <LearningTile label={t('daily_tehillim')} item={learning.tehillim} />
+              <li className="daily-gates-row daily-gates-row--single">
+                <LearningTile label={t('daily_tehillim')} item={learning.tehillim} />
+              </li>
             )}
-            {boardFeatures.dailyTanya && (
-              <LearningTile label={t('daily_tanya')} item={tanyaItem} />
-            )}
-            {boardFeatures.dailyRambam && learning.rambam && (
-              <LearningTile
-                label={t('daily_rambam')}
-                sublabel={t('daily_rambam_one')}
-                item={learning.rambam}
-              />
-            )}
-            {boardFeatures.dailyRambam && learning.rambam3 && (
-              <LearningTile
-                label={t('daily_rambam')}
-                sublabel={t('daily_rambam_three')}
-                item={learning.rambam3}
-              />
+            {boardFeatures.dailyRambam && (learning.rambam || learning.rambam3) && (
+              <li className="daily-gates-row">
+                {learning.rambam && (
+                  <LearningTile
+                    label={t('daily_rambam')}
+                    sublabel={t('daily_rambam_one')}
+                    item={learning.rambam}
+                  />
+                )}
+                {learning.rambam3 && (
+                  <LearningTile
+                    label={t('daily_rambam')}
+                    sublabel={t('daily_rambam_three')}
+                    item={learning.rambam3}
+                  />
+                )}
+              </li>
             )}
           </ul>
         </section>

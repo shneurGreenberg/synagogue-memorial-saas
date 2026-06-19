@@ -1,2 +1,3 @@
-/** Bump by 1 on each deploy so the TV board shows whether updates landed. */
-export const BOARD_VERSION = 11;
+import versionData from '../../../board-version.json';
+
+export const BOARD_VERSION = versionData.version;

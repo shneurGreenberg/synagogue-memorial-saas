@@ -5,13 +5,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{data.title}}</title>
-    <link rel="stylesheet" href="/board/assets/memorial.css">
+    <link rel="stylesheet" href="/board/assets/memorial.css?v={{boardVersion}}">
 </head>
 
 <body>
     <script>window.data = {{{json data}}};</script>
     <div id="root"></div>
-    <script type="module" src="/board/assets/memorial.js"></script>
+    <script type="module" src="/board/assets/memorial.js?v={{boardVersion}}"></script>
 </body>
 
 </html>
