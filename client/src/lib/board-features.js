@@ -29,6 +29,5 @@ export function hasJewishContentPanels(boardFeatures) {
     || features.dailyTehillim
     || features.dailyTanya
     || features.dailyRambam
-    || features.hayomYom
-    || features.upcomingHolidays;
+    || features.hayomYom;
 }

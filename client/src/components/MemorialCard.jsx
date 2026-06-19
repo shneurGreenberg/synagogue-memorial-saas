@@ -85,22 +85,16 @@ class MemorialCardInner extends React.Component {
         onClick={this.onActivate}
         onKeyDown={this.onKeyDown}
         aria-label={displayName}
+        style={{ '--candle-phase': entry.id % 17 }}
       >
         {this.state.showCandle && (
-          <div className="candle-stack" aria-hidden="true">
-            <img
-              className="candle-flame"
-              src={assetUrl('images/candle-flame.webp')}
-              alt=""
-              decoding="async"
-            />
-            <img
-              className="candle-base"
-              src={assetUrl('images/candle-base.webp')}
-              alt=""
-              decoding="async"
-            />
-          </div>
+          <img
+            className="candle"
+            src={assetUrl('images/candle.webp')}
+            alt=""
+            aria-hidden="true"
+            decoding="async"
+          />
         )}
         <div className={`inner ${getNameDensityClass(displayName)}`}>
           <h3>{displayName}</h3>
