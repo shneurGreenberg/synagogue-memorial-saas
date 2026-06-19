@@ -34,34 +34,45 @@
     };
   }
 
-  function getPanLimits(naturalWidth, naturalHeight, zoom) {
-    if (!naturalWidth || !naturalHeight) {
+  function axisPanLimits(visibleFraction) {
+    if (!Number.isFinite(visibleFraction) || visibleFraction >= 1) {
+      return { min: 50, max: 50 };
+    }
+
+    const slack = 50 * (1 - visibleFraction);
+    return { min: 50 - slack, max: 50 + slack };
+  }
+
+  function getPanLimits(naturalWidth, naturalHeight, zoom, containerAspect) {
+    if (!naturalWidth || !naturalHeight || !containerAspect) {
       return { minX: 50, maxX: 50, minY: 50, maxY: 50 };
     }
 
-    const aspect = naturalWidth / naturalHeight;
-    let minX = 50;
-    let maxX = 50;
-    let minY = 50;
-    let maxY = 50;
+    const imageAspect = naturalWidth / naturalHeight;
+    const z = Math.max(1, zoom);
+    let visibleFractionX;
+    let visibleFractionY;
 
-    if (aspect > 1) {
-      const excess = Math.max(0, (aspect * zoom - 1) / (2 * aspect * zoom));
-      minX = 50 - excess * 100;
-      maxX = 50 + excess * 100;
-    } else if (aspect < 1) {
-      const excess = Math.max(0, (zoom / aspect - 1) / ((2 / aspect) * zoom));
-      minY = 50 - excess * 100;
-      maxY = 50 + excess * 100;
-    } else if (zoom > 1) {
-      const excess = (zoom - 1) / (2 * zoom);
-      minX = 50 - excess * 100;
-      maxX = 50 + excess * 100;
-      minY = 50 - excess * 100;
-      maxY = 50 + excess * 100;
+    if (imageAspect > containerAspect) {
+      visibleFractionX = containerAspect / (imageAspect * z);
+      visibleFractionY = 1 / z;
+    } else if (imageAspect < containerAspect) {
+      visibleFractionX = 1 / z;
+      visibleFractionY = imageAspect / (containerAspect * z);
+    } else {
+      visibleFractionX = 1 / z;
+      visibleFractionY = 1 / z;
     }
 
-    return { minX: minX, maxX: maxX, minY: minY, maxY: maxY };
+    const xLimits = axisPanLimits(visibleFractionX);
+    const yLimits = axisPanLimits(visibleFractionY);
+
+    return {
+      minX: xLimits.min,
+      maxX: xLimits.max,
+      minY: yLimits.min,
+      maxY: yLimits.max,
+    };
   }
 
   function buildThumbUrl(photo) {
@@ -288,7 +299,9 @@
         return { minX: 0, maxX: 100, minY: 0, maxY: 100 };
       }
 
-      return getPanLimits(img.naturalWidth, img.naturalHeight, zoom);
+      const rect = viewport.getBoundingClientRect();
+      const containerAspect = rect.width / rect.height || 1;
+      return getPanLimits(img.naturalWidth, img.naturalHeight, zoom, containerAspect);
     }
 
     function clampPosition() {
