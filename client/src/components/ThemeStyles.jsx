@@ -3,16 +3,33 @@ import { useBoardData } from '../context/BoardDataContext';
 import { assetUrl } from '../lib/asset-url';
 import { buildTileThemeVars } from '../lib/tile-theme-colors';
 
-const TILE_GLASS_GRADIENT = `
-  linear-gradient(
-    80deg,
-    rgba(0, 0, 0, 0.95) 0%,
-    rgba(0, 0, 0, 0.95) 24%,
-    rgba(0, 0, 0, 0.82) 32%,
-    var(--tile-glass-mid) 52%,
-    var(--tile-glass-fade) 78%,
-    var(--tile-glass-frost) 100%
-  )
+const TILE_GLASS_NOISE = `repeating-linear-gradient(
+  0deg,
+  rgba(255, 255, 255, 0.04) 0,
+  rgba(255, 255, 255, 0.04) 1px,
+  transparent 1px,
+  transparent 3px
+)`;
+
+function tileGlassLayers(mid, fade, frost) {
+  return `
+    linear-gradient(
+      80deg,
+      rgba(0, 0, 0, 0.95) 0%,
+      rgba(0, 0, 0, 0.95) 24%,
+      rgba(0, 0, 0, 0.82) 32%,
+      ${mid} 52%,
+      ${fade} 78%,
+      ${frost} 100%
+    ),
+    ${TILE_GLASS_NOISE}
+  `;
+}
+
+const GLASS_SELECTORS = `
+  .main-container .cards-grid .card,
+  .main-container .cards-grid-kadish .card,
+  .golden-panel
 `;
 
 export function ThemeStyles() {
@@ -36,6 +53,12 @@ export function ThemeStyles() {
       --tile-glass-fade: ${tileVars.tileGlassFade};
       --tile-glass-frost: ${tileVars.tileGlassFrost};
       --tile-glass-border: ${tileVars.tileGlassBorder};
+      --tile-glass-highlight: ${tileVars.tileGlassHighlight};
+      --tile-glass-legacy-base: ${tileVars.tileGlassLegacyBase};
+      --tile-glass-legacy-mid: ${tileVars.tileGlassLegacyMid};
+      --tile-glass-legacy-fade: ${tileVars.tileGlassLegacyFade};
+      --tile-glass-legacy-frost: ${tileVars.tileGlassLegacyFrost};
+      --tile-glass-legacy-highlight: ${tileVars.tileGlassLegacyHighlight};
       --tile-surface-light: ${tileVars.tileSurfaceLight};
       --tile-surface-dark: ${tileVars.tileSurfaceDark};
       --tile-surface-border: ${tileVars.tileSurfaceBorder};
@@ -90,14 +113,30 @@ export function ThemeStyles() {
       ${theme.tilesBackground ? `background-image: url('${assetUrl(`images/${theme.tilesBackground}`)}') !important;
       background-size: cover;` : ''}
     }
-    .main-container .cards-grid .card,
-    .main-container .cards-grid-kadish .card,
-    .golden-panel {
-      background-color: var(--tile-glass-base) !important;
-      background-image: ${TILE_GLASS_GRADIENT} !important;
+    ${GLASS_SELECTORS} {
+      background-color: var(--tile-glass-legacy-base) !important;
+      background-image: ${tileGlassLayers(
+        'var(--tile-glass-legacy-mid)',
+        'var(--tile-glass-legacy-fade)',
+        'var(--tile-glass-legacy-frost)',
+      )} !important;
       border-color: var(--tile-glass-border) !important;
-      -webkit-backdrop-filter: blur(10px);
-      backdrop-filter: blur(10px);
+      box-shadow:
+        inset 0 1px 0 var(--tile-glass-legacy-highlight),
+        inset 0 -10px 18px rgba(0, 0, 0, 0.08) !important;
+    }
+    @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+      ${GLASS_SELECTORS} {
+        background-color: var(--tile-glass-base) !important;
+        background-image: ${tileGlassLayers(
+          'var(--tile-glass-mid)',
+          'var(--tile-glass-fade)',
+          'var(--tile-glass-frost)',
+        )} !important;
+        box-shadow: inset 0 1px 0 var(--tile-glass-highlight) !important;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+      }
     }
     .main-container .search input,
     .main-container .pager .pager-btn {
