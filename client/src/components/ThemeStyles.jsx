@@ -65,6 +65,10 @@ export function ThemeStyles() {
       ${theme.tilesBackground ? `background-image: url('${assetUrl(`images/${theme.tilesBackground}`)}') !important;
       background-size: cover;` : ''}
     }
+    .main-container .middle .cards-grid .card,
+    .main-container .middle .cards-grid-kadish .card {
+      ${theme.tilesBackground ? `background: url('${assetUrl(`images/${theme.tilesBackground}`)}') center / cover no-repeat !important;` : ''}
+    }
   `;
 
   return <style key={`theme-${revision}-${primary}-${text}-${accent}`} dangerouslySetInnerHTML={{ __html: css }} />;
