@@ -23,8 +23,10 @@ class MemorialCardInner extends React.Component {
   constructor(props) {
     super(props);
     this.state = { showCandle: false };
+    this.candleRef = React.createRef();
     this.onActivate = this.onActivate.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.restartCandleAnimation = this.restartCandleAnimation.bind(this);
   }
 
   componentDidMount() {
@@ -36,7 +38,10 @@ class MemorialCardInner extends React.Component {
 
     const phaseOffset = (entry.id * 317) % CANDLE_CYCLE_MS;
     this.candleTimer = window.setTimeout(() => {
-      this.setState({ showCandle: true });
+      this.setState({ showCandle: true }, () => {
+        this.restartCandleAnimation();
+        this.candleLoopTimer = window.setInterval(this.restartCandleAnimation, 3200);
+      });
     }, phaseOffset);
   }
 
@@ -44,6 +49,27 @@ class MemorialCardInner extends React.Component {
     if (this.candleTimer) {
       window.clearTimeout(this.candleTimer);
     }
+
+    if (this.candleLoopTimer) {
+      window.clearInterval(this.candleLoopTimer);
+    }
+  }
+
+  restartCandleAnimation() {
+    const img = this.candleRef.current;
+
+    if (!img) {
+      return;
+    }
+
+    const src = img.getAttribute('src');
+
+    if (!src) {
+      return;
+    }
+
+    img.setAttribute('src', '');
+    img.setAttribute('src', src);
   }
 
   onActivate() {
@@ -89,6 +115,7 @@ class MemorialCardInner extends React.Component {
       >
         {this.state.showCandle && (
           <img
+            ref={this.candleRef}
             className="candle"
             src={assetUrl('images/candle.webp')}
             alt=""

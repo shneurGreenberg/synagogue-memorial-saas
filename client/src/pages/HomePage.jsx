@@ -23,7 +23,7 @@ import { CommunityLogo } from '../components/CommunityLogo';
 import { useBoardNavigation } from '../context/BoardNavigationContext';
 import { useBoardData } from '../context/BoardDataContext';
 import { resolveBoardTitle } from '../lib/board-title';
-import { getVisibleCommunityEvents } from '../lib/community-events';
+import { getUpcomingCommunityEvents } from '../lib/community-events';
 import { resolveBoardFeatures } from '../lib/board-features';
 import { JewishContentPanels } from '../components/JewishContentPanels';
 import { SidebarUpcomingPanel } from '../components/SidebarUpcomingPanel';
@@ -56,7 +56,7 @@ function toEventDatetimeAttr(eventDate) {
 }
 
 function prepareCommunityEvents(events) {
-  return getVisibleCommunityEvents(events).map((event) => {
+  return getUpcomingCommunityEvents(events).map((event) => {
     const month = event.eventDate?.month || 1;
     const day = event.eventDate?.date || 1;
     const year = event.eventDate?.year || new Date().getFullYear();
