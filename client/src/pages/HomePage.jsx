@@ -23,7 +23,7 @@ import { CommunityLogo } from '../components/CommunityLogo';
 import { useBoardNavigation } from '../context/BoardNavigationContext';
 import { useBoardData } from '../context/BoardDataContext';
 import { resolveBoardTitle } from '../lib/board-title';
-import { getUpcomingCommunityEvents } from '../lib/community-events';
+import { getSidebarCommunityEvents, hasEventDate } from '../lib/community-events';
 import { resolveBoardFeatures } from '../lib/board-features';
 import { JewishContentPanels } from '../components/JewishContentPanels';
 import { SidebarUpcomingPanel } from '../components/SidebarUpcomingPanel';
@@ -56,24 +56,31 @@ function toEventDatetimeAttr(eventDate) {
 }
 
 function prepareCommunityEvents(events) {
-  return getUpcomingCommunityEvents(events).map((event) => {
-    const month = event.eventDate?.month || 1;
-    const day = event.eventDate?.date || 1;
-    const year = event.eventDate?.year || new Date().getFullYear();
-
-    let gregorianDayOfMemory = gregorianDayOfYear(month, day) - CURRENT_DAY_OF_YEAR;
-
-    if (gregorianDayOfMemory < 0) {
-      gregorianDayOfMemory += DAYS_IN_YEAR;
+  return getSidebarCommunityEvents(events).map((event) => {
+    if (!hasEventDate(event)) {
+      return {
+        ...event,
+        listType: 'event',
+        id: `event-${event._id}`,
+        isUndated: true,
+        hasEventDate: false,
+        gregorianDate: null,
+        hebrewDate: null,
+        eventDate: null,
+      };
     }
 
+    const month = event.eventDate.month;
+    const day = event.eventDate.date;
+    const year = event.eventDate.year || new Date().getFullYear();
     const gregorianDate = new Date(year, month - 1, day);
 
     return {
       ...event,
       listType: 'event',
       id: `event-${event._id}`,
-      gregorianDayOfMemory,
+      isUndated: false,
+      hasEventDate: true,
       gregorianDate,
       hebrewDate: new Hebcal.HDate(gregorianDate),
       eventDate: { month, date: day, year },

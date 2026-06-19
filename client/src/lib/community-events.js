@@ -4,45 +4,30 @@ function startOfDay(date) {
   return day;
 }
 
-export function getVisibleCommunityEvents(events, now = new Date()) {
-  return (events || []).filter((event) => {
-    const startAt = event.startAt ? new Date(event.startAt) : null;
-    const endAt = event.endAt ? new Date(event.endAt) : null;
+export function isCommunityEventVisible(event, now = new Date()) {
+  const endAt = event.endAt ? new Date(event.endAt) : null;
 
-    if (!startAt || startAt > now) {
-      return false;
-    }
+  if (endAt && endAt <= now) {
+    return false;
+  }
 
-    if (endAt && endAt <= now) {
-      return false;
-    }
+  const startAt = event.startAt ? new Date(event.startAt) : null;
 
-    return true;
-  });
+  if (startAt && startAt > now) {
+    return false;
+  }
+
+  return true;
 }
 
-export function getUpcomingCommunityEvents(events, now = new Date(), maxDaysAhead = 30) {
-  const today = startOfDay(now);
-  const limit = new Date(today);
-  limit.setDate(limit.getDate() + maxDaysAhead);
+export function getVisibleCommunityEvents(events, now = new Date()) {
+  return (events || []).filter((event) => isCommunityEventVisible(event, now));
+}
 
-  return (events || []).filter((event) => {
-    const startAt = event.startAt ? new Date(event.startAt) : null;
-    const endAt = event.endAt ? new Date(event.endAt) : null;
+export function getSidebarCommunityEvents(events, now = new Date()) {
+  return getVisibleCommunityEvents(events, now);
+}
 
-    if (!startAt) {
-      return false;
-    }
-
-    if (endAt && endAt <= now) {
-      return false;
-    }
-
-    const month = event.eventDate?.month || 1;
-    const day = event.eventDate?.date || 1;
-    const year = event.eventDate?.year || now.getFullYear();
-    const eventDay = startOfDay(new Date(year, month - 1, day));
-
-    return eventDay >= today && eventDay <= limit;
-  });
+export function hasEventDate(event) {
+  return Boolean(event?.eventDate?.month && event?.eventDate?.date);
 }

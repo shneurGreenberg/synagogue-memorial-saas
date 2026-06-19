@@ -736,17 +736,26 @@ router.post('/:slug/events/edit', requireAdmin, requirePermission('events'), par
             return res.status(400).json({ ok: false, error: 'Title is required' });
         }
 
+        const updateSet = {
+          'communityEvents.$.title': payload.title,
+          'communityEvents.$.text': payload.text,
+          'communityEvents.$.startAt': payload.startAt,
+          'communityEvents.$.endAt': payload.endAt || null,
+        };
+
+        if (payload.eventDate) {
+          updateSet['communityEvents.$.eventDate'] = payload.eventDate;
+        }
+
+        const updateDoc = { $set: updateSet };
+
+        if (!payload.eventDate) {
+          updateDoc.$unset = { 'communityEvents.$.eventDate': '' };
+        }
+
         await Synagogue.updateOne(
             { slug: req.params.slug, 'communityEvents._id': eventId },
-            {
-                $set: {
-                    'communityEvents.$.title': payload.title,
-                    'communityEvents.$.text': payload.text,
-                    'communityEvents.$.eventDate': payload.eventDate,
-                    'communityEvents.$.startAt': payload.startAt,
-                    'communityEvents.$.endAt': payload.endAt,
-                },
-            },
+            updateDoc,
         );
 
         const events = await fetchCommunityEvents(req.params.slug);

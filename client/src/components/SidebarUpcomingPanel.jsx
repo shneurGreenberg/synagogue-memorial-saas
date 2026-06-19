@@ -103,9 +103,11 @@ class ScrollingAnnouncementsList extends React.Component {
     return (
       <li key={`${card.id}${suffix}`} className="community-event-item">
         <div className="community-event-link" role="note">
-          <time dateTime={toEventDatetimeAttr(card.eventDate)}>
-            {this.props.formatGregorianDate(card.eventDate)} / {this.props.formatHebrewDate(card.hebrewDate)}
-          </time>
+          {card.hasEventDate !== false && card.eventDate && (
+            <time dateTime={toEventDatetimeAttr(card.eventDate)}>
+              {this.props.formatGregorianDate(card.eventDate)} / {this.props.formatHebrewDate(card.hebrewDate)}
+            </time>
+          )}
           <span className="community-event-title">{card.title}</span>
           {card.text && (
             <span className="community-event-text">{card.text}</span>
@@ -126,9 +128,24 @@ class ScrollingAnnouncementsList extends React.Component {
     );
   }
 
+  renderChabad(card, suffix) {
+    return (
+      <li key={`${card.id}${suffix}`} className="sidebar-chabad-item">
+        <div className="sidebar-chabad-link" role="note">
+          <time dateTime={card.date}>{formatHolidayDate(card.date, this.props.uiLang)}</time>
+          <span className="sidebar-chabad-title">{card.title}</span>
+        </div>
+      </li>
+    );
+  }
+
   renderItem(card, suffix) {
     if (card.listType === 'holiday') {
       return this.renderHoliday(card, suffix);
+    }
+
+    if (card.listType === 'chabad') {
+      return this.renderChabad(card, suffix);
     }
 
     return this.renderEvent(card, suffix);
@@ -158,6 +175,7 @@ function SidebarUpcomingPanelBase({ t, uiLang, communityEvents, formatGregorianD
   const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
   const slug = appData.slug;
   const [holidays, setHolidays] = useState([]);
+  const [chabadDates, setChabadDates] = useState([]);
 
   useEffect(() => {
     if (!slug || (!boardFeatures.upcomingHolidays && !boardFeatures.communityEvents)) {
@@ -184,6 +202,7 @@ function SidebarUpcomingPanelBase({ t, uiLang, communityEvents, formatGregorianD
         const payload = await response.json();
         if (!cancelled) {
           setHolidays(Array.isArray(payload.upcomingHolidays) ? payload.upcomingHolidays : []);
+          setChabadDates(Array.isArray(payload.chabadDates) ? payload.chabadDates : []);
         }
       } catch {
         /* ignore transient network errors */
@@ -200,8 +219,8 @@ function SidebarUpcomingPanelBase({ t, uiLang, communityEvents, formatGregorianD
   }, [slug, uiLang, boardFeatures.upcomingHolidays, boardFeatures.communityEvents]);
 
   const items = useMemo(
-    () => buildSidebarAnnouncements(communityEvents, holidays, boardFeatures),
-    [communityEvents, holidays, boardFeatures],
+    () => buildSidebarAnnouncements(communityEvents, holidays, chabadDates, boardFeatures),
+    [communityEvents, holidays, chabadDates, boardFeatures],
   );
 
   if (!items.length) {

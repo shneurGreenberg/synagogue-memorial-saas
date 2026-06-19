@@ -1,4 +1,5 @@
 const MAX_DAYS_AHEAD = 30;
+const MIN_ITEMS = 4;
 
 function parseIsoDate(dateStr) {
   if (!dateStr) {
@@ -25,7 +26,15 @@ function isWithinUpcomingWindow(sortDate, now = new Date(), maxDaysAhead = MAX_D
 }
 
 function sortByDate(a, b) {
-  const diff = a.sortDate - b.sortDate;
+  if (a.isUndated && !b.isUndated) {
+    return -1;
+  }
+
+  if (!a.isUndated && b.isUndated) {
+    return 1;
+  }
+
+  const diff = (a.sortDate || 0) - (b.sortDate || 0);
   if (diff !== 0) {
     return diff;
   }
@@ -33,41 +42,82 @@ function sortByDate(a, b) {
   return String(a.title || '').localeCompare(String(b.title || ''), 'ru');
 }
 
-export function buildHolidaySidebarItems(holidays) {
-  const now = new Date();
+function selectUpcomingWithFallback(items, now = new Date(), maxDaysAhead = MAX_DAYS_AHEAD, minCount = MIN_ITEMS) {
+  const undated = items.filter((item) => item.isUndated);
+  const dated = items.filter((item) => !item.isUndated && item.sortDate);
+  const inWindow = dated.filter((item) => isWithinUpcomingWindow(item.sortDate, now, maxDaysAhead));
+  const selected = [...undated, ...inWindow];
+  const selectedIds = new Set(selected.map((item) => item.id));
 
-  return (holidays || [])
-    .map((holiday) => {
-      const gregorianDate = parseIsoDate(holiday.date);
+  if (selected.length >= minCount) {
+    return selected.sort(sortByDate);
+  }
 
-      return {
-        listType: 'holiday',
-        id: `holiday-${holiday.date}-${holiday.title}`,
-        title: holiday.title,
-        date: holiday.date,
-        gregorianDate,
-        sortDate: gregorianDate.getTime(),
-      };
-    })
-    .filter((item) => isWithinUpcomingWindow(item.sortDate, now));
+  const today = startOfDay(now);
+  const limit = new Date(today);
+  limit.setDate(limit.getDate() + maxDaysAhead);
+
+  const afterWindow = dated
+    .filter((item) => !selectedIds.has(item.id) && startOfDay(item.sortDate) > limit)
+    .sort(sortByDate);
+
+  const needed = minCount - selected.length;
+
+  return [...selected, ...afterWindow.slice(0, needed)].sort(sortByDate);
 }
 
-export function buildSidebarAnnouncements(communityEvents, holidays, boardFeatures = {}) {
-  const now = new Date();
+function buildHolidaySidebarItems(holidays) {
+  return (holidays || []).map((holiday) => {
+    const gregorianDate = parseIsoDate(holiday.date);
 
+    return {
+      listType: 'holiday',
+      id: `holiday-${holiday.date}-${holiday.title}`,
+      title: holiday.title,
+      date: holiday.date,
+      gregorianDate,
+      sortDate: gregorianDate.getTime(),
+    };
+  });
+}
+
+function buildChabadSidebarItems(chabadDates) {
+  return (chabadDates || []).map((entry) => {
+    const gregorianDate = parseIsoDate(entry.date);
+
+    return {
+      listType: 'chabad',
+      id: `chabad-${entry.date}-${entry.title}`,
+      title: entry.title,
+      date: entry.date,
+      gregorianDate,
+      sortDate: gregorianDate.getTime(),
+    };
+  });
+}
+
+function buildEventSidebarItems(communityEvents) {
+  return (communityEvents || []).map((event) => ({
+    ...event,
+    listType: 'event',
+    sortDate: event.isUndated ? null : (event.gregorianDate ? event.gregorianDate.getTime() : null),
+  }));
+}
+
+export function buildSidebarAnnouncements(communityEvents, holidays, chabadDates, boardFeatures = {}) {
   const events = boardFeatures.communityEvents !== false
-    ? (communityEvents || []).map((event) => ({
-      ...event,
-      listType: 'event',
-      sortDate: event.gregorianDate ? event.gregorianDate.getTime() : 0,
-    }))
-      .filter((item) => item.sortDate && isWithinUpcomingWindow(item.sortDate, now))
+    ? buildEventSidebarItems(communityEvents)
     : [];
 
   const holidayItems = boardFeatures.upcomingHolidays !== false
     ? buildHolidaySidebarItems(holidays)
     : [];
 
-  return [...holidayItems, ...events]
-    .sort(sortByDate);
+  const chabadItems = boardFeatures.upcomingHolidays !== false
+    ? buildChabadSidebarItems(chabadDates)
+    : [];
+
+  const merged = [...holidayItems, ...chabadItems, ...events];
+
+  return selectUpcomingWithFallback(merged);
 }

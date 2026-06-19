@@ -281,17 +281,6 @@
         input.name = 'publishNow';
         input.value = publishNow ? '1' : '0';
         form.appendChild(input);
-
-        var startAt = form.querySelector('[name="startAt"]');
-        var eventMonth = form.querySelector('[name="eventMonth"]');
-        var eventDay = form.querySelector('[name="eventDate"]');
-        var hasEventDate = eventMonth && eventMonth.value && eventDay && eventDay.value;
-        var hasStartAt = startAt && startAt.value;
-
-        if (!publishNow && !hasStartAt && !hasEventDate) {
-          window.alert(labels.eventStartRequired || labels.eventStartAt || 'Publish from date is required');
-          return;
-        }
       }
 
       submitAjax(form, labels.saving || 'Saving…');
