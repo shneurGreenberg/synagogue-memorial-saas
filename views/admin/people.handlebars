@@ -48,9 +48,9 @@
                     style="{{photoCropStyle this.photoCrop}}"
                     onerror="this.closest('.person-photo-wrap').classList.add('d-none'); this.closest('.person-row').querySelector('.person-photo-placeholder').classList.remove('d-none');">
             </span>
-            <span class="person-photo person-photo-placeholder d-none" aria-hidden="true">{{initials this.name}}</span>
+            <span class="person-photo-placeholder d-none" aria-hidden="true">{{initials this.name}}</span>
             {{else}}
-            <span class="person-photo person-photo-placeholder" aria-hidden="true">{{initials this.name}}</span>
+            <span class="person-photo-placeholder" aria-hidden="true">{{initials this.name}}</span>
             {{/if}}
             <div class="person-meta">
                 <strong>{{this.name}}</strong>
@@ -273,16 +273,9 @@
                 return null;
             }
 
-            let wrap = row.querySelector('.person-photo-wrap');
-            let img = wrap ? wrap.querySelector('.person-photo') : row.querySelector('img.person-photo');
+            const wrap = row.querySelector('.person-photo-wrap');
+            const img = wrap ? wrap.querySelector('.person-photo') : null;
             const placeholder = row.querySelector('.person-photo-placeholder');
-
-            if (!wrap && img) {
-                wrap = document.createElement('span');
-                wrap.className = 'person-photo-wrap';
-                img.parentNode.insertBefore(wrap, img);
-                wrap.appendChild(img);
-            }
 
             return { row: row, wrap: wrap, img: img, placeholder: placeholder };
         }
@@ -490,15 +483,18 @@
         document.querySelectorAll('.person-row').forEach(function (row) {
             const personId = Number(row.getAttribute('data-id'));
             const person = peopleById[personId];
-            const img = row.querySelector('.person-photo-wrap .person-photo') || row.querySelector('img.person-photo');
+            const img = row.querySelector('.person-photo-wrap .person-photo');
             if (person && person.photo && img) {
                 applyCropStyles(img, person.photoCrop || { x: 50, y: 50, zoom: 1 });
             }
         });
 
-        document.querySelector('#editPersonModal form').addEventListener('submit', function () {
-            editFormSubmitted = true;
-        });
+        const editForm = document.querySelector('#editPersonModal form');
+        if (editForm) {
+            editForm.addEventListener('submit', function () {
+                editFormSubmitted = true;
+            });
+        }
 
         document.querySelectorAll('input[type="file"][data-crop-editor]').forEach(function (input) {
             input.addEventListener('change', function () {
