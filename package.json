@@ -11,6 +11,7 @@
     "restart": "yarn stop && pm2 start app.js && pm2 logs",
     "stop": "pm2 kill",
     "seed": "node scripts/seed.js",
+    "seed:hayom-yom": "node scripts/seed-hayom-yom.js",
     "seed:photos": "node scripts/seed-photos.js --slug=novosibirsk --force",
     "build:board": "vite build --config vite.board.config.mjs",
     "build:candle": "node scripts/split-candle-assets.js",

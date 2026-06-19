@@ -24,29 +24,18 @@ function formatHolidayDate(dateStr, lang) {
   return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
 }
 
-function LearningRow({ label, item }) {
+function LearningTile({ label, item, sublabel }) {
   if (!item || !item.label) {
     return null;
   }
 
-  const content = (
-    <>
+  return (
+    <li className="daily-gate-tile">
       <span className="daily-gate-label">{label}</span>
+      {sublabel && <span className="daily-gate-sublabel">{sublabel}</span>}
       <span className="daily-gate-value">{item.label}</span>
-    </>
+    </li>
   );
-
-  if (item.ref) {
-    return (
-      <li className="daily-gate-row">
-        <a className="daily-gate-link" href={item.ref} target="_blank" rel="noopener noreferrer">
-          {content}
-        </a>
-      </li>
-    );
-  }
-
-  return <li className="daily-gate-row">{content}</li>;
 }
 
 function JewishContentPanelsBase({ t, uiLang }) {
@@ -103,25 +92,36 @@ function JewishContentPanelsBase({ t, uiLang }) {
     || boardFeatures.dailyRambam;
 
   const hayomYom = learning.hayomYom || {};
-  const hayomLinks = hayomYom.links || {};
+  const lessons5703 = hayomYom.lessons5703 || {};
 
   return (
     <div className="jewish-sidebar-panels">
       {showGates && (
         <section className="daily-gates-panel" aria-label={t('daily_gates_title')}>
           <h2>{t('daily_gates_title')}</h2>
-          <ul className="daily-gates-list">
+          <ul className="daily-gates-grid">
             {boardFeatures.dailyChumash && (
-              <LearningRow label={t('daily_chumash')} item={learning.chumash} />
+              <LearningTile label={t('daily_chumash')} item={learning.chumash} />
             )}
             {boardFeatures.dailyTehillim && (
-              <LearningRow label={t('daily_tehillim')} item={learning.tehillim} />
+              <LearningTile label={t('daily_tehillim')} item={learning.tehillim} />
             )}
             {boardFeatures.dailyTanya && (
-              <LearningRow label={t('daily_tanya')} item={learning.tanya} />
+              <LearningTile label={t('daily_tanya')} item={learning.tanya} />
             )}
-            {boardFeatures.dailyRambam && (
-              <LearningRow label={t('daily_rambam')} item={learning.rambam} />
+            {boardFeatures.dailyRambam && learning.rambam && (
+              <LearningTile
+                label={t('daily_rambam')}
+                sublabel={t('daily_rambam_one')}
+                item={learning.rambam}
+              />
+            )}
+            {boardFeatures.dailyRambam && learning.rambam3 && (
+              <LearningTile
+                label={t('daily_rambam')}
+                sublabel={t('daily_rambam_three')}
+                item={learning.rambam3}
+              />
             )}
           </ul>
         </section>
@@ -130,38 +130,44 @@ function JewishContentPanelsBase({ t, uiLang }) {
       {boardFeatures.hayomYom && (
         <section className="hayom-yom-panel" aria-label={t('hayom_yom_title')}>
           <h2>{t('hayom_yom_title')}</h2>
-          <p className="hayom-yom-note">{t('hayom_yom_unavailable')}</p>
-          <div className="hayom-yom-links">
-            <a href={hayomLinks.he || 'https://he.chabad.org/dailystudy/hayomyom.htm'} target="_blank" rel="noopener noreferrer">
-              {t('hayom_yom_hebrew')}
-            </a>
-            <a href={hayomLinks.en || 'https://www.chabad.org/dailystudy/hayomyom.asp'} target="_blank" rel="noopener noreferrer">
-              {t('hayom_yom_english')}
-            </a>
-            <a href={hayomLinks.ruBook || 'https://jewishbook.com.ua/novie_knigi/iudaizm_i_mudrecu/shneerson/gayom-yom-segodnya-den.html'} target="_blank" rel="noopener noreferrer">
-              {t('hayom_yom_russian_book')}
-            </a>
-          </div>
+          {hayomYom.text ? (
+            <p className="hayom-yom-text">{hayomYom.text}</p>
+          ) : (
+            <p className="hayom-yom-note">{t('hayom_yom_loading')}</p>
+          )}
+          {(lessons5703.chumash || lessons5703.tehillim || lessons5703.tanya) && (
+            <ul className="hayom-yom-lessons-grid">
+              {lessons5703.chumash?.label && (
+                <li className="hayom-yom-lesson-tile">
+                  <span className="daily-gate-label">{t('daily_chumash')}</span>
+                  <span className="daily-gate-value">{lessons5703.chumash.label}</span>
+                </li>
+              )}
+              {lessons5703.tehillim?.label && (
+                <li className="hayom-yom-lesson-tile">
+                  <span className="daily-gate-label">{t('daily_tehillim')}</span>
+                  <span className="daily-gate-value">{lessons5703.tehillim.label}</span>
+                </li>
+              )}
+              {lessons5703.tanya?.label && (
+                <li className="hayom-yom-lesson-tile">
+                  <span className="daily-gate-label">{t('daily_tanya')}</span>
+                  <span className="daily-gate-value">{lessons5703.tanya.label}</span>
+                </li>
+              )}
+            </ul>
+          )}
         </section>
       )}
 
       {boardFeatures.upcomingHolidays && holidays.length > 0 && (
         <section className="upcoming-holidays-panel" aria-label={t('upcoming_holidays_title')}>
           <h2>{t('upcoming_holidays_title')}</h2>
-          <ul className="upcoming-holidays-list">
+          <ul className="upcoming-holidays-grid">
             {holidays.slice(0, 6).map((holiday) => (
-              <li key={`${holiday.date}-${holiday.title}`} className="upcoming-holiday-row">
-                {holiday.link ? (
-                  <a className="upcoming-holiday-link" href={holiday.link} target="_blank" rel="noopener noreferrer">
-                    <time dateTime={holiday.date}>{formatHolidayDate(holiday.date, uiLang)}</time>
-                    <span className="upcoming-holiday-title">{holiday.title}</span>
-                  </a>
-                ) : (
-                  <>
-                    <time dateTime={holiday.date}>{formatHolidayDate(holiday.date, uiLang)}</time>
-                    <span className="upcoming-holiday-title">{holiday.title}</span>
-                  </>
-                )}
+              <li key={`${holiday.date}-${holiday.title}`} className="upcoming-holiday-tile">
+                <time dateTime={holiday.date}>{formatHolidayDate(holiday.date, uiLang)}</time>
+                <span className="upcoming-holiday-title">{holiday.title}</span>
               </li>
             ))}
           </ul>
