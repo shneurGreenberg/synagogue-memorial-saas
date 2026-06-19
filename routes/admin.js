@@ -637,6 +637,11 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
             { slug: req.params.slug },
             { $push: { people: newPerson } }
         );
+
+        if (wantsJson(req)) {
+            return res.json({ ok: true, person: newPerson });
+        }
+
         res.redirect(`/admin/${req.params.slug}/people`);
     } catch (err) {
         res.status(500).send(err.message);
@@ -669,6 +674,16 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
             { slug: req.params.slug, 'people.id': personId },
             { $set: updateFields }
         );
+
+        if (wantsJson(req)) {
+            const updated = await Synagogue.findOne(
+                { slug: req.params.slug, 'people.id': personId },
+                { 'people.$': 1 },
+            ).lean();
+            const person = updated && updated.people && updated.people[0];
+            return res.json({ ok: true, person });
+        }
+
         res.redirect(`/admin/${req.params.slug}/people`);
     } catch (err) {
         res.status(500).send(err.message);

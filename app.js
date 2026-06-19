@@ -111,8 +111,8 @@ app.engine('handlebars', handlebars({
     photoCropStyle(photoCrop) {
       return photoCropToInlineStyle(photoCrop);
     },
-    photoThumbUrl(photo, photoCrop) {
-      return buildPhotoThumbUrl(photo, photoCrop);
+    photoThumbUrl(photo) {
+      return buildPhotoThumbUrl(photo);
     },
   },
   runtimeOptions: {

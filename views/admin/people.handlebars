@@ -1,4 +1,4 @@
-<div class="admin-page people-page">
+<div class="admin-page people-page" data-synagogue-slug="{{synagogue.slug}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}">
     <header class="admin-page-header">
         <div>
             <h1>{{t 'people'}}</h1>
@@ -45,7 +45,7 @@
             {{#if this.photo}}
             <span class="person-photo-wrap">
                 <img class="person-photo lazy-person-photo" alt="{{this.name}}"
-                    data-thumb-src="{{photoThumbUrl this.photo this.photoCrop}}"
+                    data-thumb-src="{{photoThumbUrl this.photo}}"
                     data-full-src="/photos/{{this.photo}}"
                     decoding="async"
                     onerror="this.closest('.person-photo-wrap').classList.add('d-none'); this.closest('.person-row').querySelector('.person-photo-placeholder').classList.remove('d-none');">
