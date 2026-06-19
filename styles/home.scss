@@ -93,9 +93,15 @@
 
       section + section {
         margin-top: 6px;
-        padding-top: 5px;
-        border-top: 1px solid rgba(207, 175, 31, 0.25);
+        padding-top: 0;
+        border-top: none;
       }
+    }
+
+    .hayom-yom-panel {
+      padding: 4px 0 8px;
+      margin-bottom: 2px;
+      border-bottom: 1px solid rgba(207, 175, 31, 0.28);
     }
 
     .daily-gates-panel {
@@ -189,9 +195,14 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
-      margin-top: 12px;
+      margin-top: 8px;
       padding: 0;
       box-sizing: border-box;
+
+      &--divider-top {
+        padding-top: 6px;
+        border-top: 1px solid rgba(207, 175, 31, 0.28);
+      }
 
       h2 {
         font-size: clamp(15px, 1.35vw, 22px);
@@ -661,16 +672,21 @@
 
     .board-footer {
       flex-shrink: 0;
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr minmax(0, 520px) 1fr;
       align-items: center;
-      justify-content: space-between;
       gap: clamp(10px, 1.5vw, 20px);
       padding: 8px clamp(10px, 1.5vw, 20px) 10px;
       width: 100%;
       box-sizing: border-box;
 
       &.board-footer-search-only {
-        justify-content: center;
+        grid-template-columns: 1fr;
+
+        .search {
+          grid-column: 1;
+          justify-self: center;
+        }
       }
     }
 
@@ -678,9 +694,11 @@
       display: flex;
       align-items: center;
       position: relative;
-      flex: 1;
+      grid-column: 2;
+      justify-self: center;
+      width: 100%;
       min-width: 0;
-      max-width: min(100%, 520px);
+      max-width: 520px;
 
       input {
         width: 100%;
@@ -691,14 +709,9 @@
         letter-spacing: 0.02em;
         user-select: text;
         -webkit-user-select: text;
-        background: linear-gradient(165deg, var(--tile-surface-light, rgba(198, 174, 74, 0.62)), var(--tile-surface-dark, rgba(134, 113, 25, 0.7)));
-        background-color: var(--tile-surface-dark, rgba(134, 113, 25, 0.7));
-        border: 1.5px solid var(--tile-surface-border, rgba(96, 81, 14, 0.78));
+        @include tile-glass-control;
         padding: 0 14px 0 42px;
-        color: #3d3d3d;
-        box-shadow:
-          0 4px 14px rgba(0, 0, 0, 0.28),
-          inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        color: var(--tile-date-color, #f0f0f0);
 
         &:focus-visible {
           outline: 3px solid $goldenText;
@@ -706,7 +719,7 @@
         }
 
         &::placeholder {
-          color: rgba(61, 61, 61, 0.55);
+          color: rgba(240, 240, 240, 0.55);
         }
       }
 
@@ -721,15 +734,17 @@
         background: transparent;
         border: none;
         cursor: pointer;
-        color: #3d3d3d;
+        color: var(--tile-date-color, #f0f0f0);
         font-size: 20px;
         line-height: 1;
         z-index: 1;
         border-radius: 8px;
+        opacity: 0.85;
 
         &:hover,
         &:focus-visible {
-          background: rgba(0, 0, 0, 0.08);
+          background: rgba(255, 255, 255, 0.08);
+          opacity: 1;
         }
       }
     }
@@ -739,7 +754,9 @@
       display: flex;
       flex-direction: row;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
+      grid-column: 3;
+      justify-self: end;
       gap: 14px;
       padding: 0;
 
@@ -747,7 +764,7 @@
         display: flex;
         align-items: baseline;
         gap: 4px;
-        color: rgba(255, 255, 255, 0.92);
+        color: var(--tile-date-color, #f0f0f0);
         font-size: clamp(13px, 1.1vw, 16px);
         font-variant-numeric: tabular-nums;
         letter-spacing: 0.02em;
@@ -755,12 +772,17 @@
 
       .pager-page-num {
         font-weight: 700;
-        color: $goldenText;
+        color: var(--tile-date-color, #f0f0f0);
         font-size: clamp(15px, 1.25vw, 19px);
       }
 
       .pager-page-sep {
         opacity: 0.55;
+        color: var(--tile-date-color, #f0f0f0);
+      }
+
+      .pager-page-total {
+        color: var(--tile-date-color, #f0f0f0);
       }
 
       .pager-btn {
@@ -771,23 +793,13 @@
         height: clamp(40px, 3.8vw, 48px);
         padding: 0;
         cursor: pointer;
-        background: linear-gradient(165deg, var(--tile-surface-light, rgba(198, 174, 74, 0.62)), var(--tile-surface-dark, rgba(134, 113, 25, 0.7)));
-        background-color: var(--tile-surface-dark, rgba(134, 113, 25, 0.7));
-        border: 1.5px solid var(--tile-surface-border, rgba(96, 81, 14, 0.78));
-        border-radius: 14px;
-        box-shadow:
-          0 4px 14px rgba(0, 0, 0, 0.35),
-          inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        @include tile-glass-control;
         transition:
           transform 0.18s ease,
-          box-shadow 0.18s ease,
-          background 0.18s ease;
+          box-shadow 0.18s ease;
 
         &:hover {
           transform: translateY(-2px);
-          box-shadow:
-            0 8px 20px rgba(0, 0, 0, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.18);
         }
 
         &:active {

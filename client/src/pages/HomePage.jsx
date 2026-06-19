@@ -405,6 +405,8 @@ class HomePageBase extends React.Component {
 
     const logo = (appData.theme && appData.theme.logo) || 'banner-transparent.png';
 
+    const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
+
     return (
       <main className="main-container">
         <aside className="left side-panel">
@@ -424,6 +426,7 @@ class HomePageBase extends React.Component {
               communityEvents={this.state.communityEvents}
               formatGregorianDate={formatGregorianDate}
               formatHebrewDate={formatHebrewDate}
+              showTopDivider={!boardFeatures.hayomYom}
             />
           </div>
         </aside>

@@ -43,6 +43,8 @@ export function buildTileThemeVars(tileHex, primaryHex) {
     tileGlassFrost: 'rgba(255, 255, 255, 0.06)',
     tileGlassBorder: rgba(tileDark, 0.5),
     tileGlassHighlight: 'rgba(255, 255, 255, 0.1)',
+    tileGlassGlow: rgba(tile, 0.22),
+    tileGlassLegacyGlow: rgba(tile, 0.3),
     tileGlassLegacyBase: rgba(tile, 0.3),
     tileGlassLegacyMid: rgba(tile, 0.34),
     tileGlassLegacyFade: rgba(tile, 0.24),

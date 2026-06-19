@@ -1,5 +1,4 @@
-const MAX_DAYS_AHEAD = 30;
-const MIN_ITEMS = 4;
+const MIN_UPCOMING_DATES = 6;
 
 function parseIsoDate(dateStr) {
   if (!dateStr) {
@@ -14,15 +13,6 @@ function startOfDay(date) {
   const day = new Date(date);
   day.setHours(0, 0, 0, 0);
   return day;
-}
-
-function isWithinUpcomingWindow(sortDate, now = new Date(), maxDaysAhead = MAX_DAYS_AHEAD) {
-  const today = startOfDay(now);
-  const limit = new Date(today);
-  limit.setDate(limit.getDate() + maxDaysAhead);
-  const itemDay = startOfDay(sortDate);
-
-  return itemDay >= today && itemDay <= limit;
 }
 
 function sortByDate(a, b) {
@@ -42,28 +32,16 @@ function sortByDate(a, b) {
   return String(a.title || '').localeCompare(String(b.title || ''), 'ru');
 }
 
-function selectUpcomingWithFallback(items, now = new Date(), maxDaysAhead = MAX_DAYS_AHEAD, minCount = MIN_ITEMS) {
+function selectNearestUpcoming(items, now = new Date(), minCount = MIN_UPCOMING_DATES) {
   const undated = items.filter((item) => item.isUndated);
-  const dated = items.filter((item) => !item.isUndated && item.sortDate);
-  const inWindow = dated.filter((item) => isWithinUpcomingWindow(item.sortDate, now, maxDaysAhead));
-  const selected = [...undated, ...inWindow];
-  const selectedIds = new Set(selected.map((item) => item.id));
-
-  if (selected.length >= minCount) {
-    return selected.sort(sortByDate);
-  }
-
   const today = startOfDay(now);
-  const limit = new Date(today);
-  limit.setDate(limit.getDate() + maxDaysAhead);
-
-  const afterWindow = dated
-    .filter((item) => !selectedIds.has(item.id) && startOfDay(item.sortDate) > limit)
+  const dated = items
+    .filter((item) => !item.isUndated && item.sortDate && startOfDay(item.sortDate) >= today)
     .sort(sortByDate);
 
-  const needed = minCount - selected.length;
+  const selectedDated = dated.slice(0, minCount);
 
-  return [...selected, ...afterWindow.slice(0, needed)].sort(sortByDate);
+  return [...undated, ...selectedDated].sort(sortByDate);
 }
 
 function buildHolidaySidebarItems(holidays) {
@@ -119,5 +97,5 @@ export function buildSidebarAnnouncements(communityEvents, holidays, chabadDates
 
   const merged = [...holidayItems, ...chabadItems, ...events];
 
-  return selectUpcomingWithFallback(merged);
+  return selectNearestUpcoming(merged);
 }

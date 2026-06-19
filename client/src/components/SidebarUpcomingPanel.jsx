@@ -170,7 +170,9 @@ class ScrollingAnnouncementsList extends React.Component {
   }
 }
 
-function SidebarUpcomingPanelBase({ t, uiLang, communityEvents, formatGregorianDate, formatHebrewDate }) {
+function SidebarUpcomingPanelBase({
+  t, uiLang, communityEvents, formatGregorianDate, formatHebrewDate, showTopDivider,
+}) {
   const appData = getBoardData();
   const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
   const slug = appData.slug;
@@ -228,7 +230,10 @@ function SidebarUpcomingPanelBase({ t, uiLang, communityEvents, formatGregorianD
   }
 
   return (
-    <nav className="nearest-dates" aria-label={t('sidebar_upcoming_title')}>
+    <nav
+      className={`nearest-dates${showTopDivider ? ' nearest-dates--divider-top' : ''}`}
+      aria-label={t('sidebar_upcoming_title')}
+    >
       <h2>{t('sidebar_upcoming_title')}</h2>
       <ScrollingAnnouncementsList
         items={items}

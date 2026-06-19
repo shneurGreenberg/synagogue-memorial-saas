@@ -54,6 +54,8 @@ export function ThemeStyles() {
       --tile-glass-frost: ${tileVars.tileGlassFrost};
       --tile-glass-border: ${tileVars.tileGlassBorder};
       --tile-glass-highlight: ${tileVars.tileGlassHighlight};
+      --tile-glass-glow: ${tileVars.tileGlassGlow};
+      --tile-glass-legacy-glow: ${tileVars.tileGlassLegacyGlow};
       --tile-glass-legacy-base: ${tileVars.tileGlassLegacyBase};
       --tile-glass-legacy-mid: ${tileVars.tileGlassLegacyMid};
       --tile-glass-legacy-fade: ${tileVars.tileGlassLegacyFade};
@@ -123,6 +125,7 @@ export function ThemeStyles() {
       border-color: var(--tile-glass-border) !important;
       box-shadow:
         inset 0 1px 0 var(--tile-glass-legacy-highlight),
+        inset 0 0 22px var(--tile-glass-legacy-glow),
         inset 0 -10px 18px rgba(0, 0, 0, 0.08) !important;
     }
     @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
@@ -133,16 +136,12 @@ export function ThemeStyles() {
           'var(--tile-glass-fade)',
           'var(--tile-glass-frost)',
         )} !important;
-        box-shadow: inset 0 1px 0 var(--tile-glass-highlight) !important;
-        -webkit-backdrop-filter: blur(10px);
-        backdrop-filter: blur(10px);
+        box-shadow:
+          inset 0 1px 0 var(--tile-glass-highlight),
+          inset 0 0 30px var(--tile-glass-glow) !important;
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
       }
-    }
-    .main-container .search input,
-    .main-container .pager .pager-btn {
-      background: linear-gradient(165deg, var(--tile-surface-light), var(--tile-surface-dark)) !important;
-      background-color: var(--tile-surface-dark) !important;
-      border-color: var(--tile-surface-border) !important;
     }
   `;
 
