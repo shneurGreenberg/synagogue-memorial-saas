@@ -5,25 +5,6 @@ import { hasJewishContentPanels, resolveBoardFeatures } from '../lib/board-featu
 
 const REFRESH_MS = 60 * 60 * 1000;
 
-function formatHolidayDate(dateStr, lang) {
-  if (!dateStr) {
-    return '';
-  }
-
-  const [year, month, day] = dateStr.split('-').map(Number);
-  const date = new Date(year, month - 1, day);
-
-  if (lang === 'he') {
-    return date.toLocaleDateString('he-IL', { day: 'numeric', month: 'long' });
-  }
-
-  if (lang === 'en') {
-    return date.toLocaleDateString('en-US', { day: 'numeric', month: 'long' });
-  }
-
-  return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
-}
-
 function LearningTile({ label, item, sublabel }) {
   if (!item || !item.label) {
     return null;
@@ -78,14 +59,13 @@ function JewishContentPanelsBase({ t, uiLang }) {
       cancelled = true;
       window.clearInterval(timer);
     };
-  }, [slug, uiLang, boardFeatures.dailyChumash, boardFeatures.dailyTehillim, boardFeatures.dailyTanya, boardFeatures.dailyRambam, boardFeatures.hayomYom, boardFeatures.upcomingHolidays]);
+  }, [slug, uiLang, boardFeatures.dailyChumash, boardFeatures.dailyTehillim, boardFeatures.dailyTanya, boardFeatures.dailyRambam, boardFeatures.hayomYom]);
 
   if (!feed || !hasJewishContentPanels(boardFeatures)) {
     return null;
   }
 
   const learning = feed.dailyLearning || {};
-  const holidays = Array.isArray(feed.upcomingHolidays) ? feed.upcomingHolidays : [];
   const showGates = boardFeatures.dailyChumash
     || boardFeatures.dailyTehillim
     || boardFeatures.dailyTanya
@@ -93,6 +73,7 @@ function JewishContentPanelsBase({ t, uiLang }) {
 
   const hayomYom = learning.hayomYom || {};
   const lessons5703 = hayomYom.lessons5703 || {};
+  const tanyaItem = lessons5703.tanya?.label ? lessons5703.tanya : learning.tanya;
 
   return (
     <div className="jewish-sidebar-panels">
@@ -107,7 +88,7 @@ function JewishContentPanelsBase({ t, uiLang }) {
               <LearningTile label={t('daily_tehillim')} item={learning.tehillim} />
             )}
             {boardFeatures.dailyTanya && (
-              <LearningTile label={t('daily_tanya')} item={learning.tanya} />
+              <LearningTile label={t('daily_tanya')} item={tanyaItem} />
             )}
             {boardFeatures.dailyRambam && learning.rambam && (
               <LearningTile
@@ -135,42 +116,6 @@ function JewishContentPanelsBase({ t, uiLang }) {
           ) : (
             <p className="hayom-yom-note">{t('hayom_yom_loading')}</p>
           )}
-          {(lessons5703.chumash || lessons5703.tehillim || lessons5703.tanya) && (
-            <ul className="hayom-yom-lessons-grid">
-              {lessons5703.chumash?.label && (
-                <li className="hayom-yom-lesson-tile">
-                  <span className="daily-gate-label">{t('daily_chumash')}</span>
-                  <span className="daily-gate-value">{lessons5703.chumash.label}</span>
-                </li>
-              )}
-              {lessons5703.tehillim?.label && (
-                <li className="hayom-yom-lesson-tile">
-                  <span className="daily-gate-label">{t('daily_tehillim')}</span>
-                  <span className="daily-gate-value">{lessons5703.tehillim.label}</span>
-                </li>
-              )}
-              {lessons5703.tanya?.label && (
-                <li className="hayom-yom-lesson-tile">
-                  <span className="daily-gate-label">{t('daily_tanya')}</span>
-                  <span className="daily-gate-value">{lessons5703.tanya.label}</span>
-                </li>
-              )}
-            </ul>
-          )}
-        </section>
-      )}
-
-      {boardFeatures.upcomingHolidays && holidays.length > 0 && (
-        <section className="upcoming-holidays-panel" aria-label={t('upcoming_holidays_title')}>
-          <h2>{t('upcoming_holidays_title')}</h2>
-          <ul className="upcoming-holidays-grid">
-            {holidays.slice(0, 6).map((holiday) => (
-              <li key={`${holiday.date}-${holiday.title}`} className="upcoming-holiday-tile">
-                <time dateTime={holiday.date}>{formatHolidayDate(holiday.date, uiLang)}</time>
-                <span className="upcoming-holiday-title">{holiday.title}</span>
-              </li>
-            ))}
-          </ul>
         </section>
       )}
     </div>

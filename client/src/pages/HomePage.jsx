@@ -24,9 +24,9 @@ import { useBoardNavigation } from '../context/BoardNavigationContext';
 import { useBoardData } from '../context/BoardDataContext';
 import { resolveBoardTitle } from '../lib/board-title';
 import { getVisibleCommunityEvents } from '../lib/community-events';
-import { buildSidebarItems } from '../lib/sidebar-items';
 import { resolveBoardFeatures } from '../lib/board-features';
 import { JewishContentPanels } from '../components/JewishContentPanels';
+import { SidebarUpcomingPanel } from '../components/SidebarUpcomingPanel';
 
 function getAppData() {
   return getBoardData();
@@ -79,125 +79,6 @@ function prepareCommunityEvents(events) {
       eventDate: { month, date: day, year },
     };
   });
-}
-
-class NearestDatesList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.viewportRef = React.createRef();
-    this.trackRef = React.createRef();
-    this.state = {
-      shouldScroll: false,
-      durationSec: 120,
-    };
-  }
-
-  componentDidMount() {
-    this.updateScrollBehavior();
-    window.addEventListener('resize', this.updateScrollBehavior);
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.items !== this.props.items) {
-      this.updateScrollBehavior();
-    }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateScrollBehavior);
-  }
-
-  updateScrollBehavior = () => {
-    requestAnimationFrame(() => {
-      const viewport = this.viewportRef.current;
-      const track = this.trackRef.current;
-
-      if (!viewport || !track) {
-        return;
-      }
-
-      const contentHeight = this.state.shouldScroll
-        ? track.scrollHeight / 2
-        : track.scrollHeight;
-
-      if (contentHeight <= viewport.clientHeight + 4) {
-        if (this.state.shouldScroll) {
-          this.setState({ shouldScroll: false });
-        }
-        return;
-      }
-
-      const pixelsPerSecond = 18;
-      const durationSec = Math.max(contentHeight / pixelsPerSecond, 90);
-
-      if (!this.state.shouldScroll) {
-        this.setState({ shouldScroll: true, durationSec }, () => {
-          this.updateScrollBehavior();
-        });
-        return;
-      }
-
-      if (Math.abs(this.state.durationSec - durationSec) > 2) {
-        this.setState({ durationSec });
-      }
-    });
-  };
-
-  renderEvent(card, suffix) {
-    return (
-      <li key={`${card.id}${suffix}`} className="community-event-item">
-        <div className="community-event-link" role="note">
-          <time dateTime={toEventDatetimeAttr(card.eventDate)}>
-            {formatGregorianDate(card.eventDate)} / {formatHebrewDate(card.hebrewDate)}
-          </time>
-          <span className="community-event-title">{card.title}</span>
-          {card.text && (
-            <span className="community-event-text">{card.text}</span>
-          )}
-        </div>
-      </li>
-    );
-  }
-
-  renderPerson(card, suffix) {
-    const displayName = card.name || '';
-    return (
-      <li key={`${card.id}${suffix}`}>
-        <button type="button" className="nearest-date-link" onClick={() => this.props.onPersonClick(card.id)}>
-          <time dateTime={toDatetimeAttr(card.gregorianDateOfDeath)}>
-            {formatGregorianDate(card.gregorianDateOfDeath)} / {formatHebrewDate(card.hebrewDateOfDeath)}
-          </time>
-          <span className="name">{displayName}</span>
-        </button>
-      </li>
-    );
-  }
-
-  renderItem(card, suffix) {
-    if (card.listType === 'event') {
-      return this.renderEvent(card, suffix);
-    }
-
-    return this.renderPerson(card, suffix);
-  }
-
-  render() {
-    const { items } = this.props;
-    const listItems = items.map((card) => this.renderItem(card, ''));
-
-    return (
-      <div className="nearest-dates-scroll" ref={this.viewportRef}>
-        <ul
-          className={`nearest-dates-track${this.state.shouldScroll ? ' is-scrolling' : ''}`}
-          ref={this.trackRef}
-          style={this.state.shouldScroll ? { animationDuration: `${this.state.durationSec}s` } : undefined}
-        >
-          {listItems}
-          {this.state.shouldScroll && items.map((card) => this.renderItem(card, '-dup'))}
-        </ul>
-      </div>
-    );
-  }
 }
 
 class Slideshow extends React.Component {
@@ -340,14 +221,13 @@ class HomePageBase extends React.Component {
 
     const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
     const communityEvents = prepareCommunityEvents(appData.communityEvents);
-    const sidebarItems = buildSidebarItems(allPeople, communityEvents, boardFeatures);
 
     const initialState = {
       hebrewDate,
       gregorianDate: new Date(),
       dailyCite,
       allPeople,
-      sidebarItems,
+      communityEvents,
       mode: 'main',
       people: [],
       hasKadishToday: false,
@@ -494,8 +374,6 @@ class HomePageBase extends React.Component {
     }
 
     const logo = (appData.theme && appData.theme.logo) || 'banner-transparent.png';
-    const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
-    const showSidebarScroll = this.state.sidebarItems.length > 0;
 
     return (
       <main className="main-container">
@@ -511,12 +389,12 @@ class HomePageBase extends React.Component {
               />
             )}
             <JewishContentPanels uiLang={this.props.uiLang} />
-            {showSidebarScroll && (
-              <nav className="nearest-dates" aria-label={this.props.t('nearest_dates')}>
-                <h2>{boardFeatures.sidebarNames ? this.props.t('nearest_dates') : this.props.t('community_announcements')}</h2>
-                <NearestDatesList items={this.state.sidebarItems} onPersonClick={this.props.onOpenCard} />
-              </nav>
-            )}
+            <SidebarUpcomingPanel
+              uiLang={this.props.uiLang}
+              communityEvents={this.state.communityEvents}
+              formatGregorianDate={formatGregorianDate}
+              formatHebrewDate={formatHebrewDate}
+            />
           </div>
         </aside>
         <section className="middle">
