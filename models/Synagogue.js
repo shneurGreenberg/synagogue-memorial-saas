@@ -51,7 +51,7 @@ const CommunityEventSchema = new mongoose.Schema({
     date: Number,
     year: Number,
   },
-  startAt: { type: Date, required: true },
+  startAt: { type: Date, default: Date.now },
   endAt: Date,
   createdAt: { type: Date, default: Date.now },
 });

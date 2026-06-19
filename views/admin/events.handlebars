@@ -24,17 +24,17 @@
                         placeholder="{{t 'event_description_placeholder'}}"></textarea>
                 </div>
                 <div class="form-field">
-                    <label>{{t 'event_date_label'}}</label>
+                    <label>{{t 'event_date_label'}} <span class="field-optional">({{t 'optional'}})</span></label>
                     <div class="date-inputs-row">
                         <div class="date-input-group">
                             <label for="eventMonth" class="sr-only">{{t 'month'}}</label>
                             <input type="number" name="eventMonth" id="eventMonth" class="form-control admin-input-modern"
-                                min="1" max="12" required placeholder="{{t 'month'}}">
+                                min="1" max="12" placeholder="{{t 'month'}}">
                         </div>
                         <div class="date-input-group">
                             <label for="eventDay" class="sr-only">{{t 'day'}}</label>
                             <input type="number" name="eventDate" id="eventDay" class="form-control admin-input-modern"
-                                min="1" max="31" required placeholder="{{t 'day'}}">
+                                min="1" max="31" placeholder="{{t 'day'}}">
                         </div>
                         <div class="date-input-group">
                             <label for="eventYear" class="sr-only">{{t 'year'}}</label>
@@ -46,13 +46,13 @@
                 </div>
                 <div class="settings-two-col">
                     <div class="form-field">
-                        <label for="eventStartAt">{{t 'event_start_at'}}</label>
+                        <label for="eventStartAt">{{t 'event_start_at'}} <span class="field-optional">({{t 'optional'}})</span></label>
                         <input type="datetime-local" name="startAt" id="eventStartAt"
                             class="form-control admin-input-modern">
                         <span class="field-hint">{{t 'event_start_at_help'}}</span>
                     </div>
                     <div class="form-field">
-                        <label for="eventEndAt">{{t 'event_end_at'}}</label>
+                        <label for="eventEndAt">{{t 'event_end_at'}} <span class="field-optional">({{t 'optional'}})</span></label>
                         <input type="datetime-local" name="endAt" id="eventEndAt"
                             class="form-control admin-input-modern">
                         <span class="field-hint">{{t 'event_end_at_help'}}</span>
@@ -118,12 +118,12 @@
                         <textarea name="text" id="editEventText" class="form-control admin-input-modern" rows="2"></textarea>
                     </div>
                     <div class="form-field">
-                        <label>{{t 'event_date_label'}}</label>
+                        <label>{{t 'event_date_label'}} <span class="field-optional">({{t 'optional'}})</span></label>
                         <div class="date-inputs-row">
                             <input type="number" name="eventMonth" id="editEventMonth" class="form-control admin-input-modern"
-                                min="1" max="12" required placeholder="{{t 'month'}}">
+                                min="1" max="12" placeholder="{{t 'month'}}">
                             <input type="number" name="eventDate" id="editEventDay" class="form-control admin-input-modern"
-                                min="1" max="31" required placeholder="{{t 'day'}}">
+                                min="1" max="31" placeholder="{{t 'day'}}">
                             <input type="number" name="eventYear" id="editEventYear" class="form-control admin-input-modern"
                                 min="1900" max="2100" placeholder="{{t 'year'}}">
                         </div>
