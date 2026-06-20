@@ -27,10 +27,16 @@ function mixRgb(rgb, target, ratio) {
   };
 }
 
+function blendAlpha(glassAlpha, opaqueAlpha, solid) {
+  return solid * opaqueAlpha + (1 - solid) * glassAlpha;
+}
+
 export function buildTileThemeVars(tileHex, primaryHex, tileOpacity = 100) {
   const tile = parseHex(tileHex, DEFAULT_TILE);
   const primary = parseHex(primaryHex, DEFAULT_PRIMARY);
-  const opacity = Math.min(100, Math.max(0, Number(tileOpacity) || 100)) / 100;
+  const transparency = Math.min(100, Math.max(0, Number(tileOpacity) ?? 100)) / 100;
+  const solid = 1 - transparency;
+  const alpha = (glassAlpha, opaqueAlpha = 1) => blendAlpha(glassAlpha, opaqueAlpha, solid);
   const tileDark = mixRgb(tile, { r: 0, g: 0, b: 0 }, 0.28);
   const tileLight = mixRgb(tile, { r: 255, g: 255, b: 255 }, 0.12);
   const primaryButton = mixRgb(primary, { r: 0, g: 0, b: 0 }, 0.15);
@@ -38,23 +44,23 @@ export function buildTileThemeVars(tileHex, primaryHex, tileOpacity = 100) {
 
   return {
     tileColor: tileHex || '#b89a22',
-    tileOpacity: opacity,
-    tileGlassBase: rgba(tile, 0.1 * opacity),
-    tileGlassMid: rgba(tile, 0.18 * opacity),
-    tileGlassFade: rgba(tile, 0.08 * opacity),
-    tileGlassFrost: `rgba(255, 255, 255, ${0.06 * opacity})`,
-    tileGlassBorder: rgba(tileDark, 0.5 * opacity + 0.25),
-    tileGlassHighlight: `rgba(255, 255, 255, ${0.1 * opacity})`,
-    tileGlassGlow: rgba(tile, 0.22 * opacity),
-    tileGlassLegacyGlow: rgba(tile, 0.3 * opacity),
-    tileGlassLegacyBase: rgba(tile, 0.3 * opacity),
-    tileGlassLegacyMid: rgba(tile, 0.34 * opacity),
-    tileGlassLegacyFade: rgba(tile, 0.24 * opacity),
-    tileGlassLegacyFrost: `rgba(255, 255, 255, ${0.16 * opacity})`,
-    tileGlassLegacyHighlight: `rgba(255, 255, 255, ${0.12 * opacity})`,
-    tileSurfaceLight: rgba(tileLight, 0.62 * opacity),
-    tileSurfaceDark: rgba(tileDark, 0.7 * opacity),
-    tileSurfaceBorder: rgba(mixRgb(tile, { r: 0, g: 0, b: 0 }, 0.42), 0.78 * opacity + 0.1),
+    tileTransparency: transparency,
+    tileGlassBase: rgba(tile, alpha(0.1)),
+    tileGlassMid: rgba(tile, alpha(0.18)),
+    tileGlassFade: rgba(tile, alpha(0.08)),
+    tileGlassFrost: `rgba(255, 255, 255, ${alpha(0.06)})`,
+    tileGlassBorder: rgba(tileDark, alpha(0.75, 0.92)),
+    tileGlassHighlight: `rgba(255, 255, 255, ${alpha(0.1, 0.08)})`,
+    tileGlassGlow: rgba(tile, alpha(0.22, 0)),
+    tileGlassLegacyGlow: rgba(tile, alpha(0.3, 0)),
+    tileGlassLegacyBase: rgba(tile, alpha(0.3)),
+    tileGlassLegacyMid: rgba(tile, alpha(0.34)),
+    tileGlassLegacyFade: rgba(tile, alpha(0.24)),
+    tileGlassLegacyFrost: `rgba(255, 255, 255, ${alpha(0.16)})`,
+    tileGlassLegacyHighlight: `rgba(255, 255, 255, ${alpha(0.12, 0.08)})`,
+    tileSurfaceLight: rgba(tileLight, alpha(0.62, 0.88)),
+    tileSurfaceDark: rgba(tileDark, alpha(0.7, 0.9)),
+    tileSurfaceBorder: rgba(mixRgb(tile, { r: 0, g: 0, b: 0 }, 0.42), alpha(0.88, 0.95)),
     cardButton: rgba(primaryButton, 0.92),
     cardButtonBorder: rgba(primaryButtonBorder, 0.95),
   };

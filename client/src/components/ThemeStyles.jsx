@@ -4,16 +4,25 @@ import { assetUrl } from '../lib/asset-url';
 import { buildTileThemeVars } from '../lib/tile-theme-colors';
 import { fontScaleCss, resolveFontScales, resolveTileOpacity } from '../lib/theme-typography';
 
-const TILE_GLASS_NOISE = `repeating-linear-gradient(
-  0deg,
-  rgba(255, 255, 255, 0.04) 0,
-  rgba(255, 255, 255, 0.04) 1px,
-  transparent 1px,
-  transparent 3px
-)`;
+function tileGlassNoise(transparency) {
+  if (transparency <= 0.01) {
+    return 'none';
+  }
 
-function tileGlassLayers(mid, fade, frost) {
-  return `
+  const noiseAlpha = 0.04 * transparency;
+
+  return `repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, ${noiseAlpha}) 0,
+    rgba(255, 255, 255, ${noiseAlpha}) 1px,
+    transparent 1px,
+    transparent 3px
+  )`;
+}
+
+function tileGlassLayers(mid, fade, frost, transparency) {
+  const noise = tileGlassNoise(transparency);
+  const layers = `
     linear-gradient(
       80deg,
       rgba(0, 0, 0, 1) 0%,
@@ -22,9 +31,9 @@ function tileGlassLayers(mid, fade, frost) {
       ${mid} 52%,
       ${fade} 78%,
       ${frost} 100%
-    ),
-    ${TILE_GLASS_NOISE}
-  `;
+    )`;
+
+  return noise === 'none' ? layers : `${layers},\n    ${noise}`;
 }
 
 const GLASS_SELECTORS = `
@@ -41,6 +50,8 @@ export function ThemeStyles() {
   const accent = theme.accentColor || '#ffd54f';
   const fontScales = resolveFontScales(theme.fontScales);
   const tileVars = buildTileThemeVars(theme.tileColor, primary, resolveTileOpacity(theme.tileOpacity));
+  const tileTransparency = tileVars.tileTransparency;
+  const useBackdropBlur = tileTransparency > 0.01;
 
   const css = `
     :root {
@@ -202,6 +213,7 @@ export function ThemeStyles() {
         'var(--tile-glass-legacy-mid)',
         'var(--tile-glass-legacy-fade)',
         'var(--tile-glass-legacy-frost)',
+        tileTransparency,
       )} !important;
       border-color: var(--tile-glass-border) !important;
       box-shadow:
@@ -209,13 +221,14 @@ export function ThemeStyles() {
         inset 0 0 22px var(--tile-glass-legacy-glow),
         inset 0 -10px 18px rgba(0, 0, 0, 0.08) !important;
     }
-    @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    ${useBackdropBlur ? `@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
       ${GLASS_SELECTORS} {
         background-color: var(--tile-glass-base) !important;
         background-image: ${tileGlassLayers(
           'var(--tile-glass-mid)',
           'var(--tile-glass-fade)',
           'var(--tile-glass-frost)',
+          tileTransparency,
         )} !important;
         box-shadow:
           inset 0 1px 0 var(--tile-glass-highlight),
@@ -223,12 +236,12 @@ export function ThemeStyles() {
         -webkit-backdrop-filter: blur(20px);
         backdrop-filter: blur(20px);
       }
-    }
+    }` : ''}
   `;
 
   return (
     <style
-      key={`theme-${revision}-${primary}-${text}-${accent}-${tileVars.tileColor}-${tileVars.tileOpacity}`}
+      key={`theme-${revision}-${primary}-${text}-${accent}-${tileVars.tileColor}-${tileTransparency}`}
       dangerouslySetInnerHTML={{ __html: css }}
     />
   );
