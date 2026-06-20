@@ -2,6 +2,7 @@ import React from 'react';
 import { useBoardData } from '../context/BoardDataContext';
 import { assetUrl } from '../lib/asset-url';
 import { buildTileThemeVars } from '../lib/tile-theme-colors';
+import { fontScaleCss, resolveFontScales, resolveTileOpacity } from '../lib/theme-typography';
 
 const TILE_GLASS_NOISE = `repeating-linear-gradient(
   0deg,
@@ -15,9 +16,9 @@ function tileGlassLayers(mid, fade, frost) {
   return `
     linear-gradient(
       80deg,
-      rgba(0, 0, 0, 0.95) 0%,
-      rgba(0, 0, 0, 0.95) 24%,
-      rgba(0, 0, 0, 0.82) 32%,
+      rgba(0, 0, 0, 1) 0%,
+      rgba(0, 0, 0, 1) 24%,
+      rgba(0, 0, 0, 1) 32%,
       ${mid} 52%,
       ${fade} 78%,
       ${frost} 100%
@@ -38,7 +39,8 @@ export function ThemeStyles() {
   const primary = theme.primaryColor || '#cfaf1f';
   const text = theme.textColor || '#bfbfbf';
   const accent = theme.accentColor || '#ffd54f';
-  const tileVars = buildTileThemeVars(theme.tileColor, primary);
+  const fontScales = resolveFontScales(theme.fontScales);
+  const tileVars = buildTileThemeVars(theme.tileColor, primary, resolveTileOpacity(theme.tileOpacity));
 
   const css = `
     :root {
@@ -67,14 +69,27 @@ export function ThemeStyles() {
       --card-button: ${tileVars.cardButton};
       --card-button-border: ${tileVars.cardButtonBorder};
       --card-button-text: #1a1a1a;
+      --font-scale-tile-title: ${fontScaleCss(fontScales.tileTitle)};
+      --font-scale-tile-date: ${fontScaleCss(fontScales.tileDate)};
+      --font-scale-clock: ${fontScaleCss(fontScales.clock)};
+      --font-scale-board-header: ${fontScaleCss(fontScales.boardHeader)};
+      --font-scale-sidebar: ${fontScaleCss(fontScales.sidebar)};
+      --font-scale-prayers: ${fontScaleCss(fontScales.prayers)};
     }
     .main-container .board-header h1 {
       color: var(--primary-color) !important;
+      font-size: calc(clamp(28px, 3.8vw, 58px) * var(--font-scale-board-header)) !important;
     }
     .main-container .cards-grid .card .inner h3,
     .main-container .cards-grid-kadish .card .inner h3 {
       color: var(--tile-title-color) !important;
       text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.55);
+      font-size: calc(clamp(13px, 1.1vw, 17px) * var(--font-scale-tile-title)) !important;
+    }
+    .main-container .cards-grid .card.big .inner h3,
+    .main-container .cards-grid-kadish .card.big .inner h3,
+    .main-container .cards-grid-kadish .kadish-center .card .inner h3 {
+      font-size: calc(clamp(16px, 1.5vw, 26px) * var(--font-scale-tile-title)) !important;
     }
     .main-container .cards-grid .card .inner time,
     .main-container .cards-grid-kadish .card .inner time,
@@ -84,6 +99,20 @@ export function ThemeStyles() {
     .main-container .nearest-dates time,
     .main-container .daily-cite {
       color: var(--tile-date-color) !important;
+      font-size: calc(1em * var(--font-scale-tile-date)) !important;
+    }
+    .main-container .cards-grid .card .inner time,
+    .main-container .cards-grid-kadish .card .inner time {
+      font-size: calc(clamp(12px, 1vw, 15px) * var(--font-scale-tile-date)) !important;
+    }
+    .main-container .board-clock-block h1 {
+      font-size: calc(clamp(24px, 2.5vw, 40px) * var(--font-scale-clock)) !important;
+    }
+    .main-container .board-clock-block h2 {
+      font-size: calc(clamp(17px, 1.75vw, 24px) * var(--font-scale-clock)) !important;
+    }
+    .main-container .board-clock-block h3 {
+      font-size: calc(clamp(13px, 1.15vw, 16px) * var(--font-scale-clock)) !important;
     }
     .main-container .board-clock-block,
     .main-container .board-clock-block h1,
@@ -92,6 +121,24 @@ export function ThemeStyles() {
     .main-container .board-clock-block time {
       color: #ffffff !important;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+    }
+    .main-container .jewish-sidebar-panels h2,
+    .main-container .hayom-yom-panel h2,
+    .main-container .daily-gates-panel h2,
+    .main-container .sidebar-upcoming-panel h2,
+    .main-container .weather-panel h2 {
+      font-size: calc(1em * var(--font-scale-sidebar)) !important;
+    }
+    .main-container .jewish-sidebar-panels,
+    .main-container .hayom-yom-panel,
+    .main-container .daily-gates-panel,
+    .main-container .sidebar-upcoming-panel {
+      font-size: calc(1em * var(--font-scale-sidebar)) !important;
+    }
+    .main-container .memorial-prayers h1,
+    .main-container .memorial-prayers h2,
+    .main-container .memorial-prayers .prayer-text {
+      font-size: calc(1em * var(--font-scale-prayers)) !important;
     }
     .main-container .board-shabbat-block .shabbat-times .shabbat-label,
     .main-container .board-shabbat-block .shabbat-times .shabbat-time,
@@ -147,7 +194,7 @@ export function ThemeStyles() {
 
   return (
     <style
-      key={`theme-${revision}-${primary}-${text}-${accent}-${tileVars.tileColor}`}
+      key={`theme-${revision}-${primary}-${text}-${accent}-${tileVars.tileColor}-${tileVars.tileOpacity}`}
       dangerouslySetInnerHTML={{ __html: css }}
     />
   );

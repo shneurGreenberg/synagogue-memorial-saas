@@ -14,11 +14,12 @@ const { parsePhotoCropFromBody } = require('../lib/photo-crop');
 const { parseBoardFeaturesFromBody } = require('../lib/board-features');
 const {
   normalizeSnapshot,
-  saveScreenshotFromDataUrl,
+  saveViewThumbnail,
   deleteScreenshot,
   buildApplyUpdate,
   serializeSavedViews,
 } = require('../lib/saved-views');
+const { parseFontScalesFromBody, normalizeTileOpacity } = require('../lib/theme-typography');
 const {
   IMAGES_DIR,
   PHOTOS_DIR,
@@ -66,6 +67,24 @@ function buildBoardFeatureToggles(boardFeatures) {
   return BOARD_FEATURE_TOGGLE_META.map((entry) => ({
     ...entry,
     enabled: features[entry.key] !== false,
+  }));
+}
+
+const FONT_SCALE_SLIDER_META = [
+  { key: 'tileTitle', labelKey: 'font_scale_tile_title', helpKey: 'font_scale_tile_title_help' },
+  { key: 'tileDate', labelKey: 'font_scale_tile_date', helpKey: 'font_scale_tile_date_help' },
+  { key: 'clock', labelKey: 'font_scale_clock', helpKey: 'font_scale_clock_help' },
+  { key: 'boardHeader', labelKey: 'font_scale_board_header', helpKey: 'font_scale_board_header_help' },
+  { key: 'sidebar', labelKey: 'font_scale_sidebar', helpKey: 'font_scale_sidebar_help' },
+  { key: 'prayers', labelKey: 'font_scale_prayers', helpKey: 'font_scale_prayers_help' },
+];
+
+function buildFontScaleSliders(fontScales) {
+  const scales = fontScales || {};
+
+  return FONT_SCALE_SLIDER_META.map((entry) => ({
+    ...entry,
+    value: scales[entry.key] != null ? scales[entry.key] : 100,
   }));
 }
 
@@ -303,10 +322,11 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
     try {
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
         const {
-            titleRu, titleEn, titleHe, primaryColor, textColor, accentColor, tileColor,
+            titleRu, titleEn, titleHe, primaryColor, textColor, accentColor, tileColor, tileOpacity,
             language, shabbatTimesEnabled,
         } = req.body;
         const boardFeatures = parseBoardFeaturesFromBody(req.body);
+        const fontScales = parseFontScalesFromBody(req.body);
         const updateData = {};
 
         if (permissions.settingsAppearance) {
@@ -323,6 +343,10 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             updateData['theme.textColor'] = sanitizeHexColor(textColor, BOARD_THEME_DEFAULTS.textColor);
             updateData['theme.accentColor'] = sanitizeHexColor(accentColor, BOARD_THEME_DEFAULTS.accentColor);
             updateData['theme.tileColor'] = sanitizeHexColor(tileColor, BOARD_THEME_DEFAULTS.tileColor);
+            updateData['theme.tileOpacity'] = normalizeTileOpacity(tileOpacity);
+            Object.entries(fontScales).forEach(([key, value]) => {
+                updateData[`theme.fontScales.${key}`] = value;
+            });
         }
 
         if (permissions.settingsLanguages) {
@@ -379,7 +403,7 @@ router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('sett
             backgroundImage: synagogue.theme?.backgroundImage || '',
             tilesBackground: synagogue.theme?.tilesBackground || '',
         });
-        const screenshot = saveScreenshotFromDataUrl(req.body.screenshot);
+        const screenshot = await saveViewThumbnail(snapshot);
         const view = {
             id: require('crypto').randomUUID(),
             name,
@@ -463,6 +487,13 @@ router.post('/:slug/settings/reset-theme', requireAdmin, requirePermission('sett
                 'theme.textColor': BOARD_THEME_DEFAULTS.textColor,
                 'theme.accentColor': BOARD_THEME_DEFAULTS.accentColor,
                 'theme.tileColor': BOARD_THEME_DEFAULTS.tileColor,
+                'theme.tileOpacity': BOARD_THEME_DEFAULTS.tileOpacity,
+                'theme.fontScales.tileTitle': 100,
+                'theme.fontScales.tileDate': 100,
+                'theme.fontScales.clock': 100,
+                'theme.fontScales.boardHeader': 100,
+                'theme.fontScales.sidebar': 100,
+                'theme.fontScales.prayers': 100,
             },
             $unset: {
                 'theme.backgroundImage': '',
@@ -536,6 +567,7 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             canSaveBoardSettings: canSaveBoardSettings(req.adminPermissions),
             boardTitles: enriched.titles,
             boardFeatureToggles: buildBoardFeatureToggles(enriched.boardFeatures),
+            fontScaleSliders: buildFontScaleSliders(enriched.theme.fontScales),
             savedViews: serializeSavedViews(enriched.savedViews),
             saved: req.query.saved === '1',
             error: req.query.error || null,

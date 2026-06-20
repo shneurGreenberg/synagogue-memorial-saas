@@ -237,12 +237,12 @@ body.admin-login-page {
 
 .btn-admin-danger {
   background: var(--admin-danger-bg);
-  color: var(--admin-danger) !important;
+  color: #ffffff !important;
   border: 1px solid var(--admin-danger-border);
 
   &:hover {
     background: var(--admin-danger);
-    color: #1a0a0a !important;
+    color: #ffffff !important;
   }
 }
 
@@ -756,10 +756,14 @@ body.admin-is-busy {
 
 .admin-select-modern {
   appearance: none;
+  min-height: 3rem;
+  line-height: 1.45;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2394a3b8' d='M1 1l5 5 5-5'/%3E%3C/svg%3E") !important;
   background-repeat: no-repeat !important;
   background-position: right 0.9rem center !important;
   padding-right: 2.25rem !important;
+  padding-top: 0.8rem !important;
+  padding-bottom: 0.8rem !important;
   cursor: pointer;
 }
 
@@ -1669,15 +1673,91 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
 
 .admin-table code {
   font-size: 0.85em;
+  color: var(--admin-text);
+  background: var(--admin-surface-hover);
+}
+
+.admin-table {
+  width: 100%;
+  color: var(--admin-text);
+  border-color: var(--admin-border);
+
+  thead th {
+    color: var(--admin-text);
+    background: var(--admin-surface-elevated);
+    border-color: var(--admin-border);
+    font-weight: 600;
+  }
+
+  tbody td {
+    color: var(--admin-text);
+    border-color: var(--admin-border);
+    vertical-align: top;
+  }
+
+  tbody tr:hover {
+    background: var(--admin-surface-hover);
+  }
+}
+
+.typography-controls {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--admin-border);
+}
+
+.typography-controls-title {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.font-scale-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.slider-field-modern {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+
+  label {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+}
+
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-range-input {
+  flex: 1;
+  accent-color: var(--admin-primary);
+}
+
+.slider-value-display {
+  min-width: 3.5rem;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+  color: var(--admin-text-muted);
 }
 
 .btn-admin-danger {
   background: #c0392b;
-  color: #fff;
+  color: #fff !important;
   border: none;
 
   &:hover {
     background: #a93226;
-    color: #fff;
+    color: #fff !important;
   }
 }

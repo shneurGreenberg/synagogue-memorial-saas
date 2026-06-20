@@ -103,6 +103,24 @@ export function searchPeopleByString(string, allPeople) {
     .map((entry) => entry.person);
 }
 
+export function getPageShift(state) {
+  const { page, hasKadishToday } = state;
+
+  if (!hasKadishToday) {
+    return page * 16;
+  }
+
+  if (page === 0) {
+    return 0;
+  }
+
+  return 12 + ((page - 1) * 16);
+}
+
+export function shouldUseKadishLayout(state) {
+  return state.hasKadishToday && state.page === 0;
+}
+
 export function applySearchToPaginationState(state, string) {
   const people = searchPeopleByString(string, state.allPeople);
 
@@ -110,16 +128,19 @@ export function applySearchToPaginationState(state, string) {
     people.length === 1
     || people.filter((person) => person.passedToday).length === 1;
 
-  const totalNonKadishItems = hasKadishToday
-    ? people.length - 1
-    : people.length;
-
-  const itemsPerPage = hasKadishToday ? 12 : 16;
+  let totalPages = 1;
+  if (hasKadishToday) {
+    if (people.length > 12) {
+      totalPages = 1 + Math.ceil((people.length - 12) / 16);
+    }
+  } else {
+    totalPages = Math.max(1, Math.ceil(people.length / 16));
+  }
 
   state.people = people;
   state.hasKadishToday = hasKadishToday;
-  state.totalPages = Math.max(1, Math.ceil(totalNonKadishItems / itemsPerPage));
-  state.itemsPerPage = itemsPerPage;
+  state.totalPages = totalPages;
+  state.itemsPerPage = hasKadishToday ? 12 : 16;
   state.page = 0;
   state.pageShift = 0;
   state.filterString = string;

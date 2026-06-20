@@ -18,6 +18,8 @@ import { resolveBoardTimezone } from '../lib/timezone';
 import {
   applySearchToPaginationState,
   attachNameComponents,
+  getPageShift,
+  shouldUseKadishLayout,
 } from '../lib/name-search';
 import { sanitizeRichText } from '../lib/html-sanitize';
 import { getBoardData } from '../lib/board-data';
@@ -327,7 +329,7 @@ class HomePageBase extends React.Component {
       const page = Math.min(Math.max(state.page + shift, 0), state.totalPages - 1);
       return {
         page,
-        pageShift: page * state.itemsPerPage,
+        pageShift: getPageShift({ ...state, page }),
       };
     });
   }
@@ -359,42 +361,34 @@ class HomePageBase extends React.Component {
   }
 
   renderStandardGrid() {
-    const { people, page, itemsPerPage, totalPages } = this.state;
+    const { people, page, totalPages } = this.state;
+    const pageShift = getPageShift(this.state);
 
     return (
       <div className="cards-area">
-        {Array.from({ length: totalPages }, (_, pageIndex) => {
-          const pageShift = pageIndex * itemsPerPage;
-          const cells = [];
-
-          for (let i = 0; i < 16; i += 1) {
+        <div
+          className="cards-grid"
+          aria-hidden={false}
+        >
+          {Array.from({ length: 16 }, (_, i) => {
             const entry = people[pageShift + i];
-            cells.push(
+            return (
               <MemorialCard
-                key={entry ? `person-${entry.id}` : `empty-${pageIndex}-${i}`}
+                key={entry ? `person-${entry.id}` : `empty-${page}-${i}`}
                 entry={entry}
                 onOpen={this.props.onOpenCard}
               />
             );
-          }
-
-          return (
-            <div
-              key={`page-grid-${pageIndex}`}
-              className={`cards-grid${pageIndex === page ? '' : ' cards-grid-hidden'}`}
-              aria-hidden={pageIndex !== page}
-            >
-              {cells}
-            </div>
-          );
-        })}
+          })}
+        </div>
       </div>
     );
   }
 
   renderKadishGrid() {
-    const { people, page, itemsPerPage, totalPages } = this.state;
-    const pick = (pageShift, index) => people[pageShift + index];
+    const { people } = this.state;
+    const pageShift = getPageShift(this.state);
+    const pick = (index) => people[pageShift + index];
     const wrap = (className, entry, big) => (
       <div key={className} className={className}>
         <MemorialCard entry={entry} big={big} onOpen={this.props.onOpenCard} />
@@ -403,33 +397,23 @@ class HomePageBase extends React.Component {
 
     return (
       <div className="cards-area">
-        {Array.from({ length: totalPages }, (_, pageIndex) => {
-          const pageShift = pageIndex * itemsPerPage;
-
-          return (
-            <div
-              key={`kadish-page-grid-${pageIndex}`}
-              className={`cards-grid cards-grid-kadish${pageIndex === page ? '' : ' cards-grid-hidden'}`}
-              aria-hidden={pageIndex !== page}
-            >
-              {wrap('k-r1c1', pick(pageShift, 1))}
-              {wrap('k-r1c2', pick(pageShift, 2))}
-              {wrap('k-r1c3', pick(pageShift, 3))}
-              {wrap('k-r1c4', pick(pageShift, 4))}
-              {wrap('k-r2c1', pick(pageShift, 12))}
-              <div className="kadish-center">
-                <MemorialCard entry={pick(pageShift, 0)} big onOpen={this.props.onOpenCard} />
-              </div>
-              {wrap('k-r2c4', pick(pageShift, 5))}
-              {wrap('k-r3c1', pick(pageShift, 11))}
-              {wrap('k-r3c4', pick(pageShift, 6))}
-              {wrap('k-r4c1', pick(pageShift, 10))}
-              {wrap('k-r4c2', pick(pageShift, 9))}
-              {wrap('k-r4c3', pick(pageShift, 8))}
-              {wrap('k-r4c4', pick(pageShift, 7))}
-            </div>
-          );
-        })}
+        <div className="cards-grid cards-grid-kadish">
+          {wrap('k-r1c1', pick(1))}
+          {wrap('k-r1c2', pick(2))}
+          {wrap('k-r1c3', pick(3))}
+          {wrap('k-r1c4', pick(4))}
+          {wrap('k-r2c1', pick(12))}
+          <div className="kadish-center">
+            <MemorialCard entry={pick(0)} big onOpen={this.props.onOpenCard} />
+          </div>
+          {wrap('k-r2c4', pick(5))}
+          {wrap('k-r3c1', pick(11))}
+          {wrap('k-r3c4', pick(6))}
+          {wrap('k-r4c1', pick(10))}
+          {wrap('k-r4c2', pick(9))}
+          {wrap('k-r4c3', pick(8))}
+          {wrap('k-r4c4', pick(7))}
+        </div>
       </div>
     );
   }
@@ -478,7 +462,7 @@ class HomePageBase extends React.Component {
         <section className="middle">
           <div className="wooden-panel">
             <header className="board-header"><h1>{this.props.boardTitle}</h1></header>
-            {this.state.hasKadishToday ? this.renderKadishGrid() : this.renderStandardGrid()}
+            {shouldUseKadishLayout(this.state) ? this.renderKadishGrid() : this.renderStandardGrid()}
             <div className={`board-footer${this.state.totalPages <= 1 ? ' board-footer-search-only' : ''}`}>
               <div className="search">
                 <button
