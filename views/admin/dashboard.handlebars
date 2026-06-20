@@ -128,6 +128,33 @@
                         <span class="field-hint">{{t 'tile_color_help'}}</span>
                     </div>
                 </div>
+                <div class="typography-controls">
+                    <h3 class="typography-controls-title">{{t 'typography_section'}}</h3>
+                    <div class="slider-field-modern">
+                        <label for="tileOpacity">{{t 'tile_opacity'}}</label>
+                        <div class="slider-row">
+                            <input type="range" name="tileOpacity" id="tileOpacity" class="admin-range-input"
+                                min="0" max="100" step="1"
+                                value="{{#if synagogue.theme.tileOpacity}}{{synagogue.theme.tileOpacity}}{{else}}100{{/if}}">
+                            <output class="slider-value-display" id="tileOpacityValue">{{#if synagogue.theme.tileOpacity}}{{synagogue.theme.tileOpacity}}{{else}}100{{/if}}%</output>
+                        </div>
+                        <span class="field-hint">{{t 'tile_opacity_help'}}</span>
+                    </div>
+                    <div class="font-scale-grid">
+                        {{#each fontScaleSliders}}
+                        <div class="slider-field-modern">
+                            <label for="fontScale_{{this.key}}">{{t this.labelKey}}</label>
+                            <div class="slider-row">
+                                <input type="range" name="fontScale_{{this.key}}" id="fontScale_{{this.key}}"
+                                    class="admin-range-input font-scale-input" data-font-scale-key="{{this.key}}"
+                                    min="50" max="200" step="5" value="{{this.value}}">
+                                <output class="slider-value-display font-scale-value" data-for="fontScale_{{this.key}}">{{this.value}}%</output>
+                            </div>
+                            <span class="field-hint">{{t this.helpKey}}</span>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
             </div>
         </section>
         {{/if}}
@@ -304,7 +331,6 @@
     <form method="POST" action="/admin/{{synagogue.slug}}/settings/reset-theme" id="resetThemeForm" class="visually-hidden-reset-form" aria-hidden="true"></form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
     (function () {
         var settingsForm = document.getElementById('settingsForm');
@@ -360,17 +386,28 @@
         var previewDebounce;
         var PREVIEW_MESSAGE = 'board-preview';
 
+        function readFontScalePatch() {
+            var patch = {};
+            document.querySelectorAll('.font-scale-input').forEach(function (input) {
+                if (input.dataset.fontScaleKey) {
+                    patch['fontScale_' + input.dataset.fontScaleKey] = input.value;
+                }
+            });
+            return patch;
+        }
+
         function readPreviewPatch() {
             var primary = document.getElementById('primaryColor');
             var text = document.getElementById('textColor');
             var accent = document.getElementById('accentColor');
             var tile = document.getElementById('tileColor');
+            var tileOpacity = document.getElementById('tileOpacity');
             var titleRu = document.getElementById('titleRu');
             var titleEn = document.getElementById('titleEn');
             var titleHe = document.getElementById('titleHe');
             var languageSelect = document.getElementById('language');
 
-            return {
+            return Object.assign({
                 type: PREVIEW_MESSAGE,
                 titleRu: titleRu ? titleRu.value.trim() : '',
                 titleEn: titleEn ? titleEn.value.trim() : '',
@@ -379,8 +416,9 @@
                 textColor: text ? text.value : '',
                 accentColor: accent ? accent.value : '',
                 tileColor: tile ? tile.value : '',
+                tileOpacity: tileOpacity ? tileOpacity.value : '100',
                 previewLang: languageSelect ? languageSelect.value : 'ru',
-            };
+            }, readFontScalePatch());
         }
 
         function bindColorPair(colorInputId, hexInputId) {
@@ -399,6 +437,25 @@
         bindColorPair('textColor', 'textColorHex');
         bindColorPair('accentColor', 'accentColorHex');
         bindColorPair('tileColor', 'tileColorHex');
+
+        var tileOpacityInput = document.getElementById('tileOpacity');
+        var tileOpacityValue = document.getElementById('tileOpacityValue');
+        if (tileOpacityInput && tileOpacityValue) {
+            tileOpacityInput.addEventListener('input', function () {
+                tileOpacityValue.textContent = tileOpacityInput.value + '%';
+                schedulePreview();
+            });
+        }
+
+        document.querySelectorAll('.font-scale-input').forEach(function (input) {
+            input.addEventListener('input', function () {
+                var output = document.querySelector('.font-scale-value[data-for="' + input.id + '"]');
+                if (output) {
+                    output.textContent = input.value + '%';
+                }
+                schedulePreview();
+            });
+        });
 
         var toggle = document.getElementById('colorModeToggle');
         var hidden = document.getElementById('colorModeInput');
@@ -493,6 +550,12 @@
             params.set('textColor', patch.textColor);
             params.set('accentColor', patch.accentColor);
             params.set('tileColor', patch.tileColor);
+            params.set('tileOpacity', patch.tileOpacity);
+            Object.keys(patch).forEach(function (key) {
+                if (key.indexOf('fontScale_') === 0) {
+                    params.set(key, patch[key]);
+                }
+            });
             params.set('previewLang', patch.previewLang);
             frame.src = '/s/' + slug + '?' + params.toString();
         }
@@ -515,6 +578,12 @@
             params.set('textColor', initial.textColor);
             params.set('accentColor', initial.accentColor);
             params.set('tileColor', initial.tileColor);
+            params.set('tileOpacity', initial.tileOpacity);
+            Object.keys(initial).forEach(function (key) {
+                if (key.indexOf('fontScale_') === 0) {
+                    params.set(key, initial[key]);
+                }
+            });
             params.set('previewLang', initial.previewLang);
             frame.src = '/s/' + slug + '?' + params.toString();
             fitBoardPreviewTv();
@@ -554,7 +623,7 @@
         function readCurrentDesignPatch() {
             var patch = readPreviewPatch();
             var languageSelect = document.getElementById('language');
-            return {
+            var payload = {
                 name: '',
                 titleRu: patch.titleRu,
                 titleEn: patch.titleEn,
@@ -563,28 +632,15 @@
                 textColor: patch.textColor,
                 accentColor: patch.accentColor,
                 tileColor: patch.tileColor,
+                tileOpacity: patch.tileOpacity,
                 language: languageSelect ? languageSelect.value : 'ru',
             };
-        }
-
-        function capturePreviewScreenshot() {
-            var frame = document.getElementById('boardPreviewFrame');
-            if (!frame || !frame.contentDocument || !window.html2canvas) {
-                return Promise.resolve('');
-            }
-
-            var target = frame.contentDocument.querySelector('.main-container')
-                || frame.contentDocument.body;
-            return window.html2canvas(target, {
-                useCORS: true,
-                allowTaint: true,
-                scale: 0.35,
-                backgroundColor: null,
-            }).then(function (canvas) {
-                return canvas.toDataURL('image/jpeg', 0.82);
-            }).catch(function () {
-                return '';
+            Object.keys(patch).forEach(function (key) {
+                if (key.indexOf('fontScale_') === 0) {
+                    payload[key] = patch[key];
+                }
             });
+            return payload;
         }
 
         function formatSavedAt(value) {
@@ -669,19 +725,16 @@
                 var originalText = saveCurrentViewBtn.textContent;
                 saveCurrentViewBtn.textContent = '{{t 'saving_view'}}';
 
-                capturePreviewScreenshot().then(function (screenshot) {
-                    var payload = readCurrentDesignPatch();
-                    payload.name = name.trim();
-                    payload.screenshot = screenshot;
+                var payload = readCurrentDesignPatch();
+                payload.name = name.trim();
 
-                    return fetch('/admin/' + slug + '/settings/saved-views', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest',
-                        },
-                        body: JSON.stringify(payload),
-                    });
+                fetch('/admin/' + slug + '/settings/saved-views', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify(payload),
                 }).then(function (response) {
                     return response.json();
                 }).then(function (data) {

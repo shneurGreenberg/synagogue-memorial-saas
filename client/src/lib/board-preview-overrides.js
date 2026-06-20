@@ -32,6 +32,17 @@ export function mergePreviewPatch(data, patch) {
   if (patch.tileColor) {
     next.theme.tileColor = patch.tileColor;
   }
+  if (patch.tileOpacity !== undefined && patch.tileOpacity !== '') {
+    next.theme.tileOpacity = Number(patch.tileOpacity);
+  }
+  const fontScaleKeys = ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers'];
+  fontScaleKeys.forEach((key) => {
+    const value = patch[`fontScale_${key}`];
+    if (value !== undefined && value !== '') {
+      next.theme.fontScales = { ...(next.theme.fontScales || {}) };
+      next.theme.fontScales[key] = Number(value);
+    }
+  });
   if (patch.previewLang && PREVIEW_LANGS.includes(patch.previewLang)) {
     next.language = patch.previewLang;
   }
@@ -49,6 +60,8 @@ export function previewPatchFromSearchParams(params) {
     || params.has('textColor')
     || params.has('accentColor')
     || params.has('tileColor')
+    || params.has('tileOpacity')
+    || params.has('fontScale_tileTitle')
     || params.has('titleRu')
     || params.has('titleEn')
     || params.has('titleHe')
@@ -66,6 +79,12 @@ export function previewPatchFromSearchParams(params) {
   if (params.has('textColor')) patch.textColor = params.get('textColor');
   if (params.has('accentColor')) patch.accentColor = params.get('accentColor');
   if (params.has('tileColor')) patch.tileColor = params.get('tileColor');
+  if (params.has('tileOpacity')) patch.tileOpacity = params.get('tileOpacity');
+  ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers'].forEach((key) => {
+    if (params.has(`fontScale_${key}`)) {
+      patch[`fontScale_${key}`] = params.get(`fontScale_${key}`);
+    }
+  });
   if (params.has('previewLang')) patch.previewLang = params.get('previewLang');
 
   return patch;

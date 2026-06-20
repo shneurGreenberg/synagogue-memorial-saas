@@ -103,6 +103,15 @@ const SynagogueSchema = new mongoose.Schema({
         textColor: String,
         accentColor: String,
         tileColor: String,
+        tileOpacity: Number,
+        fontScales: {
+          tileTitle: Number,
+          tileDate: Number,
+          clock: Number,
+          boardHeader: Number,
+          sidebar: Number,
+          prayers: Number,
+        },
         logo: String,
         backgroundImage: String,
         tilesBackground: String,
@@ -121,8 +130,17 @@ const SynagogueSchema = new mongoose.Schema({
     textColor: { type: String, default: '#f0f0f0' },
     accentColor: { type: String, default: '#ffd54f' },
     tileColor: { type: String, default: '#b89a22' },
+    tileOpacity: { type: Number, default: 100, min: 0, max: 100 },
+    fontScales: {
+      tileTitle: { type: Number, default: 100 },
+      tileDate: { type: Number, default: 100 },
+      clock: { type: Number, default: 100 },
+      boardHeader: { type: Number, default: 100 },
+      sidebar: { type: Number, default: 100 },
+      prayers: { type: Number, default: 100 },
+    },
     backgroundImage: String,
-    tilesBackground: String, // Can be color or image URL
+    tilesBackground: String,
     logo: String
   },
   slideshow: {

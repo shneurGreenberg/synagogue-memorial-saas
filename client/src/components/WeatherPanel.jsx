@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 import { getBoardData } from '../lib/board-data';
+import { useBoardData } from '../context/BoardDataContext';
+
+const LOCALE_MAP = {
+  ru: 'ru-RU',
+  he: 'he-IL',
+  en: 'en-US',
+};
 
 const WMO_LABELS = {
   0: 'clear',
@@ -34,7 +41,7 @@ function WeatherIcon({ code, className }) {
   return <span className={`weather-icon weather-icon-${label} ${className || ''}`} aria-hidden="true" />;
 }
 
-function WeatherPanelBase({ t }) {
+function WeatherPanelBase({ t, uiLang }) {
   const appData = getBoardData();
   const location = appData.location || {};
   const lat = location.lat;
@@ -88,6 +95,7 @@ function WeatherPanelBase({ t }) {
     return null;
   }
 
+  const locale = LOCALE_MAP[uiLang] || LOCALE_MAP.ru;
   const todayCode = forecast.current.weather_code;
   const todayTemp = Math.round(forecast.current.temperature_2m);
   const upcoming = (forecast.daily.time || []).slice(1, 4).map((date, index) => ({
@@ -112,7 +120,7 @@ function WeatherPanelBase({ t }) {
           {upcoming.map((day) => (
             <li key={day.date} className="weather-upcoming-day">
               <span className="weather-upcoming-date">
-                {new Date(`${day.date}T12:00:00`).toLocaleDateString(undefined, {
+                {new Date(`${day.date}T12:00:00`).toLocaleDateString(locale, {
                   weekday: 'short',
                   day: 'numeric',
                 })}
@@ -129,4 +137,9 @@ function WeatherPanelBase({ t }) {
   );
 }
 
-export const WeatherPanel = withTranslation()(WeatherPanelBase);
+function WeatherPanelConnected(props) {
+  const { uiLang } = useBoardData();
+  return <WeatherPanelBase {...props} uiLang={uiLang} />;
+}
+
+export const WeatherPanel = withTranslation()(WeatherPanelConnected);

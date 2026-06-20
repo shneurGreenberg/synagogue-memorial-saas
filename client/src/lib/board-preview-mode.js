@@ -9,6 +9,8 @@ export function isBoardPreviewMode() {
     || params.has('textColor')
     || params.has('accentColor')
     || params.has('tileColor')
+    || params.has('tileOpacity')
+    || params.has('fontScale_tileTitle')
     || params.has('titleRu')
     || params.has('titleEn')
     || params.has('titleHe')
