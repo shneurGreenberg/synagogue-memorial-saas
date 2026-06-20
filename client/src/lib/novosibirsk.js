@@ -330,10 +330,14 @@ export function formatGregorianDate(gregorianDate) {
     return result;
 }
 
-export const CURRENT_DAY_OF_YEAR = gregorianDayOfYear(
-    GREGORIAN_NOW.getMonth() + 1,
-    GREGORIAN_NOW.getDate()
-);
+export function getCurrentDayOfYear(referenceDate = new Date()) {
+  return gregorianDayOfYear(
+    referenceDate.getMonth() + 1,
+    referenceDate.getDate(),
+  );
+}
+
+export const CURRENT_DAY_OF_YEAR = getCurrentDayOfYear(GREGORIAN_NOW);
 
 export const DAYS_IN_YEAR = gregorianDayOfYear(12, 31);
 

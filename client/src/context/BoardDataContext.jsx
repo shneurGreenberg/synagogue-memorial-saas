@@ -15,6 +15,12 @@ import {
   previewPatchFromSearchParams,
 } from '../lib/board-preview-overrides';
 import { isStaticSite } from '../lib/asset-url';
+import {
+  getBoardTimezone,
+  getDayKeyInTimezone,
+  subscribeToCalendarDayChange,
+} from '../lib/board-calendar';
+import { resolveBoardTimezone } from '../lib/timezone';
 
 const POLL_MS = 8000;
 
@@ -55,6 +61,7 @@ export function BoardDataProvider({ slug, children }) {
   const previewMode = isBoardPreviewMode();
   const [data, setData] = useState(initialBoardData);
   const [revision, setRevision] = useState(0);
+  const [calendarDayKey, setCalendarDayKey] = useState(() => getDayKeyInTimezone(getBoardTimezone()));
   const [uiLang, setUiLangState] = useState(() => {
     if (previewMode) {
       const previewLang = getPreviewLanguage();
@@ -159,9 +166,15 @@ export function BoardDataProvider({ slug, children }) {
     };
   }, [slug, applyData, previewMode]);
 
+  useEffect(() => {
+    const timezone = resolveBoardTimezone(data);
+    setCalendarDayKey(getDayKeyInTimezone(timezone));
+    return subscribeToCalendarDayChange(setCalendarDayKey, timezone);
+  }, [data.location?.timezone, data.location?.city]);
+
   const value = useMemo(
-    () => ({ data, revision, uiLang, setUiLang, applyPreviewPatch }),
-    [data, revision, uiLang, setUiLang, applyPreviewPatch],
+    () => ({ data, revision, calendarDayKey, uiLang, setUiLang, applyPreviewPatch }),
+    [data, revision, calendarDayKey, uiLang, setUiLang, applyPreviewPatch],
   );
 
   return (
@@ -175,7 +188,12 @@ export function useBoardData() {
   const ctx = useContext(BoardDataContext);
 
   if (!ctx) {
-    return { data: getBoardDataFallback(), revision: 0, uiLang: getDisplayLanguage() };
+    return {
+      data: getBoardDataFallback(),
+      revision: 0,
+      calendarDayKey: getDayKeyInTimezone(getBoardTimezone()),
+      uiLang: getDisplayLanguage(),
+    };
   }
 
   return ctx;

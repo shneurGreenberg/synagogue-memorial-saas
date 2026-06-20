@@ -13,6 +13,13 @@ const { BOARD_THEME_DEFAULTS } = require('../lib/board-defaults');
 const { parsePhotoCropFromBody } = require('../lib/photo-crop');
 const { parseBoardFeaturesFromBody } = require('../lib/board-features');
 const {
+  normalizeSnapshot,
+  saveScreenshotFromDataUrl,
+  deleteScreenshot,
+  buildApplyUpdate,
+  serializeSavedViews,
+} = require('../lib/saved-views');
+const {
   IMAGES_DIR,
   PHOTOS_DIR,
 } = require('../lib/storage-paths');
@@ -48,6 +55,9 @@ const BOARD_FEATURE_TOGGLE_META = [
   { key: 'hayomYom', labelKey: 'feature_hayom_yom', helpKey: 'feature_hayom_yom_help' },
   { key: 'upcomingHolidays', labelKey: 'feature_upcoming_holidays', helpKey: 'feature_upcoming_holidays_help' },
   { key: 'communityEvents', labelKey: 'feature_community_events', helpKey: 'feature_community_events_help' },
+  { key: 'kelMaleRachamim', labelKey: 'feature_kel_male_rachamim', helpKey: 'feature_kel_male_rachamim_help' },
+  { key: 'izkor', labelKey: 'feature_izkor', helpKey: 'feature_izkor_help' },
+  { key: 'weather', labelKey: 'feature_weather', helpKey: 'feature_weather_help' },
 ];
 
 function buildBoardFeatureToggles(boardFeatures) {
@@ -345,6 +355,101 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
     }
 });
 
+router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('settings'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
+    if (!permissions.settingsAppearance && !permissions.settingsPreview) {
+        return res.status(403).json({ ok: false, error: 'Forbidden' });
+    }
+
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        if (!synagogue) {
+            return res.status(404).json({ ok: false, error: 'Not found' });
+        }
+
+        const name = String(req.body.name || '').trim();
+        if (!name) {
+            return res.status(400).json({ ok: false, error: 'Name is required' });
+        }
+
+        const snapshot = normalizeSnapshot({
+            ...req.body,
+            logo: synagogue.theme?.logo || '',
+            backgroundImage: synagogue.theme?.backgroundImage || '',
+            tilesBackground: synagogue.theme?.tilesBackground || '',
+        });
+        const screenshot = saveScreenshotFromDataUrl(req.body.screenshot);
+        const view = {
+            id: require('crypto').randomUUID(),
+            name,
+            savedAt: new Date(),
+            screenshot,
+            snapshot,
+        };
+
+        synagogue.savedViews = synagogue.savedViews || [];
+        synagogue.savedViews.unshift(view);
+        await synagogue.save();
+
+        return res.json({ ok: true, view });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.post('/:slug/settings/saved-views/:viewId/apply', requireAdmin, requirePermission('settings'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
+    if (!permissions.settingsAppearance) {
+        return res.status(403).json({ ok: false, error: 'Forbidden' });
+    }
+
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        const view = (synagogue.savedViews || []).find((entry) => entry.id === req.params.viewId);
+        if (!view) {
+            return res.status(404).json({ ok: false, error: 'View not found' });
+        }
+
+        const update = buildApplyUpdate(view.snapshot);
+        if (permissions.settingsLanguages && view.snapshot.language) {
+            update.language = view.snapshot.language;
+        }
+
+        await Synagogue.updateOne({ slug: req.params.slug }, { $set: update });
+        return res.json({ ok: true });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.delete('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermission('settings'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
+    if (!permissions.settingsAppearance && !permissions.settingsPreview) {
+        return res.status(403).json({ ok: false, error: 'Forbidden' });
+    }
+
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        if (!synagogue) {
+            return res.status(404).json({ ok: false, error: 'Not found' });
+        }
+
+        const view = (synagogue.savedViews || []).find((entry) => entry.id === req.params.viewId);
+        if (view && view.screenshot) {
+            deleteScreenshot(view.screenshot);
+        }
+
+        synagogue.savedViews = (synagogue.savedViews || []).filter((entry) => entry.id !== req.params.viewId);
+        await synagogue.save();
+        return res.json({ ok: true });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
 router.post('/:slug/settings/reset-theme', requireAdmin, requirePermission('settings'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
@@ -431,6 +536,7 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             canSaveBoardSettings: canSaveBoardSettings(req.adminPermissions),
             boardTitles: enriched.titles,
             boardFeatureToggles: buildBoardFeatureToggles(enriched.boardFeatures),
+            savedViews: serializeSavedViews(enriched.savedViews),
             saved: req.query.saved === '1',
             error: req.query.error || null,
         });
