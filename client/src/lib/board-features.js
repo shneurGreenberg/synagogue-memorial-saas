@@ -7,6 +7,9 @@ export const BOARD_FEATURE_DEFAULTS = {
   hayomYom: true,
   upcomingHolidays: true,
   communityEvents: true,
+  kelMaleRachamim: true,
+  izkor: true,
+  weather: false,
 };
 
 export function resolveBoardFeatures(raw) {

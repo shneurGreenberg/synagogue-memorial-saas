@@ -145,6 +145,47 @@
                     </div>
                 </div>
                 <p class="preview-hint">{{t 'live_preview_help'}}</p>
+                {{#if (or adminPermissions.settingsAppearance adminPermissions.settingsPreview)}}
+                <div class="saved-view-actions">
+                    <button type="button" class="btn-admin btn-admin-secondary" id="saveCurrentViewBtn">{{t 'save_current_view'}}</button>
+                </div>
+                {{/if}}
+            </div>
+        </section>
+        {{/if}}
+
+        {{#if (or adminPermissions.settingsAppearance adminPermissions.settingsPreview)}}
+        <section class="admin-panel saved-views-panel">
+            <div class="admin-panel-header">
+                <h2>{{t 'saved_views_section'}}</h2>
+            </div>
+            <div class="admin-panel-body">
+                <p class="field-hint">{{t 'saved_views_help'}}</p>
+                <div class="saved-views-grid" id="savedViewsGrid">
+                    {{#if savedViews.length}}
+                        {{#each savedViews}}
+                        <article class="saved-view-card" data-view-id="{{this.id}}">
+                            <div class="saved-view-thumb">
+                                {{#if this.screenshot}}
+                                <img src="/images/{{this.screenshot}}" alt="{{this.name}}">
+                                {{else}}
+                                <div class="saved-view-thumb-empty">{{t 'no_photo'}}</div>
+                                {{/if}}
+                            </div>
+                            <div class="saved-view-meta">
+                                <h3>{{this.name}}</h3>
+                                <time datetime="{{this.savedAt}}">{{this.savedAt}}</time>
+                            </div>
+                            <div class="saved-view-card-actions">
+                                <button type="button" class="btn-admin btn-admin-secondary saved-view-apply-btn">{{t 'saved_view_apply'}}</button>
+                                <button type="button" class="btn-admin btn-admin-danger saved-view-delete-btn">{{t 'saved_view_delete'}}</button>
+                            </div>
+                        </article>
+                        {{/each}}
+                    {{else}}
+                        <p class="saved-views-empty" id="savedViewsEmpty">{{t 'saved_views_empty'}}</p>
+                    {{/if}}
+                </div>
             </div>
         </section>
         {{/if}}
@@ -263,6 +304,7 @@
     <form method="POST" action="/admin/{{synagogue.slug}}/settings/reset-theme" id="resetThemeForm" class="visually-hidden-reset-form" aria-hidden="true"></form>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
     (function () {
         var settingsForm = document.getElementById('settingsForm');
@@ -505,6 +547,205 @@
                 }
                 if (busyText) {
                     busyText.textContent = '{{t 'saving'}}';
+                }
+            });
+        }
+
+        function readCurrentDesignPatch() {
+            var patch = readPreviewPatch();
+            var languageSelect = document.getElementById('language');
+            return {
+                name: '',
+                titleRu: patch.titleRu,
+                titleEn: patch.titleEn,
+                titleHe: patch.titleHe,
+                primaryColor: patch.primaryColor,
+                textColor: patch.textColor,
+                accentColor: patch.accentColor,
+                tileColor: patch.tileColor,
+                language: languageSelect ? languageSelect.value : 'ru',
+            };
+        }
+
+        function capturePreviewScreenshot() {
+            var frame = document.getElementById('boardPreviewFrame');
+            if (!frame || !frame.contentDocument || !window.html2canvas) {
+                return Promise.resolve('');
+            }
+
+            var target = frame.contentDocument.querySelector('.main-container')
+                || frame.contentDocument.body;
+            return window.html2canvas(target, {
+                useCORS: true,
+                allowTaint: true,
+                scale: 0.35,
+                backgroundColor: null,
+            }).then(function (canvas) {
+                return canvas.toDataURL('image/jpeg', 0.82);
+            }).catch(function () {
+                return '';
+            });
+        }
+
+        function formatSavedAt(value) {
+            try {
+                return new Date(value).toLocaleString();
+            } catch (err) {
+                return value || '';
+            }
+        }
+
+        function renderSavedViewCard(view) {
+            var article = document.createElement('article');
+            article.className = 'saved-view-card';
+            article.dataset.viewId = view.id;
+
+            var thumb = document.createElement('div');
+            thumb.className = 'saved-view-thumb';
+            if (view.screenshot) {
+                var img = document.createElement('img');
+                img.src = '/images/' + view.screenshot;
+                img.alt = view.name || '';
+                thumb.appendChild(img);
+            } else {
+                var empty = document.createElement('div');
+                empty.className = 'saved-view-thumb-empty';
+                empty.textContent = '{{t 'no_photo'}}';
+                thumb.appendChild(empty);
+            }
+
+            var meta = document.createElement('div');
+            meta.className = 'saved-view-meta';
+            var title = document.createElement('h3');
+            title.textContent = view.name || '';
+            var time = document.createElement('time');
+            time.dateTime = view.savedAt || '';
+            time.textContent = formatSavedAt(view.savedAt);
+            meta.appendChild(title);
+            meta.appendChild(time);
+
+            var actions = document.createElement('div');
+            actions.className = 'saved-view-card-actions';
+            var applyBtn = document.createElement('button');
+            applyBtn.type = 'button';
+            applyBtn.className = 'btn-admin btn-admin-secondary saved-view-apply-btn';
+            applyBtn.textContent = '{{t 'saved_view_apply'}}';
+            var deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.className = 'btn-admin btn-admin-danger saved-view-delete-btn';
+            deleteBtn.textContent = '{{t 'saved_view_delete'}}';
+            actions.appendChild(applyBtn);
+            actions.appendChild(deleteBtn);
+
+            article.appendChild(thumb);
+            article.appendChild(meta);
+            article.appendChild(actions);
+            return article;
+        }
+
+        function prependSavedView(view) {
+            var grid = document.getElementById('savedViewsGrid');
+            if (!grid) {
+                return;
+            }
+
+            var empty = document.getElementById('savedViewsEmpty');
+            if (empty) {
+                empty.remove();
+            }
+
+            grid.insertBefore(renderSavedViewCard(view), grid.firstChild);
+        }
+
+        var saveCurrentViewBtn = document.getElementById('saveCurrentViewBtn');
+        if (saveCurrentViewBtn) {
+            saveCurrentViewBtn.addEventListener('click', function () {
+                var name = window.prompt('{{t 'saved_view_name_prompt'}}');
+                if (!name || !name.trim()) {
+                    return;
+                }
+
+                saveCurrentViewBtn.disabled = true;
+                var originalText = saveCurrentViewBtn.textContent;
+                saveCurrentViewBtn.textContent = '{{t 'saving_view'}}';
+
+                capturePreviewScreenshot().then(function (screenshot) {
+                    var payload = readCurrentDesignPatch();
+                    payload.name = name.trim();
+                    payload.screenshot = screenshot;
+
+                    return fetch('/admin/' + slug + '/settings/saved-views', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        body: JSON.stringify(payload),
+                    });
+                }).then(function (response) {
+                    return response.json();
+                }).then(function (data) {
+                    if (data && data.ok && data.view) {
+                        prependSavedView(data.view);
+                        window.alert('{{t 'saved_view_saved'}}');
+                    }
+                }).catch(function () {
+                    /* ignore */
+                }).finally(function () {
+                    saveCurrentViewBtn.disabled = false;
+                    saveCurrentViewBtn.textContent = originalText;
+                });
+            });
+        }
+
+        var savedViewsGrid = document.getElementById('savedViewsGrid');
+        if (savedViewsGrid) {
+            savedViewsGrid.addEventListener('click', function (event) {
+                var applyBtn = event.target.closest('.saved-view-apply-btn');
+                var deleteBtn = event.target.closest('.saved-view-delete-btn');
+                var card = event.target.closest('.saved-view-card');
+                if (!card || !card.dataset.viewId) {
+                    return;
+                }
+
+                var viewId = card.dataset.viewId;
+
+                if (applyBtn) {
+                    fetch('/admin/' + slug + '/settings/saved-views/' + viewId + '/apply', {
+                        method: 'POST',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    }).then(function (response) {
+                        return response.json();
+                    }).then(function (data) {
+                        if (data && data.ok) {
+                            window.location.reload();
+                        }
+                    });
+                    return;
+                }
+
+                if (deleteBtn) {
+                    if (!window.confirm('{{t 'saved_view_delete_confirm'}}')) {
+                        return;
+                    }
+
+                    fetch('/admin/' + slug + '/settings/saved-views/' + viewId, {
+                        method: 'DELETE',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    }).then(function (response) {
+                        return response.json();
+                    }).then(function (data) {
+                        if (data && data.ok) {
+                            card.remove();
+                            if (!savedViewsGrid.querySelector('.saved-view-card')) {
+                                var empty = document.createElement('p');
+                                empty.className = 'saved-views-empty';
+                                empty.id = 'savedViewsEmpty';
+                                empty.textContent = '{{t 'saved_views_empty'}}';
+                                savedViewsGrid.appendChild(empty);
+                            }
+                        }
+                    });
                 }
             });
         }

@@ -6,10 +6,15 @@ import { withTranslation } from 'react-i18next';
 import {
   formatHebrewDate,
   formatGregorianDate,
-  CURRENT_DAY_OF_YEAR,
   DAYS_IN_YEAR,
   gregorianDayOfYear,
+  getCurrentDayOfYear,
 } from '../lib/novosibirsk';
+import {
+  getGregorianDateInTimezone,
+  getHebrewDateInTimezone,
+} from '../lib/board-calendar';
+import { resolveBoardTimezone } from '../lib/timezone';
 import {
   applySearchToPaginationState,
   attachNameComponents,
@@ -27,6 +32,84 @@ import { getSidebarCommunityEvents, hasEventDate } from '../lib/community-events
 import { resolveBoardFeatures } from '../lib/board-features';
 import { JewishContentPanels } from '../components/JewishContentPanels';
 import { SidebarUpcomingPanel } from '../components/SidebarUpcomingPanel';
+import { WeatherPanel } from '../components/WeatherPanel';
+
+function getDailyCite(appData, hebrewDate) {
+  const currentHebrewMonth = hebrewDate.getMonth();
+  const currentHebrewDate = hebrewDate.getDate();
+
+  return appData.dailyCites && appData.dailyCites.find((entry) => (
+    entry.hebrewDate.month == currentHebrewMonth
+    && entry.hebrewDate.date == currentHebrewDate
+  ));
+}
+
+function setPersonDates(card) {
+  if (!card.gregorianDateOfDeath.year) {
+    return card;
+  }
+
+  const gregorianDateOfDeath = new Date(
+    card.gregorianDateOfDeath.year,
+    card.gregorianDateOfDeath.month - 1,
+    card.gregorianDateOfDeath.date,
+  );
+
+  return {
+    ...card,
+    gregorianDateOfDeath,
+    hebrewDateOfDeath: new Hebcal.HDate(gregorianDateOfDeath),
+  };
+}
+
+function buildPeopleList(appData, referenceDate = new Date()) {
+  const currentDayOfYear = getCurrentDayOfYear(referenceDate);
+
+  return (appData.people || [])
+    .slice(0)
+    .map((a) => {
+      const person = attachNameComponents({ ...a });
+      person.gregorianDayOfMemory = gregorianDayOfYear(
+        person.gregorianDateOfDeath.month,
+        person.gregorianDateOfDeath.date,
+      ) - currentDayOfYear;
+
+      if (person.gregorianDayOfMemory < 0) {
+        person.gregorianDayOfMemory += DAYS_IN_YEAR;
+      }
+
+      person.passedToday = person.gregorianDayOfMemory == 0;
+
+      return person;
+    })
+    .sort((a, b) => {
+      if (a.gregorianDayOfMemory < b.gregorianDayOfMemory) {
+        return -1;
+      }
+
+      if (a.gregorianDayOfMemory > b.gregorianDayOfMemory) {
+        return 1;
+      }
+
+      return 0;
+    })
+    .map(setPersonDates);
+}
+
+function buildCalendarState(appData, timezone = resolveBoardTimezone(appData)) {
+  const gregorianDate = getGregorianDateInTimezone(timezone);
+  const hebrewDate = getHebrewDateInTimezone(timezone);
+  const allPeople = buildPeopleList(appData, gregorianDate);
+  const dailyCite = getDailyCite(appData, hebrewDate);
+
+  return {
+    hebrewDate,
+    gregorianDate,
+    dailyCite,
+    allPeople,
+  };
+}
+
 
 function getAppData() {
   return getBoardData();
@@ -169,71 +252,11 @@ class HomePageBase extends React.Component {
     super();
 
     const appData = getAppData();
-    const hebrewDate = new Hebcal.HDate();
-    const currentHebrewMonth = hebrewDate.getMonth();
-    const currentHebrewDate = hebrewDate.getDate();
-
-    const dailyCite = appData.dailyCites && appData.dailyCites.find((entry) => (
-      entry.hebrewDate.month == currentHebrewMonth
-      && entry.hebrewDate.date == currentHebrewDate
-    ));
-
-    function setDates(card) {
-      if (!card.gregorianDateOfDeath.year) {
-        return card;
-      }
-
-      const gregorianDateOfDeath = new Date(
-        card.gregorianDateOfDeath.year,
-        card.gregorianDateOfDeath.month - 1,
-        card.gregorianDateOfDeath.date,
-      );
-
-      return {
-        ...card,
-        gregorianDateOfDeath,
-        hebrewDateOfDeath: new Hebcal.HDate(gregorianDateOfDeath),
-      };
-    }
-
-    const allPeople = (appData.people || [])
-      .slice(0)
-      .map((a) => {
-        const person = attachNameComponents({ ...a });
-        person.gregorianDayOfMemory = gregorianDayOfYear(
-          person.gregorianDateOfDeath.month,
-          person.gregorianDateOfDeath.date,
-        ) - CURRENT_DAY_OF_YEAR;
-
-        if (person.gregorianDayOfMemory < 0) {
-          person.gregorianDayOfMemory += DAYS_IN_YEAR;
-        }
-
-        person.passedToday = person.gregorianDayOfMemory == 0;
-
-        return person;
-      })
-      .sort((a, b) => {
-        if (a.gregorianDayOfMemory < b.gregorianDayOfMemory) {
-          return -1;
-        }
-
-        if (a.gregorianDayOfMemory > b.gregorianDayOfMemory) {
-          return 1;
-        }
-
-        return 0;
-      })
-      .map(setDates);
-
-    const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
+    const calendarState = buildCalendarState(appData);
     const communityEvents = prepareCommunityEvents(appData.communityEvents);
 
     const initialState = {
-      hebrewDate,
-      gregorianDate: new Date(),
-      dailyCite,
-      allPeople,
+      ...calendarState,
       communityEvents,
       mode: 'main',
       people: [],
@@ -256,6 +279,27 @@ class HomePageBase extends React.Component {
     this.search = this.search.bind(this);
     this.clearSearch = this.clearSearch.bind(this);
     this.finishSlideshow = this.finishSlideshow.bind(this);
+    this.refreshCalendarState = this.refreshCalendarState.bind(this);
+  }
+
+  refreshCalendarState() {
+    const appData = getAppData();
+    const calendarState = buildCalendarState(appData);
+
+    this.setState((state) => {
+      const next = {
+        ...state,
+        ...calendarState,
+      };
+      applySearchToPaginationState(next, state.filterString);
+      return next;
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.calendarDayKey !== this.props.calendarDayKey) {
+      this.refreshCalendarState();
+    }
   }
 
   componentDidMount() {
@@ -406,6 +450,7 @@ class HomePageBase extends React.Component {
     const logo = (appData.theme && appData.theme.logo) || 'banner-transparent.png';
 
     const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
+    const showMemorialPrayers = boardFeatures.kelMaleRachamim || boardFeatures.izkor;
 
     return (
       <main className="main-container">
@@ -488,15 +533,24 @@ class HomePageBase extends React.Component {
                     <ShabbatTimes />
                   </div>
                 )}
+                {boardFeatures.weather && (
+                  <div className="board-weather-block">
+                    <WeatherPanel />
+                  </div>
+                )}
               </div>
-              <MemorialPrayersPanel
-                big={!appData.shabbatTimesEnabled}
-                memorialPrayerLabel={this.props.t('memorial_prayer')}
-                kelMaleHeading={this.props.t('kel_male_rachamim')}
-                kelMaleText={this.props.t('kel_male_rachamim_text')}
-                izkorHeading={this.props.t('izkor')}
-                izkorText={this.props.t('izkor_text')}
-              />
+              {showMemorialPrayers && (
+                <MemorialPrayersPanel
+                  big={!appData.shabbatTimesEnabled}
+                  showKelMale={boardFeatures.kelMaleRachamim}
+                  showIzkor={boardFeatures.izkor}
+                  memorialPrayerLabel={this.props.t('memorial_prayer')}
+                  kelMaleHeading={this.props.t('kel_male_rachamim')}
+                  kelMaleText={this.props.t('kel_male_rachamim_text')}
+                  izkorHeading={this.props.t('izkor')}
+                  izkorText={this.props.t('izkor_text')}
+                />
+              )}
             </div>
           </div>
         </aside>
@@ -507,14 +561,15 @@ class HomePageBase extends React.Component {
 
 function HomePageConnected(props) {
   const { goToCard } = useBoardNavigation();
-  const { revision, uiLang, data } = useBoardData();
+  const { revision, calendarDayKey, uiLang, data } = useBoardData();
   const boardTitle = resolveBoardTitle(data, uiLang);
   return (
     <HomePageBase
-      key={`home-${revision}-${uiLang}`}
+      key={`home-${revision}-${uiLang}-${calendarDayKey}`}
       {...props}
       onOpenCard={goToCard}
       uiLang={uiLang}
+      calendarDayKey={calendarDayKey}
       boardTitle={boardTitle}
     />
   );

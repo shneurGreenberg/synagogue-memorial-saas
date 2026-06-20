@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 import { getBoardData } from '../lib/board-data';
 import { hasJewishContentPanels, resolveBoardFeatures } from '../lib/board-features';
+import { useBoardData } from '../context/BoardDataContext';
 
 const REFRESH_MS = 60 * 60 * 1000;
 
@@ -19,7 +20,7 @@ function LearningTile({ label, item, sublabel }) {
   );
 }
 
-function JewishContentPanelsBase({ t, uiLang }) {
+function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
   const appData = getBoardData();
   const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
   const slug = appData.slug;
@@ -59,7 +60,7 @@ function JewishContentPanelsBase({ t, uiLang }) {
       cancelled = true;
       window.clearInterval(timer);
     };
-  }, [slug, uiLang, boardFeatures.dailyChumash, boardFeatures.dailyTehillim, boardFeatures.dailyTanya, boardFeatures.dailyRambam, boardFeatures.hayomYom]);
+  }, [slug, uiLang, calendarDayKey, boardFeatures.dailyChumash, boardFeatures.dailyTehillim, boardFeatures.dailyTanya, boardFeatures.dailyRambam, boardFeatures.hayomYom]);
 
   if (!feed || !hasJewishContentPanels(boardFeatures)) {
     return null;
@@ -135,4 +136,9 @@ function JewishContentPanelsBase({ t, uiLang }) {
   );
 }
 
-export const JewishContentPanels = withTranslation()(JewishContentPanelsBase);
+function JewishContentPanelsConnected(props) {
+  const { calendarDayKey } = useBoardData();
+  return <JewishContentPanelsBase {...props} calendarDayKey={calendarDayKey} />;
+}
+
+export const JewishContentPanels = withTranslation()(JewishContentPanelsConnected);

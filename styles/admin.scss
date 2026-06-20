@@ -1052,6 +1052,75 @@ body.admin-is-busy {
     font-size: 0.85rem;
     color: var(--admin-text-muted);
   }
+
+  .saved-view-actions {
+    margin-top: 1rem;
+  }
+}
+
+.saved-views-panel {
+  .saved-views-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .saved-views-empty {
+    margin: 0;
+    color: var(--admin-text-muted);
+  }
+}
+
+.saved-view-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  background: var(--admin-surface-elevated, var(--admin-surface));
+}
+
+.saved-view-thumb {
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.08);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.saved-view-thumb-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--admin-text-muted);
+  font-size: 0.85rem;
+}
+
+.saved-view-meta {
+  h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1rem;
+  }
+
+  time {
+    font-size: 0.8rem;
+    color: var(--admin-text-muted);
+  }
+}
+
+.saved-view-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .btn-admin-submit {

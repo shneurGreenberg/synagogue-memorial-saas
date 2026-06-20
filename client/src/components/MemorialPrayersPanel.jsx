@@ -85,18 +85,20 @@ export class MemorialPrayersPanel extends React.Component {
       kelMaleText,
       izkorHeading,
       izkorText,
+      showKelMale = true,
+      showIzkor = true,
     } = this.props;
 
     return (
       <div className="memorial-prayers-inner" key={suffix}>
-        <h2>{memorialPrayerLabel}</h2>
-        {this.renderPrayerBlock(
+        {(showKelMale && showIzkor) && <h2>{memorialPrayerLabel}</h2>}
+        {showKelMale && this.renderPrayerBlock(
           `kel-male-heading${suffix}`,
           kelMaleHeading,
           kelMaleText,
           'kel-male',
         )}
-        {this.renderPrayerBlock(
+        {showIzkor && this.renderPrayerBlock(
           `yizkor-heading${suffix}`,
           izkorHeading,
           izkorText,
@@ -107,7 +109,11 @@ export class MemorialPrayersPanel extends React.Component {
   }
 
   render() {
-    const { big } = this.props;
+    const { big, showKelMale = true, showIzkor = true } = this.props;
+
+    if (!showKelMale && !showIzkor) {
+      return null;
+    }
 
     return (
       <div className={`memorial-prayers ${big ? 'memorial-prayers-big' : ''}`}>
