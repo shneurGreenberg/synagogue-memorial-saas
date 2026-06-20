@@ -14,6 +14,19 @@ export class MemorialPrayersPanel extends React.Component {
   componentDidMount() {
     this.updateScrollBehavior();
     window.addEventListener('resize', this.updateScrollBehavior);
+
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = new ResizeObserver(() => {
+        this.updateScrollBehavior();
+      });
+
+      if (this.viewportRef.current) {
+        this.resizeObserver.observe(this.viewportRef.current);
+      }
+      if (this.trackRef.current) {
+        this.resizeObserver.observe(this.trackRef.current);
+      }
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -21,6 +34,8 @@ export class MemorialPrayersPanel extends React.Component {
       prevProps.kelMaleText !== this.props.kelMaleText
       || prevProps.izkorText !== this.props.izkorText
       || prevProps.big !== this.props.big
+      || prevProps.showKelMale !== this.props.showKelMale
+      || prevProps.showIzkor !== this.props.showIzkor
     ) {
       this.updateScrollBehavior();
     }
@@ -28,6 +43,18 @@ export class MemorialPrayersPanel extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateScrollBehavior);
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
+  }
+
+  measureContentHeight(track) {
+    const inner = track.querySelector('.memorial-prayers-inner');
+    if (inner) {
+      return inner.getBoundingClientRect().height;
+    }
+
+    return track.scrollHeight;
   }
 
   updateScrollBehavior = () => {
@@ -39,24 +66,23 @@ export class MemorialPrayersPanel extends React.Component {
         return;
       }
 
-      const contentHeight = this.state.shouldScroll
-        ? track.scrollHeight / 2
-        : track.scrollHeight;
+      const contentHeight = this.measureContentHeight(track);
+      const needsScroll = contentHeight > viewport.clientHeight + 4;
 
-      if (contentHeight <= viewport.clientHeight + 4) {
+      if (!needsScroll) {
         if (this.state.shouldScroll) {
-          this.setState({ shouldScroll: false });
+          this.setState({ shouldScroll: false, durationSec: 120 });
         }
         return;
       }
 
-      const pixelsPerSecond = 16;
+      const rootStyles = getComputedStyle(document.documentElement);
+      const prayerScale = parseFloat(rootStyles.getPropertyValue('--font-scale-prayers')) || 1;
+      const pixelsPerSecond = 16 * prayerScale;
       const durationSec = Math.max(contentHeight / pixelsPerSecond, 90);
 
       if (!this.state.shouldScroll) {
-        this.setState({ shouldScroll: true, durationSec }, () => {
-          this.updateScrollBehavior();
-        });
+        this.setState({ shouldScroll: true, durationSec });
         return;
       }
 

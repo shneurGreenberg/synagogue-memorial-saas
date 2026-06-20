@@ -125,20 +125,54 @@ export function ThemeStyles() {
     .main-container .jewish-sidebar-panels h2,
     .main-container .hayom-yom-panel h2,
     .main-container .daily-gates-panel h2,
-    .main-container .sidebar-upcoming-panel h2,
-    .main-container .weather-panel h2 {
-      font-size: calc(1em * var(--font-scale-sidebar)) !important;
+    .main-container .nearest-dates h2 {
+      font-size: calc(clamp(15px, 1.35vw, 22px) * var(--font-scale-sidebar)) !important;
     }
-    .main-container .jewish-sidebar-panels,
-    .main-container .hayom-yom-panel,
-    .main-container .daily-gates-panel,
-    .main-container .sidebar-upcoming-panel {
-      font-size: calc(1em * var(--font-scale-sidebar)) !important;
+    .main-container .daily-cite {
+      font-size: calc(clamp(14px, 1.35vw, 20px) * var(--font-scale-sidebar)) !important;
     }
-    .main-container .memorial-prayers h1,
-    .main-container .memorial-prayers h2,
+    .main-container .daily-gate-tile {
+      font-size: calc(clamp(11px, 0.95vw, 14px) * var(--font-scale-sidebar)) !important;
+    }
+    .main-container .daily-gate-label {
+      font-size: calc(clamp(10px, 0.85vw, 12px) * var(--font-scale-sidebar)) !important;
+    }
+    .main-container .daily-gate-sublabel {
+      font-size: calc(clamp(9px, 0.8vw, 11px) * var(--font-scale-sidebar)) !important;
+    }
+    .main-container .daily-gate-value {
+      font-size: calc(clamp(11px, 0.95vw, 14px) * var(--font-scale-sidebar)) !important;
+    }
+    .main-container .hayom-yom-text,
+    .main-container .hayom-yom-note {
+      font-size: calc(clamp(11px, 0.95vw, 14px) * var(--font-scale-sidebar)) !important;
+    }
+    .main-container .nearest-dates .nearest-date-link time,
+    .main-container .sidebar-holiday-link time,
+    .main-container .sidebar-chabad-link time,
+    .main-container .community-event-link time {
+      font-size: calc(clamp(13px, 1.1vw, 17px) * var(--font-scale-sidebar)) !important;
+    }
+    .main-container .nearest-dates .nearest-date-link .name,
+    .main-container .sidebar-holiday-title,
+    .main-container .sidebar-chabad-title,
+    .main-container .community-event-title {
+      font-size: calc(clamp(14px, 1.2vw, 18px) * var(--font-scale-sidebar)) !important;
+    }
+    .main-container .community-event-text {
+      font-size: calc(clamp(12px, 1vw, 15px) * var(--font-scale-sidebar)) !important;
+    }
+    .main-container .memorial-prayers-inner > h2 {
+      font-size: calc(clamp(16px, 1.55vw, 22px) * var(--font-scale-prayers)) !important;
+    }
+    .main-container .memorial-prayers .memorial-prayer-block h1 {
+      font-size: calc(clamp(18px, 1.7vw, 24px) * var(--font-scale-prayers)) !important;
+    }
     .main-container .memorial-prayers .prayer-text {
-      font-size: calc(1em * var(--font-scale-prayers)) !important;
+      font-size: calc(clamp(12px, 1.05vw, 16px) * var(--font-scale-prayers)) !important;
+    }
+    .main-container .memorial-prayers.memorial-prayers-big .prayer-text {
+      font-size: calc(clamp(13px, 1.12vw, 17px) * var(--font-scale-prayers)) !important;
     }
     .main-container .board-shabbat-block .shabbat-times .shabbat-label,
     .main-container .board-shabbat-block .shabbat-times .shabbat-time,
