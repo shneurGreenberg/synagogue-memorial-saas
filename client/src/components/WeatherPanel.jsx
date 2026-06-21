@@ -1,7 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 import { getBoardData } from '../lib/board-data';
 import { useBoardData } from '../context/BoardDataContext';
+import {
+  isValidForecast,
+  loadWeatherForecast,
+  parseWeatherCoordinates,
+  readWeatherCache,
+} from '../lib/weather-forecast';
 
 const LOCALE_MAP = {
   ru: 'ru-RU',
@@ -44,55 +50,60 @@ function WeatherIcon({ code, className }) {
 function WeatherPanelBase({ t, uiLang }) {
   const appData = getBoardData();
   const location = appData.location || {};
-  const lat = location.lat;
-  const long = location.long;
-  const [forecast, setForecast] = useState(null);
+  const latKey = Number(location.lat);
+  const longKey = Number(location.long);
+  const coords = useMemo(
+    () => parseWeatherCoordinates({ lat: latKey, long: longKey }),
+    [latKey, longKey],
+  );
+  const [forecast, setForecast] = useState(() => (
+    coords ? readWeatherCache(coords.lat, coords.long) : null
+  ));
+  const [loading, setLoading] = useState(() => (
+    Boolean(coords && !readWeatherCache(coords.lat, coords.long))
+  ));
 
   useEffect(() => {
-    if (typeof lat !== 'number' || typeof long !== 'number') {
+    if (!coords) {
+      setForecast(null);
+      setLoading(false);
       return undefined;
     }
 
-    let cancelled = false;
+    const { lat, long } = coords;
+    let active = true;
 
-    const load = async () => {
-      try {
-        const params = new URLSearchParams({
-          latitude: String(lat),
-          longitude: String(long),
-          current: 'temperature_2m,weather_code',
-          daily: 'weather_code,temperature_2m_max,temperature_2m_min',
-          timezone: 'auto',
-          forecast_days: '4',
-        });
-        const response = await fetch(`https://api.open-meteo.com/v1/forecast?${params.toString()}`, {
-          cache: 'no-store',
-        });
+    const cached = readWeatherCache(lat, long);
+    if (cached) {
+      setForecast(cached);
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
 
-        if (!response.ok || cancelled) {
-          return;
-        }
-
-        const data = await response.json();
-        if (!cancelled) {
-          setForecast(data);
-        }
-      } catch {
-        /* ignore transient network errors */
-      }
-    };
-
-    load();
-    const timer = window.setInterval(load, 60 * 60 * 1000);
+    const stop = loadWeatherForecast(lat, long, {
+      isActive: () => active,
+      onSuccess: setForecast,
+      onSettled: () => setLoading(false),
+    });
 
     return () => {
-      cancelled = true;
-      window.clearInterval(timer);
+      active = false;
+      stop();
     };
-  }, [lat, long]);
+  }, [coords?.lat, coords?.long]);
 
-  if (!forecast || !forecast.current || !forecast.daily) {
-    return null;
+  if (!isValidForecast(forecast)) {
+    if (!loading) {
+      return null;
+    }
+
+    return (
+      <section className="weather-panel weather-panel-loading" aria-label={t('weather_title')}>
+        <h2>{t('weather_title')}</h2>
+        <p className="weather-loading">{t('weather_loading')}</p>
+      </section>
+    );
   }
 
   const locale = LOCALE_MAP[uiLang] || LOCALE_MAP.ru;

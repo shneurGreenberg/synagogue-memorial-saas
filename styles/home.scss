@@ -951,6 +951,13 @@
         margin-top: 4px;
       }
 
+      .weather-loading {
+        margin: 0;
+        font-size: clamp(12px, 1vw, 15px);
+        opacity: 0.75;
+        color: var(--tile-date-color, #f0f0f0);
+      }
+
       .weather-upcoming {
         list-style: none;
         margin: 0;
