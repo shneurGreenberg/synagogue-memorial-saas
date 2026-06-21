@@ -1,0 +1,11 @@
+<section class="public-card public-card-success">
+    <h1>{{publicT 'success_title'}}</h1>
+    {{#if submittedName}}
+    <p class="public-name">{{submittedName}}</p>
+    {{/if}}
+    <p class="public-intro">{{publicT 'success_message'}}</p>
+    <div class="public-actions">
+        <a href="{{charityUrl}}?lang={{lang}}" class="public-button public-button-primary">{{publicT 'success_continue'}}</a>
+        <a href="{{boardUrl}}" class="public-button public-button-secondary">{{publicT 'back_to_board'}}</a>
+    </div>
+</section>

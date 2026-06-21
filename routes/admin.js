@@ -8,7 +8,7 @@ const { verifyPassword, ensureHashed } = require('../lib/password');
 const { sanitizeRichText } = require('../lib/sanitize');
 const { enrichSynagogueForAdmin, normalizeTitles, sanitizeHexColor } = require('../lib/admin-theme');
 const { getTranslator } = require('../lib/admin-translations');
-const { getAdminLocaleContext } = require('../lib/admin-locale');
+const { getAdminLocaleContext, normalizeAdminLang } = require('../lib/admin-locale');
 const { BOARD_THEME_DEFAULTS } = require('../lib/board-defaults');
 const { parsePhotoCropFromBody } = require('../lib/photo-crop');
 const { parseBoardFeaturesFromBody } = require('../lib/board-features');
@@ -45,7 +45,7 @@ const {
   canSaveBoardSettings,
   permissionAllows,
 } = require('../lib/admin-users');
-const { normalizeAdminLang } = require('../lib/admin-locale');
+const { parsePublicSubmissionFromBody } = require('../lib/public-submission');
 
 const BOARD_FEATURE_TOGGLE_META = [
   { key: 'sidebarNames', labelKey: 'feature_sidebar_names', helpKey: 'feature_sidebar_names_help' },
@@ -59,6 +59,7 @@ const BOARD_FEATURE_TOGGLE_META = [
   { key: 'kelMaleRachamim', labelKey: 'feature_kel_male_rachamim', helpKey: 'feature_kel_male_rachamim_help' },
   { key: 'izkor', labelKey: 'feature_izkor', helpKey: 'feature_izkor_help' },
   { key: 'weather', labelKey: 'feature_weather', helpKey: 'feature_weather_help' },
+  { key: 'sunriseSunset', labelKey: 'feature_sunrise_sunset', helpKey: 'feature_sunrise_sunset_help' },
 ];
 
 function buildBoardFeatureToggles(boardFeatures) {
@@ -326,6 +327,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             language, shabbatTimesEnabled,
         } = req.body;
         const boardFeatures = parseBoardFeaturesFromBody(req.body);
+        const publicSubmission = parsePublicSubmissionFromBody(req.body);
         const fontScales = parseFontScalesFromBody(req.body);
         const updateData = {};
 
@@ -358,6 +360,8 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             Object.assign(updateData, Object.fromEntries(
                 Object.entries(boardFeatures).map(([key, value]) => [`boardFeatures.${key}`, value]),
             ));
+            updateData['publicSubmission.enabled'] = publicSubmission.enabled;
+            updateData['publicSubmission.donationUrl'] = publicSubmission.donationUrl;
         }
 
         if (permissions.settingsBranding && req.files['logo']) {

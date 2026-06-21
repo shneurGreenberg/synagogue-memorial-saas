@@ -1,0 +1,13 @@
+<section class="public-card">
+    <h1>{{publicT 'charity_title'}}</h1>
+    <p class="public-intro">{{publicT 'charity_message'}}</p>
+
+    <div class="public-actions">
+        {{#if publicSubmission.donationUrl}}
+        <a href="{{publicSubmission.donationUrl}}" class="public-button public-button-primary" target="_blank" rel="noopener noreferrer">{{publicT 'charity_button'}}</a>
+        {{else}}
+        <p class="public-note">{{publicT 'charity_unavailable'}}</p>
+        {{/if}}
+        <a href="{{boardUrl}}" class="public-button public-button-secondary">{{publicT 'charity_skip'}}</a>
+    </div>
+</section>

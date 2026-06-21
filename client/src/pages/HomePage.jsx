@@ -33,7 +33,7 @@ import { getSidebarCommunityEvents, hasEventDate } from '../lib/community-events
 import { resolveBoardFeatures } from '../lib/board-features';
 import { JewishContentPanels } from '../components/JewishContentPanels';
 import { SidebarUpcomingPanel } from '../components/SidebarUpcomingPanel';
-import { WeatherPanel } from '../components/WeatherPanel';
+import { BoardWeatherSection } from '../components/BoardWeatherSection';
 
 function getDailyCite(appData, hebrewDate) {
   const currentHebrewMonth = hebrewDate.getMonth();
@@ -538,10 +538,11 @@ class HomePageBase extends React.Component {
                     <ShabbatTimes />
                   </div>
                 )}
-                {boardFeatures.weather && (
-                  <div className="board-weather-block">
-                    <WeatherPanel />
-                  </div>
+                {(boardFeatures.weather || boardFeatures.sunriseSunset) && (
+                  <BoardWeatherSection
+                    showWeather={boardFeatures.weather}
+                    showSunTimes={boardFeatures.sunriseSunset}
+                  />
                 )}
               </div>
               {showMemorialPrayers && (

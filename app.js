@@ -11,6 +11,8 @@ const mongoose = require('mongoose');
 const Synagogue = require('./models/Synagogue');
 const { normalizeBoardFeatures } = require('./lib/board-features');
 const { getJewishFeed } = require('./lib/jewish-feed');
+const { fetchWeatherForecast } = require('./lib/weather-api');
+const { normalizePublicSubmission } = require('./lib/public-submission');
 const { applyBoardPreviewOverrides } = require('./lib/board-preview');
 const { BOARD_VERSION } = require('./lib/board-version');
 const { photoCropToInlineStyle } = require('./lib/photo-crop');
@@ -19,6 +21,7 @@ const { normalizeTitles } = require('./lib/admin-theme');
 const { getTranslator, humanizeLabel } = require('./lib/admin-translations');
 const adminRoutes = require('./routes/admin');
 const masterRoutes = require('./routes/master');
+const publicSubmissionRoutes = require('./routes/public-submission');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
@@ -53,6 +56,7 @@ app.use(session({
 
 app.use('/admin', adminRoutes);
 app.use('/master', masterRoutes);
+app.use('/s', publicSubmissionRoutes);
 
 // Compile SCSS on the fly
 const cssDirectory = path.join(__dirname, 'css');
@@ -121,6 +125,11 @@ app.engine('handlebars', handlebars({
         (theme && theme.tileColor) || BOARD_THEME_DEFAULTS.tileColor,
         (theme && theme.primaryColor) || BOARD_THEME_DEFAULTS.primaryColor,
       );
+    },
+    publicT(key, options) {
+      const root = options.data && options.data.root;
+      const translate = root && root.pt;
+      return typeof translate === 'function' ? translate(key) : key;
     },
   },
   runtimeOptions: {
@@ -202,6 +211,7 @@ async function loadSynagogueBoard(slug) {
   synagogue.titles = normalizeTitles(synagogue);
   synagogue.title = synagogue.titles.ru || synagogue.title || synagogue.name || '';
   synagogue.boardFeatures = normalizeBoardFeatures(synagogue.boardFeatures);
+  synagogue.publicSubmission = normalizePublicSubmission(synagogue.publicSubmission);
   return synagogue;
 }
 
@@ -233,6 +243,29 @@ app.get('/s/:slug/api/board', async (req, res) => {
     return res.json(synagogue);
   } catch (err) {
     return res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/s/:slug/api/weather', async (req, res) => {
+  try {
+    const synagogue = await loadSynagogueBoard(req.params.slug);
+
+    if (!synagogue) {
+      return res.status(404).json({ error: 'Synagogue not found' });
+    }
+
+    const lat = Number(synagogue.location?.lat);
+    const long = Number(synagogue.location?.long);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(long)) {
+      return res.status(400).json({ error: 'Invalid synagogue location' });
+    }
+
+    const forecast = await fetchWeatherForecast(lat, long);
+    res.setHeader('Cache-Control', 'public, max-age=900');
+    return res.json(forecast);
+  } catch (err) {
+    return res.status(502).json({ error: err.message || 'Weather unavailable' });
   }
 });
 

@@ -1,0 +1,156 @@
+@import 'common';
+
+.public-submission-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  box-sizing: border-box;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+    url('/images/brickwall.jpg') center / cover fixed;
+}
+
+.public-submission-shell {
+  width: min(100%, 560px);
+}
+
+.public-card {
+  @include memorial-tile-glass;
+  border-radius: 18px;
+  padding: clamp(20px, 4vw, 32px);
+  color: var(--text-color, #f0f0f0);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+
+  h1 {
+    margin: 0 0 12px;
+    font-size: clamp(24px, 4vw, 34px);
+    color: var(--primary-color, #cfaf1f);
+    text-align: center;
+  }
+}
+
+.public-card-success .public-name {
+  text-align: center;
+  font-size: clamp(20px, 3vw, 28px);
+  color: var(--accent-color, #ffd54f);
+  margin: 0 0 12px;
+}
+
+.public-intro,
+.public-note {
+  margin: 0 0 18px;
+  line-height: 1.6;
+  text-align: center;
+  font-size: clamp(15px, 2.2vw, 18px);
+}
+
+.public-error {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(180, 40, 40, 0.25);
+  border: 1px solid rgba(255, 120, 120, 0.45);
+  text-align: center;
+}
+
+.public-form {
+  display: grid;
+  gap: 14px;
+}
+
+.public-field {
+  display: grid;
+  gap: 6px;
+
+  span {
+    font-size: 14px;
+    color: var(--accent-color, #ffd54f);
+  }
+
+  input,
+  select {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(0, 0, 0, 0.28);
+    color: var(--text-color, #f0f0f0);
+    padding: 10px 12px;
+    font: inherit;
+  }
+}
+
+.public-date-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr 1fr;
+  gap: 10px;
+}
+
+.public-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.public-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 160px;
+  padding: 11px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.public-button-primary {
+  background: var(--card-button, #a88919);
+  border-color: var(--card-button-border, #806f10);
+  color: var(--card-button-text, #1a1a1a);
+}
+
+.public-button-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: var(--text-color, #f0f0f0);
+}
+
+.public-lang-switch {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+
+  a {
+    color: var(--text-color, #f0f0f0);
+    text-decoration: none;
+    opacity: 0.7;
+    padding: 4px 8px;
+    border-radius: 8px;
+  }
+
+  a.is-active {
+    opacity: 1;
+    color: var(--accent-color, #ffd54f);
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+@media (max-width: 560px) {
+  .public-date-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+html[dir='rtl'] .public-field,
+html[dir='rtl'] .public-intro,
+html[dir='rtl'] .public-note,
+html[dir='rtl'] .public-card h1 {
+  text-align: center;
+}

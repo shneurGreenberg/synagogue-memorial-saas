@@ -1,0 +1,48 @@
+<section class="public-card">
+    <h1>{{publicT 'page_title'}}</h1>
+    <p class="public-intro">{{publicT 'intro'}}</p>
+
+    {{#if errorMessage}}
+    <p class="public-error" role="alert">{{errorMessage}}</p>
+    {{/if}}
+
+    <form method="POST" action="{{formUrl}}" class="public-form">
+        <input type="hidden" name="lang" value="{{lang}}">
+
+        <label class="public-field">
+            <span>{{publicT 'name_label'}}</span>
+            <input type="text" name="name" maxlength="120" required value="{{values.name}}" placeholder="{{publicT 'name_placeholder'}}">
+        </label>
+
+        <div class="public-date-grid">
+            <label class="public-field">
+                <span>{{publicT 'death_month_label'}}</span>
+                <select name="month" required>
+                    <option value="">{{publicT 'death_month_label'}}</option>
+                    {{#each monthOptions}}
+                    <option value="{{this.value}}" {{#if (eq ../values.month this.value)}}selected{{/if}}>{{this.label}}</option>
+                    {{/each}}
+                </select>
+            </label>
+            <label class="public-field">
+                <span>{{publicT 'death_day_label'}}</span>
+                <input type="number" name="date" min="1" max="31" required value="{{values.date}}">
+            </label>
+            <label class="public-field">
+                <span>{{publicT 'death_year_label'}}</span>
+                <input type="number" name="year" min="1800" max="2100" required value="{{values.year}}">
+            </label>
+        </div>
+
+        <div class="public-actions">
+            <button type="submit" class="public-button public-button-primary">{{publicT 'submit'}}</button>
+            <a href="{{boardUrl}}" class="public-button public-button-secondary">{{publicT 'back_to_board'}}</a>
+        </div>
+    </form>
+
+    <div class="public-lang-switch">
+        <a href="{{formUrl}}?lang=ru" class="{{#if (eq lang 'ru')}}is-active{{/if}}">RU</a>
+        <a href="{{formUrl}}?lang=en" class="{{#if (eq lang 'en')}}is-active{{/if}}">EN</a>
+        <a href="{{formUrl}}?lang=he" class="{{#if (eq lang 'he')}}is-active{{/if}}">HE</a>
+    </div>
+</section>

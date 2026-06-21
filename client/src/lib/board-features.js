@@ -10,6 +10,7 @@ export const BOARD_FEATURE_DEFAULTS = {
   kelMaleRachamim: true,
   izkor: true,
   weather: false,
+  sunriseSunset: false,
 };
 
 export function resolveBoardFeatures(raw) {

@@ -85,6 +85,11 @@ const SynagogueSchema = new mongoose.Schema({
     kelMaleRachamim: { type: Boolean, default: true },
     izkor: { type: Boolean, default: true },
     weather: { type: Boolean, default: false },
+    sunriseSunset: { type: Boolean, default: false },
+  },
+  publicSubmission: {
+    enabled: { type: Boolean, default: false },
+    donationUrl: { type: String, default: '' },
   },
   savedViews: [{
     id: { type: String, required: true },
