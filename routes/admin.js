@@ -45,7 +45,7 @@ const {
   canSaveBoardSettings,
   permissionAllows,
 } = require('../lib/admin-users');
-const { parsePublicSubmissionFromBody } = require('../lib/public-submission');
+const { parsePublicSubmissionFromBody, hasPublicSubmissionFormFields } = require('../lib/public-submission');
 
 const BOARD_FEATURE_TOGGLE_META = [
   { key: 'sidebarNames', labelKey: 'feature_sidebar_names', helpKey: 'feature_sidebar_names_help' },
@@ -328,6 +328,8 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         } = req.body;
         const boardFeatures = parseBoardFeaturesFromBody(req.body);
         const publicSubmission = parsePublicSubmissionFromBody(req.body);
+        const shouldSavePublicSubmission = permissions.settingsFeatures
+            || hasPublicSubmissionFormFields(req.body);
         const fontScales = parseFontScalesFromBody(req.body);
         const updateData = {};
 
@@ -360,6 +362,9 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             Object.assign(updateData, Object.fromEntries(
                 Object.entries(boardFeatures).map(([key, value]) => [`boardFeatures.${key}`, value]),
             ));
+        }
+
+        if (shouldSavePublicSubmission) {
             updateData['publicSubmission.enabled'] = publicSubmission.enabled;
             updateData['publicSubmission.donationUrl'] = publicSubmission.donationUrl;
         }
@@ -376,8 +381,10 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
 
         if (Object.keys(updateData).length > 0) {
             await Synagogue.updateOne({ slug: req.params.slug }, { $set: updateData });
+            return res.redirect(`/admin/${req.params.slug}/dashboard?saved=1`);
         }
-        res.redirect(`/admin/${req.params.slug}/dashboard?saved=1`);
+
+        res.redirect(`/admin/${req.params.slug}/dashboard`);
     } catch (err) {
         res.status(500).send(err.message);
     }

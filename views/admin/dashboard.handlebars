@@ -309,6 +309,7 @@
                 <div class="admin-theme-setting">
                     <div class="admin-theme-setting-label">{{t 'public_submission_enabled'}}</div>
                     <div class="admin-theme-setting-control">
+                        <input type="hidden" name="publicSubmissionEnabled" value="0">
                         <label class="toggle-switch" for="publicSubmissionEnabled">
                             <input type="checkbox" id="publicSubmissionEnabled" name="publicSubmissionEnabled" value="1" {{#if synagogue.publicSubmission.enabled}}checked{{/if}}>
                             <span class="toggle-slider" aria-hidden="true"></span>
@@ -318,7 +319,7 @@
                 </div>
                 <div class="form-field admin-theme-setting">
                     <label for="publicSubmissionDonationUrl">{{t 'public_submission_donation_url'}}</label>
-                    <input type="url" class="form-control" id="publicSubmissionDonationUrl" name="publicSubmissionDonationUrl" value="{{synagogue.publicSubmission.donationUrl}}" placeholder="https://">
+                    <input type="text" class="form-control" id="publicSubmissionDonationUrl" name="publicSubmissionDonationUrl" value="{{synagogue.publicSubmission.donationUrl}}" placeholder="https://" inputmode="url" autocomplete="url">
                     <p class="field-hint admin-theme-setting-hint">{{t 'public_submission_donation_url_help'}}</p>
                 </div>
                 <div class="form-field admin-theme-setting">

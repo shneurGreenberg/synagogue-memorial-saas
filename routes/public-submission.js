@@ -62,6 +62,22 @@ function buildPageContext(synagogue, lang) {
   };
 }
 
+function resolveSubmissionErrorMessage(errorCode, pt) {
+  if (errorCode === 'required') {
+    return pt('required_error');
+  }
+
+  if (errorCode === 'date') {
+    return pt('invalid_date_error');
+  }
+
+  if (errorCode === 'disabled') {
+    return pt('disabled_error');
+  }
+
+  return '';
+}
+
 router.get('/:slug/add-name', async (req, res) => {
   try {
     const synagogue = await loadSynagogue(req.params.slug);
@@ -74,7 +90,10 @@ router.get('/:slug/add-name', async (req, res) => {
     const { publicSubmission, pt } = context;
 
     if (!publicSubmission.enabled) {
-      return renderPublicPage(res, 'public/add-name-disabled', context);
+      return renderPublicPage(res, 'public/add-name-disabled', {
+        ...context,
+        errorMessage: resolveSubmissionErrorMessage(req.query.error, pt),
+      });
     }
 
     return renderPublicPage(res, 'public/add-name', {
@@ -87,11 +106,7 @@ router.get('/:slug/add-name', async (req, res) => {
         date: req.query.date || '',
         year: req.query.year || '',
       },
-      errorMessage: req.query.error === 'required'
-        ? pt('required_error')
-        : req.query.error === 'date'
-          ? pt('invalid_date_error')
-          : '',
+      errorMessage: resolveSubmissionErrorMessage(req.query.error, pt),
     });
   } catch (err) {
     return res.status(500).send(err.message);
