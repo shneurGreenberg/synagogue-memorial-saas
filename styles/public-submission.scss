@@ -38,6 +38,35 @@
   margin: 0 0 12px;
 }
 
+.public-charity-section {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.public-charity-title,
+.public-section-title {
+  margin: 0 0 10px;
+  font-size: clamp(18px, 3vw, 24px);
+  color: var(--accent-color, #ffd54f);
+  text-align: center;
+}
+
+.public-section-intro {
+  margin: 0 0 14px;
+  line-height: 1.6;
+  text-align: center;
+  font-size: clamp(14px, 2vw, 16px);
+  opacity: 0.9;
+}
+
+.public-contact-section {
+  display: grid;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
 .public-intro,
 .public-note {
   margin: 0 0 18px;

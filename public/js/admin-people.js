@@ -655,6 +655,33 @@
     return row;
   }
 
+  function syncContactPlatformFields(root) {
+    if (!root) {
+      return;
+    }
+
+    const platformSelect = root.querySelector('.admin-contact-platform');
+    const phoneField = root.querySelector('.admin-contact-phone-field');
+    const emailField = root.querySelector('.admin-contact-email-field');
+    if (!platformSelect || !phoneField || !emailField) {
+      return;
+    }
+
+    const isEmail = platformSelect.value === 'email';
+    phoneField.hidden = isEmail;
+    emailField.hidden = !isEmail;
+  }
+
+  function initContactPlatformToggles() {
+    document.querySelectorAll('.admin-contact-platform').forEach(function (select) {
+      const root = select.closest('.modal') || select.closest('form');
+      select.addEventListener('change', function () {
+        syncContactPlatformFields(root);
+      });
+      syncContactPlatformFields(root);
+    });
+  }
+
   function openEditModal(id) {
     const person = peopleById[id];
     if (!person) {
@@ -674,6 +701,17 @@
     document.getElementById('editYear').value = person.gregorianDateOfDeath.year;
     document.getElementById('editText').value = person.text || '';
     document.getElementById('deletePhotoCheck').checked = false;
+
+    const contact = person.contact || {};
+    const editContactName = document.getElementById('editContactName');
+    const editContactPhone = document.getElementById('editContactPhone');
+    const editContactEmail = document.getElementById('editContactEmail');
+    const editContactPlatform = document.getElementById('editContactPlatform');
+    if (editContactName) editContactName.value = contact.name || '';
+    if (editContactPhone) editContactPhone.value = contact.phone || '';
+    if (editContactEmail) editContactEmail.value = contact.email || '';
+    if (editContactPlatform) editContactPlatform.value = contact.platform || 'whatsapp';
+    syncContactPlatformFields(document.getElementById('editPersonModal'));
 
     if (person.photo) {
       cropEditors.edit.setCrop(
@@ -794,6 +832,7 @@
 
     initLazyPhotos(list);
     initEditModalHandlers();
+    initContactPlatformToggles();
   }
 
   if (document.readyState === 'loading') {

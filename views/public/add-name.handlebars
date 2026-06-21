@@ -34,6 +34,35 @@
             </label>
         </div>
 
+        <div class="public-contact-section">
+            <h2 class="public-section-title">{{publicT 'contact_section_title'}}</h2>
+            <p class="public-section-intro">{{publicT 'contact_section_intro'}}</p>
+
+            <label class="public-field">
+                <span>{{publicT 'contact_name_label'}}</span>
+                <input type="text" name="contactName" maxlength="120" value="{{values.contactName}}" placeholder="{{publicT 'contact_name_placeholder'}}">
+            </label>
+
+            <label class="public-field">
+                <span>{{publicT 'contact_platform_label'}}</span>
+                <select name="contactPlatform" required>
+                    {{#each contactPlatformOptions}}
+                    <option value="{{this.value}}" {{#if (eq ../values.contactPlatform this.value)}}selected{{/if}}>{{this.label}}</option>
+                    {{/each}}
+                </select>
+            </label>
+
+            <label class="public-field public-field-phone">
+                <span>{{publicT 'contact_phone_label'}}</span>
+                <input type="tel" name="contactPhone" maxlength="30" required value="{{values.contactPhone}}" placeholder="{{publicT 'contact_phone_placeholder'}}">
+            </label>
+
+            <label class="public-field public-field-email">
+                <span>{{publicT 'contact_email_label'}}</span>
+                <input type="email" name="contactEmail" maxlength="200" value="{{values.contactEmail}}" placeholder="{{publicT 'contact_email_placeholder'}}">
+            </label>
+        </div>
+
         <div class="public-actions">
             <button type="submit" class="public-button public-button-primary">{{publicT 'submit'}}</button>
             <a href="{{boardUrl}}" class="public-button public-button-secondary">{{publicT 'back_to_board'}}</a>
@@ -46,3 +75,30 @@
         <a href="{{formUrl}}?lang=he" class="{{#if (eq lang 'he')}}is-active{{/if}}">HE</a>
     </div>
 </section>
+
+<script>
+(function () {
+  var platformSelect = document.querySelector('select[name="contactPlatform"]');
+  var phoneField = document.querySelector('.public-field-phone');
+  var emailField = document.querySelector('.public-field-email');
+  var phoneInput = document.querySelector('input[name="contactPhone"]');
+  var emailInput = document.querySelector('input[name="contactEmail"]');
+
+  if (!platformSelect || !phoneField || !emailField) {
+    return;
+  }
+
+  function syncContactFields() {
+    var platform = platformSelect.value;
+    var isEmail = platform === 'email';
+
+    phoneField.hidden = isEmail;
+    emailField.hidden = !isEmail;
+    phoneInput.required = !isEmail;
+    emailInput.required = isEmail;
+  }
+
+  platformSelect.addEventListener('change', syncContactFields);
+  syncContactFields();
+})();
+</script>

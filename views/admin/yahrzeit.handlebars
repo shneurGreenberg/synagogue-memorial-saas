@@ -1,0 +1,81 @@
+<div class="admin-page yahrzeit-page" data-copy-label="{{t 'yahrzeit_copy_message'}}" data-copied-label="{{t 'yahrzeit_copied'}}">
+    <header class="admin-page-header">
+        <div>
+            <h1>{{t 'yahrzeit_page'}}</h1>
+            <p class="admin-subtitle">{{t 'yahrzeit_subtitle'}} · {{todayLabel}}</p>
+        </div>
+        <div class="header-actions">
+            <a href="/admin/{{synagogue.slug}}/people" class="btn-admin btn-admin-secondary">{{t 'people'}}</a>
+        </div>
+    </header>
+
+    {{#unless emailConfigured}}
+    <div class="alert alert-warning" role="alert">
+        {{t 'yahrzeit_email_help'}}
+    </div>
+    {{/unless}}
+
+    {{#if entries.length}}
+    <div class="yahrzeit-list">
+        {{#each entries}}
+        <article class="yahrzeit-card" id="person-{{this.id}}">
+            <div class="yahrzeit-card-layout">
+                <div class="yahrzeit-tile-preview" style="--primary-color: {{../synagogue.theme.primaryColor}}; --text-color: {{../synagogue.theme.textColor}}; --accent-color: {{../synagogue.theme.accentColor}};">
+                    {{#if this.photoUrl}}
+                    <img class="yahrzeit-tile-photo" src="{{this.photoUrl}}" alt="{{this.name}}">
+                    {{else}}
+                    <div class="yahrzeit-tile-photo yahrzeit-tile-placeholder">{{initials this.name}}</div>
+                    {{/if}}
+                    <div class="yahrzeit-tile-body">
+                        <h2>{{this.name}}</h2>
+                        {{#if this.gregorianDateLabel}}
+                        <p>{{this.gregorianDateLabel}}{{#if this.hebrewDateLabel}} · {{this.hebrewDateLabel}}{{/if}}</p>
+                        {{/if}}
+                    </div>
+                    <div class="yahrzeit-tile-candle" aria-hidden="true">🕯</div>
+                </div>
+
+                <div class="yahrzeit-details">
+                    <div class="yahrzeit-contact-block">
+                        <h3>{{t 'contact_section'}}</h3>
+                        {{#if this.contact.phone}}
+                        <p><strong>{{t 'contact_phone'}}:</strong> {{this.contact.phone}}</p>
+                        {{/if}}
+                        {{#if this.contact.email}}
+                        <p><strong>{{t 'contact_email'}}:</strong> {{this.contact.email}}</p>
+                        {{/if}}
+                        {{#if this.contact.name}}
+                        <p><strong>{{t 'contact_name'}}:</strong> {{this.contact.name}}</p>
+                        {{/if}}
+                        <p><strong>{{t 'contact_platform'}}:</strong> {{this.contactPlatformLabel}}</p>
+                        {{#unless this.contact.phone}}
+                        {{#unless this.contact.email}}
+                        <p class="seed-notice">{{t 'yahrzeit_no_contact'}}</p>
+                        {{/unless}}
+                        {{/unless}}
+                    </div>
+
+                    <div class="yahrzeit-message-block">
+                        <h3>{{t 'yahrzeit_prepared_message'}}</h3>
+                        <textarea class="form-control yahrzeit-message" rows="8" readonly>{{this.preparedMessage}}</textarea>
+                        <div class="yahrzeit-actions">
+                            <button type="button" class="btn-admin btn-admin-secondary yahrzeit-copy-btn" data-message="{{this.preparedMessage}}">{{t 'yahrzeit_copy_message'}}</button>
+                            {{#if this.contactLink}}
+                            <a href="{{this.contactLink}}" class="btn-admin btn-admin-primary" target="_blank" rel="noopener noreferrer">{{t 'yahrzeit_send_contact'}}</a>
+                            {{/if}}
+                            <a href="{{this.boardCardUrl}}" class="btn-admin btn-admin-ghost" target="_blank" rel="noopener noreferrer">{{t 'yahrzeit_view_board'}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+        {{/each}}
+    </div>
+    {{else}}
+    <div class="admin-empty-state">
+        <p>{{t 'yahrzeit_empty'}}</p>
+    </div>
+    {{/if}}
+</div>
+
+<script src="/js/admin-yahrzeit.js"></script>
