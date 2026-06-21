@@ -1,5 +1,16 @@
 const mongoose = require('mongoose');
 
+const PersonContactSchema = new mongoose.Schema({
+  name: { type: String, default: '' },
+  phone: { type: String, default: '' },
+  email: { type: String, default: '' },
+  platform: {
+    type: String,
+    enum: ['whatsapp', 'telegram', 'max', 'sms', 'email'],
+    default: 'whatsapp',
+  },
+}, { _id: false });
+
 const PersonSchema = new mongoose.Schema({
   id: Number,
   name: String,
@@ -15,7 +26,8 @@ const PersonSchema = new mongoose.Schema({
     zoom: { type: Number, default: 1 },
   },
   title: String,
-  text: String
+  text: String,
+  contact: { type: PersonContactSchema, default: () => ({}) },
 });
 
 const DailyCiteSchema = new mongoose.Schema({
@@ -90,6 +102,11 @@ const SynagogueSchema = new mongoose.Schema({
   publicSubmission: {
     enabled: { type: Boolean, default: false },
     donationUrl: { type: String, default: '' },
+  },
+  yahrzeitReminders: {
+    enabled: { type: Boolean, default: false },
+    notifyEmail: { type: String, default: '' },
+    lastNotifiedDate: { type: String, default: '' },
   },
   savedViews: [{
     id: { type: String, required: true },

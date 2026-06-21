@@ -327,6 +327,32 @@
                 </div>
             </div>
         </section>
+        <section class="admin-panel">
+            <div class="admin-panel-header">
+                <h2>{{t 'yahrzeit_section'}}</h2>
+            </div>
+            <div class="admin-panel-body board-features-grid">
+                <div class="admin-theme-setting">
+                    <div class="admin-theme-setting-label">{{t 'yahrzeit_enabled'}}</div>
+                    <div class="admin-theme-setting-control">
+                        <label class="toggle-switch" for="yahrzeitRemindersEnabled">
+                            <input type="checkbox" id="yahrzeitRemindersEnabled" name="yahrzeitRemindersEnabled" value="1" {{#if synagogue.yahrzeitReminders.enabled}}checked{{/if}}>
+                            <span class="toggle-slider" aria-hidden="true"></span>
+                        </label>
+                    </div>
+                    <p class="field-hint admin-theme-setting-hint">{{t 'yahrzeit_enabled_help'}}</p>
+                </div>
+                <div class="form-field admin-theme-setting">
+                    <label for="yahrzeitRemindersEmail">{{t 'yahrzeit_email'}}</label>
+                    <input type="email" class="form-control" id="yahrzeitRemindersEmail" name="yahrzeitRemindersEmail" value="{{synagogue.yahrzeitReminders.notifyEmail}}" placeholder="admin@example.com">
+                    <p class="field-hint admin-theme-setting-hint">{{t 'yahrzeit_email_help'}}</p>
+                </div>
+                <div class="form-field admin-theme-setting">
+                    <label>{{t 'yahrzeit_page'}}</label>
+                    <p class="admin-copy-link"><code>/admin/{{synagogue.slug}}/yahrzeit</code></p>
+                </div>
+            </div>
+        </section>
         {{/if}}
 
         {{#if adminPermissions.settingsLanguages}}

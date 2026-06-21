@@ -46,6 +46,13 @@ const {
   permissionAllows,
 } = require('../lib/admin-users');
 const { parsePublicSubmissionFromBody } = require('../lib/public-submission');
+const { parsePersonContactFromBody, normalizePersonContact } = require('../lib/person-contact');
+const {
+  parseYahrzeitRemindersFromBody,
+  buildYahrzeitPageEntries,
+} = require('../lib/yahrzeit-reminders');
+const { isEmailConfigured } = require('../lib/email');
+const { getDayKeyInTimezone, resolveSynagogueTimezone } = require('../lib/yahrzeit');
 
 const BOARD_FEATURE_TOGGLE_META = [
   { key: 'sidebarNames', labelKey: 'feature_sidebar_names', helpKey: 'feature_sidebar_names_help' },
@@ -328,6 +335,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         } = req.body;
         const boardFeatures = parseBoardFeaturesFromBody(req.body);
         const publicSubmission = parsePublicSubmissionFromBody(req.body);
+        const yahrzeitReminders = parseYahrzeitRemindersFromBody(req.body);
         const fontScales = parseFontScalesFromBody(req.body);
         const updateData = {};
 
@@ -362,6 +370,8 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             ));
             updateData['publicSubmission.enabled'] = publicSubmission.enabled;
             updateData['publicSubmission.donationUrl'] = publicSubmission.donationUrl;
+            updateData['yahrzeitReminders.enabled'] = yahrzeitReminders.enabled;
+            updateData['yahrzeitReminders.notifyEmail'] = yahrzeitReminders.notifyEmail;
         }
 
         if (permissions.settingsBranding && req.files['logo']) {
@@ -694,10 +704,38 @@ function normalizeImportedPerson(raw, fallbackId) {
             date: parseInt(death.date, 10) || 1,
             year: parseInt(death.year, 10) || 1900,
         },
+        contact: normalizePersonContact(raw.contact || {
+            name: raw.contactName,
+            phone: raw.contactPhone,
+            email: raw.contactEmail,
+            platform: raw.contactPlatform,
+        }),
     };
 }
 
 // People Management
+router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        const enriched = enrichSynagogueForAdmin(synagogue);
+        const entries = buildYahrzeitPageEntries(enriched);
+        const timezone = resolveSynagogueTimezone(enriched);
+        const todayLabel = getDayKeyInTimezone(timezone);
+
+        renderAdmin(res, 'admin/yahrzeit', {
+            synagogue: enriched,
+            adminUser: req.adminUser,
+            adminPermissions: req.adminPermissions,
+            entries,
+            todayLabel,
+            emailConfigured: isEmailConfigured(),
+        });
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
 router.get('/:slug/people', requireAdmin, requirePermission('people'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
@@ -763,6 +801,7 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { name, text, month, date, year } = req.body;
+        const contact = parsePersonContactFromBody(req.body);
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
         const maxId = synagogue.people.reduce((max, p) => p.id > max ? p.id : max, 0);
 
@@ -773,7 +812,8 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
             gregorianDateOfDeath: { month: parseInt(month), date: parseInt(date), year: parseInt(year) },
             photo: req.file ? await optimizeUploadedImage(req.file.path, 'photo') : '',
             photoCrop: req.file ? parsePhotoCropFromBody(req.body) : undefined,
-            title: ''
+            title: '',
+            contact,
         };
 
         await Synagogue.updateOne(
@@ -795,12 +835,14 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { id, name, text, month, date, year, deletePhoto } = req.body;
+        const contact = parsePersonContactFromBody(req.body);
         const personId = parseInt(id);
 
         const updateFields = {
             'people.$.name': name,
             'people.$.text': sanitizeRichText(text),
-            'people.$.gregorianDateOfDeath': { month: parseInt(month), date: parseInt(date), year: parseInt(year) }
+            'people.$.gregorianDateOfDeath': { month: parseInt(month), date: parseInt(date), year: parseInt(year) },
+            'people.$.contact': contact,
         };
 
         if (req.file) {

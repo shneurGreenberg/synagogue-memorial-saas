@@ -4,8 +4,17 @@
     <p class="public-name">{{submittedName}}</p>
     {{/if}}
     <p class="public-intro">{{publicT 'success_message'}}</p>
-    <div class="public-actions">
-        <a href="{{charityUrl}}?lang={{lang}}" class="public-button public-button-primary">{{publicT 'success_continue'}}</a>
-        <a href="{{boardUrl}}" class="public-button public-button-secondary">{{publicT 'back_to_board'}}</a>
+
+    <div class="public-charity-section">
+        <h2 class="public-charity-title">{{publicT 'charity_title'}}</h2>
+        <p class="public-intro">{{publicT 'charity_message'}}</p>
+        <div class="public-actions">
+            {{#if publicSubmission.donationUrl}}
+            <a href="{{publicSubmission.donationUrl}}" class="public-button public-button-primary" target="_blank" rel="noopener noreferrer">{{publicT 'charity_button'}}</a>
+            {{else}}
+            <p class="public-note">{{publicT 'charity_unavailable'}}</p>
+            {{/if}}
+            <a href="{{boardUrl}}" class="public-button public-button-secondary">{{publicT 'back_to_board'}}</a>
+        </div>
     </div>
 </section>

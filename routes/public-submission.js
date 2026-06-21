@@ -5,7 +5,12 @@ const {
   getPublicSubmissionTranslator,
   resolvePublicSubmissionLang,
   getMonthOptions,
+  getContactPlatformOptions,
 } = require('../lib/public-submission-i18n');
+const {
+  parsePersonContactFromBody,
+  validatePublicSubmissionContact,
+} = require('../lib/person-contact');
 
 const router = express.Router();
 
@@ -86,12 +91,19 @@ router.get('/:slug/add-name', async (req, res) => {
         month: req.query.month || '',
         date: req.query.date || '',
         year: req.query.year || '',
+        contactName: req.query.contactName || '',
+        contactPhone: req.query.contactPhone || '',
+        contactEmail: req.query.contactEmail || '',
+        contactPlatform: req.query.contactPlatform || 'whatsapp',
       },
       errorMessage: req.query.error === 'required'
         ? pt('required_error')
+        : req.query.error === 'contact'
+          ? pt('contact_required_error')
         : req.query.error === 'date'
           ? pt('invalid_date_error')
           : '',
+      contactPlatformOptions: getContactPlatformOptions(lang),
     });
   } catch (err) {
     return res.status(500).send(err.message);
@@ -112,10 +124,27 @@ router.post('/:slug/add-name', async (req, res) => {
 
     const name = String(req.body.name || '').trim().slice(0, 120);
     const deathDate = parseDeathDate(req.body);
+    const contact = parsePersonContactFromBody(req.body);
     const lang = resolvePublicSubmissionLang(req.body.lang, synagogue.language);
 
     if (!name) {
       return res.redirect(`/s/${req.params.slug}/add-name?lang=${lang}&error=required&name=${encodeURIComponent(name)}`);
+    }
+
+    if (!validatePublicSubmissionContact(contact)) {
+      const params = new URLSearchParams({
+        lang,
+        error: 'contact',
+        name,
+        month: req.body.month || '',
+        date: req.body.date || '',
+        year: req.body.year || '',
+        contactName: contact.name,
+        contactPhone: contact.phone,
+        contactEmail: contact.email,
+        contactPlatform: contact.platform,
+      });
+      return res.redirect(`/s/${req.params.slug}/add-name?${params.toString()}`);
     }
 
     if (!deathDate) {
@@ -141,6 +170,7 @@ router.post('/:slug/add-name', async (req, res) => {
       photo: '',
       title: '',
       text: '',
+      contact,
     });
 
     await synagogue.save();
