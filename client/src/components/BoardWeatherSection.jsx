@@ -40,32 +40,14 @@ const WMO_LABELS = {
   95: 'thunderstorm',
 };
 
-const WEATHER_SYMBOLS = {
-  clear: '*',
-  mainly_clear: '*',
-  partly_cloudy: '~',
-  overcast: '=',
-  fog: '~',
-  drizzle: '/',
-  rain: '/',
-  snow: '#',
-  showers: '/',
-  thunderstorm: '!',
-  unknown: '?',
-};
-
 function weatherLabel(t, code) {
   const key = WMO_LABELS[code] || 'unknown';
   return t(`weather_${key}`, { defaultValue: t('weather_unknown') });
 }
 
-function WeatherSymbol({ code, className }) {
+function WeatherIcon({ code, className }) {
   const key = WMO_LABELS[code] || 'unknown';
-  return (
-    <span className={`weather-symbol weather-symbol-${key} ${className || ''}`} aria-hidden="true">
-      {WEATHER_SYMBOLS[key] || WEATHER_SYMBOLS.unknown}
-    </span>
-  );
+  return <span className={`weather-icon weather-icon-${key} ${className || ''}`} aria-hidden="true" />;
 }
 
 function useBoardWeather(coords) {
@@ -169,34 +151,31 @@ function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
     min: Math.round(forecast.daily.temperature_2m_min[index + 1]),
   }));
 
+  const sunTimesLine = showSunTimes && sunTimes ? (
+    <p className="weather-sun-times">
+      <span className="weather-sun-times-item">
+        {t('sunrise_label')} {formatLocalTime(sunTimes.sunrise, locale)}
+      </span>
+      <span className="weather-sun-times-sep" aria-hidden="true">·</span>
+      <span className="weather-sun-times-item">
+        {t('sunset_label')} {formatLocalTime(sunTimes.sunset, locale)}
+      </span>
+    </p>
+  ) : null;
+
   return (
     <div className="board-weather-block">
-      {showSunTimes && sunTimes && (
-        <section className="sun-times-panel" aria-label={t('sun_times_title')}>
-          <h2>{t('sun_times_title')}</h2>
-          <div className="sun-times-row">
-            <div className="sun-times-item">
-              <span className="sun-times-label">{t('sunrise_label')}</span>
-              <span className="sun-times-value">{formatLocalTime(sunTimes.sunrise, locale)}</span>
-            </div>
-            <div className="sun-times-item">
-              <span className="sun-times-label">{t('sunset_label')}</span>
-              <span className="sun-times-value">{formatLocalTime(sunTimes.sunset, locale)}</span>
-            </div>
-          </div>
-        </section>
-      )}
-
       {showWeather && (
         <section className="weather-panel" aria-label={t('weather_title')}>
           <h2>{t('weather_title')}</h2>
           <div className="weather-today">
-            <WeatherSymbol code={todayCode} className="weather-today-icon" />
+            <WeatherIcon code={todayCode} className="weather-today-icon" />
             <div className="weather-today-main">
               <div className="weather-today-temp">{todayTemp}°</div>
               <div className="weather-today-label">{weatherLabel(t, todayCode)}</div>
             </div>
           </div>
+          {sunTimesLine}
           {upcoming.length > 0 && (
             <ul className="weather-upcoming">
               {upcoming.map((day) => (
@@ -207,7 +186,7 @@ function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
                       day: 'numeric',
                     })}
                   </span>
-                  <WeatherSymbol code={day.code} className="weather-upcoming-icon" />
+                  <WeatherIcon code={day.code} className="weather-upcoming-icon" />
                   <span className="weather-upcoming-temps">
                     {day.max}° / {day.min}°
                   </span>
@@ -215,6 +194,13 @@ function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
               ))}
             </ul>
           )}
+        </section>
+      )}
+
+      {!showWeather && showSunTimes && sunTimes && (
+        <section className="weather-panel weather-panel-sun-only" aria-label={t('sun_times_title')}>
+          <h2>{t('sun_times_title')}</h2>
+          {sunTimesLine}
         </section>
       )}
     </div>
