@@ -104,7 +104,10 @@ export class HayomYomScroller extends React.Component {
     }
 
     return (
-      <div className="hayom-yom-scroll" ref={this.viewportRef}>
+      <div
+        className={`hayom-yom-scroll${this.state.shouldScroll ? ' is-scrolling' : ''}`}
+        ref={this.viewportRef}
+      >
         <div
           className={`hayom-yom-track${this.state.shouldScroll ? ' is-scrolling' : ''}`}
           ref={this.trackRef}

@@ -1,4 +1,4 @@
-<div class="admin-page people-page" data-synagogue-slug="{{synagogue.slug}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}">
+<div class="admin-page people-page" data-synagogue-slug="{{synagogue.slug}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-send-label="{{t 'yahrzeit_send_contact'}}" data-download-tile-label="{{t 'yahrzeit_download_tile'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}">
     <header class="admin-page-header">
         <div>
             <h1>{{t 'people'}}</h1>
@@ -32,10 +32,6 @@
     <div class="people-toolbar">
         <input type="search" id="peopleSearch" class="form-control admin-input" style="max-width: 300px; flex: 1;"
             placeholder="{{t 'search_people'}}" aria-label="{{t 'search_people'}}">
-        <select id="peopleSort" class="form-control admin-input" style="max-width: 200px;" aria-label="{{t 'sort_label'}}">
-            <option value="name">{{t 'sort_by_name'}}</option>
-            <option value="date">{{t 'sort_by_date'}}</option>
-        </select>
     </div>
 
     <div class="people-list" id="peopleList">

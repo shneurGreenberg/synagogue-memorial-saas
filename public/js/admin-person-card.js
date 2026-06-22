@@ -70,10 +70,26 @@
     const contactEmailRow = document.getElementById('personCardContactEmail');
     const contactPlatformRow = document.getElementById('personCardContactPlatform');
     const editBtn = document.getElementById('personCardEditBtn');
+    const sendBtn = document.getElementById('personCardSendBtn');
     const deleteBtn = document.getElementById('personCardDeleteBtn');
     const deleteForm = document.getElementById('personCardDeleteForm');
     const deleteIdInput = document.getElementById('personCardDeleteId');
+    const page = document.querySelector('.people-page, .yahrzeit-page');
+    const synagogueSlug = page ? page.getAttribute('data-synagogue-slug') : '';
+    const sendLabel = (page && page.getAttribute('data-send-label')) || 'Send';
     let activePerson = null;
+    let activeMessageLink = null;
+    let activeTileUrl = null;
+
+    function downloadTileImage(tileUrl, personName) {
+      const link = document.createElement('a');
+      link.href = tileUrl;
+      link.download = String(personName || 'memorial').replace(/[^\w\u0590-\u05FF.-]+/g, '_') + '-tile.png';
+      link.rel = 'noopener';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
 
     function populateCard(person) {
       activePerson = person;
@@ -126,6 +142,30 @@
       if (deleteIdInput) {
         deleteIdInput.value = person && person.id != null ? String(person.id) : '';
       }
+
+      activeMessageLink = null;
+      activeTileUrl = null;
+      if (sendBtn) {
+        sendBtn.hidden = true;
+        sendBtn.disabled = true;
+        sendBtn.textContent = sendLabel;
+      }
+
+      if (sendBtn && synagogueSlug && person && person.id != null && hasContact) {
+        fetch('/admin/' + encodeURIComponent(synagogueSlug) + '/people/message/' + encodeURIComponent(person.id) + '.json')
+          .then(function (response) { return response.json(); })
+          .then(function (payload) {
+            if (!payload || !payload.ok || !payload.canSend) {
+              return;
+            }
+
+            activeMessageLink = payload.contactLink;
+            activeTileUrl = payload.tileUrl;
+            sendBtn.hidden = false;
+            sendBtn.disabled = false;
+          })
+          .catch(function () {});
+      }
     }
 
     function openPersonCard(person) {
@@ -135,6 +175,20 @@
 
       populateCard(person);
       window.jQuery('#personCardModal').modal('show');
+    }
+
+    if (sendBtn) {
+      sendBtn.addEventListener('click', function () {
+        if (!activePerson || !activeMessageLink) {
+          return;
+        }
+
+        if (activeTileUrl) {
+          downloadTileImage(activeTileUrl, activePerson.name);
+        }
+
+        window.open(activeMessageLink, '_blank', 'noopener,noreferrer');
+      });
     }
 
     if (editBtn) {

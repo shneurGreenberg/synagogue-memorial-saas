@@ -14,7 +14,6 @@
   });
 
   const searchInput = document.getElementById('peopleSearch');
-  const sortSelect = document.getElementById('peopleSort');
   const THUMB_WIDTH = 128;
 
   let activeEditPersonId = null;
@@ -467,7 +466,6 @@
 
   function applyFilters() {
     const query = searchInput.value.trim().toLowerCase();
-    const sortBy = sortSelect.value;
     const rows = Array.from(list.querySelectorAll('.person-row'));
 
     rows.forEach(function (row) {
@@ -478,10 +476,6 @@
     const visible = rows.filter(function (row) { return row.style.display !== 'none'; });
 
     visible.sort(function (a, b) {
-      if (sortBy === 'date') {
-        return a.getAttribute('data-date').localeCompare(b.getAttribute('data-date'));
-      }
-
       return a.getAttribute('data-name').localeCompare(b.getAttribute('data-name'));
     });
 
@@ -771,7 +765,6 @@
     });
 
     searchInput.addEventListener('input', applyFilters);
-    sortSelect.addEventListener('change', applyFilters);
 
     const deletePhotoCheck = document.getElementById('deletePhotoCheck');
     if (deletePhotoCheck) {

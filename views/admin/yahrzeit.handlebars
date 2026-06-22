@@ -1,4 +1,4 @@
-<div class="admin-page yahrzeit-page" data-synagogue-slug="{{synagogue.slug}}" data-copy-label="{{t 'yahrzeit_copy_message'}}" data-copied-label="{{t 'yahrzeit_copied'}}" data-download-tile-label="{{t 'yahrzeit_download_tile'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}">
+<div class="admin-page yahrzeit-page" data-synagogue-slug="{{synagogue.slug}}" data-copy-label="{{t 'yahrzeit_copy_message'}}" data-copied-label="{{t 'yahrzeit_copied'}}" data-download-tile-label="{{t 'yahrzeit_download_tile'}}" data-send-label="{{t 'yahrzeit_send_contact'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}">
     <header class="admin-page-header">
         <div>
             <h1>{{t 'yahrzeit_page'}}</h1>
@@ -76,6 +76,71 @@
     <div class="admin-empty-state">
         <p>{{t 'yahrzeit_empty'}}</p>
     </div>
+    {{/if}}
+
+    {{#if weekEntries.length}}
+    <section class="yahrzeit-week-section">
+        <header class="yahrzeit-week-header">
+            <h2>{{t 'yahrzeit_week_missed_title'}}</h2>
+            <p class="admin-subtitle">{{t 'yahrzeit_week_missed_subtitle'}}</p>
+        </header>
+        <div class="yahrzeit-list yahrzeit-list-week">
+        {{#each weekEntries}}
+        <article class="yahrzeit-card yahrzeit-card-clickable yahrzeit-card-week" id="person-week-{{this.id}}" data-person-id="{{this.id}}">
+            <div class="yahrzeit-card-layout">
+                <div class="yahrzeit-tile-preview yahrzeit-card-open" style="--primary-color: {{../synagogue.theme.primaryColor}}; --text-color: {{../synagogue.theme.textColor}}; --accent-color: {{../synagogue.theme.accentColor}};">
+                    {{#if this.photoUrl}}
+                    <img class="yahrzeit-tile-photo" src="{{this.photoUrl}}" alt="{{this.name}}">
+                    {{else}}
+                    <div class="yahrzeit-tile-photo yahrzeit-tile-placeholder">{{initials this.name}}</div>
+                    {{/if}}
+                    <div class="yahrzeit-tile-body">
+                        <h2>{{this.name}}</h2>
+                        {{#if this.gregorianDateLabel}}
+                        <p>{{this.gregorianDateLabel}}{{#if this.hebrewDateLabel}} · {{this.hebrewDateLabel}}{{/if}}</p>
+                        {{/if}}
+                    </div>
+                    <div class="yahrzeit-tile-candle" aria-hidden="true">🕯</div>
+                </div>
+
+                <div class="yahrzeit-details">
+                    <div class="yahrzeit-contact-block">
+                        <h3>{{t 'contact_section'}}</h3>
+                        {{#if this.contact.phone}}
+                        <p><strong>{{t 'contact_phone'}}:</strong> {{this.contact.phone}}</p>
+                        {{/if}}
+                        {{#if this.contact.email}}
+                        <p><strong>{{t 'contact_email'}}:</strong> {{this.contact.email}}</p>
+                        {{/if}}
+                        {{#if this.contact.name}}
+                        <p><strong>{{t 'contact_name'}}:</strong> {{this.contact.name}}</p>
+                        {{/if}}
+                        <p><strong>{{t 'contact_platform'}}:</strong> {{this.contactPlatformLabel}}</p>
+                        {{#unless this.contact.phone}}
+                        {{#unless this.contact.email}}
+                        <p class="seed-notice">{{t 'yahrzeit_no_contact'}}</p>
+                        {{/unless}}
+                        {{/unless}}
+                    </div>
+
+                    <div class="yahrzeit-message-block">
+                        <h3>{{t 'yahrzeit_prepared_message'}}</h3>
+                        <textarea class="form-control yahrzeit-message" rows="8" readonly>{{this.preparedMessage}}</textarea>
+                        <div class="yahrzeit-actions">
+                            <button type="button" class="btn-admin btn-admin-secondary yahrzeit-copy-btn" data-message="{{this.preparedMessage}}">{{t 'yahrzeit_copy_message'}}</button>
+                            <button type="button" class="btn-admin btn-admin-secondary yahrzeit-download-tile-btn" data-person-id="{{this.id}}" data-person-name="{{this.name}}">{{t 'yahrzeit_download_tile'}}</button>
+                            {{#if this.contactLink}}
+                            <a href="{{this.contactLink}}" class="btn-admin btn-admin-primary yahrzeit-send-btn" data-tile-url="/admin/{{../synagogue.slug}}/yahrzeit/tile/{{this.id}}.png" data-person-name="{{this.name}}" target="_blank" rel="noopener noreferrer">{{t 'yahrzeit_send_contact'}}</a>
+                            {{/if}}
+                            <a href="{{this.boardCardUrl}}" class="btn-admin btn-admin-ghost" target="_blank" rel="noopener noreferrer">{{t 'yahrzeit_view_board'}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+        {{/each}}
+        </div>
+    </section>
     {{/if}}
 </div>
 

@@ -50,6 +50,8 @@ const { parsePersonContactFromBody, normalizePersonContact } = require('../lib/p
 const {
   parseYahrzeitRemindersFromBody,
   buildYahrzeitPageEntries,
+  buildYahrzeitWeekMissedEntries,
+  buildContactMessageEntry,
 } = require('../lib/yahrzeit-reminders');
 const { isEmailConfigured } = require('../lib/email');
 const { getDayKeyInTimezone, resolveSynagogueTimezone, buildYahrzeitEntries } = require('../lib/yahrzeit');
@@ -89,6 +91,7 @@ const FONT_SCALE_SLIDER_META = [
   { key: 'boardHeader', labelKey: 'font_scale_board_header', helpKey: 'font_scale_board_header_help' },
   { key: 'sidebar', labelKey: 'font_scale_sidebar', helpKey: 'font_scale_sidebar_help' },
   { key: 'prayers', labelKey: 'font_scale_prayers', helpKey: 'font_scale_prayers_help' },
+  { key: 'torahNames', labelKey: 'font_scale_torah_names', helpKey: 'font_scale_torah_names_help' },
 ];
 
 function buildFontScaleSliders(fontScales) {
@@ -515,6 +518,7 @@ router.post('/:slug/settings/reset-theme', requireAdmin, requirePermission('sett
                 'theme.fontScales.boardHeader': 100,
                 'theme.fontScales.sidebar': 100,
                 'theme.fontScales.prayers': 100,
+                'theme.fontScales.torahNames': 100,
             },
             $unset: {
                 'theme.backgroundImage': '',
@@ -636,10 +640,12 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
         const enriched = enrichSynagogueForAdmin(synagogue);
         const displaySynagogue = applyUserDisplaySettings(enriched, req.adminUser);
         const entries = buildYahrzeitPageEntries(enriched, new Date(), displaySynagogue.adminLanguage);
+        const weekEntries = buildYahrzeitWeekMissedEntries(enriched, new Date(), displaySynagogue.adminLanguage);
         const timezone = resolveSynagogueTimezone(enriched);
         const todayLabel = getDayKeyInTimezone(timezone);
         const yahrzeitPeople = (enriched.people || []).filter((person) => (
             entries.some((entry) => entry.id === person.id)
+            || weekEntries.some((entry) => entry.id === person.id)
         ));
 
         renderAdmin(res, 'admin/yahrzeit', {
@@ -647,6 +653,7 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
             adminUser: req.adminUser,
             adminPermissions: req.adminPermissions,
             entries,
+            weekEntries,
             yahrzeitPeople,
             todayLabel,
             emailConfigured: isEmailConfigured(),
@@ -691,6 +698,39 @@ router.get('/:slug/yahrzeit/tile/:personId.png', requireAdmin, requirePermission
         return res.send(buffer);
     } catch (err) {
         return res.status(500).send(err.message);
+    }
+});
+
+router.get('/:slug/people/message/:personId.json', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        if (!synagogue) {
+            return res.status(404).json({ ok: false });
+        }
+
+        const personId = Number(req.params.personId);
+        const person = (synagogue.people || []).find((entry) => entry.id === personId);
+        if (!person) {
+            return res.status(404).json({ ok: false });
+        }
+
+        const enriched = enrichSynagogueForAdmin(synagogue);
+        const displaySynagogue = applyUserDisplaySettings(enriched, req.adminUser);
+        const entry = buildContactMessageEntry(enriched, person, {
+            adminLanguage: displaySynagogue.adminLanguage,
+            missed: req.query.missed === '1',
+        });
+
+        return res.json({
+            ok: true,
+            preparedMessage: entry.preparedMessage,
+            contactLink: entry.contactLink,
+            tileUrl: entry.tileUrl,
+            canSend: !!entry.contactLink,
+        });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
     }
 });
 

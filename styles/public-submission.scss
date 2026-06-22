@@ -31,6 +31,106 @@
   }
 }
 
+.public-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.public-brand-logo {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+.public-community-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid var(--primary-color, #cfaf1f);
+}
+
+.public-photo-section {
+  display: grid;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.public-photo-crop-viewport {
+  width: 160px;
+  height: 160px;
+  margin: 0 auto;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--primary-color, #cfaf1f);
+  background: rgba(0, 0, 0, 0.28);
+  position: relative;
+
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+}
+
+.public-photo-crop-editor {
+  display: grid;
+  gap: 10px;
+}
+
+.public-photo-crop-hint,
+.photo-crop-zoom-label {
+  display: block;
+  font-size: 13px;
+  color: var(--text-color, #f0f0f0);
+  opacity: 0.85;
+}
+
+.public-photo-upload-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+
+  input {
+    display: none;
+  }
+}
+
+.public-contact-row {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.2fr);
+  gap: 10px;
+}
+
+.public-email-toggle-wrap {
+  margin: 0;
+  text-align: center;
+}
+
+.public-email-toggle {
+  border: 0;
+  background: transparent;
+  color: var(--accent-color, #ffd54f);
+  font: inherit;
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
 .public-card-success .public-name {
   text-align: center;
   font-size: clamp(20px, 3vw, 28px);
@@ -172,7 +272,8 @@
 }
 
 @media (max-width: 560px) {
-  .public-date-grid {
+  .public-date-grid,
+  .public-contact-row {
     grid-template-columns: 1fr;
   }
 }

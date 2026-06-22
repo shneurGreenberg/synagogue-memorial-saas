@@ -109,12 +109,16 @@
       display: flex;
       flex-direction: column;
       padding: 4px 0 8px;
-      margin-bottom: 2px;
-      border-bottom: 1px solid rgba(207, 175, 31, 0.28);
+      margin-bottom: 0;
+      border-bottom: none;
       overflow: hidden;
 
       h2 {
         flex-shrink: 0;
+      }
+
+      + .memorial-submission-panel {
+        border-top: 1px solid rgba(207, 175, 31, 0.28);
       }
     }
 
@@ -123,7 +127,10 @@
       min-height: 0;
       width: 100%;
       overflow: hidden;
-      mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
+
+      &.is-scrolling {
+        mask-image: linear-gradient(to bottom, transparent 0, #000 4%, #000 96%, transparent 100%);
+      }
     }
 
     .hayom-yom-track {
@@ -145,6 +152,7 @@
       text-align: start;
       color: $textColor;
       white-space: pre-wrap;
+      overflow-wrap: anywhere;
     }
 
     .daily-gates-panel {
@@ -474,7 +482,7 @@
       margin-top: auto;
       padding: 0.85rem 0.5rem 1rem;
       text-align: center;
-      border-top: 1px solid rgba(207, 175, 31, 0.28);
+      border-top: none;
       flex-shrink: 0;
 
       h2 {
