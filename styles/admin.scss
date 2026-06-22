@@ -121,6 +121,9 @@ body.admin-login-page {
     margin: 0 2px;
     padding: 0.45rem 0.85rem !important;
     color: rgba(255, 255, 255, 0.88) !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
 
     &:hover {
       background: rgba(255, 255, 255, 0.1);
@@ -128,7 +131,17 @@ body.admin-login-page {
     }
   }
 
+  .admin-nav-icon {
+    width: 1.05em;
+    height: 1.05em;
+    flex-shrink: 0;
+    opacity: 0.92;
+  }
+
   .btn-outline-light {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
     border-radius: 10px;
     font-weight: 600;
     border-width: 2px;
@@ -297,6 +310,9 @@ body.admin-login-page {
   align-items: center;
   gap: 1rem;
   padding: 1rem 1.15rem;
+  min-height: 88px;
+  max-height: 88px;
+  overflow: hidden;
   background: var(--admin-surface);
   border: 1px solid var(--admin-border);
   border-radius: $admin-radius;
@@ -342,12 +358,16 @@ body.admin-login-page {
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
+  width: 100%;
+  height: 280px;
   min-height: 280px;
+  max-height: 280px;
   padding: 1rem;
   border-radius: 16px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.35));
   border: 1px solid var(--admin-border);
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 .admin-person-card-photo {
@@ -371,17 +391,27 @@ body.admin-login-page {
 
 .admin-person-card-body {
   text-align: center;
+  width: 100%;
+  min-width: 0;
 
   h2 {
     margin: 0 0 0.35rem;
     color: var(--primary-color, #cfaf1f);
     font-size: 1.35rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
   }
 
   p {
     margin: 0;
     color: var(--text-color, #f0f0f0);
     font-size: 0.95rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
@@ -460,17 +490,25 @@ body.admin-login-page {
 .person-meta {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
 
   strong {
     display: block;
     font-size: 1.05rem;
     font-weight: 600;
     margin-bottom: 0.2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   small {
     color: var(--admin-text-muted);
     font-size: 0.85rem;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
@@ -1674,8 +1712,8 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
   }
 
   .person-row {
-    flex-wrap: wrap;
-    align-items: flex-start;
+    flex-wrap: nowrap;
+    align-items: center;
   }
 
   .person-actions {
@@ -1894,10 +1932,14 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
   position: relative;
   border-radius: 16px;
   overflow: hidden;
+  width: 100%;
+  height: 220px;
   min-height: 220px;
+  max-height: 220px;
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.75));
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  box-sizing: border-box;
 }
 
 .yahrzeit-tile-photo {
@@ -1926,17 +1968,26 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
 
 .yahrzeit-tile-body {
   padding: 0.85rem 1rem 2.5rem;
+  min-width: 0;
 
   h2 {
     margin: 0 0 0.35rem;
     font-size: 1.1rem;
     color: var(--admin-primary);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
   }
 
   p {
     margin: 0;
     font-size: 0.9rem;
     color: var(--admin-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
