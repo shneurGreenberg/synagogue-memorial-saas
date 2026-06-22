@@ -69,6 +69,7 @@
     const contactPhoneRow = document.getElementById('personCardContactPhone');
     const contactEmailRow = document.getElementById('personCardContactEmail');
     const contactPlatformRow = document.getElementById('personCardContactPlatform');
+    const contactNoContact = document.getElementById('personCardNoContact');
     const editBtn = document.getElementById('personCardEditBtn');
     const sendBtn = document.getElementById('personCardSendBtn');
     const deleteBtn = document.getElementById('personCardDeleteBtn');
@@ -126,18 +127,23 @@
 
       const contact = (person && person.contact) || {};
       const hasContact = !!(contact.name || contact.phone || contact.email);
-      if (contactSection) {
-        contactSection.hidden = !hasContact;
-      }
+      const hasPlatform = !!contact.platform;
 
       setRowVisibility(contactNameRow, !!contact.name, contact.name);
       setRowVisibility(contactPhoneRow, !!contact.phone, contact.phone);
       setRowVisibility(contactEmailRow, !!contact.email, contact.email);
       setRowVisibility(
         contactPlatformRow,
-        !!contact.platform,
+        hasPlatform,
         labels.platformLabels[contact.platform] || contact.platform,
       );
+
+      if (contactNoContact) {
+        contactNoContact.hidden = hasContact;
+      }
+      if (contactSection) {
+        contactSection.hidden = false;
+      }
 
       if (deleteIdInput) {
         deleteIdInput.value = person && person.id != null ? String(person.id) : '';
@@ -151,7 +157,7 @@
         sendBtn.textContent = sendLabel;
       }
 
-      if (sendBtn && synagogueSlug && person && person.id != null && hasContact) {
+      if (sendBtn && synagogueSlug && person && person.id != null && hasContact && hasPlatform) {
         fetch('/admin/' + encodeURIComponent(synagogueSlug) + '/people/message/' + encodeURIComponent(person.id) + '.json')
           .then(function (response) { return response.json(); })
           .then(function (payload) {
@@ -227,10 +233,15 @@
 
         const person = activePerson;
         closePersonCardModal(function () {
+          const personId = person && person.id;
+          if (personId == null) {
+            return;
+          }
+
           if (typeof options.onEdit === 'function') {
-            options.onEdit(person);
+            options.onEdit(personId);
           } else if (window.AdminPeople && typeof window.AdminPeople.openEditModal === 'function') {
-            window.AdminPeople.openEditModal(person.id);
+            window.AdminPeople.openEditModal(personId);
           }
         });
       });

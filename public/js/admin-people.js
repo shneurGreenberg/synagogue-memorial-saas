@@ -613,26 +613,11 @@
 
     row.appendChild(meta);
 
-    const editBtn = document.createElement('button');
-    editBtn.type = 'button';
-    editBtn.className = 'btn-admin btn-admin-secondary person-row-edit-btn';
-    editBtn.setAttribute('data-person-id', String(person.id));
-    editBtn.textContent = page.getAttribute('data-edit-label') || 'Edit';
-    row.appendChild(editBtn);
-
     return row;
   }
 
   function bindPersonRowInteractions(personCard) {
     list.addEventListener('click', function (event) {
-      const editBtn = event.target.closest('.person-row-edit-btn');
-      if (editBtn) {
-        event.preventDefault();
-        event.stopPropagation();
-        openEditModal(Number(editBtn.getAttribute('data-person-id')));
-        return;
-      }
-
       const row = event.target.closest('.person-row-clickable');
       if (!row || !list.contains(row)) {
         return;
@@ -691,7 +676,10 @@
     document.getElementById('editMonth').value = person.gregorianDateOfDeath.month;
     document.getElementById('editYear').value = person.gregorianDateOfDeath.year;
     document.getElementById('editText').value = person.text || '';
-    document.getElementById('deletePhotoCheck').checked = false;
+    const deletePhotoInput = document.getElementById('editDeletePhoto');
+    if (deletePhotoInput) {
+      deletePhotoInput.value = '';
+    }
 
     const contact = person.contact || {};
     const editContactName = document.getElementById('editContactName');
@@ -702,9 +690,12 @@
     if (editContactName) editContactName.value = contact.name || '';
     if (editContactPhone) editContactPhone.value = contact.phone || '';
     if (editContactEmail) editContactEmail.value = contact.email || '';
-    if (editContactPlatform) editContactPlatform.value = contact.platform || 'whatsapp';
+    if (editContactPlatform) editContactPlatform.value = contact.platform || '';
     if (editContactGender) editContactGender.value = contact.gender || '';
     syncContactPlatformFields(document.getElementById('editPersonModal'));
+    if (window.ContactPlatformUI) {
+      window.ContactPlatformUI.syncPlatformIcon(editContactPlatform);
+    }
 
     if (person.photo) {
       cropEditors.edit.setCrop(
@@ -799,23 +790,19 @@
 
     searchInput.addEventListener('input', applyFilters);
 
-    const deletePhotoCheck = document.getElementById('deletePhotoCheck');
-    if (deletePhotoCheck) {
-      deletePhotoCheck.addEventListener('change', function (event) {
-        if (event.target.checked) {
-          cropEditors.edit.clearCrop();
-          if (activeEditPersonId != null) {
-            updateListRowPhoto(activeEditPersonId, { x: 50, y: 50, zoom: 1 }, null);
-          }
-        } else if (activeEditPersonId != null) {
-          const person = peopleById[activeEditPersonId];
-          if (person && person.photo) {
-            cropEditors.edit.setCrop(
-              person.photoCrop || { x: 50, y: 50, zoom: 1 },
-              buildFullUrl(person.photo),
-              person.name || '',
-            );
-          }
+    const deletePhotoBtn = document.getElementById('editDeletePhotoBtn');
+    const deletePhotoInput = document.getElementById('editDeletePhoto');
+    const deletePhotoConfirm = page.getAttribute('data-delete-photo-confirm') || 'Delete this photo?';
+    if (deletePhotoBtn && deletePhotoInput) {
+      deletePhotoBtn.addEventListener('click', function () {
+        if (!window.confirm(deletePhotoConfirm)) {
+          return;
+        }
+
+        deletePhotoInput.value = '1';
+        cropEditors.edit.clearCrop();
+        if (activeEditPersonId != null) {
+          updateListRowPhoto(activeEditPersonId, { x: 50, y: 50, zoom: 1 }, null);
         }
       });
     }
@@ -825,6 +812,9 @@
     initLazyPhotos(list);
     initEditModalHandlers();
     initContactPlatformToggles();
+    if (window.ContactPlatformUI) {
+      window.ContactPlatformUI.init();
+    }
 
     window.AdminPeople = {
       openEditModal: openEditModal,

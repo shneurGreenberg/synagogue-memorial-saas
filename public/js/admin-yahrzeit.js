@@ -42,10 +42,10 @@
   }
 
   const personCard = window.AdminPersonCard.init({
-    onEdit: function (person) {
+    onEdit: function (personId) {
       const slug = page.getAttribute('data-synagogue-slug');
-      if (slug && person && person.id != null) {
-        window.location.href = '/admin/' + slug + '/people?edit=' + person.id;
+      if (slug && personId != null) {
+        window.location.href = '/admin/' + slug + '/people?edit=' + personId;
       }
     },
   });

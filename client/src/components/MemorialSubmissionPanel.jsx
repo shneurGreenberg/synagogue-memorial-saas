@@ -2,6 +2,7 @@ import React from 'react';
 import { withTranslation } from 'react-i18next';
 import { useBoardData } from '../context/BoardDataContext';
 import { assetUrl } from '../lib/asset-url';
+import { getBoardSlug } from '../lib/board-slug';
 
 function MemorialSubmissionPanelBase({ t }) {
   const { data, uiLang } = useBoardData();
@@ -13,6 +14,17 @@ function MemorialSubmissionPanelBase({ t }) {
   const titleScale = (Number(panel.titleScale) || 100) / 100;
   const textScale = (Number(panel.textScale) || 100) / 100;
   const qrScale = (Number(panel.qrScale) || 140) / 100;
+  const slug = data.slug || getBoardSlug();
+  const addNameUrl = slug ? `/s/${slug}/add-name` : '';
+
+  const qrImage = (
+    <img
+      className="memorial-submission-qr"
+      src={assetUrl('images/memorial-submission-qr.svg')}
+      alt={t('memorial_submission_qr_alt')}
+      decoding="async"
+    />
+  );
 
   return (
     <section
@@ -26,12 +38,13 @@ function MemorialSubmissionPanelBase({ t }) {
     >
       <h2>{title}</h2>
       <p className="memorial-submission-text">{text}</p>
-      <img
-        className="memorial-submission-qr"
-        src={assetUrl('images/memorial-submission-qr.svg')}
-        alt={t('memorial_submission_qr_alt')}
-        decoding="async"
-      />
+      {addNameUrl ? (
+        <a href={addNameUrl} className="memorial-submission-qr-link" aria-label={t('memorial_submission_qr_alt')}>
+          {qrImage}
+        </a>
+      ) : (
+        qrImage
+      )}
     </section>
   );
 }

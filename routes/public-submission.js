@@ -134,7 +134,7 @@ router.get('/:slug/add-name', async (req, res) => {
         contactName: req.query.contactName || '',
         contactPhone: req.query.contactPhone || '',
         contactEmail: req.query.contactEmail || '',
-        contactPlatform: req.query.contactPlatform || 'whatsapp',
+        contactPlatform: req.query.contactPlatform || '',
       },
       errorMessage: req.query.error === 'required'
         ? pt('required_error')
