@@ -573,7 +573,7 @@
     const dateLabel = page.getAttribute('data-date-label') || 'Date of death';
     const deleteConfirm = page.getAttribute('data-delete-confirm') || 'Are you sure?';
     const row = document.createElement('article');
-    row.className = 'person-row';
+    row.className = 'person-row person-row-clickable';
     row.setAttribute('data-name', person.name || '');
     row.setAttribute('data-id', String(person.id));
     row.setAttribute(
@@ -617,41 +617,7 @@
     meta.appendChild(strong);
     meta.appendChild(small);
 
-    const actions = document.createElement('div');
-    actions.className = 'person-actions';
-    const editBtn = document.createElement('button');
-    editBtn.type = 'button';
-    editBtn.className = 'btn-admin btn-admin-secondary edit-btn';
-    editBtn.setAttribute('data-id', String(person.id));
-    editBtn.textContent = document.querySelector('.edit-btn') ? document.querySelector('.edit-btn').textContent : 'Edit';
-    editBtn.addEventListener('click', function () {
-      openEditModal(person.id);
-    });
-
-    const deleteForm = document.createElement('form');
-    deleteForm.method = 'POST';
-    deleteForm.action = '/admin/' + slug + '/people/delete';
-    deleteForm.className = 'd-inline';
-    deleteForm.addEventListener('submit', function (event) {
-      if (!window.confirm(deleteConfirm)) {
-        event.preventDefault();
-      }
-    });
-    const hiddenId = document.createElement('input');
-    hiddenId.type = 'hidden';
-    hiddenId.name = 'id';
-    hiddenId.value = String(person.id);
-    const deleteBtn = document.createElement('button');
-    deleteBtn.type = 'submit';
-    deleteBtn.className = 'btn-admin btn-admin-danger';
-    deleteBtn.textContent = document.querySelector('.btn-admin-danger') ? document.querySelector('.btn-admin-danger').textContent : 'Delete';
-    deleteForm.appendChild(hiddenId);
-    deleteForm.appendChild(deleteBtn);
-
-    actions.appendChild(editBtn);
-    actions.appendChild(deleteForm);
     row.appendChild(meta);
-    row.appendChild(actions);
     return row;
   }
 
@@ -744,6 +710,10 @@
   }
 
   function initPeoplePage() {
+    const personCard = window.AdminPersonCard
+      ? window.AdminPersonCard.init({ onEdit: openEditModal })
+      : null;
+
     const editForm = document.querySelector('#editPersonModal form');
     if (editForm) {
       editForm.addEventListener('submit', async function (event) {
@@ -824,15 +794,28 @@
       });
     }
 
-    document.querySelectorAll('.edit-btn').forEach(function (button) {
-      button.addEventListener('click', function () {
-        openEditModal(Number(button.getAttribute('data-id')));
+    document.querySelectorAll('.person-row-clickable').forEach(function (row) {
+      row.addEventListener('click', function () {
+        const personId = Number(row.getAttribute('data-id'));
+        const person = peopleById[personId];
+        if (person && personCard) {
+          personCard.openPersonCard(person);
+        }
       });
     });
 
     initLazyPhotos(list);
     initEditModalHandlers();
     initContactPlatformToggles();
+
+    window.AdminPeople = {
+      openEditModal: openEditModal,
+    };
+
+    const editParam = new URLSearchParams(window.location.search).get('edit');
+    if (editParam) {
+      openEditModal(Number(editParam));
+    }
   }
 
   if (document.readyState === 'loading') {

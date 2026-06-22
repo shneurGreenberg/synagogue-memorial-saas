@@ -1,0 +1,44 @@
+<div class="modal fade admin-modal" id="personCardModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{t 'person_card_title'}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{{t 'cancel'}}">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="admin-person-card-layout">
+                    <div class="admin-person-card-preview" id="personCardPreview"
+                        style="--primary-color: {{synagogue.theme.primaryColor}}; --text-color: {{synagogue.theme.textColor}}; --accent-color: {{synagogue.theme.accentColor}};">
+                        <img class="admin-person-card-photo d-none" id="personCardPhoto" alt="">
+                        <div class="admin-person-card-photo admin-person-card-placeholder d-none" id="personCardPlaceholder" aria-hidden="true"></div>
+                        <div class="admin-person-card-body">
+                            <h2 id="personCardName"></h2>
+                            <p id="personCardDates"></p>
+                        </div>
+                        <div class="admin-person-card-candle" aria-hidden="true">🕯</div>
+                    </div>
+                    <div class="admin-person-card-details">
+                        <div class="admin-person-card-section">
+                            <h3>{{t 'person_card_biography'}}</h3>
+                            <div class="admin-person-card-bio" id="personCardBio"></div>
+                        </div>
+                        <div class="admin-person-card-section" id="personCardContactSection" hidden>
+                            <h3>{{t 'contact_section'}}</h3>
+                            <p id="personCardContactName" hidden><strong>{{t 'contact_name'}}:</strong> <span></span></p>
+                            <p id="personCardContactPhone" hidden><strong>{{t 'contact_phone'}}:</strong> <span></span></p>
+                            <p id="personCardContactEmail" hidden><strong>{{t 'contact_email'}}:</strong> <span></span></p>
+                            <p id="personCardContactPlatform" hidden><strong>{{t 'contact_platform'}}:</strong> <span></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer admin-person-card-footer">
+                <button type="button" class="btn-admin btn-admin-secondary" id="personCardEditBtn">{{t 'edit'}}</button>
+                <button type="button" class="btn-admin btn-admin-danger" id="personCardDeleteBtn">{{t 'delete'}}</button>
+            </div>
+            <form method="POST" action="/admin/{{synagogue.slug}}/people/delete" id="personCardDeleteForm" class="d-none">
+                <input type="hidden" name="id" id="personCardDeleteId">
+            </form>
+        </div>
+    </div>
+</div>

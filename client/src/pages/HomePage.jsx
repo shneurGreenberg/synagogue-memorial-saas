@@ -297,8 +297,7 @@ class HomePageBase extends React.Component {
   }
 
   getTodayNames() {
-    return (this.state.allPeople || [])
-      .filter((person) => person.passedToday)
+    return (this.state.people || [])
       .map((person) => person.name)
       .filter(Boolean);
   }
@@ -472,9 +471,10 @@ class HomePageBase extends React.Component {
       );
     }
 
-    const logo = (appData.theme && appData.theme.logo) || 'banner-transparent.png';
-
     const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
+    const logo = (appData.theme && appData.theme.logo) || 'banner-transparent.png';
+    const showOfficialLogo = boardFeatures.officialLogo !== false;
+    const officialLogo = 'kaddish-official-logo.png';
     const showMemorialPrayers = boardFeatures.kelMaleRachamim || boardFeatures.izkor;
 
     const todayNames = this.getTodayNames();
@@ -558,6 +558,15 @@ class HomePageBase extends React.Component {
           <div className="wooden-panel">
             <div className="inner">
               <div className="board-right-header">
+                {showOfficialLogo && (
+                  <div className="board-official-logo-wrap">
+                    <img
+                      className="board-official-logo"
+                      src={assetUrl(`images/${officialLogo}`)}
+                      alt={appData.title || 'Kaddish'}
+                    />
+                  </div>
+                )}
                 <div className="board-clock-block">
                   <time>
                     <h1><LiveClock timezone={(appData.location && appData.location.timezone) || 'Asia/Novosibirsk'} /></h1>
