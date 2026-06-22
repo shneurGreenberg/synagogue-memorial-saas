@@ -369,7 +369,7 @@ class HomePageBase extends React.Component {
     const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
     const logo = (appData.theme && appData.theme.logo) || 'banner-transparent.png';
     const showOfficialLogo = boardFeatures.officialLogo !== false;
-    const officialLogo = 'kaddish-official-logo.png';
+    const officialLogo = 'kaddish-official-logo.svg';
     const showMemorialPrayers = boardFeatures.kelMaleRachamim || boardFeatures.izkor;
 
     const pageNames = this.getPageNames();

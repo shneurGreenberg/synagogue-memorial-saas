@@ -19,7 +19,7 @@ const { optimizeUploadedImage } = require('../lib/image-optimize');
 const { parsePhotoCropFromBody } = require('../lib/photo-crop');
 
 const router = express.Router();
-const OFFICIAL_LOGO_FILENAME = 'kaddish-official-logo.png';
+const OFFICIAL_LOGO_FILENAME = 'kaddish-official-logo.svg';
 
 const MIME_EXT = {
   'image/jpeg': '.jpg',
