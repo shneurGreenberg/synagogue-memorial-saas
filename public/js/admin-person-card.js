@@ -127,7 +127,8 @@
 
       const contact = (person && person.contact) || {};
       const hasContact = !!(contact.name || contact.phone || contact.email);
-      const hasPlatform = !!contact.platform;
+      const platform = String(contact.platform || '').trim();
+      const hasPlatform = !!platform && !!(contact.phone || contact.email);
 
       setRowVisibility(contactNameRow, !!contact.name, contact.name);
       setRowVisibility(contactPhoneRow, !!contact.phone, contact.phone);
@@ -135,7 +136,7 @@
       setRowVisibility(
         contactPlatformRow,
         hasPlatform,
-        labels.platformLabels[contact.platform] || contact.platform,
+        labels.platformLabels[platform] || platform,
       );
 
       if (contactNoContact) {

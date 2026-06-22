@@ -660,6 +660,12 @@ body.admin-login-page {
   }
 }
 
+.settings-appearance-row {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--admin-border);
+}
+
 .admin-contact-channel-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
@@ -673,26 +679,48 @@ body.admin-login-page {
 }
 
 .contact-platform-select-wrap {
-  display: grid;
-  grid-template-columns: 2rem minmax(0, 1fr);
-  gap: 0.5rem;
-  align-items: center;
+  position: relative;
+  display: block;
+  min-width: 0;
+
+  .admin-contact-platform,
+  .public-contact-platform {
+    width: 100%;
+    min-width: 0;
+    padding-inline-start: 2.5rem;
+    padding-inline-end: 1.75rem;
+    text-overflow: ellipsis;
+  }
+}
+
+.admin-contact-platform-field label,
+.public-field-platform > span {
+  white-space: normal;
+  text-transform: none;
+  letter-spacing: normal;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .contact-platform-icon {
+  position: absolute;
+  inset-inline-start: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 8px;
-  background: var(--admin-surface-elevated);
-  border: 1px solid var(--admin-border);
+  width: 1.25rem;
+  height: 1.25rem;
+  pointer-events: none;
   color: var(--admin-primary);
+  border: 0;
+  background: transparent;
 
   svg {
-    width: 1.1rem;
-    height: 1.1rem;
+    width: 1.15rem;
+    height: 1.15rem;
     display: block;
   }
 }
@@ -703,6 +731,11 @@ body.admin-login-page {
 
 .contact-platform-icon[data-platform='telegram'] {
   color: #2aabee;
+}
+
+.contact-platform-icon[data-platform='max'] {
+  width: 1.35rem;
+  height: 1.35rem;
 }
 
 .btn-delete-photo {
