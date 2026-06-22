@@ -40,6 +40,9 @@ site/
 # Generated photo thumbnails
 .photo-cache/
 
+# LLM Wiki (local knowledge base, not versioned)
+.project_wiki/
+
 # Temporary files
 *.tmp
 *.bak
