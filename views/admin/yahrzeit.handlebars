@@ -1,4 +1,4 @@
-<div class="admin-page yahrzeit-page" data-copy-label="{{t 'yahrzeit_copy_message'}}" data-copied-label="{{t 'yahrzeit_copied'}}">
+<div class="admin-page yahrzeit-page" data-synagogue-slug="{{synagogue.slug}}" data-copy-label="{{t 'yahrzeit_copy_message'}}" data-copied-label="{{t 'yahrzeit_copied'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}">
     <header class="admin-page-header">
         <div>
             <h1>{{t 'yahrzeit_page'}}</h1>
@@ -18,9 +18,9 @@
     {{#if entries.length}}
     <div class="yahrzeit-list">
         {{#each entries}}
-        <article class="yahrzeit-card" id="person-{{this.id}}">
+        <article class="yahrzeit-card yahrzeit-card-clickable" id="person-{{this.id}}" data-person-id="{{this.id}}">
             <div class="yahrzeit-card-layout">
-                <div class="yahrzeit-tile-preview" style="--primary-color: {{../synagogue.theme.primaryColor}}; --text-color: {{../synagogue.theme.textColor}}; --accent-color: {{../synagogue.theme.accentColor}};">
+                <div class="yahrzeit-tile-preview yahrzeit-card-open" style="--primary-color: {{../synagogue.theme.primaryColor}}; --text-color: {{../synagogue.theme.textColor}}; --accent-color: {{../synagogue.theme.accentColor}};">
                     {{#if this.photoUrl}}
                     <img class="yahrzeit-tile-photo" src="{{this.photoUrl}}" alt="{{this.name}}">
                     {{else}}
@@ -77,5 +77,8 @@
     </div>
     {{/if}}
 </div>
+
+<script id="yahrzeit-people-data" type="application/json">{{{json yahrzeitPeople}}}</script>
+{{> admin-person-card-modal}}
 
 <script src="/js/admin-yahrzeit.js"></script>

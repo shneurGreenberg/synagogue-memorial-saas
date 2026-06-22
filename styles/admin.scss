@@ -313,6 +313,110 @@ body.admin-login-page {
   }
 }
 
+.person-row-clickable {
+  cursor: pointer;
+}
+
+.admin-navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.admin-brand-logo {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.admin-person-card-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+  gap: 1.25rem;
+}
+
+.admin-person-card-preview {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 280px;
+  padding: 1rem;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.35));
+  border: 1px solid var(--admin-border);
+  overflow: hidden;
+}
+
+.admin-person-card-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--accent-color, #ffd54f);
+  margin-bottom: 0.75rem;
+}
+
+.admin-person-card-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--admin-surface-elevated);
+  color: var(--admin-text-muted);
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.admin-person-card-body {
+  text-align: center;
+
+  h2 {
+    margin: 0 0 0.35rem;
+    color: var(--primary-color, #cfaf1f);
+    font-size: 1.35rem;
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-color, #f0f0f0);
+    font-size: 0.95rem;
+  }
+}
+
+.admin-person-card-candle {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  font-size: 1.4rem;
+}
+
+.admin-person-card-section + .admin-person-card-section {
+  margin-top: 1rem;
+}
+
+.admin-person-card-bio {
+  white-space: pre-wrap;
+  line-height: 1.55;
+  color: var(--admin-text);
+}
+
+.admin-person-card-footer {
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.yahrzeit-card-clickable .yahrzeit-card-open {
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .admin-person-card-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
 .person-photo-wrap {
   width: 64px;
   height: 64px;

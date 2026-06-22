@@ -53,7 +53,9 @@ const {
 } = require('../lib/yahrzeit-reminders');
 const { isEmailConfigured } = require('../lib/email');
 const { getDayKeyInTimezone, resolveSynagogueTimezone, buildYahrzeitEntries } = require('../lib/yahrzeit');
-const { buildFaviconPath } = require('../lib/favicon');
+const { buildFaviconPath, resolveFaviconLogoFilename } = require('../lib/favicon');
+const { OFFICIAL_LOGO_FILENAME } = require('../lib/board-defaults');
+const { normalizeBoardFeatures } = require('../lib/board-features');
 
 const BOARD_FEATURE_TOGGLE_META = [
   { key: 'sidebarNames', labelKey: 'feature_sidebar_names', helpKey: 'feature_sidebar_names_help' },
@@ -68,6 +70,7 @@ const BOARD_FEATURE_TOGGLE_META = [
   { key: 'izkor', labelKey: 'feature_izkor', helpKey: 'feature_izkor_help' },
   { key: 'weather', labelKey: 'feature_weather', helpKey: 'feature_weather_help' },
   { key: 'sunriseSunset', labelKey: 'feature_sunrise_sunset', helpKey: 'feature_sunrise_sunset_help' },
+  { key: 'officialLogo', labelKey: 'feature_official_logo', helpKey: 'feature_official_logo_help' },
 ];
 
 function buildBoardFeatureToggles(boardFeatures) {
@@ -272,6 +275,8 @@ function renderAdmin(res, view, options = {}) {
     );
     const locale = getAdminLocaleContext(displaySynagogue && displaySynagogue.adminLanguage);
     const yahrzeitTodayCount = buildYahrzeitEntries(displaySynagogue).length;
+    const boardFeatures = normalizeBoardFeatures(displaySynagogue && displaySynagogue.boardFeatures);
+    const showOfficialLogo = boardFeatures.officialLogo !== false;
 
     res.render(view, {
         ...options,
@@ -282,6 +287,8 @@ function renderAdmin(res, view, options = {}) {
         adminDir: locale.adminDir,
         adminIsRtl: locale.adminIsRtl,
         yahrzeitTodayCount,
+        showOfficialLogo,
+        officialLogoUrl: `/images/${OFFICIAL_LOGO_FILENAME}`,
         faviconUrl: buildFaviconPath(displaySynagogue.slug, { badge: false }),
         faviconAlertUrl: buildFaviconPath(displaySynagogue.slug, { badge: true }),
         layout: options.layout === false ? false : (options.layout || 'admin'),
@@ -728,12 +735,16 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
         const entries = buildYahrzeitPageEntries(enriched, new Date(), displaySynagogue.adminLanguage);
         const timezone = resolveSynagogueTimezone(enriched);
         const todayLabel = getDayKeyInTimezone(timezone);
+        const yahrzeitPeople = (enriched.people || []).filter((person) => (
+            entries.some((entry) => entry.id === person.id)
+        ));
 
         renderAdmin(res, 'admin/yahrzeit', {
             synagogue: enriched,
             adminUser: req.adminUser,
             adminPermissions: req.adminPermissions,
             entries,
+            yahrzeitPeople,
             todayLabel,
             emailConfigured: isEmailConfigured(),
         });

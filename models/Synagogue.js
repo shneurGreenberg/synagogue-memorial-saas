@@ -98,6 +98,7 @@ const SynagogueSchema = new mongoose.Schema({
     izkor: { type: Boolean, default: true },
     weather: { type: Boolean, default: false },
     sunriseSunset: { type: Boolean, default: false },
+    officialLogo: { type: Boolean, default: true },
   },
   publicSubmission: {
     enabled: { type: Boolean, default: false },

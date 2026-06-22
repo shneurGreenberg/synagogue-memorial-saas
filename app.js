@@ -256,8 +256,8 @@ async function serveSynagogueFavicon(req, res, badge) {
       return res.status(404).send('Synagogue not found');
     }
 
-    const { renderFaviconPng } = require('./lib/favicon');
-    const logo = (synagogue.theme && synagogue.theme.logo) || 'banner-transparent.png';
+    const { renderFaviconPng, resolveFaviconLogoFilename } = require('./lib/favicon');
+    const logo = resolveFaviconLogoFilename(synagogue);
     const buffer = await renderFaviconPng(logo, { badge });
 
     if (!buffer) {

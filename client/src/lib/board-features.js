@@ -11,6 +11,7 @@ export const BOARD_FEATURE_DEFAULTS = {
   izkor: true,
   weather: false,
   sunriseSunset: false,
+  officialLogo: true,
 };
 
 export function resolveBoardFeatures(raw) {

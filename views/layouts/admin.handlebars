@@ -16,7 +16,12 @@
 
 <body class="admin-body admin-theme-{{#if synagogue.adminColorMode}}{{synagogue.adminColorMode}}{{else}}dark{{/if}}{{#if adminIsRtl}} admin-rtl{{/if}}">
     <nav class="navbar navbar-expand-lg navbar-dark admin-navbar">
-        <a class="navbar-brand" href="/admin/{{synagogue.slug}}/dashboard">Synagogue Admin</a>
+        <a class="navbar-brand admin-navbar-brand" href="/admin/{{synagogue.slug}}/dashboard">
+            {{#if showOfficialLogo}}
+            <img class="admin-brand-logo" src="{{officialLogoUrl}}" alt="">
+            {{/if}}
+            <span>Synagogue Admin</span>
+        </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#adminNavbar"
             aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -77,6 +82,7 @@
     <script src="/js/admin-events.js"></script>
     <script src="/js/admin-locale.js"></script>
     <script src="/js/admin-users.js"></script>
+    <script src="/js/admin-person-card.js"></script>
 </body>
 
 </html>
