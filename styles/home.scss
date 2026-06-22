@@ -500,6 +500,17 @@
         color: $textColor;
       }
 
+      .memorial-submission-qr-link {
+        display: inline-block;
+        line-height: 0;
+        cursor: pointer;
+        transition: transform 0.15s ease;
+
+        &:hover {
+          transform: scale(1.03);
+        }
+      }
+
       .memorial-submission-qr {
         width: calc(clamp(100px, 10vw, 140px) * var(--memorial-qr-size-scale, 1));
         height: calc(clamp(100px, 10vw, 140px) * var(--memorial-qr-size-scale, 1));
