@@ -1,4 +1,5 @@
 import React from 'react';
+import { PrayerReadingOverlay } from './PrayerReadingOverlay';
 
 export class MemorialPrayersPanel extends React.Component {
   constructor(props) {
@@ -8,7 +9,11 @@ export class MemorialPrayersPanel extends React.Component {
     this.state = {
       shouldScroll: false,
       durationSec: 120,
+      activePrayer: null,
     };
+    this.openPrayer = this.openPrayer.bind(this);
+    this.closePrayer = this.closePrayer.bind(this);
+    this.onPrayerKeyDown = this.onPrayerKeyDown.bind(this);
   }
 
   componentDidMount() {
@@ -45,6 +50,21 @@ export class MemorialPrayersPanel extends React.Component {
     window.removeEventListener('resize', this.updateScrollBehavior);
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
+    }
+  }
+
+  openPrayer(prayer) {
+    this.setState({ activePrayer: prayer });
+  }
+
+  closePrayer() {
+    this.setState({ activePrayer: null });
+  }
+
+  onPrayerKeyDown(event, prayer) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.openPrayer(prayer);
     }
   }
 
@@ -93,10 +113,16 @@ export class MemorialPrayersPanel extends React.Component {
   };
 
   renderPrayerBlock(id, heading, text, extraClass) {
+    const prayer = { id, heading, text, extraClass };
+
     return (
       <section
-        className={`memorial-prayer-block ${extraClass || ''}`}
+        className={`memorial-prayer-block prayer-clickable ${extraClass || ''}`}
         aria-labelledby={id}
+        role="button"
+        tabIndex={0}
+        onClick={() => this.openPrayer(prayer)}
+        onKeyDown={(event) => this.onPrayerKeyDown(event, prayer)}
       >
         <h1 id={id}>{heading}</h1>
         <div className="prayer-text">{text}</div>
@@ -136,24 +162,35 @@ export class MemorialPrayersPanel extends React.Component {
 
   render() {
     const { big, showKelMale = true, showIzkor = true } = this.props;
+    const { activePrayer } = this.state;
 
     if (!showKelMale && !showIzkor) {
       return null;
     }
 
     return (
-      <div className={`memorial-prayers ${big ? 'memorial-prayers-big' : ''}`}>
-        <div className="memorial-prayers-scroll" ref={this.viewportRef}>
-          <div
-            className={`memorial-prayers-track${this.state.shouldScroll ? ' is-scrolling' : ''}`}
-            ref={this.trackRef}
-            style={this.state.shouldScroll ? { animationDuration: `${this.state.durationSec}s` } : undefined}
-          >
-            {this.renderContent('')}
-            {this.state.shouldScroll && this.renderContent('-dup')}
+      <>
+        {activePrayer && (
+          <PrayerReadingOverlay
+            heading={activePrayer.heading}
+            text={activePrayer.text}
+            extraClass={activePrayer.extraClass}
+            onClose={this.closePrayer}
+          />
+        )}
+        <div className={`memorial-prayers ${big ? 'memorial-prayers-big' : ''}`}>
+          <div className="memorial-prayers-scroll" ref={this.viewportRef}>
+            <div
+              className={`memorial-prayers-track${this.state.shouldScroll ? ' is-scrolling' : ''}`}
+              ref={this.trackRef}
+              style={this.state.shouldScroll ? { animationDuration: `${this.state.durationSec}s` } : undefined}
+            >
+              {this.renderContent('')}
+              {this.state.shouldScroll && this.renderContent('-dup')}
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 }

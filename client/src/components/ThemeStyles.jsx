@@ -86,7 +86,7 @@ export function ThemeStyles() {
       --font-scale-board-header: ${fontScaleCss(fontScales.boardHeader)};
       --font-scale-sidebar: ${fontScaleCss(fontScales.sidebar)};
       --font-scale-prayers: ${fontScaleCss(fontScales.prayers)};
-      --font-scale-torah-names: ${fontScaleCss(fontScales.torahNames)};
+      --font-scale-torah-names: ${fontScaleCss(fontScales.torahNames, 'torahNames')};
     }
     .main-container .board-header h1 {
       color: var(--primary-color) !important;
