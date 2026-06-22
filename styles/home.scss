@@ -1535,7 +1535,7 @@
 
 .prayer-reading-heading {
   margin: 0 0 clamp(10px, 1.8vh, 18px);
-  font-size: clamp(24px, 3.2vw, 42px);
+  font-size: calc(clamp(18px, 2.4vw, 28px) * var(--font-scale-prayer-overlay, 0.75));
   line-height: 1.15;
   @include golden-text-mixin;
   flex-shrink: 0;
@@ -1546,9 +1546,10 @@
   color: #fff;
   line-height: 1.48;
   white-space: pre-wrap;
-  overflow: hidden;
+  overflow-y: auto;
   width: 100%;
   max-height: 100%;
+  font-size: calc(15px * var(--font-scale-prayer-overlay, 0.75));
 }
 
 @media (max-width: 768px) {
