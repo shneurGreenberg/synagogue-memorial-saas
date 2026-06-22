@@ -43,6 +43,7 @@
       padding-left: 6px;
       padding-right: 6px;
       box-sizing: border-box;
+      overflow: hidden;
     }
 
     .banner-wrap {
@@ -78,11 +79,15 @@
 
     .jewish-sidebar-panels {
       width: 100%;
-      flex-shrink: 0;
+      flex: 1;
+      min-height: 0;
       margin-top: 5px;
       padding: 0;
       text-align: center;
       box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
 
       h2 {
         font-size: clamp(15px, 1.35vw, 22px);
@@ -99,12 +104,51 @@
     }
 
     .hayom-yom-panel {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
       padding: 4px 0 8px;
       margin-bottom: 2px;
       border-bottom: 1px solid rgba(207, 175, 31, 0.28);
+      overflow: hidden;
+
+      h2 {
+        flex-shrink: 0;
+      }
+    }
+
+    .hayom-yom-scroll {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      overflow: hidden;
+      mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
+    }
+
+    .hayom-yom-track {
+      &.is-scrolling {
+        animation-name: hayom-yom-scroll;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+      }
+    }
+
+    .hayom-yom-inner {
+      padding: 0 2px;
+    }
+
+    .hayom-yom-text {
+      margin: 0 0 8px;
+      font-size: clamp(11px, 0.95vw, 14px);
+      line-height: 1.45;
+      text-align: start;
+      color: $textColor;
+      white-space: pre-wrap;
     }
 
     .daily-gates-panel {
+      flex-shrink: 0;
       padding: 4px 0 6px;
     }
 
@@ -173,19 +217,12 @@
       word-break: break-word;
     }
 
-    .hayom-yom-text {
-      margin: 0 0 8px;
-      font-size: clamp(11px, 0.95vw, 14px);
-      line-height: 1.4;
-      text-align: start;
-      color: $textColor;
-    }
-
     .hayom-yom-note {
       margin: 0 0 8px;
       font-size: clamp(11px, 0.95vw, 14px);
       line-height: 1.35;
       opacity: 0.9;
+      flex-shrink: 0;
     }
 
     .nearest-dates {
@@ -465,50 +502,6 @@
         overflow: hidden;
         text-overflow: ellipsis;
       }
-    }
-
-    .torah-reading-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 2000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2rem;
-      padding: 3rem;
-      background: #000;
-      color: #fff;
-    }
-
-    .torah-reading-close {
-      position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
-      border: 0;
-      background: transparent;
-      color: #fff;
-      font-size: 1.25rem;
-      cursor: pointer;
-      opacity: 0.8;
-    }
-
-    .torah-reading-names {
-      width: min(92vw, 1200px);
-      text-align: center;
-    }
-
-    .torah-reading-name {
-      margin: 0 0 1.5rem;
-      font-size: clamp(2.5rem, 8vw, 6rem);
-      line-height: 1.2;
-      font-weight: 700;
-    }
-
-    .torah-reading-empty {
-      margin: 0;
-      font-size: 3rem;
-      opacity: 0.5;
     }
 
     .cards-area {
@@ -1003,10 +996,12 @@
       .weather-sun-times {
         display: flex;
         align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 6px 10px;
-        margin: 12px 0 10px;
+        justify-content: space-between;
+        gap: 1.5rem 2.5rem;
+        width: 100%;
+        max-width: 340px;
+        margin: 14px auto 12px;
+        padding: 0 0.5rem;
         font-size: clamp(11px, 0.95vw, 14px);
         line-height: 1.3;
         color: var(--tile-date-color, #f0f0f0);
@@ -1014,11 +1009,17 @@
       }
 
       .weather-sun-times-item {
+        flex: 1 1 0;
+        min-width: 0;
         white-space: nowrap;
       }
 
-      .weather-sun-times-sep {
-        opacity: 0.55;
+      .weather-sun-times-sunrise {
+        text-align: start;
+      }
+
+      .weather-sun-times-sunset {
+        text-align: end;
       }
 
       .weather-panel-sun-only .weather-sun-times {
@@ -1279,6 +1280,16 @@
   }
 }
 
+@keyframes hayom-yom-scroll {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-50%);
+  }
+}
+
 .slideshow-overlay {
   position: fixed;
   inset: 0;
@@ -1288,6 +1299,60 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.torah-reading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(12px, 3vw, 40px);
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.88);
+  cursor: pointer;
+}
+
+.torah-reading-popup {
+  position: relative;
+  width: min(1200px, 100%);
+  max-height: calc(100vh - clamp(24px, 6vw, 80px));
+  overflow-y: auto;
+  cursor: default;
+  text-align: center;
+}
+
+.torah-reading-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  cursor: pointer;
+  opacity: 0.85;
+  padding: 0.5rem;
+}
+
+.torah-reading-names {
+  padding: clamp(2rem, 6vw, 4rem) clamp(1rem, 3vw, 2rem);
+}
+
+.torah-reading-name {
+  margin: 0 0 clamp(1.25rem, 4vw, 2.5rem);
+  font-size: clamp(2.75rem, 9vw, 6.5rem);
+  line-height: 1.15;
+  font-weight: 700;
+  color: #fff;
+}
+
+.torah-reading-empty {
+  margin: 0;
+  font-size: 3rem;
+  color: #fff;
+  opacity: 0.5;
 }
 
 .slideshow-image {
