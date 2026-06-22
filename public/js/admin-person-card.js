@@ -177,6 +177,34 @@
       window.jQuery('#personCardModal').modal('show');
     }
 
+    function closePersonCardModal(callback) {
+      const $modal = window.jQuery('#personCardModal');
+      if (!$modal.length) {
+        if (typeof callback === 'function') {
+          callback();
+        }
+        return;
+      }
+
+      if (editBtn && document.activeElement === editBtn) {
+        editBtn.blur();
+      }
+
+      if (!$modal.hasClass('show')) {
+        if (typeof callback === 'function') {
+          callback();
+        }
+        return;
+      }
+
+      $modal.one('hidden.bs.modal', function () {
+        if (typeof callback === 'function') {
+          callback();
+        }
+      });
+      $modal.modal('hide');
+    }
+
     if (sendBtn) {
       sendBtn.addEventListener('click', function () {
         if (!activePerson || !activeMessageLink) {
@@ -197,12 +225,14 @@
           return;
         }
 
-        window.jQuery('#personCardModal').modal('hide');
-        if (typeof options.onEdit === 'function') {
-          options.onEdit(activePerson);
-        } else if (window.AdminPeople && typeof window.AdminPeople.openEditModal === 'function') {
-          window.AdminPeople.openEditModal(activePerson.id);
-        }
+        const person = activePerson;
+        closePersonCardModal(function () {
+          if (typeof options.onEdit === 'function') {
+            options.onEdit(person);
+          } else if (window.AdminPeople && typeof window.AdminPeople.openEditModal === 'function') {
+            window.AdminPeople.openEditModal(person.id);
+          }
+        });
       });
     }
 

@@ -156,7 +156,7 @@
                             <div class="slider-row">
                                 <input type="range" name="fontScale_{{this.key}}" id="fontScale_{{this.key}}"
                                     class="admin-range-input font-scale-input" data-font-scale-key="{{this.key}}"
-                                    min="50" max="200" step="5" value="{{this.value}}">
+                                    min="{{#if this.min}}{{this.min}}{{else}}50{{/if}}" max="{{#if this.max}}{{this.max}}{{else}}200{{/if}}" step="{{#if this.step}}{{this.step}}{{else}}5{{/if}}" value="{{this.value}}">
                                 <output class="slider-value-display font-scale-value" data-for="fontScale_{{this.key}}">{{this.value}}%</output>
                             </div>
                             <span class="field-hint">{{t this.helpKey}}</span>
