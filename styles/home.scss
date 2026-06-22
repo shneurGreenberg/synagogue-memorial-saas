@@ -487,7 +487,7 @@
 
       h2 {
         margin: 0 0 0.45rem;
-        font-size: clamp(26px, 2.2vw, 34px);
+        font-size: calc(clamp(14px, 1.15vw, 18px) * var(--memorial-qr-title-scale, 1));
         line-height: 1.35;
         color: $goldenText;
         font-weight: 700;
@@ -495,14 +495,14 @@
 
       .memorial-submission-text {
         margin: 0 0 0.65rem;
-        font-size: clamp(24px, 2vw, 30px);
+        font-size: calc(clamp(12px, 1vw, 15px) * var(--memorial-qr-text-scale, 1));
         line-height: 1.4;
         color: $textColor;
       }
 
       .memorial-submission-qr {
-        width: clamp(132px, 13.5vw, 180px);
-        height: clamp(132px, 13.5vw, 180px);
+        width: calc(clamp(100px, 10vw, 140px) * var(--memorial-qr-size-scale, 1));
+        height: calc(clamp(100px, 10vw, 140px) * var(--memorial-qr-size-scale, 1));
         object-fit: contain;
         background: #fff;
         border-radius: 8px;

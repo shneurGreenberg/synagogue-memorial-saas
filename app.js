@@ -213,6 +213,8 @@ async function loadSynagogueBoard(slug) {
   synagogue.title = synagogue.titles.ru || synagogue.title || synagogue.name || '';
   synagogue.boardFeatures = normalizeBoardFeatures(synagogue.boardFeatures);
   synagogue.publicSubmission = normalizePublicSubmission(synagogue.publicSubmission);
+  const { normalizeMemorialQrPanel } = require('./lib/memorial-qr-panel');
+  synagogue.memorialQrPanel = normalizeMemorialQrPanel(synagogue.memorialQrPanel);
   return synagogue;
 }
 

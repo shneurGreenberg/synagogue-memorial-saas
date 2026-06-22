@@ -612,7 +612,38 @@
     meta.appendChild(small);
 
     row.appendChild(meta);
+
+    const editBtn = document.createElement('button');
+    editBtn.type = 'button';
+    editBtn.className = 'btn-admin btn-admin-secondary person-row-edit-btn';
+    editBtn.setAttribute('data-person-id', String(person.id));
+    editBtn.textContent = page.getAttribute('data-edit-label') || 'Edit';
+    row.appendChild(editBtn);
+
     return row;
+  }
+
+  function bindPersonRowInteractions(personCard) {
+    list.addEventListener('click', function (event) {
+      const editBtn = event.target.closest('.person-row-edit-btn');
+      if (editBtn) {
+        event.preventDefault();
+        event.stopPropagation();
+        openEditModal(Number(editBtn.getAttribute('data-person-id')));
+        return;
+      }
+
+      const row = event.target.closest('.person-row-clickable');
+      if (!row || !list.contains(row)) {
+        return;
+      }
+
+      const personId = Number(row.getAttribute('data-id'));
+      const person = peopleById[personId];
+      if (person && personCard) {
+        personCard.openPersonCard(person);
+      }
+    });
   }
 
   function syncContactPlatformFields(root) {
@@ -787,15 +818,7 @@
       });
     }
 
-    document.querySelectorAll('.person-row-clickable').forEach(function (row) {
-      row.addEventListener('click', function () {
-        const personId = Number(row.getAttribute('data-id'));
-        const person = peopleById[personId];
-        if (person && personCard) {
-          personCard.openPersonCard(person);
-        }
-      });
-    });
+    bindPersonRowInteractions(personCard);
 
     initLazyPhotos(list);
     initEditModalHandlers();

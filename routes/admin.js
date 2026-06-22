@@ -19,6 +19,7 @@ const {
   buildApplyUpdate,
   serializeSavedViews,
 } = require('../lib/saved-views');
+const { parseMemorialQrPanelFromBody, memorialQrPanelToUpdate } = require('../lib/memorial-qr-panel');
 const { parseFontScalesFromBody, normalizeTileOpacity } = require('../lib/theme-typography');
 const {
   IMAGES_DIR,
@@ -367,6 +368,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             Object.entries(fontScales).forEach(([key, value]) => {
                 updateData[`theme.fontScales.${key}`] = value;
             });
+            Object.assign(updateData, memorialQrPanelToUpdate(parseMemorialQrPanelFromBody(req.body)));
         }
 
         if (permissions.settingsLanguages) {
@@ -466,7 +468,53 @@ router.post('/:slug/settings/saved-views/:viewId/apply', requireAdmin, requirePe
         }
 
         await Synagogue.updateOne({ slug: req.params.slug }, { $set: update });
-        return res.json({ ok: true });
+        await Synagogue.updateOne({ slug: req.params.slug }, { $set: { activeSavedViewId: req.params.viewId } });
+        return res.json({ ok: true, activeSavedViewId: req.params.viewId });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermission('settings'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
+    if (!permissions.settingsAppearance && !permissions.settingsPreview) {
+        return res.status(403).json({ ok: false, error: 'Forbidden' });
+    }
+
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        if (!synagogue) {
+            return res.status(404).json({ ok: false, error: 'Not found' });
+        }
+
+        const viewIndex = (synagogue.savedViews || []).findIndex((entry) => entry.id === req.params.viewId);
+        if (viewIndex === -1) {
+            return res.status(404).json({ ok: false, error: 'View not found' });
+        }
+
+        const existing = synagogue.savedViews[viewIndex];
+        const snapshot = normalizeSnapshot({
+            ...req.body,
+            logo: synagogue.theme?.logo || existing.snapshot?.theme?.logo || '',
+            backgroundImage: synagogue.theme?.backgroundImage || existing.snapshot?.theme?.backgroundImage || '',
+            tilesBackground: synagogue.theme?.tilesBackground || existing.snapshot?.theme?.tilesBackground || '',
+        });
+        const screenshot = await saveViewThumbnail(snapshot);
+        if (existing.screenshot && existing.screenshot !== screenshot) {
+            deleteScreenshot(existing.screenshot);
+        }
+
+        synagogue.savedViews[viewIndex] = {
+            ...existing,
+            savedAt: new Date(),
+            screenshot,
+            snapshot,
+        };
+        synagogue.activeSavedViewId = req.params.viewId;
+        await synagogue.save();
+
+        return res.json({ ok: true, view: synagogue.savedViews[viewIndex] });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
     }
@@ -491,6 +539,9 @@ router.delete('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermis
         }
 
         synagogue.savedViews = (synagogue.savedViews || []).filter((entry) => entry.id !== req.params.viewId);
+        if (synagogue.activeSavedViewId === req.params.viewId) {
+            synagogue.activeSavedViewId = '';
+        }
         await synagogue.save();
         return res.json({ ok: true });
     } catch (err) {
@@ -594,6 +645,8 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             boardFeatureToggles: buildBoardFeatureToggles(enriched.boardFeatures),
             fontScaleSliders: buildFontScaleSliders(enriched.theme.fontScales),
             savedViews: serializeSavedViews(enriched.savedViews),
+            activeSavedViewId: enriched.activeSavedViewId || '',
+            memorialQrPanel: enriched.memorialQrPanel,
             saved: req.query.saved === '1',
             error: req.query.error || null,
         });

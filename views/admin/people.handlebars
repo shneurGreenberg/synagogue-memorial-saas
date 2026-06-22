@@ -1,4 +1,4 @@
-<div class="admin-page people-page" data-synagogue-slug="{{synagogue.slug}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-send-label="{{t 'yahrzeit_send_contact'}}" data-download-tile-label="{{t 'yahrzeit_download_tile'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}">
+<div class="admin-page people-page" data-synagogue-slug="{{synagogue.slug}}" data-edit-label="{{t 'edit'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-send-label="{{t 'yahrzeit_send_contact'}}" data-download-tile-label="{{t 'yahrzeit_download_tile'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}">
     <header class="admin-page-header">
         <div>
             <h1>{{t 'people'}}</h1>
@@ -55,6 +55,7 @@
                 <small>{{t 'date_of_death'}}:
                     {{this.gregorianDateOfDeath.date}}/{{this.gregorianDateOfDeath.month}}/{{this.gregorianDateOfDeath.year}}</small>
             </div>
+            <button type="button" class="btn-admin btn-admin-secondary person-row-edit-btn" data-person-id="{{this.id}}">{{t 'edit'}}</button>
         </article>
         {{/each}}
     </div>

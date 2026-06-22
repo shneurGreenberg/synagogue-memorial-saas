@@ -47,6 +47,38 @@ export function mergePreviewPatch(data, patch) {
     next.language = patch.previewLang;
   }
 
+  const memorialQrKeys = [
+    'memorialQrTitleRu', 'memorialQrTitleEn', 'memorialQrTitleHe',
+    'memorialQrTextRu', 'memorialQrTextEn', 'memorialQrTextHe',
+    'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale',
+  ];
+  const hasMemorialQr = memorialQrKeys.some((key) => patch[key] !== undefined && patch[key] !== '');
+  if (hasMemorialQr) {
+    const current = next.memorialQrPanel || {};
+    next.memorialQrPanel = {
+      titles: { ...(current.titles || {}) },
+      texts: { ...(current.texts || {}) },
+      titleScale: current.titleScale,
+      textScale: current.textScale,
+      qrScale: current.qrScale,
+    };
+    if (patch.memorialQrTitleRu !== undefined) next.memorialQrPanel.titles.ru = patch.memorialQrTitleRu;
+    if (patch.memorialQrTitleEn !== undefined) next.memorialQrPanel.titles.en = patch.memorialQrTitleEn;
+    if (patch.memorialQrTitleHe !== undefined) next.memorialQrPanel.titles.he = patch.memorialQrTitleHe;
+    if (patch.memorialQrTextRu !== undefined) next.memorialQrPanel.texts.ru = patch.memorialQrTextRu;
+    if (patch.memorialQrTextEn !== undefined) next.memorialQrPanel.texts.en = patch.memorialQrTextEn;
+    if (patch.memorialQrTextHe !== undefined) next.memorialQrPanel.texts.he = patch.memorialQrTextHe;
+    if (patch.memorialQrTitleScale !== undefined && patch.memorialQrTitleScale !== '') {
+      next.memorialQrPanel.titleScale = Number(patch.memorialQrTitleScale);
+    }
+    if (patch.memorialQrTextScale !== undefined && patch.memorialQrTextScale !== '') {
+      next.memorialQrPanel.textScale = Number(patch.memorialQrTextScale);
+    }
+    if (patch.memorialQrQrScale !== undefined && patch.memorialQrQrScale !== '') {
+      next.memorialQrPanel.qrScale = Number(patch.memorialQrQrScale);
+    }
+  }
+
   return next;
 }
 
@@ -65,7 +97,9 @@ export function previewPatchFromSearchParams(params) {
     || params.has('titleRu')
     || params.has('titleEn')
     || params.has('titleHe')
-    || params.has('previewLang');
+    || params.has('previewLang')
+    || params.has('memorialQrTitleRu')
+    || params.has('memorialQrTextRu');
 
   if (!hasPreview) {
     return null;
@@ -86,6 +120,15 @@ export function previewPatchFromSearchParams(params) {
     }
   });
   if (params.has('previewLang')) patch.previewLang = params.get('previewLang');
+  [
+    'memorialQrTitleRu', 'memorialQrTitleEn', 'memorialQrTitleHe',
+    'memorialQrTextRu', 'memorialQrTextEn', 'memorialQrTextHe',
+    'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale',
+  ].forEach((key) => {
+    if (params.has(key)) {
+      patch[key] = params.get(key);
+    }
+  });
 
   return patch;
 }

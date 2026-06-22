@@ -42,6 +42,7 @@ function snapshotForCompare(data) {
     communityEvents: data.communityEvents,
     boardFeatures: data.boardFeatures,
     shabbatTimesEnabled: data.shabbatTimesEnabled,
+    memorialQrPanel: data.memorialQrPanel,
   });
 }
 
