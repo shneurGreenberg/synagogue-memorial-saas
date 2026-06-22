@@ -35,6 +35,7 @@ import { JewishContentPanels } from '../components/JewishContentPanels';
 import { SidebarUpcomingPanel } from '../components/SidebarUpcomingPanel';
 import { BoardWeatherSection } from '../components/BoardWeatherSection';
 import { isPersonYahrzeitToday } from '../lib/yahrzeit-today';
+import { TorahReadingOverlay } from '../components/TorahReadingOverlay';
 
 function getDailyCite(appData, hebrewDate) {
   const currentHebrewMonth = hebrewDate.getMonth();
@@ -298,7 +299,8 @@ class HomePageBase extends React.Component {
   getTodayNames() {
     return (this.state.allPeople || [])
       .filter((person) => person.passedToday)
-      .map((person) => person.name);
+      .map((person) => person.name)
+      .filter(Boolean);
   }
 
   refreshCalendarState() {
@@ -480,18 +482,10 @@ class HomePageBase extends React.Component {
     return (
       <main className="main-container">
         {this.state.namesReadingOpen && (
-          <div className="torah-reading-overlay" role="dialog" aria-modal="true" aria-label={this.props.t('torah_reading_names')}>
-            <button type="button" className="torah-reading-close" onClick={this.closeNamesReading}>
-              {this.props.t('close')}
-            </button>
-            <div className="torah-reading-names">
-              {todayNames.length > 0 ? todayNames.map((name) => (
-                <p key={name} className="torah-reading-name">{name}</p>
-              )) : (
-                <p className="torah-reading-empty">—</p>
-              )}
-            </div>
-          </div>
+          <TorahReadingOverlay
+            names={todayNames}
+            onClose={this.closeNamesReading}
+          />
         )}
         <aside className="left side-panel">
           <div className="wooden-panel">

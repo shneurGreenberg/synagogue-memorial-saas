@@ -3,6 +3,7 @@ import { withTranslation } from 'react-i18next';
 import { getBoardData } from '../lib/board-data';
 import { hasJewishContentPanels, resolveBoardFeatures } from '../lib/board-features';
 import { useBoardData } from '../context/BoardDataContext';
+import { HayomYomScroller } from './HayomYomScroller';
 
 const REFRESH_MS = 60 * 60 * 1000;
 
@@ -126,7 +127,7 @@ function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
         <section className="hayom-yom-panel" aria-label={t('hayom_yom_title')}>
           <h2>{t('hayom_yom_title')}</h2>
           {hayomYom.text ? (
-            <p className="hayom-yom-text">{hayomYom.text}</p>
+            <HayomYomScroller text={hayomYom.text} />
           ) : (
             <p className="hayom-yom-note">{t('hayom_yom_loading')}</p>
           )}
