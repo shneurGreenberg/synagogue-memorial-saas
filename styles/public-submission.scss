@@ -3,13 +3,20 @@
 .public-submission-page {
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 24px 16px;
+  padding: 24px 16px 40px;
   box-sizing: border-box;
+  overflow-y: auto;
   background:
     linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
     url('/images/brickwall.jpg') center / cover fixed;
+}
+
+@media (min-width: 720px) {
+  .public-submission-page {
+    align-items: center;
+  }
 }
 
 .public-submission-shell {
@@ -62,8 +69,8 @@
 }
 
 .public-photo-crop-viewport {
-  width: 160px;
-  height: 160px;
+  width: 120px;
+  height: 120px;
   margin: 0 auto;
   border-radius: 50%;
   overflow: hidden;
@@ -111,8 +118,45 @@
 
 .public-contact-row {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.2fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
   gap: 10px;
+  align-items: end;
+}
+
+.contact-platform-select-wrap {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+
+.contact-platform-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--accent-color, #ffd54f);
+
+  svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    display: block;
+  }
+}
+
+.contact-platform-icon[data-platform='whatsapp'] {
+  color: #25d366;
+}
+
+.contact-platform-icon[data-platform='telegram'] {
+  color: #2aabee;
+}
+
+.contact-platform-icon[data-platform='email'] {
+  color: #ffd54f;
 }
 
 .public-email-toggle-wrap {

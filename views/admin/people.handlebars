@@ -1,4 +1,4 @@
-<div class="admin-page people-page" data-synagogue-slug="{{synagogue.slug}}" data-edit-label="{{t 'edit'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-send-label="{{t 'yahrzeit_send_contact'}}" data-download-tile-label="{{t 'yahrzeit_download_tile'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}">
+<div class="admin-page people-page" data-synagogue-slug="{{synagogue.slug}}" data-edit-label="{{t 'edit'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-delete-photo-confirm="{{t 'delete_photo_confirm'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-send-label="{{t 'yahrzeit_send_contact'}}" data-download-tile-label="{{t 'yahrzeit_download_tile'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}">
     <header class="admin-page-header">
         <div>
             <h1>{{t 'people'}}</h1>
@@ -55,7 +55,6 @@
                 <small>{{t 'date_of_death'}}:
                     {{this.gregorianDateOfDeath.date}}/{{this.gregorianDateOfDeath.month}}/{{this.gregorianDateOfDeath.year}}</small>
             </div>
-            <button type="button" class="btn-admin btn-admin-secondary person-row-edit-btn" data-person-id="{{this.id}}">{{t 'edit'}}</button>
         </article>
         {{/each}}
     </div>
@@ -157,19 +156,25 @@
                                 <label for="addContactName">{{t 'contact_name'}}</label>
                                 <input type="text" name="contactName" id="addContactName" class="form-control">
                             </div>
-                            <div class="form-field">
-                                <label for="addContactPlatform">{{t 'contact_platform'}}</label>
-                                <select name="contactPlatform" id="addContactPlatform" class="form-control admin-contact-platform">
-                                    <option value="whatsapp">{{t 'contact_platform_whatsapp'}}</option>
-                                    <option value="telegram">{{t 'contact_platform_telegram'}}</option>
-                                    <option value="max">{{t 'contact_platform_max'}}</option>
-                                    <option value="sms">{{t 'contact_platform_sms'}}</option>
-                                    <option value="email">{{t 'contact_platform_email'}}</option>
-                                </select>
-                            </div>
-                            <div class="form-field admin-contact-phone-field">
-                                <label for="addContactPhone">{{t 'contact_phone'}}</label>
-                                <input type="tel" name="contactPhone" id="addContactPhone" class="form-control">
+                            <div class="admin-contact-channel-row">
+                                <div class="form-field admin-contact-platform-field">
+                                    <label for="addContactPlatform">{{t 'contact_platform'}}</label>
+                                    <div class="contact-platform-select-wrap">
+                                        <span class="contact-platform-icon" data-platform="none" aria-hidden="true"></span>
+                                        <select name="contactPlatform" id="addContactPlatform" class="form-control admin-contact-platform">
+                                            <option value="">{{t 'contact_platform_none'}}</option>
+                                            <option value="whatsapp">{{t 'contact_platform_whatsapp'}}</option>
+                                            <option value="telegram">{{t 'contact_platform_telegram'}}</option>
+                                            <option value="max">{{t 'contact_platform_max'}}</option>
+                                            <option value="sms">{{t 'contact_platform_sms'}}</option>
+                                            <option value="email">{{t 'contact_platform_email'}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-field admin-contact-phone-field">
+                                    <label for="addContactPhone">{{t 'contact_phone'}}</label>
+                                    <input type="tel" name="contactPhone" id="addContactPhone" class="form-control">
+                                </div>
                             </div>
                             <div class="form-field admin-contact-email-field" hidden>
                                 <label for="addContactEmail">{{t 'contact_email'}}</label>
@@ -195,7 +200,7 @@
                 class="person-form" data-preview="editPhotoPreview">
                 <input type="hidden" name="id" id="editId">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{t 'edit'}}</h5>
+                    <h5 class="modal-title">{{t 'edit_deceased_details'}}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="{{t 'cancel'}}">&times;</button>
                 </div>
                 <div class="modal-body">
@@ -218,10 +223,11 @@
                                 {{t 'change_photo'}}
                                 <input type="file" name="photo" accept="image/*" data-crop-editor="edit">
                             </label>
-                            <div class="form-check-modern mt-2">
-                                <input type="checkbox" name="deletePhoto" id="deletePhotoCheck">
-                                <label for="deletePhotoCheck">{{t 'delete_photo'}}</label>
-                            </div>
+                            <input type="hidden" name="deletePhoto" id="editDeletePhoto" value="">
+                            <button type="button" class="btn-admin btn-admin-danger btn-delete-photo" id="editDeletePhotoBtn">
+                                <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                                {{t 'delete_photo'}}
+                            </button>
                         </div>
                         <div class="person-form-fields">
                             <div class="form-field">
@@ -247,19 +253,25 @@
                                 <label for="editContactName">{{t 'contact_name'}}</label>
                                 <input type="text" name="contactName" id="editContactName" class="form-control">
                             </div>
-                            <div class="form-field">
-                                <label for="editContactPlatform">{{t 'contact_platform'}}</label>
-                                <select name="contactPlatform" id="editContactPlatform" class="form-control admin-contact-platform">
-                                    <option value="whatsapp">{{t 'contact_platform_whatsapp'}}</option>
-                                    <option value="telegram">{{t 'contact_platform_telegram'}}</option>
-                                    <option value="max">{{t 'contact_platform_max'}}</option>
-                                    <option value="sms">{{t 'contact_platform_sms'}}</option>
-                                    <option value="email">{{t 'contact_platform_email'}}</option>
-                                </select>
-                            </div>
-                            <div class="form-field admin-contact-phone-field">
-                                <label for="editContactPhone">{{t 'contact_phone'}}</label>
-                                <input type="tel" name="contactPhone" id="editContactPhone" class="form-control">
+                            <div class="admin-contact-channel-row">
+                                <div class="form-field admin-contact-platform-field">
+                                    <label for="editContactPlatform">{{t 'contact_platform'}}</label>
+                                    <div class="contact-platform-select-wrap">
+                                        <span class="contact-platform-icon" data-platform="none" aria-hidden="true"></span>
+                                        <select name="contactPlatform" id="editContactPlatform" class="form-control admin-contact-platform">
+                                            <option value="">{{t 'contact_platform_none'}}</option>
+                                            <option value="whatsapp">{{t 'contact_platform_whatsapp'}}</option>
+                                            <option value="telegram">{{t 'contact_platform_telegram'}}</option>
+                                            <option value="max">{{t 'contact_platform_max'}}</option>
+                                            <option value="sms">{{t 'contact_platform_sms'}}</option>
+                                            <option value="email">{{t 'contact_platform_email'}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-field admin-contact-phone-field">
+                                    <label for="editContactPhone">{{t 'contact_phone'}}</label>
+                                    <input type="tel" name="contactPhone" id="editContactPhone" class="form-control">
+                                </div>
                             </div>
                             <div class="form-field admin-contact-email-field" hidden>
                                 <label for="editContactEmail">{{t 'contact_email'}}</label>

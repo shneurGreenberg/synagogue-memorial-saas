@@ -324,10 +324,6 @@ body.admin-login-page {
     min-width: 0;
   }
 
-  .person-row-edit-btn {
-    flex-shrink: 0;
-  }
-
   &:hover {
     border-color: var(--admin-primary);
     box-shadow: 0 12px 32px rgba(99, 102, 241, 0.15);
@@ -656,6 +652,72 @@ body.admin-login-page {
   input[type='file'] {
     display: none;
   }
+}
+
+.admin-contact-channel-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 0.75rem;
+  align-items: end;
+  margin-bottom: 1.1rem;
+
+  .form-field {
+    margin-bottom: 0;
+  }
+}
+
+.contact-platform-select-wrap {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.contact-platform-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: var(--admin-surface-elevated);
+  border: 1px solid var(--admin-border);
+  color: var(--admin-primary);
+
+  svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    display: block;
+  }
+}
+
+.contact-platform-icon[data-platform='whatsapp'] {
+  color: #25d366;
+}
+
+.contact-platform-icon[data-platform='telegram'] {
+  color: #2aabee;
+}
+
+.btn-delete-photo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+.btn-admin-with-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-admin-inline-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
 }
 
 .form-field {

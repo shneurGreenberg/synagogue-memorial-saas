@@ -75,11 +75,14 @@
             <div class="public-contact-row">
                 <label class="public-field public-field-platform">
                     <span>{{publicT 'contact_platform_label'}}</span>
-                    <select name="contactPlatform" required>
-                        {{#each contactPlatformOptions}}
-                        <option value="{{this.value}}" {{#if (eq ../values.contactPlatform this.value)}}selected{{/if}}>{{this.label}}</option>
-                        {{/each}}
-                    </select>
+                    <div class="contact-platform-select-wrap">
+                        <span class="contact-platform-icon" data-platform="none" aria-hidden="true"></span>
+                        <select name="contactPlatform" class="public-contact-platform" required>
+                            {{#each contactPlatformOptions}}
+                            <option value="{{this.value}}" {{#if (eq ../values.contactPlatform this.value)}}selected{{/if}}>{{this.label}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
                 </label>
                 <label class="public-field public-field-phone">
                     <span>{{publicT 'contact_phone_label'}}</span>
@@ -110,6 +113,7 @@
     </div>
 </section>
 
+<script src="/js/contact-platform-ui.js"></script>
 <script src="/js/public-submission-photo.js"></script>
 <script>
 (function () {
