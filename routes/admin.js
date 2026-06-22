@@ -76,31 +76,97 @@ const BOARD_FEATURE_TOGGLE_META = [
   { key: 'officialLogo', labelKey: 'feature_official_logo', helpKey: 'feature_official_logo_help' },
 ];
 
-function buildBoardFeatureToggles(boardFeatures) {
-  const features = boardFeatures || {};
-
-  return BOARD_FEATURE_TOGGLE_META.map((entry) => ({
-    ...entry,
-    enabled: features[entry.key] !== false,
-  }));
-}
+const BOARD_FEATURE_GROUPS = [
+  {
+    groupKey: 'board_features_center_group',
+    helpKey: 'board_features_center_group_help',
+    keys: ['officialLogo'],
+  },
+  {
+    groupKey: 'board_features_left_column_group',
+    helpKey: 'board_features_left_column_group_help',
+    keys: ['sidebarNames', 'dailyChumash', 'dailyTehillim', 'dailyTanya', 'dailyRambam', 'hayomYom', 'upcomingHolidays', 'communityEvents'],
+  },
+  {
+    groupKey: 'board_features_right_column_group',
+    helpKey: 'board_features_right_column_group_help',
+    keys: ['kelMaleRachamim', 'izkor', 'weather', 'sunriseSunset'],
+  },
+];
 
 const FONT_SCALE_SLIDER_META = [
   { key: 'tileTitle', labelKey: 'font_scale_tile_title', helpKey: 'font_scale_tile_title_help' },
   { key: 'tileDate', labelKey: 'font_scale_tile_date', helpKey: 'font_scale_tile_date_help' },
-  { key: 'clock', labelKey: 'font_scale_clock', helpKey: 'font_scale_clock_help' },
   { key: 'boardHeader', labelKey: 'font_scale_board_header', helpKey: 'font_scale_board_header_help' },
-  { key: 'sidebar', labelKey: 'font_scale_sidebar', helpKey: 'font_scale_sidebar_help' },
+  { key: 'sidebar', labelKey: 'font_scale_left_column', helpKey: 'font_scale_left_column_help' },
+  { key: 'clock', labelKey: 'font_scale_clock', helpKey: 'font_scale_clock_help' },
   { key: 'prayers', labelKey: 'font_scale_prayers', helpKey: 'font_scale_prayers_help' },
+  { key: 'prayerOverlay', labelKey: 'font_scale_prayer_overlay', helpKey: 'font_scale_prayer_overlay_help' },
   { key: 'torahNames', labelKey: 'font_scale_torah_names', helpKey: 'font_scale_torah_names_help', min: 100, max: 400, step: 10 },
 ];
 
-function buildFontScaleSliders(fontScales) {
-  const scales = fontScales || {};
+const FONT_SCALE_GROUPS = [
+  {
+    groupKey: 'typography_center_column',
+    helpKey: 'typography_center_column_help',
+    keys: ['tileTitle', 'tileDate', 'boardHeader'],
+  },
+  {
+    groupKey: 'typography_left_column',
+    helpKey: 'typography_left_column_help',
+    keys: ['sidebar'],
+  },
+  {
+    groupKey: 'typography_right_column',
+    helpKey: 'typography_right_column_help',
+    keys: ['clock', 'prayers', 'prayerOverlay', 'torahNames'],
+  },
+];
 
-  return FONT_SCALE_SLIDER_META.map((entry) => ({
+function buildBoardFeatureToggles(boardFeatures) {
+  const features = boardFeatures || {};
+  const byKey = {};
+
+  BOARD_FEATURE_TOGGLE_META.forEach((entry) => {
+    byKey[entry.key] = {
+      ...entry,
+      enabled: features[entry.key] !== false,
+    };
+  });
+
+  return byKey;
+}
+
+function buildBoardFeatureGroups(boardFeatures) {
+  const togglesByKey = buildBoardFeatureToggles(boardFeatures);
+
+  return BOARD_FEATURE_GROUPS.map((group) => ({
+    groupKey: group.groupKey,
+    helpKey: group.helpKey,
+    toggles: group.keys.map((key) => togglesByKey[key]).filter(Boolean),
+  }));
+}
+
+function buildFontScaleSlider(entry, fontScales) {
+  const scales = fontScales || {};
+  const defaultValue = entry.key === 'prayerOverlay' ? 75 : 100;
+
+  return {
     ...entry,
-    value: scales[entry.key] != null ? scales[entry.key] : 100,
+    value: scales[entry.key] != null ? scales[entry.key] : defaultValue,
+  };
+}
+
+function buildFontScaleGroups(fontScales) {
+  const metaByKey = {};
+  FONT_SCALE_SLIDER_META.forEach((entry) => {
+    metaByKey[entry.key] = entry;
+  });
+
+  return FONT_SCALE_GROUPS.map((group) => ({
+    groupKey: group.groupKey,
+    helpKey: group.helpKey,
+    sliders: group.keys.map((key) => buildFontScaleSlider(metaByKey[key], fontScales)).filter(Boolean),
   }));
 }
 
@@ -429,7 +495,7 @@ router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('sett
             backgroundImage: synagogue.theme?.backgroundImage || '',
             tilesBackground: synagogue.theme?.tilesBackground || '',
         });
-        const screenshot = await saveViewThumbnail(snapshot);
+        const screenshot = await saveViewThumbnail(snapshot, req.body.screenshotDataUrl);
         const view = {
             id: require('crypto').randomUUID(),
             name,
@@ -500,7 +566,7 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
             backgroundImage: synagogue.theme?.backgroundImage || existing.snapshot?.theme?.backgroundImage || '',
             tilesBackground: synagogue.theme?.tilesBackground || existing.snapshot?.theme?.tilesBackground || '',
         });
-        const screenshot = await saveViewThumbnail(snapshot);
+        const screenshot = await saveViewThumbnail(snapshot, req.body.screenshotDataUrl);
         if (existing.screenshot && existing.screenshot !== screenshot) {
             deleteScreenshot(existing.screenshot);
         }
@@ -636,16 +702,20 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
         await persistTitlesIfMissing(synagogue);
         const refreshed = await Synagogue.findOne({ slug: req.params.slug }).lean();
         const enriched = enrichSynagogueForAdmin(refreshed);
+        const activeSavedView = (enriched.savedViews || []).find(
+            (view) => view.id === enriched.activeSavedViewId,
+        );
         renderAdmin(res, 'admin/dashboard', {
             synagogue: enriched,
             adminUser: req.adminUser,
             adminPermissions: req.adminPermissions,
             canSaveBoardSettings: canSaveBoardSettings(req.adminPermissions),
             boardTitles: enriched.titles,
-            boardFeatureToggles: buildBoardFeatureToggles(enriched.boardFeatures),
-            fontScaleSliders: buildFontScaleSliders(enriched.theme.fontScales),
+            boardFeatureGroups: buildBoardFeatureGroups(enriched.boardFeatures),
+            fontScaleGroups: buildFontScaleGroups(enriched.theme.fontScales),
             savedViews: serializeSavedViews(enriched.savedViews),
             activeSavedViewId: enriched.activeSavedViewId || '',
+            activeSavedViewName: activeSavedView ? activeSavedView.name : '',
             memorialQrPanel: enriched.memorialQrPanel,
             saved: req.query.saved === '1',
             error: req.query.error || null,

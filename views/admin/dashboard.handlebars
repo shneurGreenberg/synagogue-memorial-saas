@@ -22,14 +22,15 @@
 
     <form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data" class="settings-form" id="settingsForm" data-save-label="{{t 'save'}}" data-slug="{{synagogue.slug}}">
         {{#if adminPermissions.settingsAdminPanel}}
-        <section class="admin-panel">
-            <div class="admin-panel-header">
+        <section class="admin-panel admin-panel-collapsible is-collapsed">
+            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
                 <h2 class="admin-panel-title">
                     <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2m0 18H7V5h10v14z"/></svg>
                     {{t 'admin_panel_section'}}
                 </h2>
-            </div>
-            <div class="admin-panel-body">
+                <span class="admin-panel-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="admin-panel-body" hidden>
                 <div class="settings-two-col">
                     <div class="form-field">
                         <label for="adminLanguage">{{t 'admin_language'}}</label>
@@ -63,14 +64,15 @@
         {{/if}}
 
         {{#if adminPermissions.settingsAppearance}}
-        <section class="admin-panel">
-            <div class="admin-panel-header">
+        <section class="admin-panel admin-panel-collapsible is-collapsed">
+            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
                 <h2 class="admin-panel-title">
                     <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8m-5.5 9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m3-4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m7 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m3 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/></svg>
                     {{t 'appearance_section'}}
                 </h2>
-            </div>
-            <div class="admin-panel-body">
+                <span class="admin-panel-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="admin-panel-body" hidden>
                 <div class="board-titles-grid">
                     <div class="form-field">
                         <label for="titleRu">{{t 'board_title_ru'}}</label>
@@ -88,10 +90,8 @@
                             value="{{boardTitles.he}}">
                     </div>
                 </div>
-                <div class="appearance-actions">
-                    <button type="button" class="btn-admin btn-admin-secondary reset-theme-btn" id="resetThemeBtn">{{t 'reset_theme'}}</button>
-                    <p class="field-hint">{{t 'reset_theme_help'}}</p>
-                </div>
+                <div class="colors-controls">
+                    <h3 class="typography-controls-title">{{t 'colors_section'}}</h3>
                 <div class="color-picker-row color-picker-modern">
                     <div class="color-field-modern">
                         <label for="primaryColor">{{t 'primary_color'}}</label>
@@ -134,11 +134,6 @@
                         <span class="field-hint">{{t 'tile_color_help'}}</span>
                     </div>
                 </div>
-                <div class="typography-controls">
-                    <h3 class="typography-controls-title">
-                        <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 4v3h5.5v12h3V7H19V4H5z"/></svg>
-                        {{t 'typography_section'}}
-                    </h3>
                     <div class="slider-field-modern">
                         <label for="tileOpacity">{{t 'tile_opacity'}}</label>
                         <div class="slider-row">
@@ -149,23 +144,34 @@
                         </div>
                         <span class="field-hint">{{t 'tile_opacity_help'}}</span>
                     </div>
-                    <div class="font-scale-grid">
-                        {{#each fontScaleSliders}}
-                        <div class="slider-field-modern">
-                            <label for="fontScale_{{this.key}}">{{t this.labelKey}}</label>
-                            <div class="slider-row">
-                                <input type="range" name="fontScale_{{this.key}}" id="fontScale_{{this.key}}"
-                                    class="admin-range-input font-scale-input" data-font-scale-key="{{this.key}}"
-                                    min="{{#if this.min}}{{this.min}}{{else}}50{{/if}}" max="{{#if this.max}}{{this.max}}{{else}}200{{/if}}" step="{{#if this.step}}{{this.step}}{{else}}5{{/if}}" value="{{this.value}}">
-                                <output class="slider-value-display font-scale-value" data-for="fontScale_{{this.key}}">{{this.value}}%</output>
+                </div>
+                <div class="typography-controls">
+                    {{#each fontScaleGroups}}
+                    <div class="typography-group">
+                        <h3 class="typography-controls-title">{{t this.groupKey}}</h3>
+                        <p class="field-hint">{{t this.helpKey}}</p>
+                        <div class="font-scale-grid">
+                            {{#each this.sliders}}
+                            <div class="slider-field-modern">
+                                <label for="fontScale_{{this.key}}">{{t this.labelKey}}</label>
+                                <div class="slider-row">
+                                    <input type="range" name="fontScale_{{this.key}}" id="fontScale_{{this.key}}"
+                                        class="admin-range-input font-scale-input" data-font-scale-key="{{this.key}}"
+                                        min="{{#if this.min}}{{this.min}}{{else}}50{{/if}}" max="{{#if this.max}}{{this.max}}{{else}}200{{/if}}" step="{{#if this.step}}{{this.step}}{{else}}5{{/if}}" value="{{this.value}}">
+                                    <output class="slider-value-display font-scale-value" data-for="fontScale_{{this.key}}">{{this.value}}%</output>
+                                </div>
+                                <span class="field-hint">{{t this.helpKey}}</span>
                             </div>
-                            <span class="field-hint">{{t this.helpKey}}</span>
+                            {{/each}}
                         </div>
-                        {{/each}}
                     </div>
+                    {{/each}}
                 </div>
                 <div class="memorial-qr-controls">
-                    <h3 class="typography-controls-title">{{t 'memorial_qr_section'}}</h3>
+                    <h3 class="typography-controls-title">
+                        <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v3h-3v-3zm-5 0h3v3h-3v-3zm5 5h3v3h-3v-3zm-5 0h3v3h-3v-3z"/></svg>
+                        {{t 'memorial_qr_section'}}
+                    </h3>
                     <p class="field-hint">{{t 'memorial_qr_section_help'}}</p>
                     <div class="board-titles-grid">
                         <div class="form-field">
@@ -233,14 +239,20 @@
         {{/if}}
 
         {{#if adminPermissions.settingsPreview}}
-        <section class="admin-panel settings-preview-panel">
-            <div class="admin-panel-header">
+        <section class="admin-panel settings-preview-panel admin-panel-collapsible is-collapsed">
+            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
                 <h2 class="admin-panel-title">
                     <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m0 14H3V5h18v12Z"/></svg>
                     {{t 'live_preview'}}
+                    {{#if activeSavedViewName}}
+                    <span class="active-saved-view-badge" id="activeSavedViewBadge">{{activeSavedViewName}}</span>
+                    {{else}}
+                    <span class="active-saved-view-badge" id="activeSavedViewBadge" hidden></span>
+                    {{/if}}
                 </h2>
-            </div>
-            <div class="admin-panel-body">
+                <span class="admin-panel-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="admin-panel-body" hidden>
                 <div class="board-preview-stage" id="boardPreviewStage">
                     <div class="board-preview-frame-wrap" id="boardPreviewWrap">
                         <iframe id="boardPreviewFrame" class="board-preview-frame" title="{{t 'live_preview'}}"
@@ -248,25 +260,34 @@
                     </div>
                 </div>
                 <p class="preview-hint">{{t 'live_preview_help'}}</p>
-                {{#if (and (or adminPermissions.settingsAppearance adminPermissions.settingsPreview) adminPermissions.settingsSavedViews)}}
+                {{#if (or adminPermissions.settingsAppearance adminPermissions.settingsPreview adminPermissions.settingsSavedViews)}}
                 <div class="saved-view-actions">
+                    {{#if adminPermissions.settingsSavedViews}}
                     <button type="button" class="btn-admin btn-admin-secondary" id="saveCurrentViewBtn">{{t 'save_current_view'}}</button>
                     <button type="button" class="btn-admin btn-admin-primary" id="updateCurrentViewBtn" {{#unless activeSavedViewId}}disabled{{/unless}}>{{t 'update_current_view'}}</button>
+                    {{/if}}
+                    {{#if adminPermissions.settingsAppearance}}
+                    <button type="button" class="btn-admin btn-admin-secondary reset-theme-btn" id="resetThemeBtn">{{t 'reset_theme'}}</button>
+                    {{/if}}
                 </div>
+                {{#if adminPermissions.settingsAppearance}}
+                <p class="field-hint">{{t 'reset_theme_help'}}</p>
+                {{/if}}
                 {{/if}}
             </div>
         </section>
         {{/if}}
 
         {{#if (and (or adminPermissions.settingsAppearance adminPermissions.settingsPreview) adminPermissions.settingsSavedViews)}}
-        <section class="admin-panel saved-views-panel">
-            <div class="admin-panel-header">
+        <section class="admin-panel saved-views-panel admin-panel-collapsible is-collapsed">
+            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
                 <h2 class="admin-panel-title">
                     <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
                     {{t 'saved_views_section'}}
                 </h2>
-            </div>
-            <div class="admin-panel-body">
+                <span class="admin-panel-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="admin-panel-body" hidden>
                 <p class="field-hint">{{t 'saved_views_help'}}</p>
                 <div class="saved-views-grid" id="savedViewsGrid">
                     {{#if savedViews.length}}
@@ -298,16 +319,15 @@
         {{/if}}
 
         {{#if adminPermissions.settingsBranding}}
-        <section class="admin-panel">
-            <div class="admin-panel-header">
+        <section class="admin-panel admin-panel-collapsible is-collapsed">
+            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
                 <h2 class="admin-panel-title">
                     <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2M8.5 13.5l2.5 3 3.5-4.5 4.5 6H5l3.5-4.5z"/></svg>
                     {{t 'branding_section'}}
                 </h2>
-            </div>
-            <div class="admin-panel-body media-upload-grid">
-                <div class="media-upload-card">
-                    <label>{{t 'logo'}}</label>
+                <span class="admin-panel-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="admin-panel-body media-upload-grid" hidden>
                     <div class="media-preview media-preview-logo">
                         {{#if synagogue.theme.logo}}
                         <img src="/images/{{synagogue.theme.logo}}" alt="{{t 'logo'}}">
@@ -355,46 +375,58 @@
         {{/if}}
 
         {{#if adminPermissions.settingsFeatures}}
-        <section class="admin-panel">
-            <div class="admin-panel-header">
+        <section class="admin-panel admin-panel-collapsible is-collapsed">
+            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
                 <h2 class="admin-panel-title">
                     <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 6h16v2H4V6m0 5h16v2H4v-2m0 5h16v2H4v-2Z"/></svg>
                     {{t 'board_features_section'}}
                 </h2>
-            </div>
-            <div class="admin-panel-body board-features-grid">
-                <div class="admin-theme-setting shabbat-times-setting">
-                    <div class="admin-theme-setting-label">{{t 'enable_shabbat_times'}}</div>
-                    <div class="admin-theme-setting-control">
-                        <label class="toggle-switch" for="shabbatTimesEnabled">
-                            <input type="checkbox" id="shabbatTimesEnabled" name="shabbatTimesEnabled" value="1" {{#if synagogue.shabbatTimesEnabled}}checked{{/if}}>
-                            <span class="toggle-slider" aria-hidden="true"></span>
-                        </label>
+                <span class="admin-panel-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="admin-panel-body board-features-layout" hidden>
+                {{#each boardFeatureGroups}}
+                <div class="board-features-group">
+                    <h3 class="board-features-group-title">{{t this.groupKey}}</h3>
+                    <p class="field-hint">{{t this.helpKey}}</p>
+                    <div class="board-features-grid">
+                        {{#if (eq this.groupKey 'board_features_center_group')}}
+                        <div class="admin-theme-setting shabbat-times-setting">
+                            <div class="admin-theme-setting-label">{{t 'enable_shabbat_times'}}</div>
+                            <div class="admin-theme-setting-control">
+                                <label class="toggle-switch" for="shabbatTimesEnabled">
+                                    <input type="checkbox" id="shabbatTimesEnabled" name="shabbatTimesEnabled" value="1" {{#if ../synagogue.shabbatTimesEnabled}}checked{{/if}}>
+                                    <span class="toggle-slider" aria-hidden="true"></span>
+                                </label>
+                            </div>
+                            <p class="field-hint admin-theme-setting-hint">{{t 'enable_shabbat_times_help'}}</p>
+                        </div>
+                        {{/if}}
+                        {{#each this.toggles}}
+                        <div class="admin-theme-setting">
+                            <div class="admin-theme-setting-label">{{t this.labelKey}}</div>
+                            <div class="admin-theme-setting-control">
+                                <label class="toggle-switch" for="feature_{{this.key}}">
+                                    <input type="checkbox" id="feature_{{this.key}}" name="feature_{{this.key}}" value="1" {{#if this.enabled}}checked{{/if}}>
+                                    <span class="toggle-slider" aria-hidden="true"></span>
+                                </label>
+                            </div>
+                            <p class="field-hint admin-theme-setting-hint">{{t this.helpKey}}</p>
+                        </div>
+                        {{/each}}
                     </div>
-                    <p class="field-hint admin-theme-setting-hint">{{t 'enable_shabbat_times_help'}}</p>
-                </div>
-                {{#each boardFeatureToggles}}
-                <div class="admin-theme-setting">
-                    <div class="admin-theme-setting-label">{{t this.labelKey}}</div>
-                    <div class="admin-theme-setting-control">
-                        <label class="toggle-switch" for="feature_{{this.key}}">
-                            <input type="checkbox" id="feature_{{this.key}}" name="feature_{{this.key}}" value="1" {{#if this.enabled}}checked{{/if}}>
-                            <span class="toggle-slider" aria-hidden="true"></span>
-                        </label>
-                    </div>
-                    <p class="field-hint admin-theme-setting-hint">{{t this.helpKey}}</p>
                 </div>
                 {{/each}}
             </div>
         </section>
-        <section class="admin-panel{{#if yahrzeitTodayCount}} public-submission-yahrzeit-alert{{/if}}">
-            <div class="admin-panel-header">
+        <section class="admin-panel admin-panel-collapsible is-collapsed{{#if yahrzeitTodayCount}} public-submission-yahrzeit-alert{{/if}}">
+            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
                 <h2 class="admin-panel-title">
                     <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
                     {{t 'public_submission_section'}}
                 </h2>
-            </div>
-            <div class="admin-panel-body board-features-grid">
+                <span class="admin-panel-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="admin-panel-body board-features-grid" hidden>
                 {{#if yahrzeitTodayCount}}
                 <p class="public-submission-yahrzeit-notice">{{t 'public_submission_yahrzeit_alert'}}</p>
                 {{/if}}
@@ -419,14 +451,15 @@
                 </div>
             </div>
         </section>
-        <section class="admin-panel">
-            <div class="admin-panel-header">
+        <section class="admin-panel admin-panel-collapsible is-collapsed">
+            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
                 <h2 class="admin-panel-title">
                     <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2c-1.1 0-2 .9-2 2v1.07C7.06 5.56 5 7.92 5 11v5l-2 2v1h18v-1l-2-2v-5c0-3.08-2.06-5.44-5-5.93V4c0-1.1-.9-2-2-2m0 2c.55 0 1 .45 1 1v1h-2V5c0-.55.45-1 1-1m-1 9h2v3h-2v-3Z"/></svg>
                     {{t 'yahrzeit_section'}}
                 </h2>
-            </div>
-            <div class="admin-panel-body board-features-grid">
+                <span class="admin-panel-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="admin-panel-body board-features-grid" hidden>
                 <div class="admin-theme-setting">
                     <div class="admin-theme-setting-label">{{t 'yahrzeit_enabled'}}</div>
                     <div class="admin-theme-setting-control">
@@ -451,14 +484,15 @@
         {{/if}}
 
         {{#if adminPermissions.settingsLanguages}}
-        <section class="admin-panel">
-            <div class="admin-panel-header">
+        <section class="admin-panel admin-panel-collapsible is-collapsed">
+            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
                 <h2 class="admin-panel-title">
                     <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2v2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12z"/></svg>
                     {{t 'languages_section'}}
                 </h2>
-            </div>
-            <div class="admin-panel-body">
+                <span class="admin-panel-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="admin-panel-body" hidden>
                 <div class="form-field">
                     <label for="language">{{t 'language'}}</label>
                     <select name="language" id="language" class="form-control admin-select-modern">
@@ -481,6 +515,7 @@
     <form method="POST" action="/admin/{{synagogue.slug}}/settings/reset-theme" id="resetThemeForm" class="visually-hidden-reset-form" aria-hidden="true"></form>
 </div>
 
+<script src="/js/admin-settings-panel.js"></script>
 <script>
     (function () {
         var settingsForm = document.getElementById('settingsForm');
@@ -676,7 +711,7 @@
         var updateCurrentViewBtn = document.getElementById('updateCurrentViewBtn');
         var savedViewsGrid = document.getElementById('savedViewsGrid');
 
-        function setActiveSavedView(viewId) {
+        function setActiveSavedView(viewId, viewName) {
             activeSavedViewId = viewId || '';
             document.querySelectorAll('.saved-view-card').forEach(function (card) {
                 card.classList.toggle('is-active', card.dataset.viewId === activeSavedViewId);
@@ -684,6 +719,16 @@
             if (updateCurrentViewBtn) {
                 updateCurrentViewBtn.disabled = !activeSavedViewId;
             }
+            if (window.AdminSettingsPanel && typeof window.AdminSettingsPanel.updateActiveViewBadge === 'function') {
+                window.AdminSettingsPanel.updateActiveViewBadge(viewName || '');
+            }
+        }
+
+        function captureScreenshotDataUrl() {
+            if (window.AdminSettingsPanel && typeof window.AdminSettingsPanel.capturePreviewScreenshot === 'function') {
+                return window.AdminSettingsPanel.capturePreviewScreenshot();
+            }
+            return Promise.resolve('');
         }
 
         [
@@ -929,16 +974,21 @@
                 var originalText = saveCurrentViewBtn.textContent;
                 saveCurrentViewBtn.textContent = '{{t 'saving_view'}}';
 
-                var payload = readCurrentDesignPatch();
-                payload.name = name.trim();
+                captureScreenshotDataUrl().then(function (screenshotDataUrl) {
+                    var payload = readCurrentDesignPatch();
+                    payload.name = name.trim();
+                    if (screenshotDataUrl) {
+                        payload.screenshotDataUrl = screenshotDataUrl;
+                    }
 
-                fetch('/admin/' + slug + '/settings/saved-views', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                    },
-                    body: JSON.stringify(payload),
+                    return fetch('/admin/' + slug + '/settings/saved-views', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        body: JSON.stringify(payload),
+                    });
                 }).then(function (response) {
                     return response.json();
                 }).then(function (data) {
@@ -966,13 +1016,20 @@
                 var originalText = updateCurrentViewBtn.textContent;
                 updateCurrentViewBtn.textContent = '{{t 'saving_view'}}';
 
-                fetch('/admin/' + slug + '/settings/saved-views/' + encodeURIComponent(activeSavedViewId), {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest',
-                    },
-                    body: JSON.stringify(readCurrentDesignPatch()),
+                captureScreenshotDataUrl().then(function (screenshotDataUrl) {
+                    var payload = readCurrentDesignPatch();
+                    if (screenshotDataUrl) {
+                        payload.screenshotDataUrl = screenshotDataUrl;
+                    }
+
+                    return fetch('/admin/' + slug + '/settings/saved-views/' + encodeURIComponent(activeSavedViewId), {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        body: JSON.stringify(payload),
+                    });
                 }).then(function (response) {
                     return response.json();
                 }).then(function (data) {
@@ -1006,6 +1063,7 @@
                 var viewId = card.dataset.viewId;
 
                 if (applyBtn) {
+                    var viewName = card.querySelector('.saved-view-meta h3');
                     fetch('/admin/' + slug + '/settings/saved-views/' + viewId + '/apply', {
                         method: 'POST',
                         headers: { 'X-Requested-With': 'XMLHttpRequest' },
@@ -1013,7 +1071,7 @@
                         return response.json();
                     }).then(function (data) {
                         if (data && data.ok) {
-                            setActiveSavedView(viewId);
+                            setActiveSavedView(viewId, viewName ? viewName.textContent : '');
                             window.location.reload();
                         }
                     });
@@ -1034,7 +1092,7 @@
                         if (data && data.ok) {
                             card.remove();
                             if (viewId === activeSavedViewId) {
-                                setActiveSavedView('');
+                                setActiveSavedView('', '');
                             }
                             if (!savedViewsGridEl.querySelector('.saved-view-card')) {
                                 var empty = document.createElement('p');

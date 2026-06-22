@@ -232,7 +232,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
     body,
     .main-container {
       color: var(--text-color) !important;
-      ${n.backgroundImage?`background-image: url('${Un(`images/${n.backgroundImage}`)}') !important;
+      ${n.backgroundImage?`background-image: url('${Vn(`images/${n.backgroundImage}`)}') !important;
       background-size: cover;
       background-position: center;
       background-attachment: fixed;`:""}
@@ -241,7 +241,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
     .main-container .middle .wooden-panel,
     .main-container .right .wooden-panel,
     .card-view.wooden-panel {
-      ${n.tilesBackground?`background-image: url('${Un(`images/${n.tilesBackground}`)}') !important;
+      ${n.tilesBackground?`background-image: url('${Vn(`images/${n.tilesBackground}`)}') !important;
       background-size: cover;`:""}
     }
     ${ld} {
