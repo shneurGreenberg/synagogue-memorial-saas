@@ -1,4 +1,11 @@
 <section class="public-card">
+    <div class="public-brand">
+        <img class="public-brand-logo" src="{{officialLogoUrl}}" alt="">
+        {{#if communityLogoUrl}}
+        <img class="public-community-logo" src="{{communityLogoUrl}}" alt="{{synagogue.name}}">
+        {{/if}}
+    </div>
+
     <h1>{{publicT 'page_title'}}</h1>
     <p class="public-intro">{{publicT 'intro'}}</p>
 
@@ -6,7 +13,7 @@
     <p class="public-error" role="alert">{{errorMessage}}</p>
     {{/if}}
 
-    <form method="POST" action="{{formUrl}}" class="public-form">
+    <form method="POST" action="{{formUrl}}" class="public-form" enctype="multipart/form-data" data-show-email="{{#if values.contactEmail}}1{{else}}0{{/if}}">
         <input type="hidden" name="lang" value="{{lang}}">
 
         <label class="public-field">
@@ -34,30 +41,57 @@
             </label>
         </div>
 
+        <div class="public-photo-section">
+            <h2 class="public-section-title">{{publicT 'photo_section_title'}}</h2>
+            <p class="public-section-intro">{{publicT 'photo_section_intro'}}</p>
+            <div class="public-photo-crop-editor photo-crop-editor" data-form="public">
+                <div class="photo-crop-viewport public-photo-crop-viewport">
+                    <span class="photo-preview-empty">{{publicT 'photo_upload_label'}}</span>
+                </div>
+                <div class="photo-crop-controls" hidden>
+                    <label class="photo-crop-zoom-label" for="publicPhotoCropZoom">{{publicT 'photo_crop_zoom'}}</label>
+                    <input type="range" id="publicPhotoCropZoom" class="photo-crop-zoom" min="1" max="3" step="0.05" value="1">
+                    <span class="public-photo-crop-hint">{{publicT 'photo_crop_hint'}}</span>
+                </div>
+                <input type="hidden" name="photoCropX" class="photo-crop-x" value="50">
+                <input type="hidden" name="photoCropY" class="photo-crop-y" value="50">
+                <input type="hidden" name="photoCropZoom" class="photo-crop-zoom-value" value="1">
+                <label class="public-photo-upload-label">
+                    {{publicT 'photo_upload_label'}}
+                    <input type="file" name="photo" accept="image/*">
+                </label>
+            </div>
+        </div>
+
         <div class="public-contact-section">
             <h2 class="public-section-title">{{publicT 'contact_section_title'}}</h2>
             <p class="public-section-intro">{{publicT 'contact_section_intro'}}</p>
 
             <label class="public-field">
                 <span>{{publicT 'contact_name_label'}}</span>
-                <input type="text" name="contactName" maxlength="120" value="{{values.contactName}}" placeholder="{{publicT 'contact_name_placeholder'}}">
+                <input type="text" name="contactName" maxlength="120" required value="{{values.contactName}}" placeholder="{{publicT 'contact_name_placeholder'}}">
             </label>
 
-            <label class="public-field">
-                <span>{{publicT 'contact_platform_label'}}</span>
-                <select name="contactPlatform" required>
-                    {{#each contactPlatformOptions}}
-                    <option value="{{this.value}}" {{#if (eq ../values.contactPlatform this.value)}}selected{{/if}}>{{this.label}}</option>
-                    {{/each}}
-                </select>
-            </label>
+            <div class="public-contact-row">
+                <label class="public-field public-field-platform">
+                    <span>{{publicT 'contact_platform_label'}}</span>
+                    <select name="contactPlatform" required>
+                        {{#each contactPlatformOptions}}
+                        <option value="{{this.value}}" {{#if (eq ../values.contactPlatform this.value)}}selected{{/if}}>{{this.label}}</option>
+                        {{/each}}
+                    </select>
+                </label>
+                <label class="public-field public-field-phone">
+                    <span>{{publicT 'contact_phone_label'}}</span>
+                    <input type="tel" name="contactPhone" maxlength="30" value="{{values.contactPhone}}" placeholder="{{publicT 'contact_phone_placeholder'}}">
+                </label>
+            </div>
 
-            <label class="public-field public-field-phone">
-                <span>{{publicT 'contact_phone_label'}}</span>
-                <input type="tel" name="contactPhone" maxlength="30" required value="{{values.contactPhone}}" placeholder="{{publicT 'contact_phone_placeholder'}}">
-            </label>
+            <p class="public-email-toggle-wrap">
+                <button type="button" class="public-email-toggle" id="publicEmailToggle">{{publicT 'contact_email_toggle'}}</button>
+            </p>
 
-            <label class="public-field public-field-email">
+            <label class="public-field public-field-email" id="publicEmailField" hidden>
                 <span>{{publicT 'contact_email_label'}}</span>
                 <input type="email" name="contactEmail" maxlength="200" value="{{values.contactEmail}}" placeholder="{{publicT 'contact_email_placeholder'}}">
             </label>
@@ -76,13 +110,17 @@
     </div>
 </section>
 
+<script src="/js/public-submission-photo.js"></script>
 <script>
 (function () {
   var platformSelect = document.querySelector('select[name="contactPlatform"]');
   var phoneField = document.querySelector('.public-field-phone');
-  var emailField = document.querySelector('.public-field-email');
+  var emailField = document.getElementById('publicEmailField');
+  var emailToggle = document.getElementById('publicEmailToggle');
   var phoneInput = document.querySelector('input[name="contactPhone"]');
   var emailInput = document.querySelector('input[name="contactEmail"]');
+  var form = document.querySelector('.public-form');
+  var showEmail = form && form.getAttribute('data-show-email') === '1';
 
   if (!platformSelect || !phoneField || !emailField) {
     return;
@@ -93,12 +131,39 @@
     var isEmail = platform === 'email';
 
     phoneField.hidden = isEmail;
-    emailField.hidden = !isEmail;
-    phoneInput.required = !isEmail;
-    emailInput.required = isEmail;
+    if (isEmail) {
+      emailField.hidden = false;
+      if (emailToggle) {
+        emailToggle.hidden = true;
+      }
+    } else {
+      emailField.hidden = !showEmail;
+      if (emailToggle) {
+        emailToggle.hidden = showEmail;
+      }
+    }
+
+    phoneInput.required = !isEmail && !showEmail;
+    emailInput.required = isEmail || showEmail;
   }
 
-  platformSelect.addEventListener('change', syncContactFields);
+  if (emailToggle) {
+    emailToggle.addEventListener('click', function () {
+      showEmail = true;
+      emailField.hidden = false;
+      emailToggle.hidden = true;
+      syncContactFields();
+      emailInput.focus();
+    });
+  }
+
+  platformSelect.addEventListener('change', function () {
+    if (platformSelect.value === 'email') {
+      showEmail = true;
+    }
+    syncContactFields();
+  });
+
   syncContactFields();
 })();
 </script>

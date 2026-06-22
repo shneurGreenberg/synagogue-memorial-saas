@@ -5,6 +5,7 @@ export const FONT_SCALE_DEFAULTS = {
   boardHeader: 100,
   sidebar: 100,
   prayers: 100,
+  torahNames: 100,
 };
 
 export const TILE_OPACITY_DEFAULT = 100;

@@ -1861,6 +1861,17 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
   margin: 0 0 1rem;
   font-size: 1rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.typography-controls-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  color: var(--admin-primary);
+  opacity: 0.9;
 }
 
 .font-scale-grid {
@@ -1922,6 +1933,22 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
 .yahrzeit-list {
   display: grid;
   gap: 1.5rem;
+}
+
+.yahrzeit-week-section {
+  margin-top: 2.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--admin-border);
+}
+
+.yahrzeit-week-header {
+  margin-bottom: 1.25rem;
+
+  h2 {
+    margin: 0 0 0.35rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
 }
 
 .yahrzeit-card {

@@ -52,6 +52,7 @@ const AdminUserSchema = new mongoose.Schema({
     settingsFeatures: { type: Boolean, default: false },
     settingsLanguages: { type: Boolean, default: false },
     settingsAdminPanel: { type: Boolean, default: false },
+    settingsSavedViews: { type: Boolean, default: false },
   },
   adminLanguage: { type: String, default: 'ru' },
   adminTheme: {
@@ -160,6 +161,7 @@ const SynagogueSchema = new mongoose.Schema({
       boardHeader: { type: Number, default: 100 },
       sidebar: { type: Number, default: 100 },
       prayers: { type: Number, default: 100 },
+      torahNames: { type: Number, default: 100 },
     },
     backgroundImage: String,
     tilesBackground: String,

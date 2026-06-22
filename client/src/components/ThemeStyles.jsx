@@ -86,6 +86,7 @@ export function ThemeStyles() {
       --font-scale-board-header: ${fontScaleCss(fontScales.boardHeader)};
       --font-scale-sidebar: ${fontScaleCss(fontScales.sidebar)};
       --font-scale-prayers: ${fontScaleCss(fontScales.prayers)};
+      --font-scale-torah-names: ${fontScaleCss(fontScales.torahNames)};
     }
     .main-container .board-header h1 {
       color: var(--primary-color) !important;
@@ -184,6 +185,9 @@ export function ThemeStyles() {
     }
     .main-container .memorial-prayers.memorial-prayers-big .prayer-text {
       font-size: calc(clamp(13px, 1.12vw, 17px) * var(--font-scale-prayers)) !important;
+    }
+    .torah-reading-name {
+      font-size: calc(var(--torah-name-size, clamp(2rem, 8vw, 6.5rem)) * var(--font-scale-torah-names, 1)) !important;
     }
     .main-container .board-shabbat-block .shabbat-times .shabbat-label,
     .main-container .board-shabbat-block .shabbat-times .shabbat-time,
