@@ -4,6 +4,7 @@ const PersonContactSchema = new mongoose.Schema({
   name: { type: String, default: '' },
   phone: { type: String, default: '' },
   email: { type: String, default: '' },
+  gender: { type: String, enum: ['male', 'female', ''], default: '' },
   platform: {
     type: String,
     enum: ['whatsapp', 'telegram', 'max', 'sms', 'email'],

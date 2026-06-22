@@ -129,6 +129,12 @@ body.admin-login-page {
       background: rgba(255, 255, 255, 0.1);
       color: #fff !important;
     }
+
+    &.active {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff !important;
+      font-weight: 600;
+    }
   }
 
   .admin-nav-icon {
@@ -792,6 +798,17 @@ body.admin-login-page {
     text-align: inherit;
     color: inherit;
     font: inherit;
+    outline: none;
+
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--admin-primary);
+      outline-offset: -2px;
+    }
   }
 
   &.is-expanded .admin-panel-toggle {
@@ -811,6 +828,39 @@ body.admin-login-page {
   &.is-expanded .admin-panel-chevron {
     transform: rotate(-135deg);
   }
+}
+
+.branding-subsections {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.branding-subsection {
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--admin-bg-subtle);
+
+  .admin-panel-toggle {
+    padding: 0.85rem 1rem;
+    background: var(--admin-surface);
+  }
+
+  .admin-panel-title {
+    font-size: 0.95rem;
+  }
+
+  > .admin-panel-body {
+    padding: 1rem;
+  }
+}
+
+.btn-admin-icon {
+  width: 1.05em;
+  height: 1.05em;
+  flex-shrink: 0;
+  opacity: 0.92;
 }
 
 .active-saved-view-badge {
@@ -1034,6 +1084,12 @@ body.admin-is-busy {
   border: 1px solid var(--admin-border);
   border-radius: 12px;
   background: var(--admin-bg-subtle);
+
+  &.media-upload-card-flat {
+    border: 0;
+    padding: 0;
+    background: transparent;
+  }
 
   > label:first-child {
     font-weight: 600;

@@ -48,7 +48,6 @@ export function mergePreviewPatch(data, patch) {
   }
 
   const memorialQrKeys = [
-    'memorialQrTitleRu', 'memorialQrTitleEn', 'memorialQrTitleHe',
     'memorialQrTextRu', 'memorialQrTextEn', 'memorialQrTextHe',
     'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale',
   ];
@@ -62,9 +61,6 @@ export function mergePreviewPatch(data, patch) {
       textScale: current.textScale,
       qrScale: current.qrScale,
     };
-    if (patch.memorialQrTitleRu !== undefined) next.memorialQrPanel.titles.ru = patch.memorialQrTitleRu;
-    if (patch.memorialQrTitleEn !== undefined) next.memorialQrPanel.titles.en = patch.memorialQrTitleEn;
-    if (patch.memorialQrTitleHe !== undefined) next.memorialQrPanel.titles.he = patch.memorialQrTitleHe;
     if (patch.memorialQrTextRu !== undefined) next.memorialQrPanel.texts.ru = patch.memorialQrTextRu;
     if (patch.memorialQrTextEn !== undefined) next.memorialQrPanel.texts.en = patch.memorialQrTextEn;
     if (patch.memorialQrTextHe !== undefined) next.memorialQrPanel.texts.he = patch.memorialQrTextHe;
@@ -98,7 +94,6 @@ export function previewPatchFromSearchParams(params) {
     || params.has('titleEn')
     || params.has('titleHe')
     || params.has('previewLang')
-    || params.has('memorialQrTitleRu')
     || params.has('memorialQrTextRu');
 
   if (!hasPreview) {
@@ -121,7 +116,6 @@ export function previewPatchFromSearchParams(params) {
   });
   if (params.has('previewLang')) patch.previewLang = params.get('previewLang');
   [
-    'memorialQrTitleRu', 'memorialQrTitleEn', 'memorialQrTitleHe',
     'memorialQrTextRu', 'memorialQrTextEn', 'memorialQrTextHe',
     'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale',
   ].forEach((key) => {

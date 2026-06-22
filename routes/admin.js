@@ -336,6 +336,14 @@ const getInitials = (name) => {
         .toUpperCase();
 };
 
+const ADMIN_NAV_BY_VIEW = {
+    'admin/dashboard': 'settings',
+    'admin/yahrzeit': 'yahrzeit',
+    'admin/people': 'people',
+    'admin/events': 'events',
+    'admin/users': 'users',
+};
+
 function renderAdmin(res, view, options = {}) {
     const synagogue = options.synagogue;
     const adminUser = options.adminUser || null;
@@ -361,6 +369,7 @@ function renderAdmin(res, view, options = {}) {
         officialLogoUrl: `/images/${OFFICIAL_LOGO_FILENAME}`,
         faviconUrl: buildFaviconPath(displaySynagogue.slug, { badge: false }),
         faviconAlertUrl: buildFaviconPath(displaySynagogue.slug, { badge: true }),
+        adminNavActive: options.adminNavActive || ADMIN_NAV_BY_VIEW[view] || '',
         layout: options.layout === false ? false : (options.layout || 'admin'),
     });
 }

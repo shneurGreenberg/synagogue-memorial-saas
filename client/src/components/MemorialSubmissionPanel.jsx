@@ -7,9 +7,8 @@ function MemorialSubmissionPanelBase({ t }) {
   const { data, uiLang } = useBoardData();
   const panel = data.memorialQrPanel || {};
   const lang = uiLang || data.language || 'ru';
-  const titles = panel.titles || {};
   const texts = panel.texts || {};
-  const title = titles[lang] || t('memorial_submission_title');
+  const title = t('memorial_submission_title');
   const text = texts[lang] || t('memorial_submission_scan');
   const titleScale = (Number(panel.titleScale) || 100) / 100;
   const textScale = (Number(panel.textScale) || 100) / 100;
