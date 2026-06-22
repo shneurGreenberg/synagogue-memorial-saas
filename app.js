@@ -102,6 +102,7 @@ app.engine('handlebars', handlebars({
     json: value => JSON.stringify(value, false, '  '),
     eq: (a, b) => a === b,
     or: (...args) => args.slice(0, -1).some(Boolean),
+    and: (...args) => args.slice(0, -1).every(Boolean),
     t(key, options) {
       const root = options.data && options.data.root;
       if (root && typeof root.masterTranslate === 'function') {
