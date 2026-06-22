@@ -5,12 +5,10 @@ import { assetUrl } from '../lib/asset-url';
 import { getBoardSlug } from '../lib/board-slug';
 
 function MemorialSubmissionPanelBase({ t }) {
-  const { data, uiLang } = useBoardData();
+  const { data } = useBoardData();
   const panel = data.memorialQrPanel || {};
-  const lang = uiLang || data.language || 'ru';
-  const texts = panel.texts || {};
   const title = t('memorial_submission_title');
-  const text = texts[lang] || t('memorial_submission_scan');
+  const text = t('memorial_submission_scan');
   const titleScale = (Number(panel.titleScale) || 100) / 100;
   const textScale = (Number(panel.textScale) || 100) / 100;
   const qrScale = (Number(panel.qrScale) || 140) / 100;

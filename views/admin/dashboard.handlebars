@@ -21,220 +21,9 @@
   {{/if}}
 
     <form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data" class="settings-form" id="settingsForm" data-save-label="{{t 'save'}}" data-slug="{{synagogue.slug}}">
-        {{#if adminPermissions.settingsAdminPanel}}
-        <section class="admin-panel admin-panel-collapsible is-collapsed">
-            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
-                <h2 class="admin-panel-title">
-                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2m0 18H7V5h10v14z"/></svg>
-                    {{t 'admin_panel_section'}}
-                </h2>
-                <span class="admin-panel-chevron" aria-hidden="true"></span>
-            </button>
-            <div class="admin-panel-body" hidden>
-                <div class="settings-two-col">
-                    <div class="form-field">
-                        <label for="adminLanguage">{{t 'admin_language'}}</label>
-                        <select name="adminLanguage" id="adminLanguage" class="form-control admin-select-modern">
-                            <option value="ru" {{#if (eq synagogue.adminLanguage 'ru')}}selected{{/if}}>Russian</option>
-                            <option value="en" {{#if (eq synagogue.adminLanguage 'en')}}selected{{/if}}>English</option>
-                            <option value="he" {{#if (eq synagogue.adminLanguage 'he')}}selected{{/if}}>Hebrew</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="admin-theme-setting color-mode-field"
-                    data-light-label="{{t 'light_mode'}}"
-                    data-dark-label="{{t 'dark_mode'}}">
-                    <div class="admin-theme-setting-label">{{t 'color_mode'}}</div>
-                    <input type="hidden" name="colorMode" id="colorModeInput"
-                        value="{{#if (eq synagogue.adminColorMode 'light')}}light{{else}}dark{{/if}}">
-                    <div class="admin-theme-setting-control">
-                        <label class="toggle-switch color-mode-toggle" for="colorModeToggle">
-                            <input type="checkbox" id="colorModeToggle"
-                                {{#if (eq synagogue.adminColorMode 'light')}}checked{{/if}}>
-                            <span class="toggle-slider" aria-hidden="true"></span>
-                        </label>
-                        <span class="toggle-mode-text" id="colorModeToggleLabel">
-                            {{#if (eq synagogue.adminColorMode 'light')}}{{t 'light_mode'}}{{else}}{{t 'dark_mode'}}{{/if}}
-                        </span>
-                    </div>
-                    <p class="field-hint admin-theme-setting-hint">{{t 'color_mode_help'}}</p>
-                </div>
-            </div>
-        </section>
-        {{/if}}
-
-        {{#if adminPermissions.settingsAppearance}}
-        <section class="admin-panel admin-panel-collapsible is-collapsed">
-            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
-                <h2 class="admin-panel-title">
-                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8m-5.5 9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m3-4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m7 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m3 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/></svg>
-                    {{t 'appearance_section'}}
-                </h2>
-                <span class="admin-panel-chevron" aria-hidden="true"></span>
-            </button>
-            <div class="admin-panel-body" hidden>
-                <div class="board-titles-grid">
-                    <div class="form-field">
-                        <label for="titleRu">{{t 'board_title_ru'}}</label>
-                        <input type="text" name="titleRu" id="titleRu" class="form-control admin-input-modern"
-                            value="{{boardTitles.ru}}">
-                    </div>
-                    <div class="form-field">
-                        <label for="titleEn">{{t 'board_title_en'}}</label>
-                        <input type="text" name="titleEn" id="titleEn" class="form-control admin-input-modern"
-                            value="{{boardTitles.en}}">
-                    </div>
-                    <div class="form-field">
-                        <label for="titleHe">{{t 'board_title_he'}}</label>
-                        <input type="text" name="titleHe" id="titleHe" class="form-control admin-input-modern"
-                            value="{{boardTitles.he}}">
-                    </div>
-                </div>
-                <div class="colors-controls">
-                    <h3 class="typography-controls-title">{{t 'colors_section'}}</h3>
-                <div class="color-picker-row color-picker-modern">
-                    <div class="color-field-modern">
-                        <label for="primaryColor">{{t 'primary_color'}}</label>
-                        <div class="color-swatch-row">
-                            <input type="color" name="primaryColor" id="primaryColor" class="color-swatch-input"
-                                value="{{synagogue.theme.primaryColor}}">
-                            <input type="text" class="color-hex-display" id="primaryColorHex" readonly
-                                value="{{synagogue.theme.primaryColor}}">
-                        </div>
-                        <span class="field-hint">{{t 'primary_color_help'}}</span>
-                    </div>
-                    <div class="color-field-modern">
-                        <label for="textColor">{{t 'text_color'}}</label>
-                        <div class="color-swatch-row">
-                            <input type="color" name="textColor" id="textColor" class="color-swatch-input"
-                                value="{{synagogue.theme.textColor}}">
-                            <input type="text" class="color-hex-display" id="textColorHex" readonly
-                                value="{{synagogue.theme.textColor}}">
-                        </div>
-                        <span class="field-hint">{{t 'text_color_help'}}</span>
-                    </div>
-                    <div class="color-field-modern">
-                        <label for="accentColor">{{t 'accent_color'}}</label>
-                        <div class="color-swatch-row">
-                            <input type="color" name="accentColor" id="accentColor" class="color-swatch-input"
-                                value="{{synagogue.theme.accentColor}}">
-                            <input type="text" class="color-hex-display" id="accentColorHex" readonly
-                                value="{{synagogue.theme.accentColor}}">
-                        </div>
-                        <span class="field-hint">{{t 'accent_color_help'}}</span>
-                    </div>
-                    <div class="color-field-modern">
-                        <label for="tileColor">{{t 'tile_color'}}</label>
-                        <div class="color-swatch-row">
-                            <input type="color" name="tileColor" id="tileColor" class="color-swatch-input"
-                                value="{{synagogue.theme.tileColor}}">
-                            <input type="text" class="color-hex-display" id="tileColorHex" readonly
-                                value="{{synagogue.theme.tileColor}}">
-                        </div>
-                        <span class="field-hint">{{t 'tile_color_help'}}</span>
-                    </div>
-                </div>
-                    <div class="slider-field-modern">
-                        <label for="tileOpacity">{{t 'tile_opacity'}}</label>
-                        <div class="slider-row">
-                            <input type="range" name="tileOpacity" id="tileOpacity" class="admin-range-input"
-                                min="0" max="100" step="1"
-                                value="{{#if synagogue.theme.tileOpacity}}{{synagogue.theme.tileOpacity}}{{else}}100{{/if}}">
-                            <output class="slider-value-display" id="tileOpacityValue">{{#if synagogue.theme.tileOpacity}}{{synagogue.theme.tileOpacity}}{{else}}100{{/if}}%</output>
-                        </div>
-                        <span class="field-hint">{{t 'tile_opacity_help'}}</span>
-                    </div>
-                </div>
-                <div class="typography-controls">
-                    {{#each fontScaleGroups}}
-                    <div class="typography-group">
-                        <h3 class="typography-controls-title">
-                            {{#if (eq this.groupKey 'typography_center_column')}}
-                            <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 6h16v2H4V6m0 5h16v2H4v-2m0 5h16v2H4v-2Z"/></svg>
-                            {{/if}}
-                            {{#if (eq this.groupKey 'typography_left_column')}}
-                            <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 5v14c0 1.1.9 2 2 2h5V3H5c-1.1 0-2 .9-2 2m12-2h-5v18h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2"/></svg>
-                            {{/if}}
-                            {{#if (eq this.groupKey 'typography_right_column')}}
-                            <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 5v14c0 1.1-.9 2-2 2h-5V3h5c1.1 0 2 .9 2 2m-12 0H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h2V5Z"/></svg>
-                            {{/if}}
-                            {{t this.groupKey}}
-                        </h3>
-                        <p class="field-hint">{{t this.helpKey}}</p>
-                        <div class="font-scale-grid">
-                            {{#each this.sliders}}
-                            <div class="slider-field-modern">
-                                <label for="fontScale_{{this.key}}">{{t this.labelKey}}</label>
-                                <div class="slider-row">
-                                    <input type="range" name="fontScale_{{this.key}}" id="fontScale_{{this.key}}"
-                                        class="admin-range-input font-scale-input" data-font-scale-key="{{this.key}}"
-                                        min="{{#if this.min}}{{this.min}}{{else}}50{{/if}}" max="{{#if this.max}}{{this.max}}{{else}}200{{/if}}" step="{{#if this.step}}{{this.step}}{{else}}5{{/if}}" value="{{this.value}}">
-                                    <output class="slider-value-display font-scale-value" data-for="fontScale_{{this.key}}">{{this.value}}%</output>
-                                </div>
-                                <span class="field-hint">{{t this.helpKey}}</span>
-                            </div>
-                            {{/each}}
-                        </div>
-                    </div>
-                    {{/each}}
-                </div>
-                <div class="memorial-qr-controls">
-                    <h3 class="typography-controls-title">
-                        <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v3h-3v-3zm-5 0h3v3h-3v-3zm5 5h3v3h-3v-3zm-5 0h3v3h-3v-3z"/></svg>
-                        {{t 'memorial_qr_section'}}
-                    </h3>
-                    <p class="field-hint">{{t 'memorial_qr_section_help'}}</p>
-                    <div class="board-titles-grid">
-                        <div class="form-field">
-                            <label for="memorialQrTextRu">{{t 'memorial_qr_text_ru'}}</label>
-                            <input type="text" name="memorialQrTextRu" id="memorialQrTextRu" class="form-control admin-input-modern memorial-qr-preview-input"
-                                value="{{memorialQrPanel.texts.ru}}">
-                        </div>
-                        <div class="form-field">
-                            <label for="memorialQrTextEn">{{t 'memorial_qr_text_en'}}</label>
-                            <input type="text" name="memorialQrTextEn" id="memorialQrTextEn" class="form-control admin-input-modern memorial-qr-preview-input"
-                                value="{{memorialQrPanel.texts.en}}">
-                        </div>
-                        <div class="form-field">
-                            <label for="memorialQrTextHe">{{t 'memorial_qr_text_he'}}</label>
-                            <input type="text" name="memorialQrTextHe" id="memorialQrTextHe" class="form-control admin-input-modern memorial-qr-preview-input"
-                                value="{{memorialQrPanel.texts.he}}">
-                        </div>
-                    </div>
-                    <div class="font-scale-grid">
-                        <div class="slider-field-modern">
-                            <label for="memorialQrTitleScale">{{t 'memorial_qr_title_scale'}}</label>
-                            <div class="slider-row">
-                                <input type="range" name="memorialQrTitleScale" id="memorialQrTitleScale" class="admin-range-input memorial-qr-preview-input"
-                                    min="50" max="200" step="5" value="{{memorialQrPanel.titleScale}}">
-                                <output class="slider-value-display" id="memorialQrTitleScaleValue">{{memorialQrPanel.titleScale}}%</output>
-                            </div>
-                        </div>
-                        <div class="slider-field-modern">
-                            <label for="memorialQrTextScale">{{t 'memorial_qr_text_scale'}}</label>
-                            <div class="slider-row">
-                                <input type="range" name="memorialQrTextScale" id="memorialQrTextScale" class="admin-range-input memorial-qr-preview-input"
-                                    min="50" max="200" step="5" value="{{memorialQrPanel.textScale}}">
-                                <output class="slider-value-display" id="memorialQrTextScaleValue">{{memorialQrPanel.textScale}}%</output>
-                            </div>
-                        </div>
-                        <div class="slider-field-modern">
-                            <label for="memorialQrQrScale">{{t 'memorial_qr_size_scale'}}</label>
-                            <div class="slider-row">
-                                <input type="range" name="memorialQrQrScale" id="memorialQrQrScale" class="admin-range-input memorial-qr-preview-input"
-                                    min="80" max="250" step="5" value="{{memorialQrPanel.qrScale}}">
-                                <output class="slider-value-display" id="memorialQrQrScaleValue">{{memorialQrPanel.qrScale}}%</output>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        {{/if}}
-
         {{#if adminPermissions.settingsPreview}}
-        <section class="admin-panel settings-preview-panel admin-panel-collapsible is-collapsed">
-            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
+        <section class="admin-panel settings-preview-panel admin-panel-collapsible is-expanded">
+            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="true">
                 <h2 class="admin-panel-title">
                     <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m0 14H3V5h18v12Z"/></svg>
                     {{t 'live_preview'}}
@@ -246,7 +35,7 @@
                 </h2>
                 <span class="admin-panel-chevron" aria-hidden="true"></span>
             </button>
-            <div class="admin-panel-body" hidden>
+            <div class="admin-panel-body">
                 <div class="board-preview-stage" id="boardPreviewStage">
                     <div class="board-preview-frame-wrap" id="boardPreviewWrap">
                         <iframe id="boardPreviewFrame" class="board-preview-frame" title="{{t 'live_preview'}}"
@@ -254,6 +43,20 @@
                     </div>
                 </div>
                 <p class="preview-hint">{{t 'live_preview_help'}}</p>
+            </div>
+        </section>
+        {{/if}}
+
+        {{#if (and (or adminPermissions.settingsAppearance adminPermissions.settingsPreview) adminPermissions.settingsSavedViews)}}
+        <section class="admin-panel saved-views-panel admin-panel-collapsible is-collapsed">
+            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
+                <h2 class="admin-panel-title">
+                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+                    {{t 'saved_views_section'}}
+                </h2>
+                <span class="admin-panel-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="admin-panel-body" hidden>
                 {{#if (or adminPermissions.settingsAppearance adminPermissions.settingsPreview adminPermissions.settingsSavedViews)}}
                 <div class="saved-view-actions">
                     {{#if adminPermissions.settingsSavedViews}}
@@ -277,20 +80,6 @@
                 <p class="field-hint">{{t 'reset_theme_help'}}</p>
                 {{/if}}
                 {{/if}}
-            </div>
-        </section>
-        {{/if}}
-
-        {{#if (and (or adminPermissions.settingsAppearance adminPermissions.settingsPreview) adminPermissions.settingsSavedViews)}}
-        <section class="admin-panel saved-views-panel admin-panel-collapsible is-collapsed">
-            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
-                <h2 class="admin-panel-title">
-                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
-                    {{t 'saved_views_section'}}
-                </h2>
-                <span class="admin-panel-chevron" aria-hidden="true"></span>
-            </button>
-            <div class="admin-panel-body" hidden>
                 <p class="field-hint">{{t 'saved_views_help'}}</p>
                 <div class="saved-views-grid" id="savedViewsGrid">
                     {{#if savedViews.length}}
@@ -526,7 +315,213 @@
         </section>
         {{/if}}
 
-        {{#if adminPermissions.settingsLanguages}}
+        {{#if adminPermissions.settingsAppearance}}
+        <section class="admin-panel admin-panel-collapsible is-collapsed">
+            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
+                <h2 class="admin-panel-title">
+                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8m-5.5 9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m3-4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m7 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m3 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/></svg>
+                    {{t 'appearance_section'}}
+                </h2>
+                <span class="admin-panel-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="admin-panel-body" hidden>
+                {{#if (or adminPermissions.settingsAppearance adminPermissions.settingsAdminPanel)}}
+                <div class="admin-theme-setting color-mode-field settings-appearance-row"
+                    data-light-label="{{t 'light_mode'}}"
+                    data-dark-label="{{t 'dark_mode'}}">
+                    <div class="admin-theme-setting-label">{{t 'admin_panel_appearance'}}</div>
+                    <input type="hidden" name="colorMode" id="colorModeInput"
+                        value="{{#if (eq synagogue.adminColorMode 'light')}}light{{else}}dark{{/if}}">
+                    <div class="admin-theme-setting-control">
+                        <label class="toggle-switch color-mode-toggle" for="colorModeToggle">
+                            <input type="checkbox" id="colorModeToggle"
+                                {{#if (eq synagogue.adminColorMode 'light')}}checked{{/if}}>
+                            <span class="toggle-slider" aria-hidden="true"></span>
+                        </label>
+                        <span class="toggle-mode-text" id="colorModeToggleLabel">
+                            {{#if (eq synagogue.adminColorMode 'light')}}{{t 'light_mode'}}{{else}}{{t 'dark_mode'}}{{/if}}
+                        </span>
+                    </div>
+                    <p class="field-hint admin-theme-setting-hint">{{t 'color_mode_help'}}</p>
+                </div>
+                {{/if}}
+                <div class="colors-controls">
+                    <h3 class="typography-controls-title">{{t 'colors_section'}}</h3>
+                    <div class="color-picker-row color-picker-modern">
+                        <div class="color-field-modern">
+                            <label for="primaryColor">{{t 'primary_color'}}</label>
+                            <div class="color-swatch-row">
+                                <input type="color" name="primaryColor" id="primaryColor" class="color-swatch-input"
+                                    value="{{synagogue.theme.primaryColor}}">
+                                <input type="text" class="color-hex-display" id="primaryColorHex" readonly
+                                    value="{{synagogue.theme.primaryColor}}">
+                            </div>
+                            <span class="field-hint">{{t 'primary_color_help'}}</span>
+                        </div>
+                        <div class="color-field-modern">
+                            <label for="textColor">{{t 'text_color'}}</label>
+                            <div class="color-swatch-row">
+                                <input type="color" name="textColor" id="textColor" class="color-swatch-input"
+                                    value="{{synagogue.theme.textColor}}">
+                                <input type="text" class="color-hex-display" id="textColorHex" readonly
+                                    value="{{synagogue.theme.textColor}}">
+                            </div>
+                            <span class="field-hint">{{t 'text_color_help'}}</span>
+                        </div>
+                        <div class="color-field-modern">
+                            <label for="accentColor">{{t 'accent_color'}}</label>
+                            <div class="color-swatch-row">
+                                <input type="color" name="accentColor" id="accentColor" class="color-swatch-input"
+                                    value="{{synagogue.theme.accentColor}}">
+                                <input type="text" class="color-hex-display" id="accentColorHex" readonly
+                                    value="{{synagogue.theme.accentColor}}">
+                            </div>
+                            <span class="field-hint">{{t 'accent_color_help'}}</span>
+                        </div>
+                        <div class="color-field-modern">
+                            <label for="tileColor">{{t 'tile_color'}}</label>
+                            <div class="color-swatch-row">
+                                <input type="color" name="tileColor" id="tileColor" class="color-swatch-input"
+                                    value="{{synagogue.theme.tileColor}}">
+                                <input type="text" class="color-hex-display" id="tileColorHex" readonly
+                                    value="{{synagogue.theme.tileColor}}">
+                            </div>
+                            <span class="field-hint">{{t 'tile_color_help'}}</span>
+                        </div>
+                    </div>
+                    <div class="slider-field-modern">
+                        <label for="tileOpacity">{{t 'tile_opacity'}}</label>
+                        <div class="slider-row">
+                            <input type="range" name="tileOpacity" id="tileOpacity" class="admin-range-input"
+                                min="0" max="100" step="1"
+                                value="{{#if synagogue.theme.tileOpacity}}{{synagogue.theme.tileOpacity}}{{else}}100{{/if}}">
+                            <output class="slider-value-display" id="tileOpacityValue">{{#if synagogue.theme.tileOpacity}}{{synagogue.theme.tileOpacity}}{{else}}100{{/if}}%</output>
+                        </div>
+                        <span class="field-hint">{{t 'tile_opacity_help'}}</span>
+                    </div>
+                </div>
+                <div class="typography-controls">
+                    {{#each appearanceFontScaleGroups}}
+                    <div class="typography-group">
+                        <h3 class="typography-controls-title">
+                            {{#if (eq this.groupKey 'typography_left_column')}}
+                            <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 5v14c0 1.1.9 2 2 2h5V3H5c-1.1 0-2 .9-2 2m12-2h-5v18h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2"/></svg>
+                            {{/if}}
+                            {{#if (eq this.groupKey 'typography_right_column')}}
+                            <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 5v14c0 1.1-.9 2-2 2h-5V3h5c1.1 0 2 .9 2 2m-12 0H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h2V5Z"/></svg>
+                            {{/if}}
+                            {{t this.groupKey}}
+                        </h3>
+                        <p class="field-hint">{{t this.helpKey}}</p>
+                        <div class="font-scale-grid">
+                            {{#each this.sliders}}
+                            <div class="slider-field-modern">
+                                <label for="fontScale_{{this.key}}">{{t this.labelKey}}</label>
+                                <div class="slider-row">
+                                    <input type="range" name="fontScale_{{this.key}}" id="fontScale_{{this.key}}"
+                                        class="admin-range-input font-scale-input" data-font-scale-key="{{this.key}}"
+                                        min="{{#if this.min}}{{this.min}}{{else}}50{{/if}}" max="{{#if this.max}}{{this.max}}{{else}}200{{/if}}" step="{{#if this.step}}{{this.step}}{{else}}5{{/if}}" value="{{this.value}}">
+                                    <output class="slider-value-display font-scale-value" data-for="fontScale_{{this.key}}">{{this.value}}%</output>
+                                </div>
+                                <span class="field-hint">{{t this.helpKey}}</span>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-panel admin-panel-collapsible is-collapsed">
+            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
+                <h2 class="admin-panel-title">
+                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 4v3h5.5v12h3V7H19V4H5z"/></svg>
+                    {{t 'texts_section'}}
+                </h2>
+                <span class="admin-panel-chevron" aria-hidden="true"></span>
+            </button>
+            <div class="admin-panel-body" hidden>
+                <div class="board-titles-grid">
+                    <div class="form-field">
+                        <label for="titleRu">{{t 'board_title_ru'}}</label>
+                        <input type="text" name="titleRu" id="titleRu" class="form-control admin-input-modern"
+                            value="{{boardTitles.ru}}">
+                    </div>
+                    <div class="form-field">
+                        <label for="titleEn">{{t 'board_title_en'}}</label>
+                        <input type="text" name="titleEn" id="titleEn" class="form-control admin-input-modern"
+                            value="{{boardTitles.en}}">
+                    </div>
+                    <div class="form-field">
+                        <label for="titleHe">{{t 'board_title_he'}}</label>
+                        <input type="text" name="titleHe" id="titleHe" class="form-control admin-input-modern"
+                            value="{{boardTitles.he}}">
+                    </div>
+                </div>
+                <div class="typography-controls">
+                    {{#each textsFontScaleGroups}}
+                    <div class="typography-group">
+                        <h3 class="typography-controls-title">
+                            <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 6h16v2H4V6m0 5h16v2H4v-2m0 5h16v2H4v-2Z"/></svg>
+                            {{t this.groupKey}}
+                        </h3>
+                        <p class="field-hint">{{t this.helpKey}}</p>
+                        <div class="font-scale-grid">
+                            {{#each this.sliders}}
+                            <div class="slider-field-modern">
+                                <label for="fontScale_{{this.key}}">{{t this.labelKey}}</label>
+                                <div class="slider-row">
+                                    <input type="range" name="fontScale_{{this.key}}" id="fontScale_{{this.key}}"
+                                        class="admin-range-input font-scale-input" data-font-scale-key="{{this.key}}"
+                                        min="{{#if this.min}}{{this.min}}{{else}}50{{/if}}" max="{{#if this.max}}{{this.max}}{{else}}200{{/if}}" step="{{#if this.step}}{{this.step}}{{else}}5{{/if}}" value="{{this.value}}">
+                                    <output class="slider-value-display font-scale-value" data-for="fontScale_{{this.key}}">{{this.value}}%</output>
+                                </div>
+                                <span class="field-hint">{{t this.helpKey}}</span>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+                <div class="memorial-qr-controls">
+                    <h3 class="typography-controls-title">
+                        <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v3h-3v-3zm-5 0h3v3h-3v-3zm5 5h3v3h-3v-3zm-5 0h3v3h-3v-3z"/></svg>
+                        {{t 'memorial_qr_section'}}
+                    </h3>
+                    <p class="field-hint">{{t 'memorial_qr_section_help'}}</p>
+                    <div class="font-scale-grid">
+                        <div class="slider-field-modern">
+                            <label for="memorialQrTitleScale">{{t 'memorial_qr_title_scale'}}</label>
+                            <div class="slider-row">
+                                <input type="range" name="memorialQrTitleScale" id="memorialQrTitleScale" class="admin-range-input memorial-qr-preview-input"
+                                    min="50" max="200" step="5" value="{{memorialQrPanel.titleScale}}">
+                                <output class="slider-value-display" id="memorialQrTitleScaleValue">{{memorialQrPanel.titleScale}}%</output>
+                            </div>
+                        </div>
+                        <div class="slider-field-modern">
+                            <label for="memorialQrTextScale">{{t 'memorial_qr_text_scale'}}</label>
+                            <div class="slider-row">
+                                <input type="range" name="memorialQrTextScale" id="memorialQrTextScale" class="admin-range-input memorial-qr-preview-input"
+                                    min="50" max="200" step="5" value="{{memorialQrPanel.textScale}}">
+                                <output class="slider-value-display" id="memorialQrTextScaleValue">{{memorialQrPanel.textScale}}%</output>
+                            </div>
+                        </div>
+                        <div class="slider-field-modern">
+                            <label for="memorialQrQrScale">{{t 'memorial_qr_size_scale'}}</label>
+                            <div class="slider-row">
+                                <input type="range" name="memorialQrQrScale" id="memorialQrQrScale" class="admin-range-input memorial-qr-preview-input"
+                                    min="80" max="250" step="5" value="{{memorialQrPanel.qrScale}}">
+                                <output class="slider-value-display" id="memorialQrQrScaleValue">{{memorialQrPanel.qrScale}}%</output>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        {{/if}}
+
+        {{#if (or adminPermissions.settingsLanguages adminPermissions.settingsAdminPanel)}}
         <section class="admin-panel admin-panel-collapsible is-collapsed">
             <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
                 <h2 class="admin-panel-title">
@@ -544,6 +539,16 @@
                         <option value="he" {{#if (eq synagogue.language 'he')}}selected{{/if}}>Hebrew</option>
                     </select>
                 </div>
+                {{#if (or adminPermissions.settingsAdminPanel adminPermissions.settingsLanguages)}}
+                <div class="form-field">
+                    <label for="adminLanguage">{{t 'admin_language'}}</label>
+                    <select name="adminLanguage" id="adminLanguage" class="form-control admin-select-modern">
+                        <option value="ru" {{#if (eq synagogue.adminLanguage 'ru')}}selected{{/if}}>Russian</option>
+                        <option value="en" {{#if (eq synagogue.adminLanguage 'en')}}selected{{/if}}>English</option>
+                        <option value="he" {{#if (eq synagogue.adminLanguage 'he')}}selected{{/if}}>Hebrew</option>
+                    </select>
+                </div>
+                {{/if}}
             </div>
         </section>
         {{/if}}
@@ -631,9 +636,6 @@
             }
 
             return {
-                memorialQrTextRu: value('memorialQrTextRu'),
-                memorialQrTextEn: value('memorialQrTextEn'),
-                memorialQrTextHe: value('memorialQrTextHe'),
                 memorialQrTitleScale: value('memorialQrTitleScale'),
                 memorialQrTextScale: value('memorialQrTextScale'),
                 memorialQrQrScale: value('memorialQrQrScale'),

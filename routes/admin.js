@@ -105,12 +105,7 @@ const FONT_SCALE_SLIDER_META = [
   { key: 'torahNames', labelKey: 'font_scale_torah_names', helpKey: 'font_scale_torah_names_help', min: 100, max: 400, step: 10 },
 ];
 
-const FONT_SCALE_GROUPS = [
-  {
-    groupKey: 'typography_center_column',
-    helpKey: 'typography_center_column_help',
-    keys: ['tileTitle', 'tileDate', 'boardHeader'],
-  },
+const APPEARANCE_FONT_SCALE_GROUPS = [
   {
     groupKey: 'typography_left_column',
     helpKey: 'typography_left_column_help',
@@ -121,6 +116,19 @@ const FONT_SCALE_GROUPS = [
     helpKey: 'typography_right_column_help',
     keys: ['clock', 'prayers', 'prayerOverlay', 'torahNames'],
   },
+];
+
+const TEXTS_FONT_SCALE_GROUPS = [
+  {
+    groupKey: 'typography_center_column',
+    helpKey: 'typography_center_column_help',
+    keys: ['tileTitle', 'tileDate', 'boardHeader'],
+  },
+];
+
+const FONT_SCALE_GROUPS = [
+  ...TEXTS_FONT_SCALE_GROUPS,
+  ...APPEARANCE_FONT_SCALE_GROUPS,
 ];
 
 function buildBoardFeatureToggles(boardFeatures) {
@@ -157,17 +165,25 @@ function buildFontScaleSlider(entry, fontScales) {
   };
 }
 
-function buildFontScaleGroups(fontScales) {
+function buildFontScaleGroups(fontScales, groups) {
   const metaByKey = {};
   FONT_SCALE_SLIDER_META.forEach((entry) => {
     metaByKey[entry.key] = entry;
   });
 
-  return FONT_SCALE_GROUPS.map((group) => ({
+  return groups.map((group) => ({
     groupKey: group.groupKey,
     helpKey: group.helpKey,
     sliders: group.keys.map((key) => buildFontScaleSlider(metaByKey[key], fontScales)).filter(Boolean),
   }));
+}
+
+function buildAppearanceFontScaleGroups(fontScales) {
+  return buildFontScaleGroups(fontScales, APPEARANCE_FONT_SCALE_GROUPS);
+}
+
+function buildTextsFontScaleGroups(fontScales) {
+  return buildFontScaleGroups(fontScales, TEXTS_FONT_SCALE_GROUPS);
 }
 
 const MIME_EXT = {
@@ -721,7 +737,8 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             canSaveBoardSettings: canSaveBoardSettings(req.adminPermissions),
             boardTitles: enriched.titles,
             boardFeatureGroups: buildBoardFeatureGroups(enriched.boardFeatures),
-            fontScaleGroups: buildFontScaleGroups(enriched.theme.fontScales),
+            appearanceFontScaleGroups: buildAppearanceFontScaleGroups(enriched.theme.fontScales),
+            textsFontScaleGroups: buildTextsFontScaleGroups(enriched.theme.fontScales),
             savedViews: serializeSavedViews(enriched.savedViews),
             activeSavedViewId: enriched.activeSavedViewId || '',
             activeSavedViewName: activeSavedView ? activeSavedView.name : '',
