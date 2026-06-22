@@ -1,4 +1,4 @@
-<div class="admin-page yahrzeit-page" data-synagogue-slug="{{synagogue.slug}}" data-copy-label="{{t 'yahrzeit_copy_message'}}" data-copied-label="{{t 'yahrzeit_copied'}}" data-download-tile-label="{{t 'yahrzeit_download_tile'}}" data-send-label="{{t 'yahrzeit_send_contact'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}">
+<div class="admin-page yahrzeit-page" data-synagogue-slug="{{synagogue.slug}}" data-copy-label="{{t 'yahrzeit_copy_message'}}" data-copied-label="{{t 'yahrzeit_copied'}}" data-send-label="{{t 'yahrzeit_send_contact'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}">
     <header class="admin-page-header">
         <div>
             <h1>{{t 'yahrzeit_page'}}</h1>
@@ -63,10 +63,6 @@
                             <button type="button" class="btn-admin btn-admin-secondary yahrzeit-copy-btn btn-admin-with-icon" data-message="{{this.preparedMessage}}">
                                 <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
                                 {{t 'yahrzeit_copy_message'}}
-                            </button>
-                            <button type="button" class="btn-admin btn-admin-secondary yahrzeit-download-tile-btn btn-admin-with-icon" data-person-id="{{this.id}}" data-person-name="{{this.name}}">
-                                <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                                {{t 'yahrzeit_download_tile'}}
                             </button>
                             {{#if this.contactLink}}
                             <a href="{{this.contactLink}}" class="btn-admin btn-admin-primary yahrzeit-send-btn btn-admin-with-icon" data-tile-url="/admin/{{../synagogue.slug}}/yahrzeit/tile/{{this.id}}.png" data-person-name="{{this.name}}" target="_blank" rel="noopener noreferrer">
@@ -148,10 +144,6 @@
                             <button type="button" class="btn-admin btn-admin-secondary yahrzeit-copy-btn btn-admin-with-icon" data-message="{{this.preparedMessage}}">
                                 <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
                                 {{t 'yahrzeit_copy_message'}}
-                            </button>
-                            <button type="button" class="btn-admin btn-admin-secondary yahrzeit-download-tile-btn btn-admin-with-icon" data-person-id="{{this.id}}" data-person-name="{{this.name}}">
-                                <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                                {{t 'yahrzeit_download_tile'}}
                             </button>
                             {{#if this.contactLink}}
                             <a href="{{this.contactLink}}" class="btn-admin btn-admin-primary yahrzeit-send-btn btn-admin-with-icon" data-tile-url="/admin/{{../synagogue.slug}}/yahrzeit/tile/{{this.id}}.png" data-person-name="{{this.name}}" target="_blank" rel="noopener noreferrer">

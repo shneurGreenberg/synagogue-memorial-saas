@@ -148,7 +148,18 @@
                 <div class="typography-controls">
                     {{#each fontScaleGroups}}
                     <div class="typography-group">
-                        <h3 class="typography-controls-title">{{t this.groupKey}}</h3>
+                        <h3 class="typography-controls-title">
+                            {{#if (eq this.groupKey 'typography_center_column')}}
+                            <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 6h16v2H4V6m0 5h16v2H4v-2m0 5h16v2H4v-2Z"/></svg>
+                            {{/if}}
+                            {{#if (eq this.groupKey 'typography_left_column')}}
+                            <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 5v14c0 1.1.9 2 2 2h5V3H5c-1.1 0-2 .9-2 2m12-2h-5v18h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2"/></svg>
+                            {{/if}}
+                            {{#if (eq this.groupKey 'typography_right_column')}}
+                            <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 5v14c0 1.1-.9 2-2 2h-5V3h5c1.1 0 2 .9 2 2m-12 0H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h2V5Z"/></svg>
+                            {{/if}}
+                            {{t this.groupKey}}
+                        </h3>
                         <p class="field-hint">{{t this.helpKey}}</p>
                         <div class="font-scale-grid">
                             {{#each this.sliders}}
@@ -173,23 +184,6 @@
                         {{t 'memorial_qr_section'}}
                     </h3>
                     <p class="field-hint">{{t 'memorial_qr_section_help'}}</p>
-                    <div class="board-titles-grid">
-                        <div class="form-field">
-                            <label for="memorialQrTitleRu">{{t 'memorial_qr_title_ru'}}</label>
-                            <input type="text" name="memorialQrTitleRu" id="memorialQrTitleRu" class="form-control admin-input-modern memorial-qr-preview-input"
-                                value="{{memorialQrPanel.titles.ru}}">
-                        </div>
-                        <div class="form-field">
-                            <label for="memorialQrTitleEn">{{t 'memorial_qr_title_en'}}</label>
-                            <input type="text" name="memorialQrTitleEn" id="memorialQrTitleEn" class="form-control admin-input-modern memorial-qr-preview-input"
-                                value="{{memorialQrPanel.titles.en}}">
-                        </div>
-                        <div class="form-field">
-                            <label for="memorialQrTitleHe">{{t 'memorial_qr_title_he'}}</label>
-                            <input type="text" name="memorialQrTitleHe" id="memorialQrTitleHe" class="form-control admin-input-modern memorial-qr-preview-input"
-                                value="{{memorialQrPanel.titles.he}}">
-                        </div>
-                    </div>
                     <div class="board-titles-grid">
                         <div class="form-field">
                             <label for="memorialQrTextRu">{{t 'memorial_qr_text_ru'}}</label>
@@ -263,11 +257,20 @@
                 {{#if (or adminPermissions.settingsAppearance adminPermissions.settingsPreview adminPermissions.settingsSavedViews)}}
                 <div class="saved-view-actions">
                     {{#if adminPermissions.settingsSavedViews}}
-                    <button type="button" class="btn-admin btn-admin-secondary" id="saveCurrentViewBtn">{{t 'save_current_view'}}</button>
-                    <button type="button" class="btn-admin btn-admin-primary" id="updateCurrentViewBtn" {{#unless activeSavedViewId}}disabled{{/unless}}>{{t 'update_current_view'}}</button>
+                    <button type="button" class="btn-admin btn-admin-secondary" id="saveCurrentViewBtn">
+                        <svg class="btn-admin-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4m-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3m3-10H5V5h10v4Z"/></svg>
+                        {{t 'save_current_view'}}
+                    </button>
+                    <button type="button" class="btn-admin btn-admin-primary" id="updateCurrentViewBtn" {{#unless activeSavedViewId}}disabled{{/unless}}>
+                        <svg class="btn-admin-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21 7.5V19c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2h9.5L21 7.5M12 18v-6h3l-4-4-4 4h3v6h2Z"/></svg>
+                        {{t 'update_current_view'}}
+                    </button>
                     {{/if}}
                     {{#if adminPermissions.settingsAppearance}}
-                    <button type="button" class="btn-admin btn-admin-secondary reset-theme-btn" id="resetThemeBtn">{{t 'reset_theme'}}</button>
+                    <button type="button" class="btn-admin btn-admin-secondary reset-theme-btn" id="resetThemeBtn">
+                        <svg class="btn-admin-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12c0-2.42-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-3V9h-2v6h2m0-8V5h-2v2h2Z"/></svg>
+                        {{t 'reset_theme'}}
+                    </button>
                     {{/if}}
                 </div>
                 {{#if adminPermissions.settingsAppearance}}
@@ -305,8 +308,14 @@
                                 <time datetime="{{this.savedAt}}">{{this.savedAt}}</time>
                             </div>
                             <div class="saved-view-card-actions">
-                                <button type="button" class="btn-admin btn-admin-secondary saved-view-apply-btn">{{t 'saved_view_apply'}}</button>
-                                <button type="button" class="btn-admin btn-admin-danger saved-view-delete-btn">{{t 'saved_view_delete'}}</button>
+                                <button type="button" class="btn-admin btn-admin-secondary saved-view-apply-btn">
+                                    <svg class="btn-admin-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17Z"/></svg>
+                                    {{t 'saved_view_apply'}}
+                                </button>
+                                <button type="button" class="btn-admin btn-admin-danger saved-view-delete-btn">
+                                    <svg class="btn-admin-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12M19 4h-3.5l-1-1h-5l-1 1H5v2h14V4Z"/></svg>
+                                    {{t 'saved_view_delete'}}
+                                </button>
                             </div>
                         </article>
                         {{/each}}
@@ -327,48 +336,82 @@
                 </h2>
                 <span class="admin-panel-chevron" aria-hidden="true"></span>
             </button>
-            <div class="admin-panel-body media-upload-grid" hidden>
-                    <div class="media-preview media-preview-logo">
-                        {{#if synagogue.theme.logo}}
-                        <img src="/images/{{synagogue.theme.logo}}" alt="{{t 'logo'}}">
-                        {{else}}
-                        <span class="media-preview-empty">{{t 'no_photo'}}</span>
-                        {{/if}}
-                    </div>
-                    <label class="file-drop-label">
-                        {{t 'replace_image'}}
-                        <input type="file" name="logo" accept="image/*">
-                    </label>
-                </div>
-                <div class="media-upload-card">
-                    <label>{{t 'background_image'}}</label>
-                    <p class="field-hint">{{t 'background_image_help'}}</p>
-                    <div class="media-preview">
-                        {{#if synagogue.theme.backgroundImage}}
-                        <img src="/images/{{synagogue.theme.backgroundImage}}" alt="{{t 'background_image'}}">
-                        {{else}}
-                        <img src="/images/brickwall.jpg" alt="{{t 'background_image'}}">
-                        {{/if}}
-                    </div>
-                    <label class="file-drop-label">
-                        {{t 'replace_image'}}
-                        <input type="file" name="backgroundImage" accept="image/*">
-                    </label>
-                </div>
-                <div class="media-upload-card">
-                    <label>{{t 'tiles_background'}}</label>
-                    <p class="field-hint">{{t 'tiles_background_help'}}</p>
-                    <div class="media-preview">
-                        {{#if synagogue.theme.tilesBackground}}
-                        <img src="/images/{{synagogue.theme.tilesBackground}}" alt="{{t 'tiles_background'}}">
-                        {{else}}
-                        <img src="/images/wood2.png" alt="{{t 'tiles_background'}}">
-                        {{/if}}
-                    </div>
-                    <label class="file-drop-label">
-                        {{t 'replace_image'}}
-                        <input type="file" name="tilesBackground" accept="image/*">
-                    </label>
+            <div class="admin-panel-body" hidden>
+                <div class="branding-subsections">
+                    <section class="admin-panel admin-panel-collapsible branding-subsection is-collapsed">
+                        <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
+                            <h3 class="admin-panel-title">
+                                <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2M8.5 13.5l2.5 3 3.5-4.5 4.5 6H5l3.5-4.5z"/></svg>
+                                {{t 'logo'}}
+                            </h3>
+                            <span class="admin-panel-chevron" aria-hidden="true"></span>
+                        </button>
+                        <div class="admin-panel-body" hidden>
+                            <div class="media-upload-card media-upload-card-flat">
+                                <div class="media-preview media-preview-logo">
+                                    {{#if synagogue.theme.logo}}
+                                    <img src="/images/{{synagogue.theme.logo}}" alt="{{t 'logo'}}">
+                                    {{else}}
+                                    <span class="media-preview-empty">{{t 'no_photo'}}</span>
+                                    {{/if}}
+                                </div>
+                                <label class="file-drop-label">
+                                    {{t 'replace_image'}}
+                                    <input type="file" name="logo" accept="image/*">
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="admin-panel admin-panel-collapsible branding-subsection is-collapsed">
+                        <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
+                            <h3 class="admin-panel-title">
+                                <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 4h7V2H4c-1.1 0-2 .9-2 2v7h2V4m6 0v2h7v7h2V6c0-1.1-.9-2-2-2h-7M4 14v7h7v2H4c-1.1 0-2-.9-2-2v-7h2m12 2h-2v7h-7v2h7c1.1 0 2-.9 2-2v-7h2v-2z"/></svg>
+                                {{t 'background_image'}}
+                            </h3>
+                            <span class="admin-panel-chevron" aria-hidden="true"></span>
+                        </button>
+                        <div class="admin-panel-body" hidden>
+                            <div class="media-upload-card media-upload-card-flat">
+                                <p class="field-hint">{{t 'background_image_help'}}</p>
+                                <div class="media-preview">
+                                    {{#if synagogue.theme.backgroundImage}}
+                                    <img src="/images/{{synagogue.theme.backgroundImage}}" alt="{{t 'background_image'}}">
+                                    {{else}}
+                                    <img src="/images/brickwall.jpg" alt="{{t 'background_image'}}">
+                                    {{/if}}
+                                </div>
+                                <label class="file-drop-label">
+                                    {{t 'replace_image'}}
+                                    <input type="file" name="backgroundImage" accept="image/*">
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="admin-panel admin-panel-collapsible branding-subsection is-collapsed">
+                        <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
+                            <h3 class="admin-panel-title">
+                                <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 3h8v8H3V3m10 0h8v5h-8V3M3 13h5v8H3v-8m7 4h11v4H10v-4Z"/></svg>
+                                {{t 'tiles_background'}}
+                            </h3>
+                            <span class="admin-panel-chevron" aria-hidden="true"></span>
+                        </button>
+                        <div class="admin-panel-body" hidden>
+                            <div class="media-upload-card media-upload-card-flat">
+                                <p class="field-hint">{{t 'tiles_background_help'}}</p>
+                                <div class="media-preview">
+                                    {{#if synagogue.theme.tilesBackground}}
+                                    <img src="/images/{{synagogue.theme.tilesBackground}}" alt="{{t 'tiles_background'}}">
+                                    {{else}}
+                                    <img src="/images/wood2.png" alt="{{t 'tiles_background'}}">
+                                    {{/if}}
+                                </div>
+                                <label class="file-drop-label">
+                                    {{t 'replace_image'}}
+                                    <input type="file" name="tilesBackground" accept="image/*">
+                                </label>
+                            </div>
+                        </div>
+                    </section>
                 </div>
             </div>
         </section>
@@ -588,9 +631,6 @@
             }
 
             return {
-                memorialQrTitleRu: value('memorialQrTitleRu'),
-                memorialQrTitleEn: value('memorialQrTitleEn'),
-                memorialQrTitleHe: value('memorialQrTitleHe'),
                 memorialQrTextRu: value('memorialQrTextRu'),
                 memorialQrTextEn: value('memorialQrTextEn'),
                 memorialQrTextHe: value('memorialQrTextHe'),

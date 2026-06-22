@@ -686,10 +686,12 @@
     const editContactPhone = document.getElementById('editContactPhone');
     const editContactEmail = document.getElementById('editContactEmail');
     const editContactPlatform = document.getElementById('editContactPlatform');
+    const editContactGender = document.getElementById('editContactGender');
     if (editContactName) editContactName.value = contact.name || '';
     if (editContactPhone) editContactPhone.value = contact.phone || '';
     if (editContactEmail) editContactEmail.value = contact.email || '';
     if (editContactPlatform) editContactPlatform.value = contact.platform || '';
+    if (editContactGender) editContactGender.value = contact.gender || '';
     syncContactPlatformFields(document.getElementById('editPersonModal'));
     if (window.ContactPlatformUI) {
       window.ContactPlatformUI.syncPlatformIcon(editContactPlatform);

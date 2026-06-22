@@ -2,7 +2,7 @@
   function initCollapsiblePanels(root) {
     (root || document).querySelectorAll('.admin-panel-collapsible').forEach(function (panel) {
       var toggle = panel.querySelector('.admin-panel-toggle');
-      var body = panel.querySelector('.admin-panel-body');
+      var body = panel.querySelector(':scope > .admin-panel-body');
       if (!toggle || !body) {
         return;
       }
