@@ -31,6 +31,7 @@
     setChecked('editPermissionSettingsBranding', readData(button, 'perm-settings-branding'));
     setChecked('editPermissionSettingsFeatures', readData(button, 'perm-settings-features'));
     setChecked('editPermissionSettingsLanguages', readData(button, 'perm-settings-languages'));
+    setChecked('editPermissionSettingsSavedViews', readData(button, 'perm-settings-saved-views'));
     setChecked('editPermissionSettingsAdminPanel', readData(button, 'perm-settings-admin-panel'));
   });
 })(jQuery);

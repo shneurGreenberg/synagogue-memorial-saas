@@ -34,6 +34,7 @@ import { resolveBoardFeatures } from '../lib/board-features';
 import { JewishContentPanels } from '../components/JewishContentPanels';
 import { SidebarUpcomingPanel } from '../components/SidebarUpcomingPanel';
 import { BoardWeatherSection } from '../components/BoardWeatherSection';
+import { isPersonYahrzeitToday } from '../lib/yahrzeit-today';
 
 function getDailyCite(appData, hebrewDate) {
   const currentHebrewMonth = hebrewDate.getMonth();
@@ -63,7 +64,7 @@ function setPersonDates(card) {
   };
 }
 
-function buildPeopleList(appData, referenceDate = new Date()) {
+function buildPeopleList(appData, referenceDate = new Date(), timezone = resolveBoardTimezone(appData)) {
   const currentDayOfYear = getCurrentDayOfYear(referenceDate);
 
   return (appData.people || [])
@@ -79,7 +80,7 @@ function buildPeopleList(appData, referenceDate = new Date()) {
         person.gregorianDayOfMemory += DAYS_IN_YEAR;
       }
 
-      person.passedToday = person.gregorianDayOfMemory == 0;
+      person.passedToday = isPersonYahrzeitToday(person, timezone, referenceDate);
 
       return person;
     })
@@ -100,7 +101,7 @@ function buildPeopleList(appData, referenceDate = new Date()) {
 function buildCalendarState(appData, timezone = resolveBoardTimezone(appData)) {
   const gregorianDate = getGregorianDateInTimezone(timezone);
   const hebrewDate = getHebrewDateInTimezone(timezone);
-  const allPeople = buildPeopleList(appData, gregorianDate);
+  const allPeople = buildPeopleList(appData, gregorianDate, timezone);
   const dailyCite = getDailyCite(appData, hebrewDate);
 
   return {
@@ -267,6 +268,7 @@ class HomePageBase extends React.Component {
       page: 0,
       pageShift: 0,
       filterString: '',
+      namesReadingOpen: false,
     };
 
     applySearchToPaginationState(initialState, '');
@@ -281,6 +283,22 @@ class HomePageBase extends React.Component {
     this.clearSearch = this.clearSearch.bind(this);
     this.finishSlideshow = this.finishSlideshow.bind(this);
     this.refreshCalendarState = this.refreshCalendarState.bind(this);
+    this.toggleNamesReading = this.toggleNamesReading.bind(this);
+    this.closeNamesReading = this.closeNamesReading.bind(this);
+  }
+
+  toggleNamesReading() {
+    this.setState((state) => ({ namesReadingOpen: !state.namesReadingOpen }));
+  }
+
+  closeNamesReading() {
+    this.setState({ namesReadingOpen: false });
+  }
+
+  getTodayNames() {
+    return (this.state.allPeople || [])
+      .filter((person) => person.passedToday)
+      .map((person) => person.name);
   }
 
   refreshCalendarState() {
@@ -457,8 +475,24 @@ class HomePageBase extends React.Component {
     const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
     const showMemorialPrayers = boardFeatures.kelMaleRachamim || boardFeatures.izkor;
 
+    const todayNames = this.getTodayNames();
+
     return (
       <main className="main-container">
+        {this.state.namesReadingOpen && (
+          <div className="torah-reading-overlay" role="dialog" aria-modal="true" aria-label={this.props.t('torah_reading_names')}>
+            <button type="button" className="torah-reading-close" onClick={this.closeNamesReading}>
+              {this.props.t('close')}
+            </button>
+            <div className="torah-reading-names">
+              {todayNames.length > 0 ? todayNames.map((name) => (
+                <p key={name} className="torah-reading-name">{name}</p>
+              )) : (
+                <p className="torah-reading-empty">—</p>
+              )}
+            </div>
+          </div>
+        )}
         <aside className="left side-panel">
           <div className="wooden-panel">
             <div className="banner-wrap">
@@ -482,7 +516,11 @@ class HomePageBase extends React.Component {
         </aside>
         <section className="middle">
           <div className="wooden-panel">
-            <header className="board-header"><h1>{this.props.boardTitle}</h1></header>
+            <header className="board-header">
+              <button type="button" className="board-header-button" onClick={this.toggleNamesReading} aria-label={this.props.t('torah_reading_names')}>
+                <h1>{this.props.boardTitle}</h1>
+              </button>
+            </header>
             {this.renderAllGrids()}
             <div className={`board-footer${this.state.totalPages <= 1 ? ' board-footer-search-only' : ''}`}>
               <div className="search">
