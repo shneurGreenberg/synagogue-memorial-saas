@@ -69,6 +69,11 @@
             <span>{{t 'perm_settings_languages'}}</span>
         </label>
         <label class="permission-item">
+            <input type="checkbox" name="permission_settingsSavedViews" value="1"
+                id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionSettingsSavedViews" checked>
+            <span>{{t 'perm_settings_saved_views'}}</span>
+        </label>
+        <label class="permission-item">
             <input type="checkbox" name="permission_settingsAdminPanel" value="1"
                 id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}PermissionSettingsAdminPanel">
             <span>{{t 'perm_settings_admin_panel'}}</span>

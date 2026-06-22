@@ -52,7 +52,8 @@ const {
   buildYahrzeitPageEntries,
 } = require('../lib/yahrzeit-reminders');
 const { isEmailConfigured } = require('../lib/email');
-const { getDayKeyInTimezone, resolveSynagogueTimezone } = require('../lib/yahrzeit');
+const { getDayKeyInTimezone, resolveSynagogueTimezone, buildYahrzeitEntries } = require('../lib/yahrzeit');
+const { buildFaviconPath } = require('../lib/favicon');
 
 const BOARD_FEATURE_TOGGLE_META = [
   { key: 'sidebarNames', labelKey: 'feature_sidebar_names', helpKey: 'feature_sidebar_names_help' },
@@ -270,6 +271,7 @@ function renderAdmin(res, view, options = {}) {
         adminUser,
     );
     const locale = getAdminLocaleContext(displaySynagogue && displaySynagogue.adminLanguage);
+    const yahrzeitTodayCount = buildYahrzeitEntries(displaySynagogue).length;
 
     res.render(view, {
         ...options,
@@ -279,6 +281,9 @@ function renderAdmin(res, view, options = {}) {
         adminTranslate: getTranslator(locale.adminLanguage),
         adminDir: locale.adminDir,
         adminIsRtl: locale.adminIsRtl,
+        yahrzeitTodayCount,
+        faviconUrl: buildFaviconPath(displaySynagogue.slug, { badge: false }),
+        faviconAlertUrl: buildFaviconPath(displaySynagogue.slug, { badge: true }),
         layout: options.layout === false ? false : (options.layout || 'admin'),
     });
 }
@@ -719,7 +724,8 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
     try {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
         const enriched = enrichSynagogueForAdmin(synagogue);
-        const entries = buildYahrzeitPageEntries(enriched);
+        const displaySynagogue = applyUserDisplaySettings(enriched, req.adminUser);
+        const entries = buildYahrzeitPageEntries(enriched, new Date(), displaySynagogue.adminLanguage);
         const timezone = resolveSynagogueTimezone(enriched);
         const todayLabel = getDayKeyInTimezone(timezone);
 

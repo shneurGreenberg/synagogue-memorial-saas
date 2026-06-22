@@ -62,7 +62,8 @@
                                     {{#if this.permissions.settingsBranding}}{{#if (or this.permissions.settingsPreview this.permissions.settingsAppearance)}}, {{/if}}{{t 'perm_settings_branding_short'}}{{/if}}
                                     {{#if this.permissions.settingsFeatures}}{{#if (or this.permissions.settingsPreview this.permissions.settingsAppearance this.permissions.settingsBranding)}}, {{/if}}{{t 'perm_settings_features_short'}}{{/if}}
                                     {{#if this.permissions.settingsLanguages}}{{#if (or this.permissions.settingsPreview this.permissions.settingsAppearance this.permissions.settingsBranding this.permissions.settingsFeatures)}}, {{/if}}{{t 'perm_settings_languages_short'}}{{/if}}
-                                    {{#if this.permissions.settingsAdminPanel}}{{#if (or this.permissions.settingsPreview this.permissions.settingsAppearance this.permissions.settingsBranding this.permissions.settingsFeatures this.permissions.settingsLanguages)}}, {{/if}}{{t 'perm_settings_admin_panel_short'}}{{/if}}
+                                    {{#if this.permissions.settingsSavedViews}}{{#if (or this.permissions.settingsPreview this.permissions.settingsAppearance this.permissions.settingsBranding this.permissions.settingsFeatures this.permissions.settingsLanguages)}}, {{/if}}{{t 'perm_settings_saved_views_short'}}{{/if}}
+                                    {{#if this.permissions.settingsAdminPanel}}{{#if (or this.permissions.settingsPreview this.permissions.settingsAppearance this.permissions.settingsBranding this.permissions.settingsFeatures this.permissions.settingsLanguages this.permissions.settingsSavedViews)}}, {{/if}}{{t 'perm_settings_admin_panel_short'}}{{/if}}
                                 </div>
                                 {{/if}}
                             </td>
@@ -85,6 +86,7 @@
                                     data-perm-settings-branding="{{#if this.permissions.settingsBranding}}1{{/if}}"
                                     data-perm-settings-features="{{#if this.permissions.settingsFeatures}}1{{/if}}"
                                     data-perm-settings-languages="{{#if this.permissions.settingsLanguages}}1{{/if}}"
+                                    data-perm-settings-saved-views="{{#if this.permissions.settingsSavedViews}}1{{/if}}"
                                     data-perm-settings-admin-panel="{{#if this.permissions.settingsAdminPanel}}1{{/if}}">
                                     {{t 'edit'}}
                                 </button>

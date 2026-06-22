@@ -78,6 +78,14 @@ function resolveLabel(entry, lang) {
   return entry[lang] || entry.ru || entry.en || null;
 }
 
+function getParshaSeparator(lang) {
+  if (lang === 'he') {
+    return ' · ';
+  }
+
+  return ' · ';
+}
+
 function findParshaKey(name) {
   if (!name) {
     return null;
@@ -95,8 +103,7 @@ function findParshaKey(name) {
   )) || null;
 }
 
-export function getWeeklyParshaName(hebrewDate, lang = getDisplayLanguage()) {
-  const raw = hebrewDate.getParsha()[0];
+function translateParshaName(raw, lang) {
   if (!raw) {
     return null;
   }
@@ -111,6 +118,27 @@ export function getWeeklyParshaName(hebrewDate, lang = getDisplayLanguage()) {
   }
 
   return resolveLabel(PARSHA[key], lang);
+}
+
+export function getWeeklyParshaName(hebrewDate, lang = getDisplayLanguage()) {
+  const rawList = hebrewDate.getParsha();
+  if (!rawList || !rawList.length) {
+    return null;
+  }
+
+  if (HOLIDAYS[rawList[0]]) {
+    return resolveLabel(HOLIDAYS[rawList[0]], lang);
+  }
+
+  const names = rawList
+    .map((raw) => translateParshaName(raw, lang))
+    .filter(Boolean);
+
+  if (!names.length) {
+    return null;
+  }
+
+  return names.join(getParshaSeparator(lang));
 }
 
 export function getWeeklyParsha(hebrewDate, lang = getDisplayLanguage()) {

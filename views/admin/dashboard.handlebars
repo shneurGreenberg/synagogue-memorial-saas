@@ -172,7 +172,7 @@
                     </div>
                 </div>
                 <p class="preview-hint">{{t 'live_preview_help'}}</p>
-                {{#if (or adminPermissions.settingsAppearance adminPermissions.settingsPreview)}}
+                {{#if (and (or adminPermissions.settingsAppearance adminPermissions.settingsPreview) adminPermissions.settingsSavedViews)}}
                 <div class="saved-view-actions">
                     <button type="button" class="btn-admin btn-admin-secondary" id="saveCurrentViewBtn">{{t 'save_current_view'}}</button>
                 </div>
@@ -181,7 +181,7 @@
         </section>
         {{/if}}
 
-        {{#if (or adminPermissions.settingsAppearance adminPermissions.settingsPreview)}}
+        {{#if (and (or adminPermissions.settingsAppearance adminPermissions.settingsPreview) adminPermissions.settingsSavedViews)}}
         <section class="admin-panel saved-views-panel">
             <div class="admin-panel-header">
                 <h2>{{t 'saved_views_section'}}</h2>
@@ -301,11 +301,14 @@
                 {{/each}}
             </div>
         </section>
-        <section class="admin-panel">
+        <section class="admin-panel{{#if yahrzeitTodayCount}} public-submission-yahrzeit-alert{{/if}}">
             <div class="admin-panel-header">
                 <h2>{{t 'public_submission_section'}}</h2>
             </div>
             <div class="admin-panel-body board-features-grid">
+                {{#if yahrzeitTodayCount}}
+                <p class="public-submission-yahrzeit-notice">{{t 'public_submission_yahrzeit_alert'}}</p>
+                {{/if}}
                 <div class="admin-theme-setting">
                     <div class="admin-theme-setting-label">{{t 'public_submission_enabled'}}</div>
                     <div class="admin-theme-setting-control">

@@ -216,10 +216,17 @@ async function loadSynagogueBoard(slug) {
 }
 
 function renderMemorialBoard(req, res, synagogue) {
+  const { buildFaviconPath } = require('./lib/favicon');
+  const { buildYahrzeitEntries } = require('./lib/yahrzeit');
+  const yahrzeitTodayCount = buildYahrzeitEntries(synagogue).length;
+
   res.render('board', {
     layout: false,
     data: synagogue,
     boardVersion: BOARD_VERSION,
+    faviconUrl: buildFaviconPath(synagogue.slug, { badge: false }),
+    faviconAlertUrl: buildFaviconPath(synagogue.slug, { badge: true }),
+    yahrzeitTodayCount,
   });
 }
 
@@ -231,6 +238,38 @@ app.get('/', async (req, res) => {
     res.status(500).send(err.message);
   }
 });
+
+app.get('/s/:slug/favicon.png', async (req, res) => {
+  return serveSynagogueFavicon(req, res, false);
+});
+
+app.get('/s/:slug/favicon-alert.png', async (req, res) => {
+  return serveSynagogueFavicon(req, res, true);
+});
+
+async function serveSynagogueFavicon(req, res, badge) {
+  try {
+    const synagogue = await loadSynagogueBoard(req.params.slug);
+
+    if (!synagogue) {
+      return res.status(404).send('Synagogue not found');
+    }
+
+    const { renderFaviconPng } = require('./lib/favicon');
+    const logo = (synagogue.theme && synagogue.theme.logo) || 'banner-transparent.png';
+    const buffer = await renderFaviconPng(logo, { badge });
+
+    if (!buffer) {
+      return res.status(404).send('Favicon unavailable');
+    }
+
+    res.setHeader('Cache-Control', 'public, max-age=3600');
+    res.type('png');
+    return res.send(buffer);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+}
 
 app.get('/s/:slug/api/board', async (req, res) => {
   try {
