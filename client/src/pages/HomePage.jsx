@@ -35,6 +35,7 @@ import { JewishContentPanels } from '../components/JewishContentPanels';
 import { SidebarUpcomingPanel } from '../components/SidebarUpcomingPanel';
 import { BoardWeatherSection } from '../components/BoardWeatherSection';
 import { isPersonYahrzeitToday } from '../lib/yahrzeit-today';
+import { MemorialSubmissionPanel } from '../components/MemorialSubmissionPanel';
 import { TorahReadingOverlay } from '../components/TorahReadingOverlay';
 
 function getDailyCite(appData, hebrewDate) {
@@ -174,82 +175,6 @@ function prepareCommunityEvents(events) {
   });
 }
 
-class Slideshow extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentIndex: 0,
-      loaded: false,
-    };
-    this.skip = this.skip.bind(this);
-    this.onImageLoad = this.onImageLoad.bind(this);
-  }
-
-  componentDidMount() {
-    this.startTimer();
-  }
-
-  componentWillUnmount() {
-    if (this.timer) {
-      clearTimeout(this.timer);
-    }
-  }
-
-  startTimer() {
-    this.timer = setTimeout(() => {
-      this.nextSlide();
-    }, this.props.interval * 1000);
-  }
-
-  nextSlide() {
-    const nextIndex = this.state.currentIndex + 1;
-    if (nextIndex >= this.props.images.length) {
-      this.props.onFinish();
-    } else {
-      this.setState({ currentIndex: nextIndex, loaded: false });
-      this.startTimer();
-    }
-  }
-
-  skip() {
-    if (this.timer) {
-      clearTimeout(this.timer);
-    }
-    this.props.onFinish();
-  }
-
-  onImageLoad() {
-    this.setState({ loaded: true });
-  }
-
-  render() {
-    const slide = this.props.images[this.state.currentIndex];
-    if (!slide) {
-      return null;
-    }
-
-    return (
-      <div className="slideshow-overlay" role="dialog" aria-label="Slideshow">
-        {!this.state.loaded && <div className="slideshow-loading">{this.props.t('slideshow_loading')}</div>}
-        <img
-          src={assetUrl(`images/${slide.url}`)}
-          alt={slide.text || 'Slideshow'}
-          onLoad={this.onImageLoad}
-          className="slideshow-image"
-        />
-        {slide.text && (
-          <div className="slideshow-caption">{slide.text}</div>
-        )}
-        <button type="button" className="slideshow-skip" onClick={this.skip}>
-          {this.props.t('slideshow_skip')}
-        </button>
-      </div>
-    );
-  }
-}
-
-const SlideshowTranslated = withTranslation()(Slideshow);
-
 class HomePageBase extends React.Component {
   constructor() {
     super();
@@ -261,7 +186,6 @@ class HomePageBase extends React.Component {
     const initialState = {
       ...calendarState,
       communityEvents,
-      mode: 'main',
       people: [],
       hasKadishToday: false,
       totalPages: 1,
@@ -282,7 +206,6 @@ class HomePageBase extends React.Component {
     this.nextPage = this.nextPage.bind(this);
     this.search = this.search.bind(this);
     this.clearSearch = this.clearSearch.bind(this);
-    this.finishSlideshow = this.finishSlideshow.bind(this);
     this.refreshCalendarState = this.refreshCalendarState.bind(this);
     this.toggleNamesReading = this.toggleNamesReading.bind(this);
     this.closeNamesReading = this.closeNamesReading.bind(this);
@@ -296,8 +219,10 @@ class HomePageBase extends React.Component {
     this.setState({ namesReadingOpen: false });
   }
 
-  getTodayNames() {
-    return (this.state.people || [])
+  getPageNames() {
+    const { people, pageShift, itemsPerPage } = this.state;
+    return (people || [])
+      .slice(pageShift, pageShift + itemsPerPage)
       .map((person) => person.name)
       .filter(Boolean);
   }
@@ -320,26 +245,6 @@ class HomePageBase extends React.Component {
     if (prevProps.calendarDayKey !== this.props.calendarDayKey) {
       this.refreshCalendarState();
     }
-  }
-
-  componentDidMount() {
-    this.startMainTimer();
-  }
-
-  startMainTimer() {
-    const appData = getAppData();
-
-    if (appData.slideshow && appData.slideshow.enabled && appData.slideshow.images && appData.slideshow.images.length > 0) {
-      const duration = (appData.slideshow.mainDuration || 30) * 1000;
-      this.mainTimer = setTimeout(() => {
-        this.setState({ mode: 'slideshow' });
-      }, duration);
-    }
-  }
-
-  finishSlideshow() {
-    this.setState({ mode: 'main' });
-    this.startMainTimer();
   }
 
   changePage(shift) {
@@ -461,29 +366,19 @@ class HomePageBase extends React.Component {
   render() {
     const appData = getAppData();
 
-    if (this.state.mode === 'slideshow') {
-      return (
-        <SlideshowTranslated
-          images={appData.slideshow.images}
-          interval={appData.slideshow.interval}
-          onFinish={this.finishSlideshow}
-        />
-      );
-    }
-
     const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
     const logo = (appData.theme && appData.theme.logo) || 'banner-transparent.png';
     const showOfficialLogo = boardFeatures.officialLogo !== false;
     const officialLogo = 'kaddish-official-logo.png';
     const showMemorialPrayers = boardFeatures.kelMaleRachamim || boardFeatures.izkor;
 
-    const todayNames = this.getTodayNames();
+    const pageNames = this.getPageNames();
 
     return (
       <main className="main-container">
         {this.state.namesReadingOpen && (
           <TorahReadingOverlay
-            names={todayNames}
+            names={pageNames}
             onClose={this.closeNamesReading}
           />
         )}
@@ -506,6 +401,7 @@ class HomePageBase extends React.Component {
               formatHebrewDate={formatHebrewDate}
               showTopDivider={!boardFeatures.hayomYom}
             />
+            <MemorialSubmissionPanel />
           </div>
         </aside>
         <section className="middle">

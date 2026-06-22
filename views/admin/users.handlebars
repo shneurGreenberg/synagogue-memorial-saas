@@ -53,8 +53,7 @@
                             <td class="user-permissions-cell">
                                 {{#if this.permissions.people}}{{t 'perm_people_short'}}{{/if}}
                                 {{#if this.permissions.peopleImport}}{{#if this.permissions.people}}, {{/if}}{{t 'perm_people_import_short'}}{{/if}}
-                                {{#if this.permissions.slideshow}}{{#if (or this.permissions.people this.permissions.peopleImport)}}, {{/if}}{{t 'perm_slideshow_short'}}{{/if}}
-                                {{#if this.permissions.events}}{{#if (or this.permissions.people this.permissions.slideshow)}}, {{/if}}{{t 'perm_events_short'}}{{/if}}
+                                {{#if this.permissions.events}}{{#if (or this.permissions.people this.permissions.peopleImport)}}, {{/if}}{{t 'perm_events_short'}}{{/if}}
                                 {{#if this.permissions.settings}}
                                 <div class="user-settings-perms">{{t 'settings_sections_label'}}:
                                     {{#if this.permissions.settingsPreview}}{{t 'perm_settings_preview_short'}}{{/if}}
@@ -79,7 +78,6 @@
                                     data-color-mode="{{this.adminColorMode}}"
                                     data-perm-people="{{#if this.permissions.people}}1{{/if}}"
                                     data-perm-people-import="{{#if this.permissions.peopleImport}}1{{/if}}"
-                                    data-perm-slideshow="{{#if this.permissions.slideshow}}1{{/if}}"
                                     data-perm-events="{{#if this.permissions.events}}1{{/if}}"
                                     data-perm-settings-preview="{{#if this.permissions.settingsPreview}}1{{/if}}"
                                     data-perm-settings-appearance="{{#if this.permissions.settingsAppearance}}1{{/if}}"

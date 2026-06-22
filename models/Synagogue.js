@@ -44,7 +44,6 @@ const AdminUserSchema = new mongoose.Schema({
   permissions: {
     people: { type: Boolean, default: true },
     peopleImport: { type: Boolean, default: false },
-    slideshow: { type: Boolean, default: false },
     events: { type: Boolean, default: false },
     settings: { type: Boolean, default: false },
     settingsPreview: { type: Boolean, default: false },
@@ -165,15 +164,6 @@ const SynagogueSchema = new mongoose.Schema({
     backgroundImage: String,
     tilesBackground: String,
     logo: String
-  },
-  slideshow: {
-    enabled: { type: Boolean, default: false },
-    interval: { type: Number, default: 10 }, // seconds for each slide
-    mainDuration: { type: Number, default: 30 }, // seconds for main view
-    images: [{
-      url: String,
-      text: String // For additional info
-    }]
   },
   location: {
     lat: { type: Number, default: 54.9833 },

@@ -24,7 +24,6 @@
 
     setChecked('editPermissionPeople', readData(button, 'perm-people'));
     setChecked('editPermissionPeopleImport', readData(button, 'perm-people-import'));
-    setChecked('editPermissionSlideshow', readData(button, 'perm-slideshow'));
     setChecked('editPermissionEvents', readData(button, 'perm-events'));
     setChecked('editPermissionSettingsPreview', readData(button, 'perm-settings-preview'));
     setChecked('editPermissionSettingsAppearance', readData(button, 'perm-settings-appearance'));

@@ -299,11 +299,6 @@ function wantsJson(req) {
     return req.get('X-Requested-With') === 'XMLHttpRequest' || req.query.ajax === '1';
 }
 
-async function fetchSlideshow(slug) {
-    const doc = await Synagogue.findOne({ slug }).lean();
-    return doc ? doc.slideshow : null;
-}
-
 async function fetchCommunityEvents(slug) {
     const doc = await Synagogue.findOne({ slug }).lean();
     return doc ? (doc.communityEvents || []) : [];
@@ -603,98 +598,6 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
     }
 });
 
-// Slideshow Management
-router.get('/:slug/slideshow', requireAdmin, requirePermission('slideshow'), async (req, res) => {
-    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
-    try {
-        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
-        renderAdmin(res, 'admin/slideshow', {
-            synagogue: enrichSynagogueForAdmin(synagogue),
-            adminUser: req.adminUser,
-            adminPermissions: req.adminPermissions,
-        });
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
-});
-
-router.post('/:slug/slideshow/settings', requireAdmin, requirePermission('slideshow'), async (req, res) => {
-    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
-    try {
-        const { enabled, interval, mainDuration } = req.body;
-        await Synagogue.updateOne({ slug: req.params.slug }, {
-            $set: {
-                'slideshow.enabled': !!enabled,
-                'slideshow.interval': parseInt(interval),
-                'slideshow.mainDuration': parseInt(mainDuration)
-            }
-        });
-        return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
-    } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
-    }
-});
-
-router.post('/:slug/slideshow/add', requireAdmin, requirePermission('slideshow'), upload.single('image'), async (req, res) => {
-    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
-    try {
-        const { text } = req.body;
-        if (!req.file) {
-            return res.status(400).json({ ok: false, error: 'Image is required' });
-        }
-        const optimizedFilename = await optimizeUploadedImage(req.file.path, 'slideshow');
-        await Synagogue.updateOne(
-            { slug: req.params.slug },
-            {
-                $push: {
-                    'slideshow.images': {
-                        url: optimizedFilename,
-                        text: sanitizeRichText(text)
-                    }
-                }
-            }
-        );
-        return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
-    } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
-    }
-});
-
-router.post('/:slug/slideshow/edit', requireAdmin, requirePermission('slideshow'), upload.single('image'), async (req, res) => {
-    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
-    try {
-        const { slideId, text } = req.body;
-        const updateFields = {
-            'slideshow.images.$.text': sanitizeRichText(text || ''),
-        };
-
-        if (req.file) {
-            updateFields['slideshow.images.$.url'] = await optimizeUploadedImage(req.file.path, 'slideshow');
-        }
-
-        await Synagogue.updateOne(
-            { slug: req.params.slug, 'slideshow.images._id': slideId },
-            { $set: updateFields },
-        );
-        return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
-    } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
-    }
-});
-
-router.post('/:slug/slideshow/delete', requireAdmin, requirePermission('slideshow'), async (req, res) => {
-    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
-    try {
-        const { slideId } = req.body;
-        await Synagogue.updateOne(
-            { slug: req.params.slug },
-            { $pull: { 'slideshow.images': { _id: slideId } } }
-        );
-        return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
-    } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
-    }
-});
 
 router.get('/:slug/preview-board', requireAdmin, requirePermission('settings'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
@@ -750,6 +653,44 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
         });
     } catch (err) {
         res.status(500).send(err.message);
+    }
+});
+
+// Yahrzeit tile image for sharing
+router.get('/:slug/yahrzeit/tile/:personId.png', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        if (!synagogue) {
+            return res.status(404).send('Not found');
+        }
+
+        const personId = Number(req.params.personId);
+        const person = (synagogue.people || []).find((entry) => entry.id === personId);
+        if (!person) {
+            return res.status(404).send('Not found');
+        }
+
+        const enriched = enrichSynagogueForAdmin(synagogue);
+        const entries = buildYahrzeitPageEntries(enriched, new Date(), synagogue.adminLanguage);
+        const entry = entries.find((item) => item.id === personId);
+        const datesLine = entry
+          ? [entry.gregorianDateLabel, entry.hebrewDateLabel].filter(Boolean).join(' · ')
+          : '';
+
+        const { renderYahrzeitTilePng } = require('../lib/yahrzeit-tile-image');
+        const buffer = await renderYahrzeitTilePng({
+            name: person.name,
+            datesLine,
+            photoFilename: person.photo,
+            theme: synagogue.theme,
+        });
+
+        res.setHeader('Content-Type', 'image/png');
+        res.setHeader('Cache-Control', 'private, max-age=300');
+        return res.send(buffer);
+    } catch (err) {
+        return res.status(500).send(err.message);
     }
 });
 
