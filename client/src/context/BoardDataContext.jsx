@@ -37,7 +37,6 @@ function snapshotForCompare(data) {
     language: data.language,
     weeklyChapterEnabled: data.weeklyChapterEnabled,
     theme: data.theme,
-    slideshow: data.slideshow,
     people: data.people,
     dailyCites: data.dailyCites,
     communityEvents: data.communityEvents,

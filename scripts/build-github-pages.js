@@ -62,7 +62,6 @@ function loadBoardData() {
       timezone: 'Asia/Novosibirsk',
     },
     reloadTimeout: db.reloadTimeout || 43200000,
-    slideshow: { enabled: false, interval: 10, mainDuration: 30, images: [] },
   };
 }
 

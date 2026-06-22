@@ -1,4 +1,4 @@
-<div class="admin-page yahrzeit-page" data-synagogue-slug="{{synagogue.slug}}" data-copy-label="{{t 'yahrzeit_copy_message'}}" data-copied-label="{{t 'yahrzeit_copied'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}">
+<div class="admin-page yahrzeit-page" data-synagogue-slug="{{synagogue.slug}}" data-copy-label="{{t 'yahrzeit_copy_message'}}" data-copied-label="{{t 'yahrzeit_copied'}}" data-download-tile-label="{{t 'yahrzeit_download_tile'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}">
     <header class="admin-page-header">
         <div>
             <h1>{{t 'yahrzeit_page'}}</h1>
@@ -60,8 +60,9 @@
                         <textarea class="form-control yahrzeit-message" rows="8" readonly>{{this.preparedMessage}}</textarea>
                         <div class="yahrzeit-actions">
                             <button type="button" class="btn-admin btn-admin-secondary yahrzeit-copy-btn" data-message="{{this.preparedMessage}}">{{t 'yahrzeit_copy_message'}}</button>
+                            <button type="button" class="btn-admin btn-admin-secondary yahrzeit-download-tile-btn" data-person-id="{{this.id}}" data-person-name="{{this.name}}">{{t 'yahrzeit_download_tile'}}</button>
                             {{#if this.contactLink}}
-                            <a href="{{this.contactLink}}" class="btn-admin btn-admin-primary" target="_blank" rel="noopener noreferrer">{{t 'yahrzeit_send_contact'}}</a>
+                            <a href="{{this.contactLink}}" class="btn-admin btn-admin-primary yahrzeit-send-btn" data-tile-url="/admin/{{../synagogue.slug}}/yahrzeit/tile/{{this.id}}.png" data-person-name="{{this.name}}" target="_blank" rel="noopener noreferrer">{{t 'yahrzeit_send_contact'}}</a>
                             {{/if}}
                             <a href="{{this.boardCardUrl}}" class="btn-admin btn-admin-ghost" target="_blank" rel="noopener noreferrer">{{t 'yahrzeit_view_board'}}</a>
                         </div>

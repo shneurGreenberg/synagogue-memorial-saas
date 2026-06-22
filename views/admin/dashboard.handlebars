@@ -24,7 +24,10 @@
         {{#if adminPermissions.settingsAdminPanel}}
         <section class="admin-panel">
             <div class="admin-panel-header">
-                <h2>{{t 'admin_panel_section'}}</h2>
+                <h2 class="admin-panel-title">
+                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17 1H7c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2m0 18H7V5h10v14z"/></svg>
+                    {{t 'admin_panel_section'}}
+                </h2>
             </div>
             <div class="admin-panel-body">
                 <div class="settings-two-col">
@@ -62,7 +65,10 @@
         {{#if adminPermissions.settingsAppearance}}
         <section class="admin-panel">
             <div class="admin-panel-header">
-                <h2>{{t 'appearance_section'}}</h2>
+                <h2 class="admin-panel-title">
+                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8m-5.5 9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m3-4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m7 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m3 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3"/></svg>
+                    {{t 'appearance_section'}}
+                </h2>
             </div>
             <div class="admin-panel-body">
                 <div class="board-titles-grid">
@@ -129,7 +135,10 @@
                     </div>
                 </div>
                 <div class="typography-controls">
-                    <h3 class="typography-controls-title">{{t 'typography_section'}}</h3>
+                    <h3 class="typography-controls-title admin-panel-title">
+                        <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 4v3h5.5v12h3V7H19V4H5z"/></svg>
+                        {{t 'typography_section'}}
+                    </h3>
                     <div class="slider-field-modern">
                         <label for="tileOpacity">{{t 'tile_opacity'}}</label>
                         <div class="slider-row">
@@ -162,7 +171,10 @@
         {{#if adminPermissions.settingsPreview}}
         <section class="admin-panel settings-preview-panel">
             <div class="admin-panel-header">
-                <h2>{{t 'live_preview'}}</h2>
+                <h2 class="admin-panel-title">
+                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m0 14H3V5h18v12Z"/></svg>
+                    {{t 'live_preview'}}
+                </h2>
             </div>
             <div class="admin-panel-body">
                 <div class="board-preview-stage" id="boardPreviewStage">
@@ -184,7 +196,10 @@
         {{#if (and (or adminPermissions.settingsAppearance adminPermissions.settingsPreview) adminPermissions.settingsSavedViews)}}
         <section class="admin-panel saved-views-panel">
             <div class="admin-panel-header">
-                <h2>{{t 'saved_views_section'}}</h2>
+                <h2 class="admin-panel-title">
+                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+                    {{t 'saved_views_section'}}
+                </h2>
             </div>
             <div class="admin-panel-body">
                 <p class="field-hint">{{t 'saved_views_help'}}</p>
@@ -220,7 +235,10 @@
         {{#if adminPermissions.settingsBranding}}
         <section class="admin-panel">
             <div class="admin-panel-header">
-                <h2>{{t 'branding_section'}}</h2>
+                <h2 class="admin-panel-title">
+                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2M8.5 13.5l2.5 3 3.5-4.5 4.5 6H5l3.5-4.5z"/></svg>
+                    {{t 'branding_section'}}
+                </h2>
             </div>
             <div class="admin-panel-body media-upload-grid">
                 <div class="media-upload-card">
@@ -274,7 +292,10 @@
         {{#if adminPermissions.settingsFeatures}}
         <section class="admin-panel">
             <div class="admin-panel-header">
-                <h2>{{t 'board_features_section'}}</h2>
+                <h2 class="admin-panel-title">
+                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 6h16v2H4V6m0 5h16v2H4v-2m0 5h16v2H4v-2Z"/></svg>
+                    {{t 'board_features_section'}}
+                </h2>
             </div>
             <div class="admin-panel-body board-features-grid">
                 <div class="admin-theme-setting shabbat-times-setting">
@@ -303,7 +324,10 @@
         </section>
         <section class="admin-panel{{#if yahrzeitTodayCount}} public-submission-yahrzeit-alert{{/if}}">
             <div class="admin-panel-header">
-                <h2>{{t 'public_submission_section'}}</h2>
+                <h2 class="admin-panel-title">
+                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    {{t 'public_submission_section'}}
+                </h2>
             </div>
             <div class="admin-panel-body board-features-grid">
                 {{#if yahrzeitTodayCount}}
@@ -332,7 +356,10 @@
         </section>
         <section class="admin-panel">
             <div class="admin-panel-header">
-                <h2>{{t 'yahrzeit_section'}}</h2>
+                <h2 class="admin-panel-title">
+                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2c-1.1 0-2 .9-2 2v1.07C7.06 5.56 5 7.92 5 11v5l-2 2v1h18v-1l-2-2v-5c0-3.08-2.06-5.44-5-5.93V4c0-1.1-.9-2-2-2m0 2c.55 0 1 .45 1 1v1h-2V5c0-.55.45-1 1-1m-1 9h2v3h-2v-3Z"/></svg>
+                    {{t 'yahrzeit_section'}}
+                </h2>
             </div>
             <div class="admin-panel-body board-features-grid">
                 <div class="admin-theme-setting">
@@ -361,7 +388,10 @@
         {{#if adminPermissions.settingsLanguages}}
         <section class="admin-panel">
             <div class="admin-panel-header">
-                <h2>{{t 'languages_section'}}</h2>
+                <h2 class="admin-panel-title">
+                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2v2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12z"/></svg>
+                    {{t 'languages_section'}}
+                </h2>
             </div>
             <div class="admin-panel-body">
                 <div class="form-field">
