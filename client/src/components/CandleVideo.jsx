@@ -1,40 +1,42 @@
 import React from 'react';
-import { assetUrl } from '../lib/asset-url';
+
+import { subscribeCandleCanvas } from '../lib/candle-video-pool';
 
 export class CandleVideo extends React.Component {
   constructor(props) {
     super(props);
-    this.videoRef = React.createRef();
-    this.playVideo = this.playVideo.bind(this);
+    this.canvasRef = React.createRef();
+    this.subscription = null;
   }
 
   componentDidMount() {
-    this.playVideo();
+    this.bindCanvas();
   }
 
   componentDidUpdate(prevProps) {
-    if (!prevProps.active && this.props.active) {
-      this.playVideo();
+    if (prevProps.active !== this.props.active) {
+      this.subscription?.setActive(this.props.active);
+    }
+
+    if (!this.subscription) {
+      this.bindCanvas();
     }
   }
 
   componentWillUnmount() {
-    const video = this.videoRef.current;
-    if (video) {
-      video.pause();
-    }
+    this.subscription?.unsubscribe();
+    this.subscription = null;
   }
 
-  playVideo() {
-    const video = this.videoRef.current;
-    if (!video) {
+  bindCanvas() {
+    const canvas = this.canvasRef.current;
+    if (!canvas || this.subscription) {
       return;
     }
 
-    const playPromise = video.play();
-    if (playPromise && typeof playPromise.catch === 'function') {
-      playPromise.catch(() => {});
-    }
+    this.subscription = subscribeCandleCanvas(canvas, {
+      active: this.props.active !== false,
+    });
   }
 
   render() {
@@ -45,17 +47,10 @@ export class CandleVideo extends React.Component {
     }
 
     return (
-      <video
-        ref={this.videoRef}
+      <canvas
+        ref={this.canvasRef}
         className={className}
-        src={assetUrl('images/candle.mp4')}
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
         aria-hidden="true"
-        onLoadedData={this.playVideo}
       />
     );
   }
