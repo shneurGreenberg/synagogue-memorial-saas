@@ -462,6 +462,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             updateData['publicSubmission.enabled'] = publicSubmission.enabled;
             updateData['publicSubmission.donationUrl'] = publicSubmission.donationUrl;
             updateData['yahrzeitReminders.enabled'] = yahrzeitReminders.enabled;
+            updateData['yahrzeitReminders.includeHebrewYahrzeit'] = yahrzeitReminders.includeHebrewYahrzeit;
             updateData['yahrzeitReminders.notifyEmail'] = yahrzeitReminders.notifyEmail;
         }
 

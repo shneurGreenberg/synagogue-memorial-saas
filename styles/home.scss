@@ -1295,6 +1295,52 @@
           }
         }
       }
+
+      .memorial-submission-panel,
+      .donation-qr-panel {
+        width: 100%;
+        margin-top: auto;
+        padding: 0.85rem 0.5rem 1rem;
+        text-align: center;
+        border-top: 1px solid $goldenPanelBorder;
+        flex-shrink: 0;
+
+        h2 {
+          margin: 0 0 0.45rem;
+          font-size: calc(clamp(14px, 1.15vw, 18px) * var(--memorial-qr-title-scale, 1));
+          line-height: 1.35;
+          color: $goldenText;
+          font-weight: 700;
+        }
+
+        .memorial-submission-text {
+          margin: 0 0 0.65rem;
+          font-size: calc(clamp(12px, 1vw, 15px) * var(--memorial-qr-text-scale, 1));
+          line-height: 1.4;
+          color: $textColor;
+        }
+
+        .memorial-submission-qr-link {
+          display: inline-block;
+          line-height: 0;
+          cursor: pointer;
+          transition: transform 0.15s ease;
+
+          &:hover {
+            transform: scale(1.03);
+          }
+        }
+
+        .memorial-submission-qr {
+          width: calc(clamp(100px, 10vw, 140px) * var(--memorial-qr-size-scale, 1));
+          height: calc(clamp(100px, 10vw, 140px) * var(--memorial-qr-size-scale, 1));
+          object-fit: contain;
+          background: #fff;
+          border-radius: 8px;
+          padding: 6px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+      }
     }
   }
 }
@@ -1492,6 +1538,32 @@
   border-radius: 16px;
   padding: clamp(16px, 2.5vw, 28px);
   box-sizing: border-box;
+}
+
+.prayer-reading-footer {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: clamp(10px, 1.5vh, 16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  margin-top: auto;
+}
+
+.prayer-reading-play {
+  border: 1px solid rgba(207, 175, 31, 0.55);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--accent-color, #ffd54f);
+  font-size: clamp(14px, 1.2vw, 17px);
+  font-weight: 600;
+  padding: 0.55rem 1.25rem;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    background: rgba(207, 175, 31, 0.15);
+    transform: translateY(-1px);
+  }
 }
 
 .prayer-reading-close {

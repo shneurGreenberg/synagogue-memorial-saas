@@ -36,6 +36,7 @@ import { SidebarUpcomingPanel } from '../components/SidebarUpcomingPanel';
 import { BoardWeatherSection } from '../components/BoardWeatherSection';
 import { isPersonYahrzeitToday } from '../lib/yahrzeit-today';
 import { MemorialSubmissionPanel } from '../components/MemorialSubmissionPanel';
+import { DonationQrPanel } from '../components/DonationQrPanel';
 import { TorahReadingOverlay } from '../components/TorahReadingOverlay';
 
 function getDailyCite(appData, hebrewDate) {
@@ -494,6 +495,7 @@ class HomePageBase extends React.Component {
                   izkorText={this.props.t('izkor_text')}
                 />
               )}
+              <DonationQrPanel />
             </div>
           </div>
         </aside>
