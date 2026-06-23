@@ -1,6 +1,8 @@
 import React from 'react';
 import { PrayerReadingOverlay } from './PrayerReadingOverlay';
 
+import { assetUrl } from '../lib/asset-url';
+
 export class MemorialPrayersPanel extends React.Component {
   constructor(props) {
     super(props);
@@ -112,8 +114,8 @@ export class MemorialPrayersPanel extends React.Component {
     });
   };
 
-  renderPrayerBlock(id, heading, text, extraClass) {
-    const prayer = { id, heading, text, extraClass };
+  renderPrayerBlock(id, heading, text, extraClass, audioSrc) {
+    const prayer = { id, heading, text, extraClass, audioSrc };
 
     return (
       <section
@@ -149,12 +151,14 @@ export class MemorialPrayersPanel extends React.Component {
           kelMaleHeading,
           kelMaleText,
           'kel-male',
+          assetUrl('audio/prayer-placeholder.mp3'),
         )}
         {showIzkor && this.renderPrayerBlock(
           `yizkor-heading${suffix}`,
           izkorHeading,
           izkorText,
           'yizkor',
+          assetUrl('audio/prayer-placeholder.mp3'),
         )}
       </div>
     );
@@ -175,6 +179,7 @@ export class MemorialPrayersPanel extends React.Component {
             heading={activePrayer.heading}
             text={activePrayer.text}
             extraClass={activePrayer.extraClass}
+            audioSrc={activePrayer.audioSrc}
             onClose={this.closePrayer}
           />
         )}

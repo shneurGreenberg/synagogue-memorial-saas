@@ -107,6 +107,7 @@ const SynagogueSchema = new mongoose.Schema({
   },
   yahrzeitReminders: {
     enabled: { type: Boolean, default: false },
+    includeHebrewYahrzeit: { type: Boolean, default: true },
     notifyEmail: { type: String, default: '' },
     lastNotifiedDate: { type: String, default: '' },
   },

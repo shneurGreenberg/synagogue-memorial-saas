@@ -1,8 +1,9 @@
 (function () {
+  const page = document.querySelector('.yahrzeit-page');
+
   document.querySelectorAll('.yahrzeit-copy-btn').forEach(function (button) {
     button.addEventListener('click', async function (event) {
       event.stopPropagation();
-      const page = document.querySelector('.yahrzeit-page');
       const copiedLabel = page ? page.getAttribute('data-copied-label') : 'Copied!';
       const copyLabel = page ? page.getAttribute('data-copy-label') : 'Copy';
       const card = button.closest('.yahrzeit-card');
@@ -26,13 +27,12 @@
     });
   });
 
-  document.querySelectorAll('.yahrzeit-send-btn').forEach(function (link) {
   const dataEl = document.getElementById('yahrzeit-people-data');
   if (!page || !dataEl || !window.AdminPersonCard) {
     return;
   }
 
-  let peopleById = {};
+  const peopleById = {};
   try {
     JSON.parse(dataEl.textContent).forEach(function (person) {
       peopleById[person.id] = person;

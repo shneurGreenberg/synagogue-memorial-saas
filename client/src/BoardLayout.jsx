@@ -7,6 +7,7 @@ import { IdleReload } from './components/IdleReload';
 import { useBoardData } from './context/BoardDataContext';
 import { BoardLanguageSwitcher } from './components/BoardLanguageSwitcher';
 import { BoardVersionBadge } from './components/BoardVersionBadge';
+import { BaruchHashemBadge } from './components/BaruchHashemBadge';
 import HomePage from './pages/HomePage';
 import CardPage from './pages/CardPage';
 
@@ -20,6 +21,7 @@ function BoardLayoutInner() {
       <ThemeStyles />
       <IdleReload />
       <BoardVersionBadge />
+      <BaruchHashemBadge />
       <BoardLanguageSwitcher />
       <div id="main-entry">
         <HomePage />

@@ -7,10 +7,15 @@ class PrayerReadingOverlayBase extends React.Component {
   constructor(props) {
     super(props);
     this.candleRef = React.createRef();
+    this.audioRef = React.createRef();
+    this.state = { isPlaying: false };
     this.onOverlayClick = this.onOverlayClick.bind(this);
     this.stopPropagation = this.stopPropagation.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.restartCandleAnimation = this.restartCandleAnimation.bind(this);
+    this.toggleAudio = this.toggleAudio.bind(this);
+    this.stopAudio = this.stopAudio.bind(this);
+    this.onAudioEnded = this.onAudioEnded.bind(this);
   }
 
   componentDidMount() {
@@ -23,6 +28,45 @@ class PrayerReadingOverlayBase extends React.Component {
     if (this.candleLoopTimer) {
       window.clearInterval(this.candleLoopTimer);
     }
+    this.stopAudio();
+  }
+
+  stopAudio() {
+    const audio = this.audioRef.current;
+    if (!audio) {
+      return;
+    }
+
+    audio.pause();
+    audio.currentTime = 0;
+    if (this.state.isPlaying) {
+      this.setState({ isPlaying: false });
+    }
+  }
+
+  onAudioEnded() {
+    this.setState({ isPlaying: false });
+  }
+
+  toggleAudio() {
+    const audio = this.audioRef.current;
+    if (!audio) {
+      return;
+    }
+
+    if (this.state.isPlaying) {
+      audio.pause();
+      this.setState({ isPlaying: false });
+      return;
+    }
+
+    const playPromise = audio.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(() => {
+        this.setState({ isPlaying: false });
+      });
+    }
+    this.setState({ isPlaying: true });
   }
 
   restartCandleAnimation() {
@@ -59,7 +103,9 @@ class PrayerReadingOverlayBase extends React.Component {
   }
 
   render() {
-    const { heading, text, extraClass, onClose, t } = this.props;
+    const { heading, text, extraClass, audioSrc, onClose, t } = this.props;
+    const resolvedAudioSrc = audioSrc || assetUrl('audio/prayer-placeholder.mp3');
+    const playLabel = this.state.isPlaying ? t('pause_prayer') : t('play_prayer');
 
     return createPortal(
       <div
@@ -89,6 +135,22 @@ class PrayerReadingOverlayBase extends React.Component {
                 {text}
               </p>
             </div>
+          </div>
+          <div className="prayer-reading-footer">
+            <audio
+              ref={this.audioRef}
+              src={resolvedAudioSrc}
+              preload="none"
+              onEnded={this.onAudioEnded}
+            />
+            <button
+              type="button"
+              className="prayer-reading-play"
+              onClick={this.toggleAudio}
+              aria-label={playLabel}
+            >
+              {playLabel}
+            </button>
           </div>
         </div>
       </div>,

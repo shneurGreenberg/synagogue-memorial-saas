@@ -302,6 +302,16 @@
                     </div>
                     <p class="field-hint admin-theme-setting-hint">{{t 'yahrzeit_enabled_help'}}</p>
                 </div>
+                <div class="admin-theme-setting">
+                    <div class="admin-theme-setting-label">{{t 'yahrzeit_include_hebrew'}}</div>
+                    <div class="admin-theme-setting-control">
+                        <label class="toggle-switch" for="yahrzeitRemindersIncludeHebrew">
+                            <input type="checkbox" id="yahrzeitRemindersIncludeHebrew" name="yahrzeitRemindersIncludeHebrew" value="1" {{#if synagogue.yahrzeitReminders.includeHebrewYahrzeit}}checked{{/if}}>
+                            <span class="toggle-slider" aria-hidden="true"></span>
+                        </label>
+                    </div>
+                    <p class="field-hint admin-theme-setting-hint">{{t 'yahrzeit_include_hebrew_help'}}</p>
+                </div>
                 <div class="form-field admin-theme-setting">
                     <label for="yahrzeitRemindersEmail">{{t 'yahrzeit_email'}}</label>
                     <input type="email" class="form-control" id="yahrzeitRemindersEmail" name="yahrzeitRemindersEmail" value="{{synagogue.yahrzeitReminders.notifyEmail}}" placeholder="admin@example.com">
