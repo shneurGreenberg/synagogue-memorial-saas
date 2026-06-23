@@ -15,7 +15,6 @@
     "seed:hayom-yom": "node scripts/seed-hayom-yom.js",
     "seed:photos": "node scripts/seed-photos.js --slug=novosibirsk --force",
     "build:board": "vite build --config vite.board.config.mjs",
-    "build:candle": "node scripts/split-candle-assets.js",
     "build:pages": "node scripts/build-github-pages.js",
     "dev:board": "vite build --config vite.board.config.mjs --watch"
   },

@@ -24,11 +24,7 @@ images/*.jpg
 images/*.jpeg
 images/*.png
 images/*.webp
-!images/banner-transparent.png
 !images/brickwall.jpg
-!images/candle.webp
-!images/candle-base.webp
-!images/candle-flame.webp
 !images/gold.png
 !images/wood2.png
 !images/kaddish-official-logo.svg
