@@ -2,17 +2,16 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { withTranslation } from 'react-i18next';
 import { assetUrl } from '../lib/asset-url';
+import { CandleVideo } from './CandleVideo';
 
 class PrayerReadingOverlayBase extends React.Component {
   constructor(props) {
     super(props);
-    this.candleRef = React.createRef();
     this.audioRef = React.createRef();
     this.state = { isPlaying: false };
     this.onOverlayClick = this.onOverlayClick.bind(this);
     this.stopPropagation = this.stopPropagation.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
-    this.restartCandleAnimation = this.restartCandleAnimation.bind(this);
     this.toggleAudio = this.toggleAudio.bind(this);
     this.stopAudio = this.stopAudio.bind(this);
     this.onAudioEnded = this.onAudioEnded.bind(this);
@@ -20,14 +19,10 @@ class PrayerReadingOverlayBase extends React.Component {
 
   componentDidMount() {
     document.addEventListener('keydown', this.onKeyDown);
-    this.candleLoopTimer = window.setInterval(this.restartCandleAnimation, 3200);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.onKeyDown);
-    if (this.candleLoopTimer) {
-      window.clearInterval(this.candleLoopTimer);
-    }
     this.stopAudio();
   }
 
@@ -69,21 +64,6 @@ class PrayerReadingOverlayBase extends React.Component {
     this.setState({ isPlaying: true });
   }
 
-  restartCandleAnimation() {
-    const img = this.candleRef.current;
-    if (!img) {
-      return;
-    }
-
-    const src = img.getAttribute('src');
-    if (!src) {
-      return;
-    }
-
-    img.setAttribute('src', '');
-    img.setAttribute('src', src);
-  }
-
   onOverlayClick(event) {
     if (event.target !== event.currentTarget) {
       return;
@@ -121,13 +101,7 @@ class PrayerReadingOverlayBase extends React.Component {
           </button>
           <div className={`prayer-reading-layout ${extraClass || ''}`}>
             <div className="prayer-reading-candle-side" aria-hidden="true">
-              <img
-                ref={this.candleRef}
-                className="prayer-reading-candle"
-                src={assetUrl('images/candle.webp')}
-                alt=""
-                decoding="async"
-              />
+              <CandleVideo className="prayer-reading-candle" />
             </div>
             <div className="prayer-reading-content">
               {heading && <h1 className="prayer-reading-heading">{heading}</h1>}

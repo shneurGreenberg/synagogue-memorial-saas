@@ -1,10 +1,10 @@
 import React from 'react';
-import { assetUrl } from '../lib/asset-url';
 import {
   formatGregorianDate,
   formatHebrewDate,
 } from '../lib/novosibirsk';
 import { getNameDensityClass } from '../lib/text-density';
+import { CandleVideo } from './CandleVideo';
 
 const CANDLE_CYCLE_MS = 4000;
 
@@ -23,10 +23,8 @@ class MemorialCardInner extends React.Component {
   constructor(props) {
     super(props);
     this.state = { showCandle: false };
-    this.candleRef = React.createRef();
     this.onActivate = this.onActivate.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
-    this.restartCandleAnimation = this.restartCandleAnimation.bind(this);
   }
 
   componentDidMount() {
@@ -38,10 +36,7 @@ class MemorialCardInner extends React.Component {
 
     const phaseOffset = (entry.id * 317) % CANDLE_CYCLE_MS;
     this.candleTimer = window.setTimeout(() => {
-      this.setState({ showCandle: true }, () => {
-        this.restartCandleAnimation();
-        this.candleLoopTimer = window.setInterval(this.restartCandleAnimation, 3200);
-      });
+      this.setState({ showCandle: true });
     }, phaseOffset);
   }
 
@@ -49,27 +44,6 @@ class MemorialCardInner extends React.Component {
     if (this.candleTimer) {
       window.clearTimeout(this.candleTimer);
     }
-
-    if (this.candleLoopTimer) {
-      window.clearInterval(this.candleLoopTimer);
-    }
-  }
-
-  restartCandleAnimation() {
-    const img = this.candleRef.current;
-
-    if (!img) {
-      return;
-    }
-
-    const src = img.getAttribute('src');
-
-    if (!src) {
-      return;
-    }
-
-    img.setAttribute('src', '');
-    img.setAttribute('src', src);
   }
 
   onActivate() {
@@ -111,18 +85,8 @@ class MemorialCardInner extends React.Component {
         onClick={this.onActivate}
         onKeyDown={this.onKeyDown}
         aria-label={displayName}
-        style={{ '--candle-phase': entry.id % 17 }}
       >
-        {this.state.showCandle && (
-          <img
-            ref={this.candleRef}
-            className="candle"
-            src={assetUrl('images/candle.webp')}
-            alt=""
-            aria-hidden="true"
-            decoding="async"
-          />
-        )}
+        <CandleVideo active={this.state.showCandle} />
         <div className={`inner ${getNameDensityClass(displayName)}`}>
           <h3>{displayName}</h3>
           <div className="card-dates">

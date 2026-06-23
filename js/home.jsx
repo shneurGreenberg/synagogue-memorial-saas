@@ -104,12 +104,15 @@ class CardBase extends React.Component {
         style={{ '--candle-phase': entry.id % 17 }}
       >
         {this.state.showCandle && (
-          <img
+          <video
             className="candle"
-            src="/images/candle.webp"
-            alt=""
+            src="/images/candle.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
             aria-hidden="true"
-            decoding="async"
           />
         )}
         <div className="inner">
