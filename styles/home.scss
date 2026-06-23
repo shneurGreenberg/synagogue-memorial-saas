@@ -618,15 +618,13 @@
 
         .candle {
           width: clamp(36px, 3.8vw, 54px);
-          height: auto;
+          height: clamp(48px, 5vw, 72px);
           max-height: 62%;
           position: absolute;
           left: 6px;
           top: 46%;
           transform: translate3d(0, calc(-50% + 24px), 0);
           pointer-events: none;
-          object-fit: contain;
-          object-position: center bottom;
           z-index: 0;
           backface-visibility: hidden;
         }
@@ -634,6 +632,7 @@
         &.card-big {
           .candle {
             width: clamp(56px, 6vw, 84px);
+            height: clamp(72px, 7.5vw, 108px);
             max-height: 72%;
             top: 44%;
             transform: translate3d(0, calc(-50% + 24px), 0);
@@ -1602,10 +1601,8 @@
 .prayer-reading-candle {
   width: 100%;
   max-width: clamp(120px, 18vw, 240px);
-  height: auto;
+  height: clamp(160px, 22vw, 280px);
   max-height: 88%;
-  object-fit: contain;
-  object-position: center bottom;
   pointer-events: none;
   filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.45));
 }
