@@ -37,7 +37,7 @@ const CANDLE_CYCLE_MS = 4000;
 class CardBase extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { showCandle: false };
+    this.state = { showCandle: false, candleFallback: false };
     this.onActivate = this.onActivate.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
   }
@@ -104,16 +104,27 @@ class CardBase extends React.Component {
         style={{ '--candle-phase': entry.id % 17 }}
       >
         {this.state.showCandle && (
-          <video
-            className="candle"
-            src="/images/candle.mp4"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            aria-hidden="true"
-          />
+          this.state.candleFallback ? (
+            <img
+              className="candle candle-fallback"
+              src="/images/candle-poster.webp"
+              alt=""
+              aria-hidden="true"
+              decoding="async"
+            />
+          ) : (
+            <video
+              className="candle"
+              src="/images/candle.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              aria-hidden="true"
+              onError={() => this.setState({ candleFallback: true })}
+            />
+          )
         )}
         <div className="inner">
           <h3 title={entry.name}>{entry.name}</h3>

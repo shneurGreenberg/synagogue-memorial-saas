@@ -627,6 +627,12 @@
           pointer-events: none;
           z-index: 0;
           backface-visibility: hidden;
+          object-fit: contain;
+
+          &.candle-fallback {
+            animation: candle-soft-flicker 3.2s ease-in-out infinite;
+            will-change: opacity, filter;
+          }
         }
 
         &.card-big {
@@ -1341,7 +1347,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .main-container .cards-grid .card .candle {
+  .main-container .cards-grid .card .candle,
+  .prayer-reading-candle.candle-fallback {
     animation: none;
   }
 
@@ -1605,6 +1612,12 @@
   max-height: 88%;
   pointer-events: none;
   filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.45));
+  object-fit: contain;
+
+  &.candle-fallback {
+    animation: candle-soft-flicker 3.2s ease-in-out infinite;
+    will-change: opacity, filter;
+  }
 }
 
 .prayer-reading-content {
