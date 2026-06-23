@@ -105,7 +105,12 @@ const FONT_SCALE_SLIDER_META = [
   { key: 'torahNames', labelKey: 'font_scale_torah_names', helpKey: 'font_scale_torah_names_help', min: 100, max: 400, step: 10 },
 ];
 
-const APPEARANCE_FONT_SCALE_GROUPS = [
+const TEXTS_FONT_SCALE_GROUPS = [
+  {
+    groupKey: 'typography_center_column',
+    helpKey: 'typography_center_column_help',
+    keys: ['tileTitle', 'tileDate', 'boardHeader'],
+  },
   {
     groupKey: 'typography_left_column',
     helpKey: 'typography_left_column_help',
@@ -116,19 +121,6 @@ const APPEARANCE_FONT_SCALE_GROUPS = [
     helpKey: 'typography_right_column_help',
     keys: ['clock', 'prayers', 'prayerOverlay', 'torahNames'],
   },
-];
-
-const TEXTS_FONT_SCALE_GROUPS = [
-  {
-    groupKey: 'typography_center_column',
-    helpKey: 'typography_center_column_help',
-    keys: ['tileTitle', 'tileDate', 'boardHeader'],
-  },
-];
-
-const FONT_SCALE_GROUPS = [
-  ...TEXTS_FONT_SCALE_GROUPS,
-  ...APPEARANCE_FONT_SCALE_GROUPS,
 ];
 
 function buildBoardFeatureToggles(boardFeatures) {
@@ -157,11 +149,10 @@ function buildBoardFeatureGroups(boardFeatures) {
 
 function buildFontScaleSlider(entry, fontScales) {
   const scales = fontScales || {};
-  const defaultValue = entry.key === 'prayerOverlay' ? 75 : 100;
 
   return {
     ...entry,
-    value: scales[entry.key] != null ? scales[entry.key] : defaultValue,
+    value: scales[entry.key] != null ? scales[entry.key] : 100,
   };
 }
 
@@ -176,10 +167,6 @@ function buildFontScaleGroups(fontScales, groups) {
     helpKey: group.helpKey,
     sliders: group.keys.map((key) => buildFontScaleSlider(metaByKey[key], fontScales)).filter(Boolean),
   }));
-}
-
-function buildAppearanceFontScaleGroups(fontScales) {
-  return buildFontScaleGroups(fontScales, APPEARANCE_FONT_SCALE_GROUPS);
 }
 
 function buildTextsFontScaleGroups(fontScales) {
@@ -435,10 +422,11 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             titleRu, titleEn, titleHe, primaryColor, textColor, accentColor, tileColor, tileOpacity,
             language, shabbatTimesEnabled,
         } = req.body;
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
         const boardFeatures = parseBoardFeaturesFromBody(req.body);
         const publicSubmission = parsePublicSubmissionFromBody(req.body);
         const yahrzeitReminders = parseYahrzeitRemindersFromBody(req.body);
-        const fontScales = parseFontScalesFromBody(req.body);
+        const fontScales = parseFontScalesFromBody(req.body, synagogue?.theme?.fontScales);
         const updateData = {};
 
         if (permissions.settingsAppearance) {
@@ -602,8 +590,18 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
             screenshot,
             snapshot,
         };
-        synagogue.activeSavedViewId = req.params.viewId;
-        await synagogue.save();
+
+        const themeUpdate = buildApplyUpdate(snapshot);
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            {
+                $set: {
+                    ...themeUpdate,
+                    activeSavedViewId: req.params.viewId,
+                    [`savedViews.${viewIndex}`]: synagogue.savedViews[viewIndex],
+                },
+            },
+        );
 
         return res.json({ ok: true, view: synagogue.savedViews[viewIndex] });
     } catch (err) {
@@ -660,6 +658,7 @@ router.post('/:slug/settings/reset-theme', requireAdmin, requirePermission('sett
                 'theme.fontScales.boardHeader': 100,
                 'theme.fontScales.sidebar': 100,
                 'theme.fontScales.prayers': 100,
+                'theme.fontScales.prayerOverlay': 100,
                 'theme.fontScales.torahNames': 100,
             },
             $unset: {
@@ -737,7 +736,6 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             canSaveBoardSettings: canSaveBoardSettings(req.adminPermissions),
             boardTitles: enriched.titles,
             boardFeatureGroups: buildBoardFeatureGroups(enriched.boardFeatures),
-            appearanceFontScaleGroups: buildAppearanceFontScaleGroups(enriched.theme.fontScales),
             textsFontScaleGroups: buildTextsFontScaleGroups(enriched.theme.fontScales),
             savedViews: serializeSavedViews(enriched.savedViews),
             activeSavedViewId: enriched.activeSavedViewId || '',

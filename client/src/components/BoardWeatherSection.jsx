@@ -154,10 +154,12 @@ function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
   const sunTimesLine = showSunTimes && sunTimes ? (
     <div className="weather-sun-times">
       <span className="weather-sun-times-item weather-sun-times-sunrise">
-        {t('sunrise_label')} {formatLocalTime(sunTimes.sunrise, locale)}
+        <span className="weather-sun-label">{t('sunrise_label')}</span>
+        <span className="weather-sun-time">{formatLocalTime(sunTimes.sunrise, locale)}</span>
       </span>
       <span className="weather-sun-times-item weather-sun-times-sunset">
-        {t('sunset_label')} {formatLocalTime(sunTimes.sunset, locale)}
+        <span className="weather-sun-label">{t('sunset_label')}</span>
+        <span className="weather-sun-time">{formatLocalTime(sunTimes.sunset, locale)}</span>
       </span>
     </div>
   ) : null;
