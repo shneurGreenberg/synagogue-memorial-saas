@@ -356,8 +356,6 @@ function renderAdmin(res, view, options = {}) {
     );
     const locale = getAdminLocaleContext(displaySynagogue && displaySynagogue.adminLanguage);
     const yahrzeitTodayCount = buildYahrzeitEntries(displaySynagogue).length;
-    const boardFeatures = normalizeBoardFeatures(displaySynagogue && displaySynagogue.boardFeatures);
-    const showOfficialLogo = boardFeatures.officialLogo !== false;
 
     res.render(view, {
         ...options,
@@ -368,7 +366,6 @@ function renderAdmin(res, view, options = {}) {
         adminDir: locale.adminDir,
         adminIsRtl: locale.adminIsRtl,
         yahrzeitTodayCount,
-        showOfficialLogo,
         officialLogoUrl: `/images/${OFFICIAL_LOGO_FILENAME}`,
         faviconUrl: buildFaviconPath(displaySynagogue.slug, { badge: false }),
         faviconAlertUrl: buildFaviconPath(displaySynagogue.slug, { badge: true }),
