@@ -44,7 +44,9 @@ function MemorialSubmissionPanelBase({ t }) {
             {qrImage}
           </a>
         ) : (
-          qrImage
+          <div className="memorial-submission-qr-link memorial-submission-qr-frame" aria-hidden="true">
+            {qrImage}
+          </div>
         )}
       </div>
     </section>

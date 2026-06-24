@@ -100,22 +100,21 @@ function useBoardWeather(coords) {
   return { forecast, loading, failed };
 }
 
-function CompactSunTimes({ t, sunTimes, locale, className }) {
+function TodaySunStack({ t, sunTimes, locale }) {
   if (!sunTimes) {
     return null;
   }
 
   return (
-    <div className={`weather-sun-times-compact ${className || ''}`}>
-      <span className="weather-sun-compact-item">
+    <div className="weather-sun-stack">
+      <div className="weather-sun-stack-row">
         <span className="weather-sun-label">{t('sunrise_label')}</span>
         <span className="weather-sun-time">{formatLocalTime(sunTimes.sunrise, locale)}</span>
-      </span>
-      <span className="weather-sun-compact-sep" aria-hidden="true">·</span>
-      <span className="weather-sun-compact-item">
+      </div>
+      <div className="weather-sun-stack-row">
         <span className="weather-sun-label">{t('sunset_label')}</span>
         <span className="weather-sun-time">{formatLocalTime(sunTimes.sunset, locale)}</span>
-      </span>
+      </div>
     </div>
   );
 }
@@ -171,21 +170,20 @@ function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
     min: Math.round(forecast.daily.temperature_2m_min[index + 1]),
   }));
 
-  const sunTimesBlock = showSunTimes ? (
-    <CompactSunTimes t={t} sunTimes={sunTimes} locale={locale} />
-  ) : null;
-
   return (
     <div className="board-weather-block">
       {showWeather && (
         <section className="weather-panel weather-panel-compact" aria-label={t('weather_title')}>
           <h2>{t('weather_title')}</h2>
-          <div className="weather-today-compact">
-            <WeatherIcon code={todayCode} className="weather-today-icon" />
-            <div className="weather-today-temp">{todayTemp}°</div>
-            <div className="weather-today-details">
+          <div className="weather-today-card">
+            <div className="weather-today-left">
+              <div className="weather-today-temp">{todayTemp}°</div>
+            </div>
+            <div className="weather-today-right">
+              {showSunTimes && (
+                <TodaySunStack t={t} sunTimes={sunTimes} locale={locale} />
+              )}
               <div className="weather-today-label">{weatherLabel(t, todayCode)}</div>
-              {sunTimesBlock}
             </div>
           </div>
           {upcoming.length > 0 && (
@@ -212,7 +210,7 @@ function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
       {!showWeather && showSunTimes && sunTimes && (
         <section className="weather-panel weather-panel-sun-only" aria-label={t('sun_times_title')}>
           <h2>{t('sun_times_title')}</h2>
-          <CompactSunTimes t={t} sunTimes={sunTimes} locale={locale} className="weather-sun-times-standalone" />
+          <TodaySunStack t={t} sunTimes={sunTimes} locale={locale} />
         </section>
       )}
     </div>
@@ -226,5 +224,4 @@ function BoardWeatherSectionConnected(props) {
 
 export const BoardWeatherSection = withTranslation()(BoardWeatherSectionConnected);
 
-// Backward-compatible export for any legacy imports.
 export const WeatherPanel = BoardWeatherSection;

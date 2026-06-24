@@ -16,7 +16,7 @@
   overflow: hidden;
   box-sizing: border-box;
   width: 100%;
-  --board-qr-image-size: calc(clamp(100px, 10vw, 140px) * var(--memorial-qr-size-scale, 1));
+  --board-qr-image-size: calc(108px * var(--memorial-qr-size-scale, 1));
   --board-qr-bottom-inset: clamp(10px, 1.1vw, 14px);
   --board-qr-side-padding: clamp(6px, 0.55vw, 10px);
 
@@ -500,7 +500,7 @@
     .memorial-submission-panel {
       width: 100%;
       margin-top: auto;
-      padding: 0.55rem var(--board-qr-side-padding) var(--board-qr-bottom-inset);
+      padding: 0.5rem var(--board-qr-side-padding) var(--board-qr-bottom-inset);
       text-align: center;
       border-top: none;
       flex-shrink: 0;
@@ -513,19 +513,19 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-        min-height: clamp(2rem, 2.6vw, 2.8rem);
+        min-height: clamp(1.8rem, 2.4vw, 2.6rem);
       }
 
       .memorial-submission-qr-body {
         flex: 0 0 auto;
-        height: var(--board-qr-image-size);
+        width: 100%;
         display: flex;
         align-items: flex-end;
         justify-content: center;
       }
 
       h2 {
-        margin: 0 0 0.45rem;
+        margin: 0 0 0.35rem;
         font-size: calc(clamp(14px, 1.15vw, 18px) * var(--memorial-qr-title-scale, 1));
         line-height: 1.35;
         color: $goldenText;
@@ -533,14 +533,17 @@
       }
 
       .memorial-submission-text {
-        margin: 0 0 0.65rem;
+        margin: 0 0 0.5rem;
         font-size: calc(clamp(12px, 1vw, 15px) * var(--memorial-qr-text-scale, 1));
-        line-height: 1.4;
+        line-height: 1.35;
         color: $textColor;
       }
 
       .memorial-submission-qr-link {
-        display: inline-block;
+        display: block;
+        width: var(--board-qr-image-size);
+        height: var(--board-qr-image-size);
+        flex-shrink: 0;
         line-height: 0;
         cursor: pointer;
         transition: transform 0.15s ease;
@@ -551,13 +554,14 @@
       }
 
       .memorial-submission-qr {
-        width: var(--board-qr-image-size);
-        height: var(--board-qr-image-size);
-        max-width: 100%;
+        display: block;
+        width: 100%;
+        height: 100%;
         object-fit: contain;
         background: #fff;
         border-radius: 8px;
         padding: 6px;
+        box-sizing: border-box;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
       }
     }
@@ -657,8 +661,9 @@
         }
 
         .candle {
-          width: clamp(42px, 4.2vw, 62px);
-          height: clamp(56px, 5.6vw, 82px);
+          width: clamp(36px, 3.8vw, 54px);
+          height: clamp(48px, 5vw, 72px);
+          max-width: clamp(36px, 3.8vw, 54px);
           max-height: 62%;
           position: absolute;
           left: 6px;
@@ -667,7 +672,13 @@
           pointer-events: none;
           z-index: 0;
           backface-visibility: hidden;
+          display: block;
           object-fit: contain;
+          object-position: center bottom;
+
+          &.candle-video {
+            background: transparent;
+          }
 
           &.candle-fallback {
             animation: candle-soft-flicker 3.2s ease-in-out infinite;
@@ -686,8 +697,9 @@
 
         &.card-big {
           .candle {
-            width: clamp(64px, 6.5vw, 92px);
-            height: clamp(82px, 8.2vw, 118px);
+            width: clamp(56px, 6vw, 84px);
+            height: clamp(72px, 7.5vw, 108px);
+            max-width: clamp(56px, 6vw, 84px);
             max-height: 72%;
             top: 44%;
             transform: translate3d(0, calc(-50% + 24px), 0);
@@ -1090,32 +1102,74 @@
         }
       }
 
+      .weather-today-card {
+        display: flex;
+        align-items: stretch;
+        margin-bottom: 6px;
+        border-radius: 8px;
+        border: 1px solid rgba(207, 175, 31, 0.28);
+        background: rgba(0, 0, 0, 0.22);
+        overflow: hidden;
+      }
+
+      .weather-today-left {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: clamp(52px, 4.5vw, 72px);
+        padding: 6px 8px;
+        border-inline-end: 1px solid rgba(207, 175, 31, 0.22);
+      }
+
+      .weather-today-right {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 3px;
+        padding: 6px 8px;
+        text-align: start;
+      }
+
+      .weather-today-temp {
+        font-size: clamp(24px, 2.2vw, 34px);
+        font-weight: 700;
+        line-height: 1;
+        color: var(--accent-color, #ffd54f);
+      }
+
+      .weather-today-label {
+        font-size: clamp(10px, 0.88vw, 13px);
+        line-height: 1.25;
+        margin: 0;
+        opacity: 0.92;
+      }
+
+      .weather-sun-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        font-size: clamp(9px, 0.78vw, 11px);
+        line-height: 1.2;
+        color: var(--tile-date-color, #f0f0f0);
+        opacity: 0.88;
+      }
+
+      .weather-sun-stack-row {
+        display: flex;
+        align-items: center;
+        gap: 0.35em;
+        white-space: nowrap;
+      }
+
       .weather-today-compact {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: clamp(8px, 0.8vw, 12px);
         margin-bottom: 8px;
-      }
-
-      .weather-today-temp {
-        font-size: clamp(26px, 2.5vw, 38px);
-        font-weight: 700;
-        line-height: 1;
-        color: var(--accent-color, #ffd54f);
-        flex: 0 0 auto;
-      }
-
-      .weather-today-details {
-        flex: 1 1 auto;
-        min-width: 0;
-        text-align: start;
-      }
-
-      .weather-today-label {
-        font-size: clamp(11px, 0.95vw, 14px);
-        line-height: 1.25;
-        margin: 0;
       }
 
       .weather-sun-times-compact {
@@ -1436,7 +1490,7 @@
       .donation-qr-panel {
         width: 100%;
         margin-top: auto;
-        padding: 0.55rem var(--board-qr-side-padding) var(--board-qr-bottom-inset);
+        padding: 0.5rem var(--board-qr-side-padding) var(--board-qr-bottom-inset);
         text-align: center;
         border-top: 1px solid $goldenPanelBorder;
         flex-shrink: 0;
@@ -1449,19 +1503,19 @@
           display: flex;
           flex-direction: column;
           justify-content: flex-end;
-          min-height: clamp(2rem, 2.6vw, 2.8rem);
+          min-height: clamp(1.8rem, 2.4vw, 2.6rem);
         }
 
         .memorial-submission-qr-body {
           flex: 0 0 auto;
-          height: var(--board-qr-image-size);
+          width: 100%;
           display: flex;
           align-items: flex-end;
           justify-content: center;
         }
 
         h2 {
-          margin: 0 0 0.45rem;
+          margin: 0 0 0.35rem;
           font-size: calc(clamp(14px, 1.15vw, 18px) * var(--memorial-qr-title-scale, 1));
           line-height: 1.35;
           color: $goldenText;
@@ -1469,14 +1523,17 @@
         }
 
         .memorial-submission-text {
-          margin: 0 0 0.65rem;
+          margin: 0 0 0.5rem;
           font-size: calc(clamp(12px, 1vw, 15px) * var(--memorial-qr-text-scale, 1));
-          line-height: 1.4;
+          line-height: 1.35;
           color: $textColor;
         }
 
         .memorial-submission-qr-link {
-          display: inline-block;
+          display: block;
+          width: var(--board-qr-image-size);
+          height: var(--board-qr-image-size);
+          flex-shrink: 0;
           line-height: 0;
           cursor: pointer;
           transition: transform 0.15s ease;
@@ -1487,13 +1544,14 @@
         }
 
         .memorial-submission-qr {
-          width: var(--board-qr-image-size);
-          height: var(--board-qr-image-size);
-          max-width: 100%;
+          display: block;
+          width: 100%;
+          height: 100%;
           object-fit: contain;
           background: #fff;
           border-radius: 8px;
           padding: 6px;
+          box-sizing: border-box;
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
         }
       }
