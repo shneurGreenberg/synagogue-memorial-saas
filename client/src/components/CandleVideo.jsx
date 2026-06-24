@@ -9,6 +9,9 @@ import {
   subscribeCandleStatus,
 } from '../lib/candle-video-pool';
 
+const DIRECT_VIDEO_PLAY_RETRIES = 4;
+const DIRECT_VIDEO_RETRY_MS = 1500;
+
 export class CandleVideo extends React.Component {
   constructor(props) {
     super(props);
@@ -19,6 +22,8 @@ export class CandleVideo extends React.Component {
     this.visibilityObserver = null;
     this.subscription = null;
     this.statusUnsubscribe = null;
+    this.playRetryTimer = null;
+    this.playRetryCount = 0;
     this.isVisible = true;
     this.state = {
       renderMode: this.legacy ? 'fallback' : getCandleRenderMode(),
@@ -33,7 +38,9 @@ export class CandleVideo extends React.Component {
     }
 
     if (this.lowPower) {
-      this.observeDirectVideo();
+      window.requestAnimationFrame(() => {
+        this.observeDirectVideo();
+      });
       return;
     }
 
@@ -60,6 +67,9 @@ export class CandleVideo extends React.Component {
       if (prevProps.active !== this.props.active) {
         this.syncDirectVideoPlayback();
       }
+      if (!this.visibilityObserver && this.videoRef.current) {
+        this.observeDirectVideo();
+      }
       return;
     }
 
@@ -73,12 +83,33 @@ export class CandleVideo extends React.Component {
   }
 
   componentWillUnmount() {
+    this.clearPlayRetry();
     this.visibilityObserver?.disconnect();
     this.visibilityObserver = null;
     this.subscription?.unsubscribe();
     this.subscription = null;
     this.statusUnsubscribe?.();
     this.statusUnsubscribe = null;
+  }
+
+  clearPlayRetry() {
+    if (this.playRetryTimer) {
+      window.clearTimeout(this.playRetryTimer);
+      this.playRetryTimer = null;
+    }
+  }
+
+  schedulePlayRetry() {
+    if (this.playRetryCount >= DIRECT_VIDEO_PLAY_RETRIES || this.state.directVideoFailed) {
+      return;
+    }
+
+    this.clearPlayRetry();
+    this.playRetryCount += 1;
+    this.playRetryTimer = window.setTimeout(() => {
+      this.playRetryTimer = null;
+      this.syncDirectVideoPlayback();
+    }, DIRECT_VIDEO_RETRY_MS);
   }
 
   bindCanvas() {
@@ -99,21 +130,30 @@ export class CandleVideo extends React.Component {
     }
 
     if (typeof IntersectionObserver === 'undefined') {
+      this.isVisible = true;
       this.syncDirectVideoPlayback();
       return;
     }
 
     if (this.visibilityObserver) {
+      this.syncDirectVideoPlayback();
       return;
     }
 
     this.visibilityObserver = new IntersectionObserver((entries) => {
       this.isVisible = Boolean(entries[0]?.isIntersecting);
       this.syncDirectVideoPlayback();
-    }, { threshold: 0.01 });
+    }, { threshold: 0.01, rootMargin: '40px' });
 
     this.visibilityObserver.observe(video);
     this.syncDirectVideoPlayback();
+
+    window.setTimeout(() => {
+      if (!this.isVisible) {
+        this.isVisible = true;
+        this.syncDirectVideoPlayback();
+      }
+    }, 300);
   }
 
   syncDirectVideoPlayback() {
@@ -129,16 +169,35 @@ export class CandleVideo extends React.Component {
       return;
     }
 
+    if (video.readyState < 2) {
+      try {
+        video.load();
+      } catch {
+        /* ignore load errors on legacy TVs */
+      }
+      this.schedulePlayRetry();
+      return;
+    }
+
     const playPromise = video.play();
     if (playPromise && typeof playPromise.catch === 'function') {
-      playPromise.catch(() => {
-        this.setState({ directVideoFailed: true });
+      playPromise.then(() => {
+        this.playRetryCount = 0;
+        this.clearPlayRetry();
+      }).catch(() => {
+        this.schedulePlayRetry();
       });
     }
   }
 
   onDirectVideoError = () => {
     this.setState({ directVideoFailed: true });
+    this.clearPlayRetry();
+  };
+
+  onDirectVideoReady = () => {
+    this.playRetryCount = 0;
+    this.syncDirectVideoPlayback();
   };
 
   onPosterError = () => {
@@ -146,14 +205,7 @@ export class CandleVideo extends React.Component {
   };
 
   renderLegacy() {
-    const { className = 'candle' } = this.props;
-
-    return (
-      <div
-        className={`${className} candle-fallback candle-fallback-css`}
-        aria-hidden="true"
-      />
-    );
+    return this.renderPosterFallback(this.props.className || 'candle');
   }
 
   renderPosterFallback(className) {
@@ -197,9 +249,11 @@ export class CandleVideo extends React.Component {
         loop
         playsInline
         autoPlay
-        preload="none"
+        preload="auto"
         aria-hidden="true"
         onError={this.onDirectVideoError}
+        onLoadedData={this.onDirectVideoReady}
+        onCanPlay={this.onDirectVideoReady}
       />
     );
   }

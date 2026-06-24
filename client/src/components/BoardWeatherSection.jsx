@@ -174,9 +174,9 @@ function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
     <div className="board-weather-block">
       {showWeather && (
         <section className="weather-panel weather-panel-compact" aria-label={t('weather_title')}>
-          <h2>{t('weather_title')}</h2>
           <div className="weather-today-card">
             <div className="weather-today-left">
+              <WeatherIcon code={todayCode} className="weather-today-icon" />
               <div className="weather-today-temp">{todayTemp}°</div>
             </div>
             <div className="weather-today-right">

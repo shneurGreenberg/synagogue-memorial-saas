@@ -179,6 +179,8 @@ function getSharedVideo() {
     sharedVideo.preload = 'auto';
     sharedVideo.setAttribute('playsinline', '');
     sharedVideo.setAttribute('webkit-playsinline', '');
+    sharedVideo.setAttribute('x5-playsinline', '');
+    sharedVideo.setAttribute('x5-video-player-type', 'h5');
     attachVideoListeners(sharedVideo);
     loadPosterImage();
   }
@@ -334,9 +336,23 @@ function ensureLoop() {
   const playPromise = video.play();
   if (playPromise && typeof playPromise.catch === 'function') {
     playPromise.catch(() => {
-      if (!drawPosterFrameForAll()) {
-        onVideoFailed();
+      if (drawPosterFrameForAll()) {
+        window.setTimeout(() => {
+          if (hasActiveVisibleSubscriber() && renderMode !== 'fallback') {
+            const retryPromise = video.play();
+            if (retryPromise && typeof retryPromise.catch === 'function') {
+              retryPromise.catch(() => {
+                if (!drawPosterFrameForAll()) {
+                  onVideoFailed();
+                }
+              });
+            }
+          }
+        }, 1200);
+        return;
       }
+
+      onVideoFailed();
     });
   }
 
@@ -370,9 +386,16 @@ function observeVisibility(sub, canvas) {
   sub.observer = new IntersectionObserver((entries) => {
     sub.visible = Boolean(entries[0]?.isIntersecting);
     updateSubscriberState(sub);
-  }, { threshold: 0.01 });
+  }, { threshold: 0.01, rootMargin: '40px' });
 
   sub.observer.observe(canvas);
+
+  window.setTimeout(() => {
+    if (!sub.visible && sub.active && sub.canvas.isConnected) {
+      sub.visible = true;
+      updateSubscriberState(sub);
+    }
+  }, 300);
 }
 
 function updateSubscriberState(sub) {
@@ -428,6 +451,14 @@ export function subscribeCandleCanvas(canvas, { active = true } = {}) {
     setRenderMode('fallback');
   } else if (active) {
     ensureLoop();
+    window.requestAnimationFrame(() => {
+      if (sub.active && sub.canvas.isConnected) {
+        if (!sub.visible) {
+          sub.visible = true;
+        }
+        drawFrame(sub);
+      }
+    });
   }
 
   return {
