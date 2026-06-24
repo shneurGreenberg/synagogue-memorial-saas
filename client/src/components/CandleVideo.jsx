@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { isLegacyBoardBrowser } from '../lib/legacy-browser';
 import {
   candlePosterUrl,
   getCandleRenderMode,
@@ -10,16 +11,21 @@ import {
 export class CandleVideo extends React.Component {
   constructor(props) {
     super(props);
+    this.legacy = isLegacyBoardBrowser();
     this.canvasRef = React.createRef();
     this.subscription = null;
     this.statusUnsubscribe = null;
     this.state = {
-      renderMode: getCandleRenderMode(),
+      renderMode: this.legacy ? 'fallback' : getCandleRenderMode(),
       posterFailed: false,
     };
   }
 
   componentDidMount() {
+    if (this.legacy) {
+      return;
+    }
+
     this.statusUnsubscribe = subscribeCandleStatus((renderMode) => {
       if (renderMode === 'fallback') {
         this.subscription?.unsubscribe();
@@ -32,6 +38,10 @@ export class CandleVideo extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+    if (this.legacy) {
+      return;
+    }
+
     if (prevProps.active !== this.props.active) {
       this.subscription?.setActive(this.props.active);
     }
@@ -63,34 +73,55 @@ export class CandleVideo extends React.Component {
     this.setState({ posterFailed: true });
   };
 
+  renderLegacy() {
+    const { className = 'candle' } = this.props;
+
+    return (
+      <div
+        className={`${className} candle-fallback candle-fallback-css`}
+        aria-hidden="true"
+      />
+    );
+  }
+
+  renderFallback(className) {
+    const { posterFailed } = this.state;
+
+    if (posterFailed) {
+      return (
+        <div
+          className={`${className} candle-fallback candle-fallback-css`}
+          aria-hidden="true"
+        />
+      );
+    }
+
+    return (
+      <img
+        className={`${className} candle-fallback`}
+        src={candlePosterUrl()}
+        alt=""
+        aria-hidden="true"
+        decoding="sync"
+        onError={this.onPosterError}
+      />
+    );
+  }
+
   render() {
     const { className = 'candle', active = true } = this.props;
-    const { renderMode, posterFailed } = this.state;
+    const { renderMode } = this.state;
 
     if (!active) {
       return null;
     }
 
-    if (renderMode === 'fallback') {
-      if (posterFailed) {
-        return (
-          <div
-            className={`${className} candle-fallback candle-fallback-css`}
-            aria-hidden="true"
-          />
-        );
-      }
+    if (this.legacy) {
+      return this.renderLegacy();
+    }
 
-      return (
-        <img
-          className={`${className} candle-fallback`}
-          src={candlePosterUrl()}
-          alt=""
-          aria-hidden="true"
-          decoding="sync"
-          onError={this.onPosterError}
-        />
-      );
+    if (renderMode === 'fallback') {
+      return this.renderFallback(className);
     }
 
     return (
