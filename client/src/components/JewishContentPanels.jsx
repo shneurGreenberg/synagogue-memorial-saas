@@ -33,13 +33,20 @@ function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
     }
 
     let cancelled = false;
+    setFeed(null);
 
     const load = async () => {
       try {
-        const response = await fetch(`/s/${slug}/api/jewish-content?lang=${uiLang}`, {
-          cache: 'no-store',
-          headers: { Accept: 'application/json' },
-        });
+        const response = await fetch(
+          `/s/${slug}/api/jewish-content?lang=${uiLang}&date=${encodeURIComponent(calendarDayKey || '')}`,
+          {
+            cache: 'no-store',
+            headers: {
+              Accept: 'application/json',
+              'Cache-Control': 'no-cache',
+            },
+          },
+        );
 
         if (!response.ok || cancelled) {
           return;
@@ -126,8 +133,16 @@ function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
       {boardFeatures.hayomYom && (
         <section className="hayom-yom-panel" aria-label={t('hayom_yom_title')}>
           <h2>{t('hayom_yom_title')}</h2>
-          {hayomYom.text ? (
-            <HayomYomScroller text={hayomYom.text} />
+          {hayomYom.text || lessons5703.chumash?.label || lessons5703.tehillim?.label || lessons5703.tanya?.label ? (
+            <HayomYomScroller
+              text={hayomYom.text}
+              lessons5703={lessons5703}
+              lessonLabels={{
+                chumash: t('daily_chumash'),
+                tehillim: t('daily_tehillim'),
+                tanya: t('daily_tanya'),
+              }}
+            />
           ) : (
             <p className="hayom-yom-note">{t('hayom_yom_loading')}</p>
           )}

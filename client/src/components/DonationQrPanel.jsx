@@ -38,17 +38,21 @@ function DonationQrPanelBase({ t }) {
         '--memorial-qr-size-scale': qrScale,
       }}
     >
-      <h2>{title}</h2>
-      <p className="memorial-submission-text">{text}</p>
-      <a
-        href={donationUrl}
-        className="memorial-submission-qr-link"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={t('donation_qr_alt')}
-      >
-        {qrImage}
-      </a>
+      <div className="memorial-submission-qr-header">
+        <h2>{title}</h2>
+        <p className="memorial-submission-text">{text}</p>
+      </div>
+      <div className="memorial-submission-qr-body">
+        <a
+          href={donationUrl}
+          className="memorial-submission-qr-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={t('donation_qr_alt')}
+        >
+          {qrImage}
+        </a>
+      </div>
     </section>
   );
 }

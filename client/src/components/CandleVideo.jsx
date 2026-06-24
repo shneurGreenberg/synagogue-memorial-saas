@@ -15,11 +15,17 @@ export class CandleVideo extends React.Component {
     this.statusUnsubscribe = null;
     this.state = {
       renderMode: getCandleRenderMode(),
+      posterFailed: false,
     };
   }
 
   componentDidMount() {
     this.statusUnsubscribe = subscribeCandleStatus((renderMode) => {
+      if (renderMode === 'fallback') {
+        this.subscription?.unsubscribe();
+        this.subscription = null;
+      }
+
       this.setState({ renderMode });
     });
     this.bindCanvas();
@@ -53,23 +59,36 @@ export class CandleVideo extends React.Component {
     });
   }
 
+  onPosterError = () => {
+    this.setState({ posterFailed: true });
+  };
+
   render() {
     const { className = 'candle', active = true } = this.props;
-    const { renderMode } = this.state;
+    const { renderMode, posterFailed } = this.state;
 
     if (!active) {
       return null;
     }
 
     if (renderMode === 'fallback') {
+      if (posterFailed) {
+        return (
+          <div
+            className={`${className} candle-fallback candle-fallback-css`}
+            aria-hidden="true"
+          />
+        );
+      }
+
       return (
         <img
           className={`${className} candle-fallback`}
           src={candlePosterUrl()}
           alt=""
           aria-hidden="true"
-          decoding="async"
-          loading="lazy"
+          decoding="sync"
+          onError={this.onPosterError}
         />
       );
     }

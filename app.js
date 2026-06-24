@@ -320,8 +320,9 @@ app.get('/s/:slug/api/jewish-content', async (req, res) => {
     }
 
     const lang = ['ru', 'en', 'he'].includes(req.query.lang) ? req.query.lang : synagogue.language || 'ru';
-    const feed = await getJewishFeed(lang);
+    const feed = await getJewishFeed(lang, synagogue);
 
+    res.setHeader('Cache-Control', 'no-store');
     return res.json(feed);
   } catch (err) {
     return res.status(500).json({ error: err.message });

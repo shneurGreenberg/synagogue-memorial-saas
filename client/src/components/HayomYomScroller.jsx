@@ -1,5 +1,25 @@
 import React from 'react';
 
+function formatLessons5703(lessons5703, labels) {
+  if (!lessons5703) {
+    return '';
+  }
+
+  const lines = [];
+
+  if (lessons5703.chumash?.label) {
+    lines.push(`${labels.chumash}: ${lessons5703.chumash.label}`);
+  }
+  if (lessons5703.tehillim?.label) {
+    lines.push(`${labels.tehillim}: ${lessons5703.tehillim.label}`);
+  }
+  if (lessons5703.tanya?.label) {
+    lines.push(`${labels.tanya}: ${lessons5703.tanya.label}`);
+  }
+
+  return lines.join('\n');
+}
+
 export class HayomYomScroller extends React.Component {
   constructor(props) {
     super(props);
@@ -30,7 +50,7 @@ export class HayomYomScroller extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.text !== this.props.text) {
+    if (prevProps.text !== this.props.text || prevProps.lessons5703 !== this.props.lessons5703) {
       this.updateScrollBehavior();
     }
   }
@@ -40,6 +60,17 @@ export class HayomYomScroller extends React.Component {
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
     }
+  }
+
+  getDisplayText() {
+    const { text, lessons5703, lessonLabels } = this.props;
+    const lessonsText = formatLessons5703(lessons5703, lessonLabels || {});
+
+    if (text && lessonsText) {
+      return `${text}\n\n${lessonsText}`;
+    }
+
+    return text || lessonsText || '';
   }
 
   measureContentHeight(track) {
@@ -52,7 +83,11 @@ export class HayomYomScroller extends React.Component {
   }
 
   updateScrollBehavior = () => {
-    requestAnimationFrame(() => {
+    const schedule = typeof requestAnimationFrame === 'function'
+      ? requestAnimationFrame
+      : (callback) => window.setTimeout(callback, 0);
+
+    schedule(() => {
       const viewport = this.viewportRef.current;
       const track = this.trackRef.current;
 
@@ -87,19 +122,19 @@ export class HayomYomScroller extends React.Component {
   };
 
   renderBlock(suffix) {
-    const { text } = this.props;
+    const displayText = this.getDisplayText();
 
     return (
       <div className="hayom-yom-inner" key={suffix}>
-        <p className="hayom-yom-text">{text}</p>
+        <p className="hayom-yom-text">{displayText}</p>
       </div>
     );
   }
 
   render() {
-    const { text } = this.props;
+    const displayText = this.getDisplayText();
 
-    if (!text) {
+    if (!displayText) {
       return null;
     }
 
