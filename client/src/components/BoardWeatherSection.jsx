@@ -100,6 +100,26 @@ function useBoardWeather(coords) {
   return { forecast, loading, failed };
 }
 
+function CompactSunTimes({ t, sunTimes, locale, className }) {
+  if (!sunTimes) {
+    return null;
+  }
+
+  return (
+    <div className={`weather-sun-times-compact ${className || ''}`}>
+      <span className="weather-sun-compact-item">
+        <span className="weather-sun-label">{t('sunrise_label')}</span>
+        <span className="weather-sun-time">{formatLocalTime(sunTimes.sunrise, locale)}</span>
+      </span>
+      <span className="weather-sun-compact-sep" aria-hidden="true">·</span>
+      <span className="weather-sun-compact-item">
+        <span className="weather-sun-label">{t('sunset_label')}</span>
+        <span className="weather-sun-time">{formatLocalTime(sunTimes.sunset, locale)}</span>
+      </span>
+    </div>
+  );
+}
+
 function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
   const appData = getBoardData();
   const location = appData.location || {};
@@ -151,45 +171,36 @@ function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
     min: Math.round(forecast.daily.temperature_2m_min[index + 1]),
   }));
 
-  const sunTimesLine = showSunTimes && sunTimes ? (
-    <div className="weather-sun-times">
-      <span className="weather-sun-times-item weather-sun-times-sunrise">
-        <span className="weather-sun-label">{t('sunrise_label')}</span>
-        <span className="weather-sun-time">{formatLocalTime(sunTimes.sunrise, locale)}</span>
-      </span>
-      <span className="weather-sun-times-item weather-sun-times-sunset">
-        <span className="weather-sun-label">{t('sunset_label')}</span>
-        <span className="weather-sun-time">{formatLocalTime(sunTimes.sunset, locale)}</span>
-      </span>
-    </div>
+  const sunTimesBlock = showSunTimes ? (
+    <CompactSunTimes t={t} sunTimes={sunTimes} locale={locale} />
   ) : null;
 
   return (
     <div className="board-weather-block">
       {showWeather && (
-        <section className="weather-panel" aria-label={t('weather_title')}>
+        <section className="weather-panel weather-panel-compact" aria-label={t('weather_title')}>
           <h2>{t('weather_title')}</h2>
-          <div className="weather-today">
+          <div className="weather-today-compact">
             <WeatherIcon code={todayCode} className="weather-today-icon" />
-            <div className="weather-today-main">
-              <div className="weather-today-temp">{todayTemp}°</div>
+            <div className="weather-today-temp">{todayTemp}°</div>
+            <div className="weather-today-details">
               <div className="weather-today-label">{weatherLabel(t, todayCode)}</div>
+              {sunTimesBlock}
             </div>
           </div>
-          {sunTimesLine}
           {upcoming.length > 0 && (
-            <ul className="weather-upcoming">
+            <ul className="weather-upcoming-grid">
               {upcoming.map((day) => (
-                <li key={day.date} className="weather-upcoming-day">
-                  <span className="weather-upcoming-date">
+                <li key={day.date} className="weather-cube">
+                  <span className="weather-cube-date">
                     {new Date(`${day.date}T12:00:00`).toLocaleDateString(locale, {
                       weekday: 'short',
                       day: 'numeric',
                     })}
                   </span>
-                  <WeatherIcon code={day.code} className="weather-upcoming-icon" />
-                  <span className="weather-upcoming-temps">
-                    {day.max}° / {day.min}°
+                  <WeatherIcon code={day.code} className="weather-cube-icon" />
+                  <span className="weather-cube-temps">
+                    {day.max}°<span className="weather-cube-sep">/</span>{day.min}°
                   </span>
                 </li>
               ))}
@@ -201,7 +212,7 @@ function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
       {!showWeather && showSunTimes && sunTimes && (
         <section className="weather-panel weather-panel-sun-only" aria-label={t('sun_times_title')}>
           <h2>{t('sun_times_title')}</h2>
-          {sunTimesLine}
+          <CompactSunTimes t={t} sunTimes={sunTimes} locale={locale} className="weather-sun-times-standalone" />
         </section>
       )}
     </div>

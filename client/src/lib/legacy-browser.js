@@ -1,4 +1,4 @@
-export function isLegacyBoardBrowser() {
+export function isLowPowerBoardBrowser() {
   if (typeof window === 'undefined') {
     return false;
   }
@@ -9,8 +9,17 @@ export function isLegacyBoardBrowser() {
     return true;
   }
 
-  if (typeof IntersectionObserver === 'undefined') {
+  const cores = navigator.hardwareConcurrency || 4;
+  if (cores <= 2) {
     return true;
+  }
+
+  return false;
+}
+
+export function isLegacyBoardBrowser() {
+  if (typeof window === 'undefined') {
+    return false;
   }
 
   if (typeof requestAnimationFrame !== 'function') {
@@ -18,7 +27,8 @@ export function isLegacyBoardBrowser() {
   }
 
   const probe = document.createElement('video');
-  if (probe.canPlayType('video/mp4; codecs="avc1.42E01E"') === '') {
+  const h264Support = probe.canPlayType('video/mp4; codecs="avc1.42E01E"');
+  if (h264Support !== 'probably' && h264Support !== 'maybe') {
     return true;
   }
 
