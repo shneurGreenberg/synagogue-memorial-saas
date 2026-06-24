@@ -26,6 +26,8 @@ npm run build:board
 node app.js
 ```
 
+`build:board` automatically bumps `board-version.json` so TVs and browsers fetch fresh `/board/assets/memorial.js?v=…` after each deploy. If you deploy without running `build:board`, viewers may keep an old cached bundle.
+
 Built assets are served from `/board/assets/`.
 
 API for refreshing board data without reload:
