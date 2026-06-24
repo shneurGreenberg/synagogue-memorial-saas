@@ -404,7 +404,6 @@ class HomePageBase extends React.Component {
                 showTopDivider={!boardFeatures.hayomYom}
               />
             </div>
-            <MemorialSubmissionPanel />
           </div>
         </aside>
         <section className="middle">
@@ -497,10 +496,14 @@ class HomePageBase extends React.Component {
                   izkorText={this.props.t('izkor_text')}
                 />
               )}
-              <DonationQrPanel />
             </div>
           </div>
         </aside>
+        <div className="board-qr-row">
+          <MemorialSubmissionPanel />
+          <div className="board-qr-row-spacer" aria-hidden="true" />
+          <DonationQrPanel />
+        </div>
       </main>
     );
   }

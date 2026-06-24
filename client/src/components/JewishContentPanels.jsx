@@ -5,7 +5,7 @@ import { hasJewishContentPanels, resolveBoardFeatures } from '../lib/board-featu
 import { useBoardData } from '../context/BoardDataContext';
 import { HayomYomScroller } from './HayomYomScroller';
 
-const REFRESH_MS = 60 * 60 * 1000;
+const REFRESH_MS = 15 * 60 * 1000;
 
 function LearningTile({ label, item, sublabel }) {
   if (!item || !item.label) {
