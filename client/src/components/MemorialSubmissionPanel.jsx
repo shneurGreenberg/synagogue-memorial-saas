@@ -34,15 +34,19 @@ function MemorialSubmissionPanelBase({ t }) {
         '--memorial-qr-size-scale': qrScale,
       }}
     >
-      <h2>{title}</h2>
-      <p className="memorial-submission-text">{text}</p>
-      {addNameUrl ? (
-        <a href={addNameUrl} className="memorial-submission-qr-link" aria-label={t('memorial_submission_qr_alt')}>
-          {qrImage}
-        </a>
-      ) : (
-        qrImage
-      )}
+      <div className="memorial-submission-qr-header">
+        <h2>{title}</h2>
+        <p className="memorial-submission-text">{text}</p>
+      </div>
+      <div className="memorial-submission-qr-body">
+        {addNameUrl ? (
+          <a href={addNameUrl} className="memorial-submission-qr-link" aria-label={t('memorial_submission_qr_alt')}>
+            {qrImage}
+          </a>
+        ) : (
+          qrImage
+        )}
+      </div>
     </section>
   );
 }

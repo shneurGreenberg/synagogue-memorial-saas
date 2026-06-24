@@ -9,9 +9,11 @@ let visibilityListenerAttached = false;
 let renderMode = 'unknown'; // 'video' | 'fallback' | 'unknown'
 let lastDrawTime = 0;
 let statusListeners = new Set();
+let posterImage = null;
+let posterReady = false;
 
 const FRAME_INTERVAL_MS = 1000 / 12;
-const VIDEO_READY_TIMEOUT_MS = 8000;
+const VIDEO_READY_TIMEOUT_MS = 15000;
 
 function notifyStatusListeners() {
   statusListeners.forEach((listener) => {
@@ -41,13 +43,34 @@ export function subscribeCandleStatus(listener) {
   };
 }
 
-function canPlayH264() {
+function canPlayH264Reliably() {
   if (typeof document === 'undefined') {
     return false;
   }
 
   const probe = document.createElement('video');
-  return probe.canPlayType('video/mp4; codecs="avc1.42E01E"') !== '';
+  return probe.canPlayType('video/mp4; codecs="avc1.42E01E"') === 'probably';
+}
+
+function prefersCandleFallback() {
+  if (typeof document === 'undefined') {
+    return true;
+  }
+
+  if (!canPlayH264Reliably()) {
+    return true;
+  }
+
+  if (typeof requestAnimationFrame !== 'function') {
+    return true;
+  }
+
+  const canvas = document.createElement('canvas');
+  if (!canvas.getContext) {
+    return true;
+  }
+
+  return false;
 }
 
 function attachVisibilityListener() {
@@ -79,6 +102,27 @@ function prefersReducedMotion() {
 function onVideoFailed() {
   setRenderMode('fallback');
   stopLoop();
+}
+
+function loadPosterImage() {
+  if (posterImage || typeof Image === 'undefined') {
+    return posterImage;
+  }
+
+  posterImage = new Image();
+  posterImage.src = candlePosterUrl();
+  posterImage.addEventListener('load', () => {
+    posterReady = true;
+    if (renderMode === 'video') {
+      subscribers.forEach((sub) => {
+        if (sub.active && sub.visible && sub.canvas.isConnected) {
+          drawFrame(sub);
+        }
+      });
+    }
+  });
+
+  return posterImage;
 }
 
 function attachVideoListeners(video) {
@@ -114,7 +158,7 @@ function attachVideoListeners(video) {
 
 function getSharedVideo() {
   if (!sharedVideo) {
-    if (!canPlayH264()) {
+    if (prefersCandleFallback()) {
       setRenderMode('fallback');
       return null;
     }
@@ -128,6 +172,7 @@ function getSharedVideo() {
     sharedVideo.setAttribute('playsinline', '');
     sharedVideo.setAttribute('webkit-playsinline', '');
     attachVideoListeners(sharedVideo);
+    loadPosterImage();
   }
 
   return sharedVideo;
@@ -172,18 +217,38 @@ function syncCanvasSize(canvas) {
   return true;
 }
 
-function drawFrame(sub) {
-  const video = sharedVideo;
-  if (!video || video.readyState < 2) {
-    return;
+function drawPosterFrame(sub) {
+  const poster = loadPosterImage();
+  if (!posterReady || !poster || !poster.complete) {
+    return false;
   }
 
   if (!syncCanvasSize(sub.canvas)) {
-    return;
+    return false;
   }
 
   sub.ctx.clearRect(0, 0, sub.canvas.width, sub.canvas.height);
-  sub.ctx.drawImage(video, 0, 0, sub.canvas.width, sub.canvas.height);
+  sub.ctx.drawImage(poster, 0, 0, sub.canvas.width, sub.canvas.height);
+  return true;
+}
+
+function drawFrame(sub) {
+  const video = sharedVideo;
+  if (video && video.readyState >= 2 && !video.paused && !video.ended) {
+    if (!syncCanvasSize(sub.canvas)) {
+      return;
+    }
+
+    try {
+      sub.ctx.clearRect(0, 0, sub.canvas.width, sub.canvas.height);
+      sub.ctx.drawImage(video, 0, 0, sub.canvas.width, sub.canvas.height);
+      return;
+    } catch {
+      /* fall through to poster */
+    }
+  }
+
+  drawPosterFrame(sub);
 }
 
 function stopLoop() {
@@ -203,14 +268,15 @@ function tick(now) {
     return;
   }
 
-  if (renderMode !== 'video') {
+  if (renderMode === 'fallback') {
     stopLoop();
     return;
   }
 
-  const elapsed = now - lastDrawTime;
+  const frameTime = now || Date.now();
+  const elapsed = frameTime - lastDrawTime;
   if (elapsed >= FRAME_INTERVAL_MS) {
-    lastDrawTime = now - (elapsed % FRAME_INTERVAL_MS);
+    lastDrawTime = frameTime - (elapsed % FRAME_INTERVAL_MS);
 
     subscribers.forEach((sub) => {
       if (!sub.active || !sub.visible || !sub.canvas.isConnected) {
@@ -255,12 +321,45 @@ function ensureLoop() {
   const playPromise = video.play();
   if (playPromise && typeof playPromise.catch === 'function') {
     playPromise.catch(() => {
-      onVideoFailed();
+      if (!drawPosterFrameForAll()) {
+        onVideoFailed();
+      }
     });
   }
 
   lastDrawTime = 0;
   rafId = requestAnimationFrame(tick);
+}
+
+function drawPosterFrameForAll() {
+  let drewAny = false;
+
+  subscribers.forEach((sub) => {
+    if (!sub.active || !sub.visible || !sub.canvas.isConnected) {
+      return;
+    }
+
+    if (drawPosterFrame(sub)) {
+      drewAny = true;
+    }
+  });
+
+  return drewAny;
+}
+
+function observeVisibility(sub, canvas) {
+  if (typeof IntersectionObserver === 'undefined') {
+    sub.visible = true;
+    updateSubscriberState(sub);
+    return;
+  }
+
+  sub.observer = new IntersectionObserver((entries) => {
+    sub.visible = Boolean(entries[0]?.isIntersecting);
+    updateSubscriberState(sub);
+  }, { threshold: 0.01 });
+
+  sub.observer.observe(canvas);
 }
 
 function updateSubscriberState(sub) {
@@ -297,16 +396,11 @@ export function subscribeCandleCanvas(canvas, { active = true } = {}) {
     resizeObserver: null,
   };
 
-  sub.observer = new IntersectionObserver((entries) => {
-    sub.visible = Boolean(entries[0]?.isIntersecting);
-    updateSubscriberState(sub);
-  }, { threshold: 0.01 });
-
-  sub.observer.observe(canvas);
+  observeVisibility(sub, canvas);
 
   if (typeof ResizeObserver !== 'undefined') {
     sub.resizeObserver = new ResizeObserver(() => {
-      if (sub.active && sub.visible && renderMode === 'video') {
+      if (sub.active && sub.visible && renderMode !== 'fallback') {
         drawFrame(sub);
       }
     });
@@ -317,7 +411,9 @@ export function subscribeCandleCanvas(canvas, { active = true } = {}) {
   reducedMotion = prefersReducedMotion();
   attachVisibilityListener();
 
-  if (active) {
+  if (prefersCandleFallback()) {
+    setRenderMode('fallback');
+  } else if (active) {
     ensureLoop();
   }
 
@@ -343,5 +439,5 @@ export function subscribeCandleCanvas(canvas, { active = true } = {}) {
 }
 
 export function candlePosterUrl() {
-  return assetUrl('images/candle-poster.webp');
+  return assetUrl('images/candle-poster.png');
 }

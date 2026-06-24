@@ -33,10 +33,12 @@ class MemorialCardInner extends React.Component {
     const { entry } = this.props;
     const card = this.cardRef.current;
 
-    if (!entry || !card || typeof IntersectionObserver === 'undefined') {
-      if (entry) {
-        this.scheduleCandle(entry.id);
-      }
+    if (!entry) {
+      return;
+    }
+
+    if (!card || typeof IntersectionObserver === 'undefined') {
+      this.scheduleCandle(entry.id);
       return;
     }
 
@@ -58,7 +60,7 @@ class MemorialCardInner extends React.Component {
       if (this.state.showCandle) {
         this.setState({ showCandle: false });
       }
-    }, { threshold: 0.05 });
+    }, { threshold: 0.01, rootMargin: '20px' });
 
     this.visibilityObserver.observe(card);
   }

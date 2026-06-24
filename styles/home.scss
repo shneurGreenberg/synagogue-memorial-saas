@@ -16,6 +16,10 @@
   overflow: hidden;
   box-sizing: border-box;
   width: 100%;
+  --board-qr-footer-height: calc(
+    (clamp(100px, 10vw, 140px) * var(--memorial-qr-size-scale, 1))
+    + clamp(3.4rem, 4.2vw, 4.75rem)
+  );
 
   .left,
   .middle,
@@ -44,6 +48,23 @@
       padding-right: 6px;
       box-sizing: border-box;
       overflow: hidden;
+    }
+
+    .left-panel-scroll {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      overflow-x: hidden;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
 
     .banner-wrap {
@@ -484,6 +505,22 @@
       text-align: center;
       border-top: none;
       flex-shrink: 0;
+      min-height: var(--board-qr-footer-height);
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+
+      .memorial-submission-qr-header {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        min-height: clamp(3rem, 3.6vw, 3.8rem);
+      }
+
+      .memorial-submission-qr-body {
+        flex: 0 0 auto;
+      }
 
       h2 {
         margin: 0 0 0.45rem;
@@ -632,6 +669,14 @@
           &.candle-fallback {
             animation: candle-soft-flicker 3.2s ease-in-out infinite;
             will-change: opacity, filter;
+          }
+
+          &.candle-fallback-css {
+            background:
+              radial-gradient(ellipse at 50% 85%, #ffd54f 0%, #ff9800 28%, transparent 58%),
+              linear-gradient(to top, #fff8e1 0%, #ffb300 35%, #ff6f00 55%, transparent 72%);
+            filter: drop-shadow(0 0 10px rgba(255, 179, 0, 0.35));
+            animation: candle-soft-flicker 3.2s ease-in-out infinite;
           }
         }
 
@@ -1305,6 +1350,22 @@
         text-align: center;
         border-top: 1px solid $goldenPanelBorder;
         flex-shrink: 0;
+        min-height: var(--board-qr-footer-height);
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+
+        .memorial-submission-qr-header {
+          flex: 1 1 auto;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          min-height: clamp(3rem, 3.6vw, 3.8rem);
+        }
+
+        .memorial-submission-qr-body {
+          flex: 0 0 auto;
+        }
 
         h2 {
           margin: 0 0 0.45rem;
@@ -1348,7 +1409,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .main-container .cards-grid .card .candle,
-  .prayer-reading-candle.candle-fallback {
+  .prayer-reading-candle.candle-fallback,
+  .candle-fallback-css {
     animation: none;
   }
 

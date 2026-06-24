@@ -385,23 +385,25 @@ class HomePageBase extends React.Component {
         )}
         <aside className="left side-panel">
           <div className="wooden-panel">
-            <div className="banner-wrap">
-              <CommunityLogo src={assetUrl(`images/${logo}`)} alt={appData.title || 'Synagogue'} />
-            </div>
-            {this.state.dailyCite && (
-              <div
-                className="daily-cite"
-                dangerouslySetInnerHTML={{ __html: sanitizeRichText(this.state.dailyCite.text) }}
+            <div className="left-panel-scroll">
+              <div className="banner-wrap">
+                <CommunityLogo src={assetUrl(`images/${logo}`)} alt={appData.title || 'Synagogue'} />
+              </div>
+              {this.state.dailyCite && (
+                <div
+                  className="daily-cite"
+                  dangerouslySetInnerHTML={{ __html: sanitizeRichText(this.state.dailyCite.text) }}
+                />
+              )}
+              <JewishContentPanels uiLang={this.props.uiLang} />
+              <SidebarUpcomingPanel
+                uiLang={this.props.uiLang}
+                communityEvents={this.state.communityEvents}
+                formatGregorianDate={formatGregorianDate}
+                formatHebrewDate={formatHebrewDate}
+                showTopDivider={!boardFeatures.hayomYom}
               />
-            )}
-            <JewishContentPanels uiLang={this.props.uiLang} />
-            <SidebarUpcomingPanel
-              uiLang={this.props.uiLang}
-              communityEvents={this.state.communityEvents}
-              formatGregorianDate={formatGregorianDate}
-              formatHebrewDate={formatHebrewDate}
-              showTopDivider={!boardFeatures.hayomYom}
-            />
+            </div>
             <MemorialSubmissionPanel />
           </div>
         </aside>

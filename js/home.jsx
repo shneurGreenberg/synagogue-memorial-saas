@@ -104,13 +104,16 @@ class CardBase extends React.Component {
         style={{ '--candle-phase': entry.id % 17 }}
       >
         {this.state.showCandle && (
-          this.state.candleFallback ? (
+          this.state.candleFallback === 'css' ? (
+            <div className="candle candle-fallback candle-fallback-css" aria-hidden="true" />
+          ) : this.state.candleFallback ? (
             <img
               className="candle candle-fallback"
-              src="/images/candle-poster.webp"
+              src="/images/candle-poster.png"
               alt=""
               aria-hidden="true"
-              decoding="async"
+              decoding="sync"
+              onError={() => this.setState({ candleFallback: 'css' })}
             />
           ) : (
             <video
