@@ -7,7 +7,7 @@
   -webkit-touch-callout: none;
   display: grid;
   grid-template-columns: minmax(150px, 17vw) minmax(0, 1fr) minmax(150px, 17vw);
-  grid-template-rows: 1fr auto;
+  grid-template-rows: 1fr;
   gap: 0;
   height: 100vh;
   height: 100dvh;
@@ -16,10 +16,7 @@
   overflow: hidden;
   box-sizing: border-box;
   width: 100%;
-  --board-qr-footer-height: calc(
-    (clamp(100px, 10vw, 140px) * var(--memorial-qr-size-scale, 1))
-    + clamp(3.4rem, 4.2vw, 4.75rem)
-  );
+  --board-qr-image-size: calc(clamp(100px, 10vw, 140px) * var(--memorial-qr-size-scale, 1));
 
   .left,
   .middle,
@@ -27,50 +24,6 @@
     min-width: 0;
     min-height: 0;
     height: 100%;
-    grid-row: 1;
-  }
-
-  .left {
-    grid-column: 1;
-  }
-
-  .middle {
-    grid-column: 2;
-  }
-
-  .right {
-    grid-column: 3;
-  }
-
-  .board-qr-row {
-    grid-column: 1 / 4;
-    grid-row: 2;
-    display: grid;
-    grid-template-columns: minmax(150px, 17vw) minmax(0, 1fr) minmax(150px, 17vw);
-    align-items: end;
-    gap: 0;
-    pointer-events: none;
-    z-index: 5;
-
-    .memorial-submission-panel {
-      grid-column: 1;
-      pointer-events: auto;
-      margin-top: 0;
-      border-top: 1px solid rgba(207, 175, 31, 0.28);
-      background: linear-gradient(to top, rgba(26, 21, 16, 0.98) 70%, rgba(26, 21, 16, 0));
-    }
-
-    .donation-qr-panel {
-      grid-column: 3;
-      pointer-events: auto;
-      margin-top: 0;
-      border-top: 1px solid rgba(207, 175, 31, 0.28);
-      background: linear-gradient(to top, rgba(26, 21, 16, 0.98) 70%, rgba(26, 21, 16, 0));
-    }
-
-    .board-qr-row-spacer {
-      grid-column: 2;
-    }
   }
 
   .wooden-panel {
@@ -549,7 +502,6 @@
       text-align: center;
       border-top: none;
       flex-shrink: 0;
-      min-height: var(--board-qr-footer-height);
       display: flex;
       flex-direction: column;
       box-sizing: border-box;
@@ -559,11 +511,15 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-        min-height: clamp(3rem, 3.6vw, 3.8rem);
+        min-height: clamp(2.5rem, 3vw, 3.2rem);
       }
 
       .memorial-submission-qr-body {
         flex: 0 0 auto;
+        min-height: var(--board-qr-image-size);
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
       }
 
       h2 {
@@ -593,8 +549,9 @@
       }
 
       .memorial-submission-qr {
-        width: calc(clamp(100px, 10vw, 140px) * var(--memorial-qr-size-scale, 1));
-        height: calc(clamp(100px, 10vw, 140px) * var(--memorial-qr-size-scale, 1));
+        width: var(--board-qr-image-size);
+        height: var(--board-qr-image-size);
+        max-width: 100%;
         object-fit: contain;
         background: #fff;
         border-radius: 8px;
@@ -1395,7 +1352,6 @@
         text-align: center;
         border-top: 1px solid $goldenPanelBorder;
         flex-shrink: 0;
-        min-height: var(--board-qr-footer-height);
         display: flex;
         flex-direction: column;
         box-sizing: border-box;
@@ -1405,11 +1361,15 @@
           display: flex;
           flex-direction: column;
           justify-content: flex-end;
-          min-height: clamp(3rem, 3.6vw, 3.8rem);
+          min-height: clamp(2.5rem, 3vw, 3.2rem);
         }
 
         .memorial-submission-qr-body {
           flex: 0 0 auto;
+          min-height: var(--board-qr-image-size);
+          display: flex;
+          align-items: flex-end;
+          justify-content: center;
         }
 
         h2 {
@@ -1439,8 +1399,9 @@
         }
 
         .memorial-submission-qr {
-          width: calc(clamp(100px, 10vw, 140px) * var(--memorial-qr-size-scale, 1));
-          height: calc(clamp(100px, 10vw, 140px) * var(--memorial-qr-size-scale, 1));
+          width: var(--board-qr-image-size);
+          height: var(--board-qr-image-size);
+          max-width: 100%;
           object-fit: contain;
           background: #fff;
           border-radius: 8px;
