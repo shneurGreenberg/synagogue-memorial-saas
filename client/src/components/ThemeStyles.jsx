@@ -88,6 +88,7 @@ export function ThemeStyles() {
       --font-scale-prayers: ${fontScaleCss(fontScales.prayers)};
       --font-scale-prayer-overlay: ${fontScaleCss(fontScales.prayerOverlay)};
       --font-scale-torah-names: ${fontScaleCss(fontScales.torahNames, 'torahNames')};
+      --font-scale-weather: ${fontScaleCss(fontScales.weather)};
     }
     .main-container .board-header h1 {
       color: var(--primary-color) !important;
@@ -174,6 +175,31 @@ export function ThemeStyles() {
     }
     .main-container .community-event-text {
       font-size: calc(clamp(12px, 1vw, 15px) * var(--font-scale-sidebar)) !important;
+    }
+    .main-container .weather-panel .weather-today-temp,
+    .main-container .weather-panel .weather-today-label,
+    .main-container .weather-panel .weather-sun-stack,
+    .main-container .weather-panel .weather-cube-date,
+    .main-container .weather-panel .weather-cube-temps,
+    .main-container .weather-panel .weather-loading,
+    .main-container .weather-panel .weather-unavailable,
+    .main-container .weather-panel h2 {
+      font-size: calc(1em * var(--font-scale-weather)) !important;
+    }
+    .main-container .weather-panel .weather-today-temp {
+      font-size: calc(clamp(24px, 2.2vw, 34px) * var(--font-scale-weather)) !important;
+    }
+    .main-container .weather-panel .weather-today-label {
+      font-size: calc(clamp(10px, 0.88vw, 13px) * var(--font-scale-weather)) !important;
+    }
+    .main-container .weather-panel .weather-sun-stack {
+      font-size: calc(clamp(9px, 0.78vw, 11px) * var(--font-scale-weather)) !important;
+    }
+    .main-container .weather-panel .weather-cube-date {
+      font-size: calc(clamp(9px, 0.75vw, 11px) * var(--font-scale-weather)) !important;
+    }
+    .main-container .weather-panel .weather-cube-temps {
+      font-size: calc(clamp(9px, 0.78vw, 11px) * var(--font-scale-weather)) !important;
     }
     .main-container .memorial-prayers-inner > h2 {
       font-size: calc(clamp(16px, 1.55vw, 22px) * var(--font-scale-prayers)) !important;

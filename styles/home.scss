@@ -16,7 +16,6 @@
   overflow: hidden;
   box-sizing: border-box;
   width: 100%;
-  --board-qr-image-size: calc(108px * var(--memorial-qr-size-scale, 1));
   --board-qr-bottom-inset: clamp(10px, 1.1vw, 14px);
   --board-qr-side-padding: clamp(6px, 0.55vw, 10px);
 
@@ -498,6 +497,7 @@
     }
 
     .memorial-submission-panel {
+      --board-qr-image-size: calc(108px * var(--memorial-qr-size-scale, 1));
       width: 100%;
       margin-top: auto;
       padding: 0.5rem var(--board-qr-side-padding) var(--board-qr-bottom-inset);
@@ -661,14 +661,14 @@
         }
 
         .candle {
-          width: clamp(36px, 3.8vw, 54px);
-          height: clamp(48px, 5vw, 72px);
-          max-width: clamp(36px, 3.8vw, 54px);
-          max-height: 62%;
+          width: clamp(54px, 5.7vw, 81px);
+          height: clamp(72px, 7.5vw, 108px);
+          max-width: clamp(54px, 5.7vw, 81px);
+          max-height: 68%;
           position: absolute;
-          left: 6px;
+          left: 4px;
           top: 46%;
-          transform: translate3d(0, calc(-50% + 24px), 0);
+          transform: translate3d(0, calc(-50% + 36px), 0);
           pointer-events: none;
           z-index: 0;
           backface-visibility: hidden;
@@ -697,12 +697,12 @@
 
         &.card-big {
           .candle {
-            width: clamp(56px, 6vw, 84px);
-            height: clamp(72px, 7.5vw, 108px);
-            max-width: clamp(56px, 6vw, 84px);
-            max-height: 72%;
+            width: clamp(84px, 9vw, 126px);
+            height: clamp(108px, 11.25vw, 162px);
+            max-width: clamp(84px, 9vw, 126px);
+            max-height: 76%;
             top: 44%;
-            transform: translate3d(0, calc(-50% + 24px), 0);
+            transform: translate3d(0, calc(-50% + 36px), 0);
           }
         }
 
@@ -1096,10 +1096,14 @@
         text-align: center;
 
         h2 {
-          font-size: clamp(13px, 1.05vw, 16px);
+          font-size: calc(clamp(13px, 1.05vw, 16px) * var(--font-scale-weather, 1));
           margin: 0 0 6px;
           color: var(--accent-color, #ffd54f);
         }
+      }
+
+      .weather-panel-compact h2 {
+        display: none;
       }
 
       .weather-today-card {
@@ -1115,8 +1119,10 @@
       .weather-today-left {
         flex: 0 0 auto;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+        gap: 2px;
         min-width: clamp(52px, 4.5vw, 72px);
         padding: 6px 8px;
         border-inline-end: 1px solid rgba(207, 175, 31, 0.22);
@@ -1134,14 +1140,14 @@
       }
 
       .weather-today-temp {
-        font-size: clamp(24px, 2.2vw, 34px);
+        font-size: calc(clamp(24px, 2.2vw, 34px) * var(--font-scale-weather, 1));
         font-weight: 700;
         line-height: 1;
         color: var(--accent-color, #ffd54f);
       }
 
       .weather-today-label {
-        font-size: clamp(10px, 0.88vw, 13px);
+        font-size: calc(clamp(10px, 0.88vw, 13px) * var(--font-scale-weather, 1));
         line-height: 1.25;
         margin: 0;
         opacity: 0.92;
@@ -1151,7 +1157,7 @@
         display: flex;
         flex-direction: column;
         gap: 2px;
-        font-size: clamp(9px, 0.78vw, 11px);
+        font-size: calc(clamp(9px, 0.78vw, 11px) * var(--font-scale-weather, 1));
         line-height: 1.2;
         color: var(--tile-date-color, #f0f0f0);
         opacity: 0.88;
@@ -1247,7 +1253,7 @@
       .weather-loading,
       .weather-unavailable {
         margin: 0;
-        font-size: clamp(12px, 1vw, 15px);
+        font-size: calc(clamp(12px, 1vw, 15px) * var(--font-scale-weather, 1));
         opacity: 0.75;
         color: var(--tile-date-color, #f0f0f0);
       }
@@ -1275,7 +1281,7 @@
       }
 
       .weather-cube-date {
-        font-size: clamp(9px, 0.75vw, 11px);
+        font-size: calc(clamp(9px, 0.75vw, 11px) * var(--font-scale-weather, 1));
         line-height: 1.15;
         opacity: 0.9;
         white-space: nowrap;
@@ -1291,7 +1297,7 @@
       }
 
       .weather-cube-temps {
-        font-size: clamp(9px, 0.78vw, 11px);
+        font-size: calc(clamp(9px, 0.78vw, 11px) * var(--font-scale-weather, 1));
         line-height: 1.1;
         white-space: nowrap;
       }
@@ -1488,6 +1494,7 @@
 
       .memorial-submission-panel,
       .donation-qr-panel {
+        --board-qr-image-size: calc(108px * var(--memorial-qr-size-scale, 1));
         width: 100%;
         margin-top: auto;
         padding: 0.5rem var(--board-qr-side-padding) var(--board-qr-bottom-inset);
@@ -1581,25 +1588,25 @@
   100% {
     opacity: 1;
     filter: brightness(1);
-    transform: translate3d(0, calc(-50% + 24px), 0) scale(1);
+    transform: translate3d(0, calc(-50% + 36px), 0) scale(1);
   }
 
   25% {
     opacity: 0.94;
     filter: brightness(0.96);
-    transform: translate3d(0.4px, calc(-50% + 23px), 0) scale(0.995);
+    transform: translate3d(0.4px, calc(-50% + 35px), 0) scale(0.995);
   }
 
   50% {
     opacity: 0.9;
     filter: brightness(0.93);
-    transform: translate3d(-0.3px, calc(-50% + 25px), 0) scale(1.005);
+    transform: translate3d(-0.3px, calc(-50% + 37px), 0) scale(1.005);
   }
 
   75% {
     opacity: 0.96;
     filter: brightness(1.04);
-    transform: translate3d(0.2px, calc(-50% + 23.5px), 0) scale(0.998);
+    transform: translate3d(0.2px, calc(-50% + 35.5px), 0) scale(0.998);
   }
 }
 
@@ -1811,7 +1818,7 @@
 }
 
 .prayer-reading-candle-side {
-  flex: 0 0 clamp(120px, 18vw, 240px);
+  flex: 0 0 clamp(180px, 27vw, 360px);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -1821,8 +1828,8 @@
 
 .prayer-reading-candle {
   width: 100%;
-  max-width: clamp(120px, 18vw, 240px);
-  height: clamp(160px, 22vw, 280px);
+  max-width: clamp(180px, 27vw, 360px);
+  height: clamp(240px, 33vw, 420px);
   max-height: 88%;
   pointer-events: none;
   filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.45));

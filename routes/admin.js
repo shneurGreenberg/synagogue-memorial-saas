@@ -103,6 +103,7 @@ const FONT_SCALE_SLIDER_META = [
   { key: 'prayers', labelKey: 'font_scale_prayers', helpKey: 'font_scale_prayers_help' },
   { key: 'prayerOverlay', labelKey: 'font_scale_prayer_overlay', helpKey: 'font_scale_prayer_overlay_help' },
   { key: 'torahNames', labelKey: 'font_scale_torah_names', helpKey: 'font_scale_torah_names_help', min: 100, max: 400, step: 10 },
+  { key: 'weather', labelKey: 'font_scale_weather', helpKey: 'font_scale_weather_help' },
 ];
 
 const TEXTS_FONT_SCALE_GROUPS = [
@@ -119,7 +120,7 @@ const TEXTS_FONT_SCALE_GROUPS = [
   {
     groupKey: 'typography_right_column',
     helpKey: 'typography_right_column_help',
-    keys: ['clock', 'prayers', 'prayerOverlay', 'torahNames'],
+    keys: ['clock', 'prayers', 'prayerOverlay', 'torahNames', 'weather'],
   },
 ];
 
@@ -658,6 +659,7 @@ router.post('/:slug/settings/reset-theme', requireAdmin, requirePermission('sett
                 'theme.fontScales.prayers': 100,
                 'theme.fontScales.prayerOverlay': 100,
                 'theme.fontScales.torahNames': 100,
+                'theme.fontScales.weather': 100,
             },
             $unset: {
                 'theme.backgroundImage': '',
