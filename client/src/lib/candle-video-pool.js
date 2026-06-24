@@ -12,7 +12,10 @@ let statusListeners = new Set();
 let posterImage = null;
 let posterReady = false;
 
-const FRAME_INTERVAL_MS = 1000 / 12;
+import { isLowPowerBoardBrowser } from './legacy-browser';
+
+const NORMAL_FRAME_INTERVAL_MS = 1000 / 12;
+const LOW_POWER_FRAME_INTERVAL_MS = 1000 / 8;
 const VIDEO_READY_TIMEOUT_MS = 15000;
 
 function notifyStatusListeners() {
@@ -49,7 +52,12 @@ function canPlayH264Reliably() {
   }
 
   const probe = document.createElement('video');
-  return probe.canPlayType('video/mp4; codecs="avc1.42E01E"') === 'probably';
+  const support = probe.canPlayType('video/mp4; codecs="avc1.42E01E"');
+  return support === 'probably' || support === 'maybe';
+}
+
+function getFrameIntervalMs() {
+  return isLowPowerBoardBrowser() ? LOW_POWER_FRAME_INTERVAL_MS : NORMAL_FRAME_INTERVAL_MS;
 }
 
 function prefersCandleFallback() {
@@ -189,6 +197,10 @@ function hasActiveVisibleSubscriber() {
 }
 
 function getCanvasDpr() {
+  if (isLowPowerBoardBrowser()) {
+    return 1;
+  }
+
   const dpr = window.devicePixelRatio || 1;
   const cores = navigator.hardwareConcurrency || 4;
 
@@ -274,9 +286,10 @@ function tick(now) {
   }
 
   const frameTime = now || Date.now();
+  const frameIntervalMs = getFrameIntervalMs();
   const elapsed = frameTime - lastDrawTime;
-  if (elapsed >= FRAME_INTERVAL_MS) {
-    lastDrawTime = frameTime - (elapsed % FRAME_INTERVAL_MS);
+  if (elapsed >= frameIntervalMs) {
+    lastDrawTime = frameTime - (elapsed % frameIntervalMs);
 
     subscribers.forEach((sub) => {
       if (!sub.active || !sub.visible || !sub.canvas.isConnected) {

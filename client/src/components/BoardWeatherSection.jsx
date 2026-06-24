@@ -100,6 +100,25 @@ function useBoardWeather(coords) {
   return { forecast, loading, failed };
 }
 
+function TodaySunStack({ t, sunTimes, locale }) {
+  if (!sunTimes) {
+    return null;
+  }
+
+  return (
+    <div className="weather-sun-stack">
+      <div className="weather-sun-stack-row">
+        <span className="weather-sun-label">{t('sunrise_label')}</span>
+        <span className="weather-sun-time">{formatLocalTime(sunTimes.sunrise, locale)}</span>
+      </div>
+      <div className="weather-sun-stack-row">
+        <span className="weather-sun-label">{t('sunset_label')}</span>
+        <span className="weather-sun-time">{formatLocalTime(sunTimes.sunset, locale)}</span>
+      </div>
+    </div>
+  );
+}
+
 function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
   const appData = getBoardData();
   const location = appData.location || {};
@@ -151,45 +170,35 @@ function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
     min: Math.round(forecast.daily.temperature_2m_min[index + 1]),
   }));
 
-  const sunTimesLine = showSunTimes && sunTimes ? (
-    <div className="weather-sun-times">
-      <span className="weather-sun-times-item weather-sun-times-sunrise">
-        <span className="weather-sun-label">{t('sunrise_label')}</span>
-        <span className="weather-sun-time">{formatLocalTime(sunTimes.sunrise, locale)}</span>
-      </span>
-      <span className="weather-sun-times-item weather-sun-times-sunset">
-        <span className="weather-sun-label">{t('sunset_label')}</span>
-        <span className="weather-sun-time">{formatLocalTime(sunTimes.sunset, locale)}</span>
-      </span>
-    </div>
-  ) : null;
-
   return (
     <div className="board-weather-block">
       {showWeather && (
-        <section className="weather-panel" aria-label={t('weather_title')}>
+        <section className="weather-panel weather-panel-compact" aria-label={t('weather_title')}>
           <h2>{t('weather_title')}</h2>
-          <div className="weather-today">
-            <WeatherIcon code={todayCode} className="weather-today-icon" />
-            <div className="weather-today-main">
+          <div className="weather-today-card">
+            <div className="weather-today-left">
               <div className="weather-today-temp">{todayTemp}°</div>
+            </div>
+            <div className="weather-today-right">
+              {showSunTimes && (
+                <TodaySunStack t={t} sunTimes={sunTimes} locale={locale} />
+              )}
               <div className="weather-today-label">{weatherLabel(t, todayCode)}</div>
             </div>
           </div>
-          {sunTimesLine}
           {upcoming.length > 0 && (
-            <ul className="weather-upcoming">
+            <ul className="weather-upcoming-grid">
               {upcoming.map((day) => (
-                <li key={day.date} className="weather-upcoming-day">
-                  <span className="weather-upcoming-date">
+                <li key={day.date} className="weather-cube">
+                  <span className="weather-cube-date">
                     {new Date(`${day.date}T12:00:00`).toLocaleDateString(locale, {
                       weekday: 'short',
                       day: 'numeric',
                     })}
                   </span>
-                  <WeatherIcon code={day.code} className="weather-upcoming-icon" />
-                  <span className="weather-upcoming-temps">
-                    {day.max}° / {day.min}°
+                  <WeatherIcon code={day.code} className="weather-cube-icon" />
+                  <span className="weather-cube-temps">
+                    {day.max}°<span className="weather-cube-sep">/</span>{day.min}°
                   </span>
                 </li>
               ))}
@@ -201,7 +210,7 @@ function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
       {!showWeather && showSunTimes && sunTimes && (
         <section className="weather-panel weather-panel-sun-only" aria-label={t('sun_times_title')}>
           <h2>{t('sun_times_title')}</h2>
-          {sunTimesLine}
+          <TodaySunStack t={t} sunTimes={sunTimes} locale={locale} />
         </section>
       )}
     </div>
@@ -215,5 +224,4 @@ function BoardWeatherSectionConnected(props) {
 
 export const BoardWeatherSection = withTranslation()(BoardWeatherSectionConnected);
 
-// Backward-compatible export for any legacy imports.
 export const WeatherPanel = BoardWeatherSection;

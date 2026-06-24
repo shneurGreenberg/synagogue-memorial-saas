@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { isLegacyBoardBrowser } from '../lib/legacy-browser';
+import { assetUrl } from '../lib/asset-url';
+import { isLegacyBoardBrowser, isLowPowerBoardBrowser } from '../lib/legacy-browser';
 import {
   candlePosterUrl,
   getCandleRenderMode,
@@ -12,17 +13,27 @@ export class CandleVideo extends React.Component {
   constructor(props) {
     super(props);
     this.legacy = isLegacyBoardBrowser();
+    this.lowPower = isLowPowerBoardBrowser();
     this.canvasRef = React.createRef();
+    this.videoRef = React.createRef();
+    this.visibilityObserver = null;
     this.subscription = null;
     this.statusUnsubscribe = null;
+    this.isVisible = true;
     this.state = {
       renderMode: this.legacy ? 'fallback' : getCandleRenderMode(),
       posterFailed: false,
+      directVideoFailed: false,
     };
   }
 
   componentDidMount() {
     if (this.legacy) {
+      return;
+    }
+
+    if (this.lowPower) {
+      this.observeDirectVideo();
       return;
     }
 
@@ -34,11 +45,21 @@ export class CandleVideo extends React.Component {
 
       this.setState({ renderMode });
     });
-    this.bindCanvas();
+
+    if (this.state.renderMode !== 'fallback') {
+      this.bindCanvas();
+    }
   }
 
   componentDidUpdate(prevProps) {
     if (this.legacy) {
+      return;
+    }
+
+    if (this.lowPower) {
+      if (prevProps.active !== this.props.active) {
+        this.syncDirectVideoPlayback();
+      }
       return;
     }
 
@@ -52,6 +73,8 @@ export class CandleVideo extends React.Component {
   }
 
   componentWillUnmount() {
+    this.visibilityObserver?.disconnect();
+    this.visibilityObserver = null;
     this.subscription?.unsubscribe();
     this.subscription = null;
     this.statusUnsubscribe?.();
@@ -69,6 +92,55 @@ export class CandleVideo extends React.Component {
     });
   }
 
+  observeDirectVideo() {
+    const video = this.videoRef.current;
+    if (!video) {
+      return;
+    }
+
+    if (typeof IntersectionObserver === 'undefined') {
+      this.syncDirectVideoPlayback();
+      return;
+    }
+
+    if (this.visibilityObserver) {
+      return;
+    }
+
+    this.visibilityObserver = new IntersectionObserver((entries) => {
+      this.isVisible = Boolean(entries[0]?.isIntersecting);
+      this.syncDirectVideoPlayback();
+    }, { threshold: 0.01 });
+
+    this.visibilityObserver.observe(video);
+    this.syncDirectVideoPlayback();
+  }
+
+  syncDirectVideoPlayback() {
+    const video = this.videoRef.current;
+    if (!video || this.state.directVideoFailed) {
+      return;
+    }
+
+    const shouldPlay = this.props.active !== false && this.isVisible;
+
+    if (!shouldPlay) {
+      video.pause();
+      return;
+    }
+
+    const playPromise = video.play();
+    if (playPromise && typeof playPromise.catch === 'function') {
+      playPromise.catch(() => {
+        this.setState({ directVideoFailed: true });
+      });
+    }
+  }
+
+  onDirectVideoError = () => {
+    this.setState({ directVideoFailed: true });
+  };
+
   onPosterError = () => {
     this.setState({ posterFailed: true });
   };
@@ -84,7 +156,7 @@ export class CandleVideo extends React.Component {
     );
   }
 
-  renderFallback(className) {
+  renderPosterFallback(className) {
     const { posterFailed } = this.state;
 
     if (posterFailed) {
@@ -108,6 +180,30 @@ export class CandleVideo extends React.Component {
     );
   }
 
+  renderDirectVideo(className) {
+    const { directVideoFailed } = this.state;
+
+    if (directVideoFailed) {
+      return this.renderPosterFallback(className);
+    }
+
+    return (
+      <video
+        ref={this.videoRef}
+        className={`${className} candle-video`}
+        src={assetUrl('images/candle.mp4')}
+        poster={candlePosterUrl()}
+        muted
+        loop
+        playsInline
+        autoPlay
+        preload="none"
+        aria-hidden="true"
+        onError={this.onDirectVideoError}
+      />
+    );
+  }
+
   render() {
     const { className = 'candle', active = true } = this.props;
     const { renderMode } = this.state;
@@ -120,8 +216,12 @@ export class CandleVideo extends React.Component {
       return this.renderLegacy();
     }
 
+    if (this.lowPower) {
+      return this.renderDirectVideo(className);
+    }
+
     if (renderMode === 'fallback') {
-      return this.renderFallback(className);
+      return this.renderPosterFallback(className);
     }
 
     return (
