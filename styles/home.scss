@@ -685,6 +685,11 @@
             will-change: opacity, filter;
           }
 
+          &.candle-static-image {
+            animation: none;
+            will-change: auto;
+          }
+
           &.candle-fallback-css {
             background:
               radial-gradient(ellipse at 50% 88%, #fff176 0%, #ffb300 24%, #ff6f00 42%, transparent 62%),
@@ -1838,6 +1843,11 @@
   &.candle-fallback {
     animation: candle-soft-flicker 3.2s ease-in-out infinite;
     will-change: opacity, filter;
+  }
+
+  &.candle-static-image {
+    animation: none;
+    will-change: auto;
   }
 }
 

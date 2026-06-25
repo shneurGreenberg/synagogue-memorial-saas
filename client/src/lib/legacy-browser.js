@@ -34,3 +34,8 @@ export function isLegacyBoardBrowser() {
 
   return false;
 }
+
+/** Old / TV displays: static candle image only (no video, canvas pool, or retries). */
+export function shouldUseStaticCandleOnly() {
+  return isLegacyBoardBrowser() || isLowPowerBoardBrowser();
+}
