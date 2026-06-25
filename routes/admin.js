@@ -110,13 +110,14 @@ const FONT_SCALE_SLIDER_META = [
   { key: 'torahNames', labelKey: 'font_scale_torah_names', helpKey: 'font_scale_torah_names_help', min: 100, max: 400, step: 10 },
   { key: 'weather', labelKey: 'font_scale_weather', helpKey: 'font_scale_weather_help' },
   { key: 'shabbat', labelKey: 'font_scale_shabbat', helpKey: 'font_scale_shabbat_help' },
+  { key: 'candle', labelKey: 'font_scale_candle', helpKey: 'font_scale_candle_help', min: 40, max: 150, step: 5 },
 ];
 
 const TEXTS_FONT_SCALE_GROUPS = [
   {
     groupKey: 'typography_center_column',
     helpKey: 'typography_center_column_help',
-    keys: ['tileTitle', 'tileDate', 'boardHeader'],
+    keys: ['tileTitle', 'tileDate', 'boardHeader', 'candle'],
   },
   {
     groupKey: 'typography_left_column',
@@ -678,6 +679,7 @@ router.post('/:slug/settings/reset-theme', requireAdmin, requirePermission('sett
                 'theme.fontScales.torahNames': 100,
                 'theme.fontScales.weather': 100,
                 'theme.fontScales.shabbat': 100,
+                'theme.fontScales.candle': 75,
             },
             $unset: {
                 'theme.backgroundImage': '',
