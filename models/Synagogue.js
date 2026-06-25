@@ -89,10 +89,10 @@ const SynagogueSchema = new mongoose.Schema({
   boardFeatures: {
     sidebarNames: { type: Boolean, default: true },
     dailyChumash: { type: Boolean, default: true },
-    dailyTehillim: { type: Boolean, default: true },
+    dailyTehillim: { type: Boolean, default: false },
     dailyTanya: { type: Boolean, default: true },
     dailyRambam: { type: Boolean, default: true },
-    hayomYom: { type: Boolean, default: true },
+    hayomYom: { type: Boolean, default: false },
     upcomingHolidays: { type: Boolean, default: true },
     communityEvents: { type: Boolean, default: true },
     kelMaleRachamim: { type: Boolean, default: true },

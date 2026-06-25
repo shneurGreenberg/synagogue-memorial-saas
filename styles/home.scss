@@ -48,6 +48,24 @@
       overflow: hidden;
     }
 
+    .left-panel-inner {
+      padding: 14px 12px 0;
+      overflow: hidden;
+      height: 100%;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 0;
+    }
+
+    .left-panel-header {
+      width: 100%;
+      flex-shrink: 0;
+    }
+
     .left-panel-scroll {
       flex: 1;
       min-height: 0;
@@ -252,257 +270,16 @@
       flex-shrink: 0;
     }
 
-    .nearest-dates {
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      margin-top: 8px;
-      padding: 0;
-      box-sizing: border-box;
-
-      &--divider-top {
-        padding-top: 6px;
-        border-top: 1px solid rgba(207, 175, 31, 0.28);
-      }
-
-      h2 {
-        font-size: clamp(15px, 1.35vw, 22px);
-        font-weight: bold;
-        @include golden-text-mixin;
-        flex-shrink: 0;
-        margin: 0 0 6px;
-        text-align: center;
-        width: 100%;
-        padding: 0 2px;
-        line-height: 1.2;
-      }
-
-      .nearest-dates-scroll {
-        flex: 1;
-        min-height: 0;
-        width: 100%;
-        overflow: hidden;
-        box-sizing: border-box;
-        padding: 0 4px;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
-
-        &::-webkit-scrollbar {
-          display: none;
-        }
-      }
-
-      .nearest-dates-track {
-        margin: 0;
-        padding: 0;
-        text-align: center;
-        list-style: none;
-        width: 100%;
-
-        &.is-scrolling {
-          animation-name: nearest-dates-scroll;
-          animation-timing-function: linear;
-          animation-iteration-count: infinite;
-        }
-
-        li {
-          list-style: none;
-          margin: 0;
-          padding: 0;
-          width: 100%;
-          max-width: 100%;
-          box-sizing: border-box;
-
-          a,
-          .nearest-date-link {
-            display: block;
-            width: 100%;
-            color: white;
-            text-decoration: none;
-            padding: 10px 4px;
-            border-bottom: 1px solid rgba(207, 175, 31, 0.28);
-            border-radius: 0;
-            background: transparent;
-            border-top: none;
-            border-left: none;
-            border-right: none;
-            font: inherit;
-            cursor: pointer;
-            text-align: center;
-
-            &:hover,
-            &:focus-visible {
-              background: rgba(0, 0, 0, 0.12);
-            }
-
-            time {
-              display: block;
-              margin-bottom: 4px;
-              text-decoration: underline;
-              color: $textColor;
-              font-size: clamp(13px, 1.1vw, 17px);
-              line-height: 1.3;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              display: -webkit-box;
-              -webkit-line-clamp: 2;
-              -webkit-box-orient: vertical;
-            }
-
-            .name {
-              display: block;
-              margin-left: 0;
-              font-size: clamp(14px, 1.2vw, 18px);
-              line-height: 1.3;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              display: -webkit-box;
-              -webkit-line-clamp: 2;
-              -webkit-box-orient: vertical;
-            }
-          }
-
-          &.community-event-item {
-            margin: 0;
-            padding: 0;
-
-            .community-event-link {
-              display: block;
-              width: 100%;
-              box-sizing: border-box;
-              padding: 10px 4px;
-              border-bottom: 1px solid rgba(207, 175, 31, 0.28);
-              border-radius: 0;
-              text-align: center;
-              background: transparent;
-              border-top: none;
-              border-left: none;
-              border-right: none;
-              box-shadow: none;
-
-              time {
-                color: var(--accent-color, #ffd54f);
-                font-weight: 600;
-                text-decoration: none;
-                -webkit-line-clamp: 3;
-              }
-
-              .community-event-title {
-                display: block;
-                margin-top: 4px;
-                font-size: clamp(14px, 1.2vw, 18px);
-                font-weight: 600;
-                line-height: 1.25;
-                color: $goldenText;
-                text-shadow: none;
-                -webkit-line-clamp: 3;
-              }
-
-              .community-event-text {
-                display: block;
-                margin-top: 3px;
-                font-size: clamp(12px, 1vw, 15px);
-                line-height: 1.35;
-                color: var(--text-color, #d0d0d0);
-                opacity: 0.95;
-                -webkit-line-clamp: 3;
-              }
-            }
-          }
-
-          &.sidebar-holiday-item {
-            margin: 0;
-            padding: 0;
-
-            .sidebar-holiday-link {
-              display: block;
-              width: 100%;
-              box-sizing: border-box;
-              padding: 10px 4px;
-              border-bottom: 1px solid rgba(207, 175, 31, 0.28);
-              border-radius: 0;
-              text-align: center;
-              background: transparent;
-              border-top: none;
-              border-left: none;
-              border-right: none;
-
-              time {
-                display: block;
-                margin-bottom: 4px;
-                text-decoration: none;
-                color: $textColor;
-                font-size: clamp(13px, 1.1vw, 17px);
-                line-height: 1.3;
-              }
-
-              .sidebar-holiday-title {
-                display: block;
-                font-size: clamp(14px, 1.2vw, 18px);
-                line-height: 1.3;
-                color: $goldenText;
-              }
-            }
-          }
-
-          &.sidebar-chabad-item {
-            margin: 0;
-            padding: 0;
-
-            .sidebar-chabad-link {
-              display: block;
-              width: 100%;
-              box-sizing: border-box;
-              padding: 10px 4px;
-              border-bottom: 1px solid rgba(207, 175, 31, 0.28);
-              border-radius: 0;
-              text-align: center;
-              background: transparent;
-              border-top: none;
-              border-left: none;
-              border-right: none;
-
-              time {
-                display: block;
-                margin-bottom: 4px;
-                text-decoration: none;
-                color: $textColor;
-                font-size: clamp(13px, 1.1vw, 17px);
-                line-height: 1.3;
-              }
-
-              .sidebar-chabad-title {
-                display: block;
-                font-size: clamp(14px, 1.2vw, 18px);
-                line-height: 1.3;
-                color: $goldenText;
-              }
-            }
-          }
-
-          &:last-child {
-            .community-event-link,
-            .sidebar-holiday-link,
-            .sidebar-chabad-link,
-            .nearest-date-link {
-              border-bottom: none;
-            }
-          }
-        }
-      }
     }
 
-    .memorial-submission-panel {
+    .memorial-submission-panel,
+    .donation-qr-panel {
       --board-qr-image-size: calc(108px * var(--memorial-qr-size-scale, 1));
       width: 100%;
       margin-top: auto;
       padding: 0.5rem var(--board-qr-side-padding) var(--board-qr-bottom-inset);
       text-align: center;
-      border-top: none;
+      border-top: 1px solid $goldenPanelBorder;
       flex-shrink: 0;
       display: flex;
       flex-direction: column;
@@ -563,6 +340,91 @@
         padding: 6px;
         box-sizing: border-box;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      }
+    }
+
+    .memorial-prayers {
+      width: 100%;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding-top: 8px;
+      margin-top: 4px;
+
+      .memorial-prayers-scroll {
+        flex: 1;
+        min-height: 0;
+        width: 100%;
+        overflow: hidden;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+
+      .memorial-prayers-track {
+        width: 100%;
+
+        &.is-scrolling {
+          animation-name: memorial-prayers-scroll;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+        }
+      }
+
+      .memorial-prayers-inner {
+        width: 100%;
+        text-align: center;
+
+        > h2 {
+          font-size: clamp(16px, 1.55vw, 22px);
+          margin: 0 0 8px;
+          @include golden-text-mixin;
+        }
+      }
+
+      .memorial-prayer-block {
+        margin-top: 10px;
+
+        &.prayer-clickable {
+          cursor: pointer;
+          border-radius: 8px;
+          transition: background-color 0.15s ease, box-shadow 0.15s ease;
+
+          &:hover,
+          &:focus-visible {
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 0 0 1px rgba(207, 175, 31, 0.28);
+            outline: none;
+          }
+        }
+
+        h1 {
+          font-size: clamp(18px, 1.7vw, 24px);
+          white-space: normal;
+          margin: 0 0 6px;
+          @include golden-text-mixin;
+        }
+      }
+
+      .prayer-text {
+        color: #fff;
+        font-size: clamp(12px, 1.05vw, 16px);
+        line-height: 1.38;
+        text-align: center;
+        white-space: pre-wrap;
+      }
+
+      &.memorial-prayers-big {
+        .prayer-text {
+          font-size: clamp(13px, 1.12vw, 17px);
+          line-height: 1.4;
+        }
       }
     }
   }
@@ -1412,21 +1274,62 @@
         overflow: visible;
       }
 
-      .memorial-prayers {
+      .right-panel-scroll {
         width: 100%;
         flex: 1;
         min-height: 0;
         display: flex;
         flex-direction: column;
+        align-items: center;
         overflow: hidden;
-        padding-top: 12px;
-        margin-top: 8px;
 
-        .memorial-prayers-scroll {
+        .daily-cite {
+          margin-top: 10px;
+          padding: 0 4px;
+          font-size: clamp(14px, 1.35vw, 20px);
+          line-height: 1.45;
+          flex-shrink: 0;
+          overflow: hidden;
+          width: 100%;
+          text-align: center;
+        }
+   
+
+      .nearest-dates {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin-top: 8px;
+        padding: 0;
+        box-sizing: border-box;
+
+        &--divider-top {
+          padding-top: 6px;
+          border-top: 1px solid rgba(207, 175, 31, 0.28);
+        }
+
+        h2 {
+          font-size: clamp(15px, 1.35vw, 22px);
+          font-weight: bold;
+          @include golden-text-mixin;
+          flex-shrink: 0;
+          margin: 0 0 6px;
+          text-align: center;
+          width: 100%;
+          padding: 0 2px;
+          line-height: 1.2;
+        }
+
+        .nearest-dates-scroll {
           flex: 1;
           min-height: 0;
           width: 100%;
           overflow: hidden;
+          box-sizing: border-box;
+          padding: 0 4px;
           scrollbar-width: none;
           -ms-overflow-style: none;
           mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
@@ -1436,63 +1339,202 @@
           }
         }
 
-        .memorial-prayers-track {
+        .nearest-dates-track {
+          margin: 0;
+          padding: 0;
+          text-align: center;
+          list-style: none;
           width: 100%;
 
           &.is-scrolling {
-            animation-name: memorial-prayers-scroll;
+            animation-name: nearest-dates-scroll;
             animation-timing-function: linear;
             animation-iteration-count: infinite;
           }
-        }
 
-        .memorial-prayers-inner {
-          width: 100%;
-          text-align: center;
+          li {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
 
-          > h2 {
-            font-size: clamp(16px, 1.55vw, 22px);
-            margin: 0 0 8px;
-            @include golden-text-mixin;
-          }
-        }
+            a,
+            .nearest-date-link {
+              display: block;
+              width: 100%;
+              color: white;
+              text-decoration: none;
+              padding: 10px 4px;
+              border-bottom: 1px solid rgba(207, 175, 31, 0.28);
+              border-radius: 0;
+              background: transparent;
+              border-top: none;
+              border-left: none;
+              border-right: none;
+              font: inherit;
+              cursor: pointer;
+              text-align: center;
 
-        .memorial-prayer-block {
-          margin-top: 10px;
+              &:hover,
+              &:focus-visible {
+                background: rgba(0, 0, 0, 0.12);
+              }
 
-          &.prayer-clickable {
-            cursor: pointer;
-            border-radius: 8px;
-            transition: background-color 0.15s ease, box-shadow 0.15s ease;
+              time {
+                display: block;
+                margin-bottom: 4px;
+                text-decoration: underline;
+                color: $textColor;
+                font-size: clamp(13px, 1.1vw, 17px);
+                line-height: 1.3;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+              }
 
-            &:hover,
-            &:focus-visible {
-              background: rgba(255, 255, 255, 0.05);
-              box-shadow: inset 0 0 0 1px rgba(207, 175, 31, 0.28);
-              outline: none;
+              .name {
+                display: block;
+                margin-left: 0;
+                font-size: clamp(14px, 1.2vw, 18px);
+                line-height: 1.3;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+              }
             }
-          }
 
-          h1 {
-            font-size: clamp(18px, 1.7vw, 24px);
-            white-space: normal;
-            margin: 0 0 6px;
-            @include golden-text-mixin;
-          }
-        }
+            &.community-event-item {
+              margin: 0;
+              padding: 0;
 
-        .prayer-text {
-          color: #fff;
-          font-size: clamp(12px, 1.05vw, 16px);
-          line-height: 1.38;
-          text-align: center;
-          white-space: pre-wrap;
-        }
+              .community-event-link {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 10px 4px;
+                border-bottom: 1px solid rgba(207, 175, 31, 0.28);
+                border-radius: 0;
+                text-align: center;
+                background: transparent;
+                border-top: none;
+                border-left: none;
+                border-right: none;
+                box-shadow: none;
 
-        &.memorial-prayers-big {
-          .prayer-text {
-            font-size: clamp(13px, 1.12vw, 17px);
-            line-height: 1.4;
+                time {
+                  color: var(--accent-color, #ffd54f);
+                  font-weight: 600;
+                  text-decoration: none;
+                  -webkit-line-clamp: 3;
+                }
+
+                .community-event-title {
+                  display: block;
+                  margin-top: 4px;
+                  font-size: clamp(14px, 1.2vw, 18px);
+                  font-weight: 600;
+                  line-height: 1.25;
+                  color: $goldenText;
+                  text-shadow: none;
+                  -webkit-line-clamp: 3;
+                }
+
+                .community-event-text {
+                  display: block;
+                  margin-top: 3px;
+                  font-size: clamp(12px, 1vw, 15px);
+                  line-height: 1.35;
+                  color: var(--text-color, #d0d0d0);
+                  opacity: 0.95;
+                  -webkit-line-clamp: 3;
+                }
+              }
+            }
+
+            &.sidebar-holiday-item {
+              margin: 0;
+              padding: 0;
+
+              .sidebar-holiday-link {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 10px 4px;
+                border-bottom: 1px solid rgba(207, 175, 31, 0.28);
+                border-radius: 0;
+                text-align: center;
+                background: transparent;
+                border-top: none;
+                border-left: none;
+                border-right: none;
+
+                time {
+                  display: block;
+                  margin-bottom: 4px;
+                  text-decoration: none;
+                  color: $textColor;
+                  font-size: clamp(13px, 1.1vw, 17px);
+                  line-height: 1.3;
+                }
+
+                .sidebar-holiday-title {
+                  display: block;
+                  font-size: clamp(14px, 1.2vw, 18px);
+                  line-height: 1.3;
+                  color: $goldenText;
+                }
+              }
+            }
+
+            &.sidebar-chabad-item {
+              margin: 0;
+              padding: 0;
+
+              .sidebar-chabad-link {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 10px 4px;
+                border-bottom: 1px solid rgba(207, 175, 31, 0.28);
+                border-radius: 0;
+                text-align: center;
+                background: transparent;
+                border-top: none;
+                border-left: none;
+                border-right: none;
+
+                time {
+                  display: block;
+                  margin-bottom: 4px;
+                  text-decoration: none;
+                  color: $textColor;
+                  font-size: clamp(13px, 1.1vw, 17px);
+                  line-height: 1.3;
+                }
+
+                .sidebar-chabad-title {
+                  display: block;
+                  font-size: clamp(14px, 1.2vw, 18px);
+                  line-height: 1.3;
+                  color: $goldenText;
+                }
+              }
+            }
+
+            &:last-child {
+              .community-event-link,
+              .sidebar-holiday-link,
+              .sidebar-chabad-link,
+              .nearest-date-link {
+                border-bottom: none;
+              }
+            }
           }
         }
       }

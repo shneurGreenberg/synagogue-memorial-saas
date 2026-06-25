@@ -31,7 +31,6 @@ import { useBoardData } from '../context/BoardDataContext';
 import { resolveBoardTitle } from '../lib/board-title';
 import { getSidebarCommunityEvents, hasEventDate } from '../lib/community-events';
 import { resolveBoardFeatures } from '../lib/board-features';
-import { JewishContentPanels } from '../components/JewishContentPanels';
 import { SidebarUpcomingPanel } from '../components/SidebarUpcomingPanel';
 import { BoardWeatherSection } from '../components/BoardWeatherSection';
 import { isPersonYahrzeitToday } from '../lib/yahrzeit-today';
@@ -385,26 +384,26 @@ class HomePageBase extends React.Component {
         )}
         <aside className="left side-panel">
           <div className="wooden-panel">
-            <div className="left-panel-scroll">
-              <div className="banner-wrap">
-                <CommunityLogo src={assetUrl(`images/${logo}`)} alt={appData.title || 'Synagogue'} />
+            <div className="left-panel-inner">
+              <div className="left-panel-header">
+                <div className="banner-wrap">
+                  <CommunityLogo src={assetUrl(`images/${logo}`)} alt={appData.title || 'Synagogue'} />
+                </div>
               </div>
-              {this.state.dailyCite && (
-                <div
-                  className="daily-cite"
-                  dangerouslySetInnerHTML={{ __html: sanitizeRichText(this.state.dailyCite.text) }}
+              {showMemorialPrayers && (
+                <MemorialPrayersPanel
+                  big
+                  showKelMale={boardFeatures.kelMaleRachamim}
+                  showIzkor={boardFeatures.izkor}
+                  memorialPrayerLabel={this.props.t('memorial_prayer')}
+                  kelMaleHeading={this.props.t('kel_male_rachamim')}
+                  kelMaleText={this.props.t('kel_male_rachamim_text')}
+                  izkorHeading={this.props.t('izkor')}
+                  izkorText={this.props.t('izkor_text')}
                 />
               )}
-              <JewishContentPanels uiLang={this.props.uiLang} />
-              <SidebarUpcomingPanel
-                uiLang={this.props.uiLang}
-                communityEvents={this.state.communityEvents}
-                formatGregorianDate={formatGregorianDate}
-                formatHebrewDate={formatHebrewDate}
-                showTopDivider={!boardFeatures.hayomYom}
-              />
+              <DonationQrPanel />
             </div>
-            <MemorialSubmissionPanel />
           </div>
         </aside>
         <section className="middle">
@@ -485,19 +484,22 @@ class HomePageBase extends React.Component {
                   />
                 )}
               </div>
-              {showMemorialPrayers && (
-                <MemorialPrayersPanel
-                  big={!appData.shabbatTimesEnabled}
-                  showKelMale={boardFeatures.kelMaleRachamim}
-                  showIzkor={boardFeatures.izkor}
-                  memorialPrayerLabel={this.props.t('memorial_prayer')}
-                  kelMaleHeading={this.props.t('kel_male_rachamim')}
-                  kelMaleText={this.props.t('kel_male_rachamim_text')}
-                  izkorHeading={this.props.t('izkor')}
-                  izkorText={this.props.t('izkor_text')}
+              <div className="right-panel-scroll">
+                {this.state.dailyCite && (
+                  <div
+                    className="daily-cite"
+                    dangerouslySetInnerHTML={{ __html: sanitizeRichText(this.state.dailyCite.text) }}
+                  />
+                )}
+                <SidebarUpcomingPanel
+                  uiLang={this.props.uiLang}
+                  communityEvents={this.state.communityEvents}
+                  formatGregorianDate={formatGregorianDate}
+                  formatHebrewDate={formatHebrewDate}
+                  showTopDivider={Boolean(this.state.dailyCite)}
                 />
-              )}
-              <DonationQrPanel />
+              </div>
+              <MemorialSubmissionPanel />
             </div>
           </div>
         </aside>

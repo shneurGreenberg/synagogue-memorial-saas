@@ -1,10 +1,10 @@
 export const BOARD_FEATURE_DEFAULTS = {
   sidebarNames: true,
   dailyChumash: true,
-  dailyTehillim: true,
+  dailyTehillim: false,
   dailyTanya: true,
   dailyRambam: true,
-  hayomYom: true,
+  hayomYom: false,
   upcomingHolidays: true,
   communityEvents: true,
   kelMaleRachamim: true,

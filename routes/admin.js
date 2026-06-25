@@ -85,12 +85,17 @@ const BOARD_FEATURE_GROUPS = [
   {
     groupKey: 'board_features_left_column_group',
     helpKey: 'board_features_left_column_group_help',
-    keys: ['sidebarNames', 'dailyChumash', 'dailyTehillim', 'dailyTanya', 'dailyRambam', 'hayomYom', 'upcomingHolidays', 'communityEvents'],
+    keys: ['kelMaleRachamim', 'izkor'],
   },
   {
     groupKey: 'board_features_right_column_group',
     helpKey: 'board_features_right_column_group_help',
-    keys: ['kelMaleRachamim', 'izkor', 'weather', 'sunriseSunset'],
+    keys: ['sidebarNames', 'upcomingHolidays', 'communityEvents', 'weather', 'sunriseSunset'],
+  },
+  {
+    groupKey: 'board_features_learning_group',
+    helpKey: 'board_features_learning_group_help',
+    keys: ['dailyChumash', 'dailyTehillim', 'dailyTanya', 'dailyRambam', 'hayomYom'],
   },
 ];
 
