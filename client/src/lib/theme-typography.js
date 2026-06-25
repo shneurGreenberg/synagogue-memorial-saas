@@ -9,11 +9,13 @@ export const FONT_SCALE_DEFAULTS = {
   torahNames: 100,
   weather: 100,
   shabbat: 100,
+  candle: 75,
 };
 
 export const FONT_SCALE_RANGES = {
   default: { min: 50, max: 200 },
   torahNames: { min: 100, max: 400 },
+  candle: { min: 40, max: 150 },
 };
 
 export const TILE_OPACITY_DEFAULT = 100;

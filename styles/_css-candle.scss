@@ -20,6 +20,8 @@
 }
 
 .css-candle-glow {
+  left: 50%;
+  margin-left: calc(-35 * var(--css-candle-unit));
   border-radius: 100%;
   width: calc(70 * var(--css-candle-unit));
   height: calc(130 * var(--css-candle-unit));
@@ -31,10 +33,13 @@
 }
 
 .css-candle-flame {
+  left: 50%;
+  margin-left: calc(-9 * var(--css-candle-unit));
   bottom: calc(10 * var(--css-candle-unit));
   z-index: 3;
   width: calc(18 * var(--css-candle-unit));
-  transform-origin: bottom;
+  height: calc(102 * var(--css-candle-unit));
+  transform-origin: bottom center;
   border-radius: 50% 50% 20% 20%;
   box-shadow: 0 calc(-5 * var(--css-candle-unit)) calc(7 * var(--css-candle-unit)) 0 orange;
   background: linear-gradient(white 70%, transparent);
@@ -44,6 +49,8 @@
 }
 
 .css-candle-blue-part {
+  left: 50%;
+  margin-left: calc(-10 * var(--css-candle-unit));
   width: calc(20 * var(--css-candle-unit));
   height: calc(45 * var(--css-candle-unit));
   background: rgba(0, 133, 255, 0.7);
@@ -70,9 +77,10 @@
 }
 
 .css-candle-thread {
+  left: 50%;
+  margin-left: calc(-2.5 * var(--css-candle-unit));
   width: calc(5 * var(--css-candle-unit));
   height: calc(25 * var(--css-candle-unit));
-  margin: 0 auto;
   border-radius: 40% 40% 0 0;
   background: linear-gradient(#ff7800, black 40%);
   bottom: 0;

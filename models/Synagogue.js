@@ -159,6 +159,7 @@ const SynagogueSchema = new mongoose.Schema({
           torahNames: Number,
           weather: Number,
           shabbat: Number,
+          candle: Number,
         },
         fontScaleBaselines: {
           tileTitle: Number,
@@ -171,6 +172,7 @@ const SynagogueSchema = new mongoose.Schema({
           torahNames: Number,
           weather: Number,
           shabbat: Number,
+          candle: Number,
         },
         logo: String,
         backgroundImage: String,
@@ -220,6 +222,7 @@ const SynagogueSchema = new mongoose.Schema({
       torahNames: { type: Number, default: 100 },
       weather: { type: Number, default: 100 },
       shabbat: { type: Number, default: 100 },
+      candle: { type: Number, default: 75 },
     },
     fontScaleBaselines: {
       tileTitle: { type: Number, default: 100 },
@@ -232,6 +235,7 @@ const SynagogueSchema = new mongoose.Schema({
       torahNames: { type: Number, default: 100 },
       weather: { type: Number, default: 100 },
       shabbat: { type: Number, default: 100 },
+      candle: { type: Number, default: 100 },
     },
     backgroundImage: String,
     tilesBackground: String,

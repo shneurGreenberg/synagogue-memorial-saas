@@ -528,30 +528,25 @@
 
         .candle,
         .css-candle.candle {
-          --css-candle-unit: 0.45px;
-          width: clamp(54px, 5.7vw, 81px);
-          height: clamp(72px, 7.5vw, 108px);
-          max-width: clamp(54px, 5.7vw, 81px);
-          max-height: 68%;
           position: absolute;
+          bottom: 4px;
           left: 4px;
-          top: 46%;
-          transform: translate3d(0, calc(-50% + 36px), 0);
+          top: auto;
+          transform: scale(var(--candle-display-scale, 0.2));
+          transform-origin: center bottom;
           pointer-events: none;
           z-index: 0;
           backface-visibility: hidden;
+
+          .css-candle-bottom {
+            display: none;
+          }
         }
 
         &.card-big {
           .candle,
           .css-candle.candle {
-            --css-candle-unit: 0.7px;
-            width: clamp(84px, 9vw, 126px);
-            height: clamp(108px, 11.25vw, 162px);
-            max-width: clamp(84px, 9vw, 126px);
-            max-height: 76%;
-            top: 44%;
-            transform: translate3d(0, calc(-50% + 36px), 0);
+            transform: scale(var(--candle-display-scale-big, var(--candle-display-scale, 0.28)));
           }
         }
 
