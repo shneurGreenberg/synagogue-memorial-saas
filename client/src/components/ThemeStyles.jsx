@@ -2,7 +2,8 @@ import React from 'react';
 import { useBoardData } from '../context/BoardDataContext';
 import { assetUrl } from '../lib/asset-url';
 import { buildTileThemeVars } from '../lib/tile-theme-colors';
-import { fontScaleCss, resolveFontScales, resolveTileOpacity } from '../lib/theme-typography';
+import { resolveFontScales, resolveTileOpacity } from '../lib/theme-typography';
+import { effectiveFontScaleCss, resolveFontScaleBaselines } from '../lib/typography-baseline';
 
 function tileGlassNoise(transparency) {
   if (transparency <= 0.01) {
@@ -49,6 +50,8 @@ export function ThemeStyles() {
   const text = theme.textColor || '#bfbfbf';
   const accent = theme.accentColor || '#ffd54f';
   const fontScales = resolveFontScales(theme.fontScales);
+  const fontScaleBaselines = resolveFontScaleBaselines(theme.fontScaleBaselines);
+  const scale = (key) => effectiveFontScaleCss(fontScales, fontScaleBaselines, key);
   const tileVars = buildTileThemeVars(theme.tileColor, primary, resolveTileOpacity(theme.tileOpacity));
   const tileTransparency = tileVars.tileTransparency;
   const useBackdropBlur = tileTransparency > 0.01;
@@ -80,15 +83,16 @@ export function ThemeStyles() {
       --card-button: ${tileVars.cardButton};
       --card-button-border: ${tileVars.cardButtonBorder};
       --card-button-text: #1a1a1a;
-      --font-scale-tile-title: ${fontScaleCss(fontScales.tileTitle)};
-      --font-scale-tile-date: ${fontScaleCss(fontScales.tileDate)};
-      --font-scale-clock: ${fontScaleCss(fontScales.clock)};
-      --font-scale-board-header: ${fontScaleCss(fontScales.boardHeader)};
-      --font-scale-sidebar: ${fontScaleCss(fontScales.sidebar)};
-      --font-scale-prayers: ${fontScaleCss(fontScales.prayers)};
-      --font-scale-prayer-overlay: ${fontScaleCss(fontScales.prayerOverlay)};
-      --font-scale-torah-names: ${fontScaleCss(fontScales.torahNames, 'torahNames')};
-      --font-scale-weather: ${fontScaleCss(fontScales.weather)};
+      --font-scale-tile-title: ${scale('tileTitle')};
+      --font-scale-tile-date: ${scale('tileDate')};
+      --font-scale-clock: ${scale('clock')};
+      --font-scale-board-header: ${scale('boardHeader')};
+      --font-scale-sidebar: ${scale('sidebar')};
+      --font-scale-prayers: ${scale('prayers')};
+      --font-scale-prayer-overlay: ${scale('prayerOverlay')};
+      --font-scale-torah-names: ${scale('torahNames')};
+      --font-scale-weather: ${scale('weather')};
+      --font-scale-shabbat: ${scale('shabbat')};
     }
     .main-container .board-header h1 {
       color: var(--primary-color) !important;
@@ -201,6 +205,7 @@ export function ThemeStyles() {
     .main-container .weather-panel .weather-cube-temps {
       font-size: calc(clamp(9px, 0.78vw, 11px) * var(--font-scale-weather)) !important;
     }
+    .main-container .memorial-prayers-section-title,
     .main-container .memorial-prayers-inner > h2 {
       font-size: calc(clamp(16px, 1.55vw, 22px) * var(--font-scale-prayers)) !important;
     }
@@ -222,6 +227,18 @@ export function ThemeStyles() {
     .main-container .board-shabbat-block .shabbat-times .shabbat-parsha-name {
       color: var(--accent-color) !important;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+    }
+    .main-container .board-shabbat-block .shabbat-times .shabbat-parsha-heading {
+      font-size: calc(clamp(11px, 0.95vw, 14px) * var(--font-scale-shabbat)) !important;
+    }
+    .main-container .board-shabbat-block .shabbat-times .shabbat-parsha-name {
+      font-size: calc(clamp(17px, 1.55vw, 24px) * var(--font-scale-shabbat)) !important;
+    }
+    .main-container .board-shabbat-block .shabbat-times .shabbat-label {
+      font-size: calc(clamp(10px, 0.88vw, 12px) * var(--font-scale-shabbat)) !important;
+    }
+    .main-container .board-shabbat-block .shabbat-times .shabbat-time {
+      font-size: calc(clamp(14px, 1.25vw, 18px) * var(--font-scale-shabbat)) !important;
     }
     body,
     .main-container {

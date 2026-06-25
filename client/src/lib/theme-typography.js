@@ -8,6 +8,7 @@ export const FONT_SCALE_DEFAULTS = {
   prayerOverlay: 100,
   torahNames: 100,
   weather: 100,
+  shabbat: 100,
 };
 
 export const FONT_SCALE_RANGES = {

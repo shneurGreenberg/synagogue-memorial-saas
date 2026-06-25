@@ -899,6 +899,30 @@
             });
         }
 
+        function resetTypographySlidersToBaseline() {
+            document.querySelectorAll('input[name^="fontScale_"]').forEach(function (input) {
+                input.value = 100;
+                var output = document.querySelector('.font-scale-value[data-for="' + input.name + '"]');
+                if (output) {
+                    output.textContent = '100%';
+                }
+            });
+
+            ['memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale'].forEach(function (id) {
+                var input = document.getElementById(id);
+                if (!input) {
+                    return;
+                }
+                input.value = 100;
+                var output = document.getElementById(id + 'Value');
+                if (output) {
+                    output.textContent = '100%';
+                }
+            });
+
+            applyPreviewPatch(readPreviewPatch());
+        }
+
         function readCurrentDesignPatch() {
             var patch = readPreviewPatch();
             var languageSelect = document.getElementById('language');
@@ -1024,6 +1048,9 @@
                 }).then(function (data) {
                     if (data && data.ok && data.view) {
                         prependSavedView(data.view);
+                        if (data.resetTypography) {
+                            resetTypographySlidersToBaseline();
+                        }
                         window.alert('{{t 'saved_view_saved'}}');
                     }
                 }).catch(function () {
@@ -1068,6 +1095,9 @@
                         var replacement = renderSavedViewCard(data.view);
                         if (existing) {
                             existing.replaceWith(replacement);
+                        }
+                        if (data.resetTypography) {
+                            resetTypographySlidersToBaseline();
                         }
                         window.alert('{{t 'update_current_view_saved'}}');
                     }

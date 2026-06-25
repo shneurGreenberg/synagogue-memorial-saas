@@ -35,7 +35,7 @@ export function mergePreviewPatch(data, patch) {
   if (patch.tileOpacity !== undefined && patch.tileOpacity !== '') {
     next.theme.tileOpacity = Number(patch.tileOpacity);
   }
-  const fontScaleKeys = ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers', 'prayerOverlay', 'torahNames', 'weather'];
+  const fontScaleKeys = ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat'];
   fontScaleKeys.forEach((key) => {
     const value = patch[`fontScale_${key}`];
     if (value !== undefined && value !== '') {
@@ -105,7 +105,7 @@ export function previewPatchFromSearchParams(params) {
   if (params.has('accentColor')) patch.accentColor = params.get('accentColor');
   if (params.has('tileColor')) patch.tileColor = params.get('tileColor');
   if (params.has('tileOpacity')) patch.tileOpacity = params.get('tileOpacity');
-  ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers', 'prayerOverlay', 'torahNames', 'weather'].forEach((key) => {
+  ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat'].forEach((key) => {
     if (params.has(`fontScale_${key}`)) {
       patch[`fontScale_${key}`] = params.get(`fontScale_${key}`);
     }

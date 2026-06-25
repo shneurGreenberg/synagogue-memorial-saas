@@ -3,7 +3,7 @@ import { PrayerReadingOverlay } from './PrayerReadingOverlay';
 
 import { assetUrl } from '../lib/asset-url';
 
-export class MemorialPrayersPanel extends React.Component {
+class PrayerTextScroller extends React.Component {
   constructor(props) {
     super(props);
     this.viewportRef = React.createRef();
@@ -11,11 +11,7 @@ export class MemorialPrayersPanel extends React.Component {
     this.state = {
       shouldScroll: false,
       durationSec: 120,
-      activePrayer: null,
     };
-    this.openPrayer = this.openPrayer.bind(this);
-    this.closePrayer = this.closePrayer.bind(this);
-    this.onPrayerKeyDown = this.onPrayerKeyDown.bind(this);
   }
 
   componentDidMount() {
@@ -37,46 +33,14 @@ export class MemorialPrayersPanel extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (
-      prevProps.kelMaleText !== this.props.kelMaleText
-      || prevProps.izkorText !== this.props.izkorText
-      || prevProps.big !== this.props.big
-      || prevProps.showKelMale !== this.props.showKelMale
-      || prevProps.showIzkor !== this.props.showIzkor
-    ) {
+    if (prevProps.text !== this.props.text || prevProps.big !== this.props.big) {
       this.updateScrollBehavior();
     }
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateScrollBehavior);
-    if (this.resizeObserver) {
-      this.resizeObserver.disconnect();
-    }
-  }
-
-  openPrayer(prayer) {
-    this.setState({ activePrayer: prayer });
-  }
-
-  closePrayer() {
-    this.setState({ activePrayer: null });
-  }
-
-  onPrayerKeyDown(event, prayer) {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      this.openPrayer(prayer);
-    }
-  }
-
-  measureContentHeight(track) {
-    const inner = track.querySelector('.memorial-prayers-inner');
-    if (inner) {
-      return inner.getBoundingClientRect().height;
-    }
-
-    return track.scrollHeight;
+    this.resizeObserver?.disconnect();
   }
 
   updateScrollBehavior = () => {
@@ -88,7 +52,9 @@ export class MemorialPrayersPanel extends React.Component {
         return;
       }
 
-      const contentHeight = this.measureContentHeight(track);
+      const contentHeight = this.state.shouldScroll
+        ? track.scrollHeight / 2
+        : track.scrollHeight;
       const needsScroll = contentHeight > viewport.clientHeight + 4;
 
       if (!needsScroll) {
@@ -114,11 +80,55 @@ export class MemorialPrayersPanel extends React.Component {
     });
   };
 
+  render() {
+    const { text } = this.props;
+    const { shouldScroll, durationSec } = this.state;
+
+    return (
+      <div className="memorial-prayer-text-scroll" ref={this.viewportRef}>
+        <div
+          className={`memorial-prayer-text-track${shouldScroll ? ' is-scrolling' : ''}`}
+          ref={this.trackRef}
+          style={shouldScroll ? { animationDuration: `${durationSec}s` } : undefined}
+        >
+          <div className="prayer-text">{text}</div>
+          {shouldScroll && <div className="prayer-text">{text}</div>}
+        </div>
+      </div>
+    );
+  }
+}
+
+export class MemorialPrayersPanel extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { activePrayer: null };
+    this.openPrayer = this.openPrayer.bind(this);
+    this.closePrayer = this.closePrayer.bind(this);
+    this.onPrayerKeyDown = this.onPrayerKeyDown.bind(this);
+  }
+
+  openPrayer(prayer) {
+    this.setState({ activePrayer: prayer });
+  }
+
+  closePrayer() {
+    this.setState({ activePrayer: null });
+  }
+
+  onPrayerKeyDown(event, prayer) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.openPrayer(prayer);
+    }
+  }
+
   renderPrayerBlock(id, heading, text, extraClass, audioSrc) {
     const prayer = { id, heading, text, extraClass, audioSrc };
 
     return (
       <section
+        key={id}
         className={`memorial-prayer-block prayer-clickable ${extraClass || ''}`}
         aria-labelledby={id}
         role="button"
@@ -127,13 +137,14 @@ export class MemorialPrayersPanel extends React.Component {
         onKeyDown={(event) => this.onPrayerKeyDown(event, prayer)}
       >
         <h1 id={id}>{heading}</h1>
-        <div className="prayer-text">{text}</div>
+        <PrayerTextScroller text={text} big={this.props.big} />
       </section>
     );
   }
 
-  renderContent(suffix) {
+  render() {
     const {
+      big,
       memorialPrayerLabel,
       kelMaleHeading,
       kelMaleText,
@@ -142,30 +153,6 @@ export class MemorialPrayersPanel extends React.Component {
       showKelMale = true,
       showIzkor = true,
     } = this.props;
-
-    return (
-      <div className="memorial-prayers-inner" key={suffix}>
-        {(showKelMale && showIzkor) && <h2>{memorialPrayerLabel}</h2>}
-        {showKelMale && this.renderPrayerBlock(
-          `kel-male-heading${suffix}`,
-          kelMaleHeading,
-          kelMaleText,
-          'kel-male',
-          assetUrl('audio/prayer-placeholder.mp3'),
-        )}
-        {showIzkor && this.renderPrayerBlock(
-          `yizkor-heading${suffix}`,
-          izkorHeading,
-          izkorText,
-          'yizkor',
-          assetUrl('audio/prayer-placeholder.mp3'),
-        )}
-      </div>
-    );
-  }
-
-  render() {
-    const { big, showKelMale = true, showIzkor = true } = this.props;
     const { activePrayer } = this.state;
 
     if (!showKelMale && !showIzkor) {
@@ -184,16 +171,23 @@ export class MemorialPrayersPanel extends React.Component {
           />
         )}
         <div className={`memorial-prayers ${big ? 'memorial-prayers-big' : ''}`}>
-          <div className="memorial-prayers-scroll" ref={this.viewportRef}>
-            <div
-              className={`memorial-prayers-track${this.state.shouldScroll ? ' is-scrolling' : ''}`}
-              ref={this.trackRef}
-              style={this.state.shouldScroll ? { animationDuration: `${this.state.durationSec}s` } : undefined}
-            >
-              {this.renderContent('')}
-              {this.state.shouldScroll && this.renderContent('-dup')}
-            </div>
-          </div>
+          {(showKelMale && showIzkor) && (
+            <h2 className="memorial-prayers-section-title">{memorialPrayerLabel}</h2>
+          )}
+          {showKelMale && this.renderPrayerBlock(
+            'kel-male-heading',
+            kelMaleHeading,
+            kelMaleText,
+            'kel-male',
+            assetUrl('audio/prayer-placeholder.mp3'),
+          )}
+          {showIzkor && this.renderPrayerBlock(
+            'yizkor-heading',
+            izkorHeading,
+            izkorText,
+            'yizkor',
+            assetUrl('audio/prayer-placeholder.mp3'),
+          )}
         </div>
       </>
     );

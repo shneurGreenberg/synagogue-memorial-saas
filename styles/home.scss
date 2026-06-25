@@ -1,4 +1,5 @@
 @import 'common';
+@import 'css-candle';
 
 .main-container {
   user-select: none;
@@ -353,42 +354,19 @@
       padding-top: 8px;
       margin-top: 4px;
 
-      .memorial-prayers-scroll {
-        flex: 1;
-        min-height: 0;
-        width: 100%;
-        overflow: hidden;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-        mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
-
-        &::-webkit-scrollbar {
-          display: none;
-        }
-      }
-
-      .memorial-prayers-track {
-        width: 100%;
-
-        &.is-scrolling {
-          animation-name: memorial-prayers-scroll;
-          animation-timing-function: linear;
-          animation-iteration-count: infinite;
-        }
-      }
-
-      .memorial-prayers-inner {
-        width: 100%;
+      .memorial-prayers-section-title {
+        flex-shrink: 0;
+        font-size: clamp(16px, 1.55vw, 22px);
+        margin: 0 0 8px;
+        @include golden-text-mixin;
         text-align: center;
-
-        > h2 {
-          font-size: clamp(16px, 1.55vw, 22px);
-          margin: 0 0 8px;
-          @include golden-text-mixin;
-        }
       }
 
       .memorial-prayer-block {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
         margin-top: 10px;
 
         &.prayer-clickable {
@@ -405,10 +383,36 @@
         }
 
         h1 {
+          flex-shrink: 0;
           font-size: clamp(18px, 1.7vw, 24px);
           white-space: normal;
           margin: 0 0 6px;
           @include golden-text-mixin;
+          text-align: center;
+        }
+      }
+
+      .memorial-prayer-text-scroll {
+        flex: 1;
+        min-height: 0;
+        width: 100%;
+        overflow: hidden;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        mask-image: linear-gradient(to bottom, transparent 0, #000 6%, #000 94%, transparent 100%);
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+
+      .memorial-prayer-text-track {
+        width: 100%;
+
+        &.is-scrolling {
+          animation-name: memorial-prayer-text-scroll;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
         }
       }
 
@@ -522,7 +526,9 @@
           pointer-events: none;
         }
 
-        .candle {
+        .candle,
+        .css-candle.candle {
+          --css-candle-unit: 0.45px;
           width: clamp(54px, 5.7vw, 81px);
           height: clamp(72px, 7.5vw, 108px);
           max-width: clamp(54px, 5.7vw, 81px);
@@ -534,36 +540,12 @@
           pointer-events: none;
           z-index: 0;
           backface-visibility: hidden;
-          display: block;
-          object-fit: contain;
-          object-position: center bottom;
-
-          &.candle-video {
-            background: transparent;
-          }
-
-          &.candle-fallback {
-            animation: candle-soft-flicker 3.2s ease-in-out infinite;
-            will-change: opacity, filter;
-          }
-
-          &.candle-static-image {
-            animation: none;
-            will-change: auto;
-          }
-
-          &.candle-fallback-css {
-            background:
-              radial-gradient(ellipse at 50% 88%, #fff176 0%, #ffb300 24%, #ff6f00 42%, transparent 62%),
-              linear-gradient(to top, rgba(255, 248, 225, 0.95) 0%, #ffb300 38%, #e65100 58%, transparent 78%);
-            filter: drop-shadow(0 0 14px rgba(255, 179, 0, 0.65));
-            animation: candle-soft-flicker 3.2s ease-in-out infinite;
-            opacity: 1;
-          }
         }
 
         &.card-big {
-          .candle {
+          .candle,
+          .css-candle.candle {
+            --css-candle-unit: 0.7px;
             width: clamp(84px, 9vw, 126px);
             height: clamp(108px, 11.25vw, 162px);
             max-width: clamp(84px, 9vw, 126px);
@@ -1677,6 +1659,16 @@
   }
 }
 
+@keyframes memorial-prayer-text-scroll {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-50%);
+  }
+}
+
 @keyframes memorial-prayers-scroll {
   from {
     transform: translateY(0);
@@ -1873,24 +1865,13 @@
   padding-bottom: clamp(12px, 2vh, 24px);
 }
 
-.prayer-reading-candle {
+.prayer-reading-candle.css-candle {
+  --css-candle-unit: 1.35px;
   width: 100%;
   max-width: clamp(180px, 27vw, 360px);
   height: clamp(240px, 33vw, 420px);
   max-height: 88%;
-  pointer-events: none;
   filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.45));
-  object-fit: contain;
-
-  &.candle-fallback {
-    animation: candle-soft-flicker 3.2s ease-in-out infinite;
-    will-change: opacity, filter;
-  }
-
-  &.candle-static-image {
-    animation: none;
-    will-change: auto;
-  }
 }
 
 .prayer-reading-content {
@@ -2126,14 +2107,14 @@ body.board-lang-he {
   }
 
   .shabbat-parsha-heading {
-    font-size: clamp(11px, 0.95vw, 14px);
+    font-size: calc(clamp(11px, 0.95vw, 14px) * var(--font-scale-shabbat, 1));
     opacity: 0.88;
     text-align: center;
     width: 100%;
   }
 
   .shabbat-parsha-name {
-    font-size: clamp(17px, 1.55vw, 24px);
+    font-size: calc(clamp(17px, 1.55vw, 24px) * var(--font-scale-shabbat, 1));
     font-weight: 700;
     line-height: 1.25;
     text-align: center;
@@ -2170,7 +2151,7 @@ body.board-lang-he {
   }
 
   .shabbat-label {
-    font-size: clamp(10px, 0.88vw, 12px);
+    font-size: calc(clamp(10px, 0.88vw, 12px) * var(--font-scale-shabbat, 1));
     opacity: 0.9;
     white-space: normal;
     text-align: center;
@@ -2179,7 +2160,7 @@ body.board-lang-he {
   }
 
   .shabbat-time {
-    font-size: clamp(15px, 1.25vw, 19px);
+    font-size: calc(clamp(15px, 1.25vw, 19px) * var(--font-scale-shabbat, 1));
     font-weight: 700;
     letter-spacing: 0.04em;
     white-space: nowrap;
