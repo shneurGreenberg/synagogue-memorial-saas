@@ -3,15 +3,16 @@ import { withTranslation } from 'react-i18next';
 import { useBoardData } from '../context/BoardDataContext';
 import { assetUrl } from '../lib/asset-url';
 import { getBoardSlug } from '../lib/board-slug';
+import { effectiveMemorialQrScale } from '../lib/typography-baseline';
 
 function MemorialSubmissionPanelBase({ t }) {
   const { data } = useBoardData();
   const panel = data.memorialQrPanel || {};
   const title = t('memorial_submission_title');
   const text = t('memorial_submission_scan');
-  const titleScale = (Number(panel.titleScale) || 100) / 100;
-  const textScale = (Number(panel.textScale) || 100) / 100;
-  const qrScale = (Number(panel.qrScale) || 140) / 100;
+  const titleScale = effectiveMemorialQrScale(panel, 'titleScale');
+  const textScale = effectiveMemorialQrScale(panel, 'textScale');
+  const qrScale = effectiveMemorialQrScale(panel, 'qrScale');
   const slug = data.slug || getBoardSlug();
   const addNameUrl = slug ? `/s/${slug}/add-name` : '';
 

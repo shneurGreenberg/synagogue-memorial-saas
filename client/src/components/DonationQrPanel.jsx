@@ -2,6 +2,7 @@ import React from 'react';
 import { withTranslation } from 'react-i18next';
 import { useBoardData } from '../context/BoardDataContext';
 import { assetUrl } from '../lib/asset-url';
+import { effectiveMemorialQrScale } from '../lib/typography-baseline';
 
 function DonationQrPanelBase({ t }) {
   const { data } = useBoardData();
@@ -15,9 +16,9 @@ function DonationQrPanelBase({ t }) {
 
   const title = t('donation_qr_title');
   const text = t('donation_qr_scan');
-  const titleScale = (Number(panel.titleScale) || 100) / 100;
-  const textScale = (Number(panel.textScale) || 100) / 100;
-  const qrScale = (Number(panel.qrScale) || 140) / 100;
+  const titleScale = effectiveMemorialQrScale(panel, 'titleScale');
+  const textScale = effectiveMemorialQrScale(panel, 'textScale');
+  const qrScale = effectiveMemorialQrScale(panel, 'qrScale');
 
   const qrImage = (
     <img

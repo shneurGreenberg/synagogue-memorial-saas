@@ -214,7 +214,12 @@ async function loadSynagogueBoard(slug) {
   synagogue.boardFeatures = normalizeBoardFeatures(synagogue.boardFeatures);
   synagogue.publicSubmission = normalizePublicSubmission(synagogue.publicSubmission);
   const { normalizeMemorialQrPanel } = require('./lib/memorial-qr-panel');
+  const { normalizeFontScales } = require('./lib/theme-typography');
+  const { normalizeFontScaleBaselines } = require('./lib/typography-baseline');
   synagogue.memorialQrPanel = normalizeMemorialQrPanel(synagogue.memorialQrPanel);
+  synagogue.theme = synagogue.theme || {};
+  synagogue.theme.fontScales = normalizeFontScales(synagogue.theme.fontScales);
+  synagogue.theme.fontScaleBaselines = normalizeFontScaleBaselines(synagogue.theme.fontScaleBaselines);
   return synagogue;
 }
 

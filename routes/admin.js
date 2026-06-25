@@ -109,6 +109,7 @@ const FONT_SCALE_SLIDER_META = [
   { key: 'prayerOverlay', labelKey: 'font_scale_prayer_overlay', helpKey: 'font_scale_prayer_overlay_help' },
   { key: 'torahNames', labelKey: 'font_scale_torah_names', helpKey: 'font_scale_torah_names_help', min: 100, max: 400, step: 10 },
   { key: 'weather', labelKey: 'font_scale_weather', helpKey: 'font_scale_weather_help' },
+  { key: 'shabbat', labelKey: 'font_scale_shabbat', helpKey: 'font_scale_shabbat_help' },
 ];
 
 const TEXTS_FONT_SCALE_GROUPS = [
@@ -125,7 +126,7 @@ const TEXTS_FONT_SCALE_GROUPS = [
   {
     groupKey: 'typography_right_column',
     helpKey: 'typography_right_column_help',
-    keys: ['clock', 'prayers', 'prayerOverlay', 'torahNames', 'weather'],
+    keys: ['clock', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat'],
   },
 ];
 
@@ -511,7 +512,7 @@ router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('sett
             logo: synagogue.theme?.logo || '',
             backgroundImage: synagogue.theme?.backgroundImage || '',
             tilesBackground: synagogue.theme?.tilesBackground || '',
-        });
+        }, synagogue);
         const screenshot = await saveViewThumbnail(snapshot, req.body.screenshotDataUrl);
         const view = {
             id: require('crypto').randomUUID(),
@@ -523,9 +524,20 @@ router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('sett
 
         synagogue.savedViews = synagogue.savedViews || [];
         synagogue.savedViews.unshift(view);
-        await synagogue.save();
 
-        return res.json({ ok: true, view });
+        const themeUpdate = buildApplyUpdate(snapshot);
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            {
+                $set: {
+                    ...themeUpdate,
+                    activeSavedViewId: view.id,
+                    savedViews: synagogue.savedViews,
+                },
+            },
+        );
+
+        return res.json({ ok: true, view, resetTypography: true });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
     }
@@ -582,7 +594,7 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
             logo: synagogue.theme?.logo || existing.snapshot?.theme?.logo || '',
             backgroundImage: synagogue.theme?.backgroundImage || existing.snapshot?.theme?.backgroundImage || '',
             tilesBackground: synagogue.theme?.tilesBackground || existing.snapshot?.theme?.tilesBackground || '',
-        });
+        }, synagogue);
         const screenshot = await saveViewThumbnail(snapshot, req.body.screenshotDataUrl);
         if (existing.screenshot && existing.screenshot !== screenshot) {
             deleteScreenshot(existing.screenshot);
@@ -607,7 +619,7 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
             },
         );
 
-        return res.json({ ok: true, view: synagogue.savedViews[viewIndex] });
+        return res.json({ ok: true, view: synagogue.savedViews[viewIndex], resetTypography: true });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
     }
@@ -665,6 +677,7 @@ router.post('/:slug/settings/reset-theme', requireAdmin, requirePermission('sett
                 'theme.fontScales.prayerOverlay': 100,
                 'theme.fontScales.torahNames': 100,
                 'theme.fontScales.weather': 100,
+                'theme.fontScales.shabbat': 100,
             },
             $unset: {
                 'theme.backgroundImage': '',
