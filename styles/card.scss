@@ -212,3 +212,39 @@
     }
   }
 }
+
+body.card-export-mode {
+  overflow: hidden;
+  margin: 0;
+  background: #2a2118;
+
+  #main-entry,
+  .card-export-root {
+    width: 1920px;
+    height: 1080px;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .card-export-root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    background: url(/images/brickwall.jpg) center / cover no-repeat;
+    padding: clamp(24px, 4vw, 48px);
+  }
+
+  .card-view {
+    width: min(1100px, 92%);
+    max-height: 100%;
+  }
+
+  .card-view .card-detail {
+    max-height: calc(1080px - 96px);
+  }
+
+  .card-view .card-detail-text .biography-scroll-viewport {
+    max-height: min(42vh, 420px);
+  }
+}

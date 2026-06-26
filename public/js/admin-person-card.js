@@ -204,13 +204,12 @@
         return Promise.resolve();
       }
 
-      return window.AdminTileCapture.downloadBoardTileImage(
+      return window.AdminTileCapture.downloadBoardCardImage(
         synagogueSlug,
         person.id,
         person.name,
-        { yahrzeit: false },
       ).catch(function () {
-        /* ignore capture errors; still allow sending the message */
+        /* skip image when capture fails */
       });
     }
 

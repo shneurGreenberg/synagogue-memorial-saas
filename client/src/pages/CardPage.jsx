@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { withTranslation } from 'react-i18next';
 import { sanitizeRichText } from '../lib/html-sanitize';
 import { getBiographyDensityClass } from '../lib/text-density';
@@ -16,11 +16,15 @@ class CardPageBase extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener('keydown', this.onKeyDown);
+    if (!this.props.exportMode) {
+      document.addEventListener('keydown', this.onKeyDown);
+    }
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.onKeyDown);
+    if (!this.props.exportMode) {
+      document.removeEventListener('keydown', this.onKeyDown);
+    }
   }
 
   onOverlayClick(event) {
@@ -70,18 +74,32 @@ class CardPageBase extends React.Component {
       <main className="card-view wooden-panel card-view-missing">
         <div className="card-detail golden-panel">
           <h1>{this.props.t('person_not_found')}</h1>
-          <p>
-            <button type="button" className="card-back-link" onClick={this.props.onBack}>
-              {this.props.t('back_to_board')}
-            </button>
-          </p>
+          {!this.props.exportMode && (
+            <p>
+              <button type="button" className="card-back-link" onClick={this.props.onBack}>
+                {this.props.t('back_to_board')}
+              </button>
+            </p>
+          )}
         </div>
       </main>
     );
   }
 
+  renderExport(card) {
+    return (
+      <div id="cardExportRoot" className="card-export-root" aria-hidden="true">
+        {card ? this.renderDetail(card) : this.renderMissing()}
+      </div>
+    );
+  }
+
   render() {
-    const { card } = this.props;
+    const { card, exportMode } = this.props;
+
+    if (exportMode) {
+      return this.renderExport(card);
+    }
 
     return (
       <div
@@ -101,16 +119,64 @@ class CardPageBase extends React.Component {
 
 const CardPageTranslated = withTranslation()(CardPageBase);
 
-export default function CardPage({ personId }) {
+function useCardExportReady(card, exportMode) {
+  useEffect(() => {
+    if (!exportMode) {
+      return undefined;
+    }
+
+    document.body.classList.add('card-export-mode');
+
+    if (!card) {
+      document.body.classList.add('card-export-ready');
+      return () => {
+        document.body.classList.remove('card-export-mode', 'card-export-ready');
+      };
+    }
+
+    let cancelled = false;
+    const markReady = () => {
+      if (!cancelled) {
+        document.body.classList.add('card-export-ready');
+      }
+    };
+
+    const images = Array.from(document.querySelectorAll('.card-export-root img'));
+    const pending = images.filter((img) => !img.complete);
+
+    if (!pending.length) {
+      window.requestAnimationFrame(() => {
+        window.setTimeout(markReady, 150);
+      });
+    } else {
+      Promise.all(pending.map((img) => new Promise((resolve) => {
+        img.addEventListener('load', resolve, { once: true });
+        img.addEventListener('error', resolve, { once: true });
+      }))).then(() => {
+        window.setTimeout(markReady, 150);
+      });
+    }
+
+    return () => {
+      cancelled = true;
+      document.body.classList.remove('card-export-mode', 'card-export-ready');
+    };
+  }, [card, exportMode]);
+}
+
+export default function CardPage({ personId, exportMode = false }) {
   const { goToBoard } = useBoardNavigation();
   const { data } = useBoardData();
   const people = data.people || [];
   const card = people.find((person) => String(person.id) === String(personId));
 
+  useCardExportReady(card, exportMode);
+
   return (
     <CardPageTranslated
-      key={`card-${personId}`}
+      key={`card-${personId}-${exportMode ? 'export' : 'view'}`}
       card={card}
+      exportMode={exportMode}
       onBack={goToBoard}
     />
   );

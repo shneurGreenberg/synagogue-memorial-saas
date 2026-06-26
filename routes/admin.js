@@ -193,7 +193,11 @@ function canManageSavedViews(permissions) {
 }
 
 function canApplySavedViews(permissions) {
-  return !!(permissions.settingsAppearance || permissions.settingsSavedViews);
+  return !!(
+    permissions.settingsAppearance
+    || permissions.settingsPreview
+    || permissions.settingsSavedViews
+  );
 }
 
 const MIME_EXT = {
