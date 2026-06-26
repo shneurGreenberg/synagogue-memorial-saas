@@ -249,7 +249,20 @@ const SynagogueSchema = new mongoose.Schema({
   },
   language: { type: String, default: 'ru' },
   adminLanguage: { type: String, default: 'ru' }, // Separate language for admin panel
-  reloadTimeout: { type: Number, default: 43200000 } // 12 hours
+  reloadTimeout: { type: Number, default: 43200000 }, // 12 hours
+  provisioning: {
+    photosDriveUrl: { type: String, default: '' },
+    contactFiles: [{
+      originalName: String,
+      storedName: String,
+      mimeType: String,
+      size: Number,
+    }],
+    donationQrImage: { type: String, default: '' },
+    notes: { type: String, default: '' },
+    skippedSteps: [String],
+    createdAt: Date,
+  },
 });
 
 module.exports = mongoose.model('Synagogue', SynagogueSchema);

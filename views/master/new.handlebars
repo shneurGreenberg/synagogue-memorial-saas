@@ -1,0 +1,254 @@
+<div class="master-page master-wizard-page">
+    <header class="master-page-header">
+        <div>
+            <h1>{{t 'wizard_heading'}}</h1>
+            <p class="master-subtitle">{{t 'wizard_subtitle'}}</p>
+        </div>
+        <a href="/master/dashboard" class="btn master-btn master-btn-secondary">{{t 'wizard_back_dashboard'}}</a>
+    </header>
+
+    {{#if error}}
+    <div class="master-alert master-alert-danger">
+        {{#if (eq error 'slug_exists')}}{{t 'error_slug_exists'}}
+        {{else}}{{#if (eq error 'invalid_slug')}}{{t 'error_invalid_slug'}}
+        {{else}}{{#if (eq error 'missing_fields')}}{{t 'error_missing_fields'}}
+        {{else}}{{#if (eq error 'error_upload')}}{{t 'error_upload'}}
+        {{else}}{{error}}{{/if}}{{/if}}{{/if}}{{/if}}
+    </div>
+    {{/if}}
+
+    <div class="master-wizard-shell">
+        <div class="master-wizard-progress" aria-hidden="true">
+            <div class="master-wizard-progress-bar"></div>
+        </div>
+        <ol class="master-wizard-steps" aria-label="{{t 'wizard_progress'}}"></ol>
+
+        <form method="POST" action="/master/add" enctype="multipart/form-data" class="master-wizard-form" id="masterWizardForm" data-location-picker="wizard">
+            <input type="hidden" name="skippedSteps" id="wizardSkippedSteps" value="[]">
+
+            <section class="master-wizard-card is-active" data-step="basics" data-required="true">
+                <div class="master-wizard-card-icon" aria-hidden="true">1</div>
+                <h2>{{t 'wizard_step_basics_title'}}</h2>
+                <p class="master-wizard-card-lead">{{t 'wizard_step_basics_lead'}}</p>
+                <div class="master-form-grid">
+                    <div class="master-field">
+                        <label for="wizardName">{{t 'community_name'}}</label>
+                        <input type="text" name="name" id="wizardName" class="form-control master-input master-name-input" required placeholder="Novosibirsk Synagogue">
+                    </div>
+                    <div class="master-field">
+                        <label for="wizardSlug">{{t 'admin_slug'}}</label>
+                        <input type="text" name="slug" id="wizardSlug" class="form-control master-input master-slug-input" required placeholder="novosibirsk">
+                        <span class="master-hint">{{t 'slug_hint'}}</span>
+                    </div>
+                    <div class="master-field">
+                        <label for="wizardPassword">{{t 'admin_password'}}</label>
+                        <input type="password" name="adminPassword" id="wizardPassword" class="form-control master-input" required minlength="4" autocomplete="new-password">
+                    </div>
+                </div>
+            </section>
+
+            <section class="master-wizard-card" data-step="languages" hidden>
+                <div class="master-wizard-card-icon" aria-hidden="true">2</div>
+                <h2>{{t 'wizard_step_languages_title'}}</h2>
+                <p class="master-wizard-card-lead">{{t 'wizard_step_languages_lead'}}</p>
+                <div class="master-form-grid">
+                    <div class="master-field">
+                        <label for="wizardLanguage">{{t 'display_language'}}</label>
+                        <select name="language" id="wizardLanguage" class="form-control master-input">
+                            <option value="ru">{{t 'lang_ru'}}</option>
+                            <option value="en">{{t 'lang_en'}}</option>
+                            <option value="he">{{t 'lang_he'}}</option>
+                        </select>
+                    </div>
+                    <div class="master-field">
+                        <label for="wizardAdminLanguage">{{t 'admin_language'}}</label>
+                        <select name="adminLanguage" id="wizardAdminLanguage" class="form-control master-input">
+                            <option value="ru">{{t 'lang_ru'}}</option>
+                            <option value="en">{{t 'lang_en'}}</option>
+                            <option value="he">{{t 'lang_he'}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="master-wizard-subsection">
+                    <h3>{{t 'wizard_board_titles'}}</h3>
+                    <div class="master-form-grid">
+                        <div class="master-field">
+                            <label for="wizardTitleRu">{{t 'wizard_title_ru'}}</label>
+                            <input type="text" name="titleRu" id="wizardTitleRu" class="form-control master-input">
+                        </div>
+                        <div class="master-field">
+                            <label for="wizardTitleEn">{{t 'wizard_title_en'}}</label>
+                            <input type="text" name="titleEn" id="wizardTitleEn" class="form-control master-input">
+                        </div>
+                        <div class="master-field">
+                            <label for="wizardTitleHe">{{t 'wizard_title_he'}}</label>
+                            <input type="text" name="titleHe" id="wizardTitleHe" class="form-control master-input" dir="rtl">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="master-wizard-card" data-step="location" hidden>
+                <div class="master-wizard-card-icon" aria-hidden="true">3</div>
+                <h2>{{t 'wizard_step_location_title'}}</h2>
+                <p class="master-wizard-card-lead">{{t 'wizard_step_location_lead'}}</p>
+                <div class="master-location-block">
+                    <div class="master-location-search-wrap">
+                        <label for="wizardCitySearch">{{t 'search_city'}}</label>
+                        <input type="search" id="wizardCitySearch" class="form-control master-input master-city-search" placeholder="{{t 'search_city_placeholder'}}" autocomplete="off">
+                        <div class="master-city-results" hidden></div>
+                    </div>
+                    <input type="hidden" name="city" class="master-city-hidden" value="">
+                    <input type="hidden" name="lat" class="master-lat-hidden" value="55.0226">
+                    <input type="hidden" name="long" class="master-lng-hidden" value="82.9318">
+                    <div class="master-coords-row">
+                        <div class="master-field">
+                            <label>{{t 'latitude'}}</label>
+                            <input type="text" class="form-control master-input master-lat-display" readonly>
+                        </div>
+                        <div class="master-field">
+                            <label>{{t 'longitude'}}</label>
+                            <input type="text" class="form-control master-input master-lng-display" readonly>
+                        </div>
+                        <div class="master-field master-field-wide">
+                            <label for="wizardTimezone">{{t 'timezone'}}</label>
+                            <input type="text" name="timezone" id="wizardTimezone" class="form-control master-input master-timezone-input" value="Asia/Novosibirsk">
+                        </div>
+                    </div>
+                    <div class="master-map" data-default-lat="55.0226" data-default-lng="82.9318"></div>
+                </div>
+            </section>
+
+            <section class="master-wizard-card" data-step="logo" hidden>
+                <div class="master-wizard-card-icon" aria-hidden="true">4</div>
+                <h2>{{t 'wizard_step_logo_title'}}</h2>
+                <p class="master-wizard-card-lead">{{t 'wizard_step_logo_lead'}}</p>
+                <div class="master-field">
+                    <label for="wizardLogo">{{t 'wizard_logo_file'}}</label>
+                    <input type="file" name="logo" id="wizardLogo" class="form-control master-input master-file-input" accept="image/jpeg,image/png,image/webp,image/gif">
+                    <span class="master-hint">{{t 'wizard_image_hint'}}</span>
+                </div>
+                <div class="master-wizard-preview" id="wizardLogoPreview" hidden>
+                    <img alt="" class="master-wizard-preview-image">
+                </div>
+            </section>
+
+            <section class="master-wizard-card" data-step="donation" hidden>
+                <div class="master-wizard-card-icon" aria-hidden="true">5</div>
+                <h2>{{t 'wizard_step_donation_title'}}</h2>
+                <p class="master-wizard-card-lead">{{t 'wizard_step_donation_lead'}}</p>
+                <div class="master-field">
+                    <label for="wizardDonationUrl">{{t 'wizard_donation_url'}}</label>
+                    <input type="url" name="donationUrl" id="wizardDonationUrl" class="form-control master-input" placeholder="https://">
+                </div>
+                <div class="master-field">
+                    <label for="wizardDonationQr">{{t 'wizard_donation_qr_file'}}</label>
+                    <input type="file" name="donationQrImage" id="wizardDonationQr" class="form-control master-input master-file-input" accept="image/*">
+                    <span class="master-hint">{{t 'wizard_donation_qr_hint'}}</span>
+                </div>
+            </section>
+
+            <section class="master-wizard-card" data-step="appearance" hidden>
+                <div class="master-wizard-card-icon" aria-hidden="true">6</div>
+                <h2>{{t 'wizard_step_appearance_title'}}</h2>
+                <p class="master-wizard-card-lead">{{t 'wizard_step_appearance_lead'}}</p>
+                <div class="master-form-grid master-color-grid">
+                    <div class="master-field">
+                        <label for="wizardPrimaryColor">{{t 'wizard_primary_color'}}</label>
+                        <input type="color" name="primaryColor" id="wizardPrimaryColor" class="master-color-input" value="#cfaf1f">
+                    </div>
+                    <div class="master-field">
+                        <label for="wizardTextColor">{{t 'wizard_text_color'}}</label>
+                        <input type="color" name="textColor" id="wizardTextColor" class="master-color-input" value="#f0f0f0">
+                    </div>
+                    <div class="master-field">
+                        <label for="wizardAccentColor">{{t 'wizard_accent_color'}}</label>
+                        <input type="color" name="accentColor" id="wizardAccentColor" class="master-color-input" value="#ffd54f">
+                    </div>
+                    <div class="master-field">
+                        <label for="wizardTileColor">{{t 'wizard_tile_color'}}</label>
+                        <input type="color" name="tileColor" id="wizardTileColor" class="master-color-input" value="#b89a22">
+                    </div>
+                    <div class="master-field">
+                        <label for="wizardTileOpacity">{{t 'wizard_tile_opacity'}}</label>
+                        <input type="range" name="tileOpacity" id="wizardTileOpacity" class="master-range-input" min="0" max="100" value="100">
+                    </div>
+                </div>
+            </section>
+
+            <section class="master-wizard-card" data-step="features" hidden>
+                <div class="master-wizard-card-icon" aria-hidden="true">7</div>
+                <h2>{{t 'wizard_step_features_title'}}</h2>
+                <p class="master-wizard-card-lead">{{t 'wizard_step_features_lead'}}</p>
+                <div class="master-wizard-checklist">
+                    <label class="master-check"><input type="checkbox" name="feature_kelMaleRachamim" value="1" checked> {{t 'wizard_feature_kel_male'}}</label>
+                    <label class="master-check"><input type="checkbox" name="feature_izkor" value="1" checked> {{t 'wizard_feature_izkor'}}</label>
+                    <label class="master-check"><input type="checkbox" name="feature_communityEvents" value="1" checked> {{t 'wizard_feature_events'}}</label>
+                    <label class="master-check"><input type="checkbox" name="feature_upcomingHolidays" value="1" checked> {{t 'wizard_feature_holidays'}}</label>
+                    <label class="master-check"><input type="checkbox" name="feature_officialLogo" value="1" checked> {{t 'wizard_feature_official_logo'}}</label>
+                    <label class="master-check"><input type="checkbox" name="feature_weather" value="1"> {{t 'wizard_feature_weather'}}</label>
+                    <label class="master-check"><input type="checkbox" name="feature_sunriseSunset" value="1"> {{t 'wizard_feature_sun_times'}}</label>
+                    <label class="master-check"><input type="checkbox" name="shabbatTimesEnabled" value="1"> {{t 'wizard_feature_shabbat'}}</label>
+                    <label class="master-check"><input type="checkbox" name="publicSubmissionEnabled" value="1"> {{t 'wizard_feature_public_submission'}}</label>
+                </div>
+            </section>
+
+            <section class="master-wizard-card" data-step="contacts" hidden>
+                <div class="master-wizard-card-icon" aria-hidden="true">8</div>
+                <h2>{{t 'wizard_step_contacts_title'}}</h2>
+                <p class="master-wizard-card-lead">{{t 'wizard_step_contacts_lead'}}</p>
+                <div class="master-field">
+                    <label for="wizardContactFiles">{{t 'wizard_contact_files'}}</label>
+                    <input type="file" name="contactFiles" id="wizardContactFiles" class="form-control master-input master-file-input" multiple>
+                    <span class="master-hint">{{t 'wizard_contact_files_hint'}}</span>
+                </div>
+                <ul class="master-wizard-file-list" id="wizardContactFileList" hidden></ul>
+            </section>
+
+            <section class="master-wizard-card" data-step="photos" hidden>
+                <div class="master-wizard-card-icon" aria-hidden="true">9</div>
+                <h2>{{t 'wizard_step_photos_title'}}</h2>
+                <p class="master-wizard-card-lead">{{t 'wizard_step_photos_lead'}}</p>
+                <div class="master-field">
+                    <label for="wizardPhotosDrive">{{t 'wizard_photos_drive_url'}}</label>
+                    <input type="url" name="photosDriveUrl" id="wizardPhotosDrive" class="form-control master-input" placeholder="https://drive.google.com/...">
+                    <span class="master-hint">{{t 'wizard_photos_drive_hint'}}</span>
+                </div>
+            </section>
+
+            <section class="master-wizard-card" data-step="yahrzeit" hidden>
+                <div class="master-wizard-card-icon" aria-hidden="true">10</div>
+                <h2>{{t 'wizard_step_yahrzeit_title'}}</h2>
+                <p class="master-wizard-card-lead">{{t 'wizard_step_yahrzeit_lead'}}</p>
+                <label class="master-check master-check-block">
+                    <input type="checkbox" name="yahrzeitRemindersEnabled" value="1"> {{t 'wizard_yahrzeit_enabled'}}
+                </label>
+                <div class="master-field">
+                    <label for="wizardYahrzeitEmail">{{t 'wizard_yahrzeit_email'}}</label>
+                    <input type="email" name="yahrzeitNotifyEmail" id="wizardYahrzeitEmail" class="form-control master-input" placeholder="admin@example.com">
+                </div>
+                <label class="master-check master-check-block">
+                    <input type="checkbox" name="yahrzeitIncludeHebrew" value="1" checked> {{t 'wizard_yahrzeit_hebrew'}}
+                </label>
+                <div class="master-field">
+                    <label for="wizardNotes">{{t 'wizard_notes'}}</label>
+                    <textarea name="provisioningNotes" id="wizardNotes" class="form-control master-input" rows="3"></textarea>
+                </div>
+            </section>
+
+            <section class="master-wizard-card" data-step="review" hidden>
+                <div class="master-wizard-card-icon" aria-hidden="true">✓</div>
+                <h2>{{t 'wizard_step_review_title'}}</h2>
+                <p class="master-wizard-card-lead">{{t 'wizard_step_review_lead'}}</p>
+                <div class="master-wizard-review" id="wizardReviewSummary"></div>
+            </section>
+
+            <footer class="master-wizard-actions">
+                <button type="button" class="btn master-btn master-btn-secondary" id="wizardBackBtn" hidden>{{t 'wizard_back'}}</button>
+                <button type="button" class="btn master-btn master-btn-secondary" id="wizardSkipBtn">{{t 'wizard_skip'}}</button>
+                <button type="button" class="btn master-btn master-btn-primary" id="wizardNextBtn">{{t 'wizard_next'}}</button>
+                <button type="submit" class="btn master-btn master-btn-primary" id="wizardSubmitBtn" hidden>{{t 'wizard_create'}}</button>
+            </footer>
+        </form>
+    </div>
+</div>

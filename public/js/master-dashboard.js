@@ -193,6 +193,8 @@
       });
     });
 
+    window.masterSlugFromName = slugFromName;
+
     var addName = root.querySelector('#addName');
     var addSlug = root.querySelector('#addSlug');
     if (addName && addSlug) {
@@ -233,10 +235,10 @@
   }
 
   function initForms() {
-    document.querySelectorAll('.master-community-form[data-location-picker]').forEach(function (form) {
+    document.querySelectorAll('[data-location-picker]').forEach(function (form) {
       var picker = new LocationPicker(form);
       form._locationPicker = picker;
-      if (form.dataset.locationPicker === 'add') {
+      if (form.dataset.locationPicker === 'add' || form.dataset.locationPicker === 'wizard') {
         picker.init();
       }
     });

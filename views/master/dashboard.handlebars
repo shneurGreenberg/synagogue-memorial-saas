@@ -19,81 +19,12 @@
     {{/if}}
 
     <section class="master-panel">
-        <div class="master-panel-header">
-            <h2>{{t 'add_community'}}</h2>
-        </div>
-        <div class="master-panel-body">
-            <form method="POST" action="/master/add" class="master-community-form" data-location-picker="add">
-                <div class="master-form-grid">
-                    <div class="master-field">
-                        <label for="addName">{{t 'community_name'}}</label>
-                        <input type="text" name="name" id="addName" class="form-control master-input master-name-input" required placeholder="Novosibirsk Synagogue">
-                    </div>
-                    <div class="master-field">
-                        <label for="addSlug">{{t 'admin_slug'}}</label>
-                        <input type="text" name="slug" id="addSlug" class="form-control master-input master-slug-input" required placeholder="novosibirsk">
-                        <span class="master-hint">{{t 'slug_hint'}}</span>
-                    </div>
-                    <div class="master-field">
-                        <label for="addPassword">{{t 'admin_password'}}</label>
-                        <input type="password" name="adminPassword" id="addPassword" class="form-control master-input" required minlength="4" autocomplete="new-password">
-                    </div>
-                </div>
-
-                <div class="master-lang-block">
-                    <h3 class="master-location-title">{{t 'languages_section'}}</h3>
-                    <div class="master-form-grid">
-                        <div class="master-field">
-                            <label for="addLanguage">{{t 'display_language'}}</label>
-                            <select name="language" id="addLanguage" class="form-control master-input">
-                                <option value="ru">{{t 'lang_ru'}}</option>
-                                <option value="en">{{t 'lang_en'}}</option>
-                                <option value="he">{{t 'lang_he'}}</option>
-                            </select>
-                        </div>
-                        <div class="master-field">
-                            <label for="addAdminLanguage">{{t 'admin_language'}}</label>
-                            <select name="adminLanguage" id="addAdminLanguage" class="form-control master-input">
-                                <option value="ru">{{t 'lang_ru'}}</option>
-                                <option value="en">{{t 'lang_en'}}</option>
-                                <option value="he">{{t 'lang_he'}}</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="master-location-block">
-                    <h3 class="master-location-title">{{t 'location'}}</h3>
-                    <p class="master-hint">{{t 'location_hint'}}</p>
-                    <div class="master-location-search-wrap">
-                        <label for="addCitySearch">{{t 'search_city'}}</label>
-                        <input type="search" id="addCitySearch" class="form-control master-input master-city-search" placeholder="{{t 'search_city_placeholder'}}" autocomplete="off">
-                        <div class="master-city-results" hidden></div>
-                    </div>
-                    <input type="hidden" name="city" class="master-city-hidden" value="">
-                    <input type="hidden" name="lat" class="master-lat-hidden" value="55.0226">
-                    <input type="hidden" name="long" class="master-lng-hidden" value="82.9318">
-                    <div class="master-coords-row">
-                        <div class="master-field">
-                            <label>{{t 'latitude'}}</label>
-                            <input type="text" class="form-control master-input master-lat-display" readonly>
-                        </div>
-                        <div class="master-field">
-                            <label>{{t 'longitude'}}</label>
-                            <input type="text" class="form-control master-input master-lng-display" readonly>
-                        </div>
-                        <div class="master-field master-field-wide">
-                            <label for="addTimezone">{{t 'timezone'}}</label>
-                            <input type="text" name="timezone" id="addTimezone" class="form-control master-input master-timezone-input" value="Asia/Novosibirsk">
-                        </div>
-                    </div>
-                    <div class="master-map" data-default-lat="55.0226" data-default-lng="82.9318"></div>
-                </div>
-
-                <div class="master-form-actions">
-                    <button type="submit" class="btn master-btn master-btn-primary">{{t 'create_community'}}</button>
-                </div>
-            </form>
+        <div class="master-panel-header master-panel-header-split">
+            <div>
+                <h2>{{t 'add_community'}}</h2>
+                <p class="master-panel-intro">{{t 'wizard_dashboard_intro'}}</p>
+            </div>
+            <a href="/master/new" class="btn master-btn master-btn-primary">{{t 'wizard_start'}}</a>
         </div>
     </section>
 
@@ -115,6 +46,15 @@
                                 · {{#if this.location.timezone}}{{this.location.timezone}}{{else}}Asia/Novosibirsk{{/if}}
                                 · {{this.language}}/{{this.adminLanguage}}
                             </p>
+                            {{#if this.provisioning.photosDriveUrl}}
+                            <p class="master-community-provision">
+                                <span>{{t 'wizard_review_photos_drive'}}:</span>
+                                <a href="{{this.provisioning.photosDriveUrl}}" target="_blank" rel="noopener">{{this.provisioning.photosDriveUrl}}</a>
+                            </p>
+                            {{/if}}
+                            {{#if this.provisioning.contactFiles.length}}
+                            <p class="master-community-provision">{{t 'wizard_contact_files'}}: {{this.provisioning.contactFiles.length}}</p>
+                            {{/if}}
                         </div>
                         <div class="master-community-card-links">
                             <a href="/s/{{this.slug}}" class="btn master-btn master-btn-secondary btn-sm" target="_blank" rel="noopener">{{t 'board'}}</a>
