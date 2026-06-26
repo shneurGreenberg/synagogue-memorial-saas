@@ -1055,6 +1055,38 @@ body.admin-login-page {
   border-top: 1px solid var(--admin-border);
 }
 
+.qr-codes-layout {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.qr-codes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.qr-upload-card {
+  .qr-code-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
+    border: 1px solid var(--admin-border);
+
+    img {
+      max-width: 160px;
+      max-height: 160px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+    }
+  }
+}
+
 .board-titles-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

@@ -1009,10 +1009,24 @@
       }
 
       .weather-sun-stack-row {
-        display: flex;
-        align-items: center;
-        gap: 0.55em;
+        display: block;
         white-space: nowrap;
+        line-height: 1.35;
+      }
+
+      .weather-sun-label,
+      .weather-sun-separator,
+      .weather-sun-time {
+        display: inline;
+      }
+
+      .weather-sun-separator {
+        display: inline-block;
+        width: 0.65em;
+      }
+
+      .weather-sun-time {
+        margin-left: 0;
       }
 
       .weather-today-compact {
@@ -1036,10 +1050,19 @@
       }
 
       .weather-sun-compact-item {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5em;
+        display: inline;
         white-space: nowrap;
+      }
+
+      .weather-sun-compact-item .weather-sun-label,
+      .weather-sun-compact-item .weather-sun-separator,
+      .weather-sun-compact-item .weather-sun-time {
+        display: inline;
+      }
+
+      .weather-sun-compact-item .weather-sun-separator {
+        display: inline-block;
+        width: 0.65em;
       }
 
       .weather-sun-compact-sep {
@@ -1067,12 +1090,19 @@
       }
 
       .weather-sun-times-item {
-        display: inline-flex;
-        align-items: center;
-        flex: 0 1 auto;
-        min-width: 0;
+        display: inline;
         white-space: nowrap;
-        gap: 0.55em;
+      }
+
+      .weather-sun-times-item .weather-sun-label,
+      .weather-sun-times-item .weather-sun-separator,
+      .weather-sun-times-item .weather-sun-time {
+        display: inline;
+      }
+
+      .weather-sun-times-item .weather-sun-separator {
+        display: inline-block;
+        width: 0.65em;
       }
 
       .weather-sun-label {
@@ -2133,28 +2163,27 @@ body.board-lang-he {
   }
 
   .shabbat-times-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.35rem;
+    display: block;
+    text-align: center;
     line-height: 1.2;
     min-width: 0;
-    flex: 0 1 auto;
-    text-align: center;
     padding: 0 0.15rem;
   }
 
   .shabbat-label {
+    display: block;
     font-size: calc(clamp(10px, 0.88vw, 12px) * var(--font-scale-shabbat, 1));
     opacity: 0.9;
     white-space: normal;
     text-align: center;
     max-width: 11ch;
     line-height: 1.15;
+    margin: 0 auto;
   }
 
   .shabbat-time {
+    display: block;
+    margin-top: 0.4rem;
     font-size: calc(clamp(15px, 1.25vw, 19px) * var(--font-scale-shabbat, 1));
     font-weight: 700;
     letter-spacing: 0.04em;
