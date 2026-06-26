@@ -1,0 +1,70 @@
+<div class="qr-codes-layout">
+    <div class="qr-codes-grid">
+        <div class="media-upload-card qr-upload-card">
+            <h3 class="typography-controls-title">{{t 'donation_qr_upload_title'}}</h3>
+            <p class="field-hint">{{t 'donation_qr_upload_help'}}</p>
+            <div class="media-preview qr-code-preview">
+                {{#if synagogue.publicSubmission.donationQrImage}}
+                <img src="/images/{{synagogue.publicSubmission.donationQrImage}}" alt="{{t 'donation_qr_alt'}}">
+                {{else}}
+                <img src="/images/donation-qr.svg" alt="{{t 'donation_qr_alt'}}">
+                {{/if}}
+            </div>
+            <label class="file-drop-label">
+                {{t 'replace_qr_image'}}
+                <input type="file" name="donationQrImage" accept="image/*">
+            </label>
+            <div class="form-field admin-theme-setting">
+                <label for="publicSubmissionDonationUrl">{{t 'public_submission_donation_url'}}</label>
+                <input type="url" class="form-control" id="publicSubmissionDonationUrl" name="publicSubmissionDonationUrl" value="{{synagogue.publicSubmission.donationUrl}}" placeholder="https://">
+                <p class="field-hint admin-theme-setting-hint">{{t 'public_submission_donation_url_help'}}</p>
+            </div>
+        </div>
+        <div class="media-upload-card qr-upload-card">
+            <h3 class="typography-controls-title">{{t 'registration_qr_upload_title'}}</h3>
+            <p class="field-hint">{{t 'registration_qr_upload_help'}}</p>
+            <div class="media-preview qr-code-preview">
+                {{#if synagogue.publicSubmission.registrationQrImage}}
+                <img src="/images/{{synagogue.publicSubmission.registrationQrImage}}" alt="{{t 'memorial_submission_qr_alt'}}">
+                {{else}}
+                <img src="/images/memorial-submission-qr.svg" alt="{{t 'memorial_submission_qr_alt'}}">
+                {{/if}}
+            </div>
+            <label class="file-drop-label">
+                {{t 'replace_qr_image'}}
+                <input type="file" name="registrationQrImage" accept="image/*">
+            </label>
+            <p class="field-hint">{{t 'public_submission_url_hint'}}: <code>/s/{{synagogue.slug}}/add-name</code></p>
+        </div>
+    </div>
+    <div class="memorial-qr-controls">
+        <h3 class="typography-controls-title">{{t 'memorial_qr_sizes_title'}}</h3>
+        <p class="field-hint">{{t 'memorial_qr_section_help'}}</p>
+        <div class="font-scale-grid">
+            <div class="slider-field-modern">
+                <label for="memorialQrTitleScale">{{t 'memorial_qr_title_scale'}}</label>
+                <div class="slider-row">
+                    <input type="range" name="memorialQrTitleScale" id="memorialQrTitleScale" class="admin-range-input memorial-qr-preview-input"
+                        min="50" max="200" step="5" value="{{memorialQrPanel.titleScale}}">
+                    <output class="slider-value-display" id="memorialQrTitleScaleValue">{{memorialQrPanel.titleScale}}%</output>
+                </div>
+            </div>
+            <div class="slider-field-modern">
+                <label for="memorialQrTextScale">{{t 'memorial_qr_text_scale'}}</label>
+                <div class="slider-row">
+                    <input type="range" name="memorialQrTextScale" id="memorialQrTextScale" class="admin-range-input memorial-qr-preview-input"
+                        min="50" max="200" step="5" value="{{memorialQrPanel.textScale}}">
+                    <output class="slider-value-display" id="memorialQrTextScaleValue">{{memorialQrPanel.textScale}}%</output>
+                </div>
+            </div>
+            <div class="slider-field-modern">
+                <label for="memorialQrQrScale">{{t 'memorial_qr_size_scale'}}</label>
+                <div class="slider-row">
+                    <input type="range" name="memorialQrQrScale" id="memorialQrQrScale" class="admin-range-input memorial-qr-preview-input"
+                        min="80" max="250" step="5" value="{{memorialQrPanel.qrScale}}">
+                    <output class="slider-value-display" id="memorialQrQrScaleValue">{{memorialQrPanel.qrScale}}%</output>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

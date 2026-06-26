@@ -104,6 +104,8 @@ const SynagogueSchema = new mongoose.Schema({
   publicSubmission: {
     enabled: { type: Boolean, default: false },
     donationUrl: { type: String, default: '' },
+    donationQrImage: { type: String, default: '' },
+    registrationQrImage: { type: String, default: '' },
   },
   yahrzeitReminders: {
     enabled: { type: Boolean, default: false },

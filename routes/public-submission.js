@@ -112,7 +112,7 @@ function parseDeathDate(body) {
 
 function buildPageContext(synagogue, lang) {
   const pt = getPublicSubmissionTranslator(lang);
-  const publicSubmission = normalizePublicSubmission(synagogue.publicSubmission);
+  const publicSubmission = normalizePublicSubmission(synagogue.publicSubmission, synagogue.provisioning);
   const communityLogo = synagogue.theme && synagogue.theme.logo;
 
   return {
@@ -182,7 +182,7 @@ router.post('/:slug/add-name', handlePublicPhotoUpload, async (req, res) => {
       return res.status(404).send('Synagogue not found');
     }
 
-    const publicSubmission = normalizePublicSubmission(synagogue.publicSubmission);
+    const publicSubmission = normalizePublicSubmission(synagogue.publicSubmission, synagogue.provisioning);
     if (!publicSubmission.enabled) {
       return res.redirect(`/s/${req.params.slug}/add-name?error=disabled`);
     }

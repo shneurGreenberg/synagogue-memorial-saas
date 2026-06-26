@@ -109,10 +109,12 @@ function TodaySunStack({ t, sunTimes, locale }) {
     <div className="weather-sun-stack">
       <div className="weather-sun-stack-row">
         <span className="weather-sun-label">{t('sunrise_label')}</span>
+        <span className="weather-sun-separator" aria-hidden="true">&nbsp;</span>
         <span className="weather-sun-time">{formatLocalTime(sunTimes.sunrise, locale)}</span>
       </div>
       <div className="weather-sun-stack-row">
         <span className="weather-sun-label">{t('sunset_label')}</span>
+        <span className="weather-sun-separator" aria-hidden="true">&nbsp;</span>
         <span className="weather-sun-time">{formatLocalTime(sunTimes.sunset, locale)}</span>
       </div>
     </div>

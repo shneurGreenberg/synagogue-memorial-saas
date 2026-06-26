@@ -4,6 +4,17 @@ import { useBoardData } from '../context/BoardDataContext';
 import { assetUrl } from '../lib/asset-url';
 import { effectiveMemorialQrScale } from '../lib/typography-baseline';
 
+function resolveQrSrc(customPath, defaultRelativePath) {
+  const custom = String(customPath || '').trim();
+  if (custom) {
+    if (custom.startsWith('provisioning/')) {
+      return assetUrl(`images/${custom}`);
+    }
+    return assetUrl(`images/${custom.replace(/^\/+/, '')}`);
+  }
+  return assetUrl(defaultRelativePath);
+}
+
 function DonationQrPanelBase({ t }) {
   const { data } = useBoardData();
   const panel = data.memorialQrPanel || {};
@@ -19,11 +30,12 @@ function DonationQrPanelBase({ t }) {
   const titleScale = effectiveMemorialQrScale(panel, 'titleScale');
   const textScale = effectiveMemorialQrScale(panel, 'textScale');
   const qrScale = effectiveMemorialQrScale(panel, 'qrScale');
+  const qrSrc = resolveQrSrc(publicSubmission.donationQrImage, 'images/donation-qr.svg');
 
   const qrImage = (
     <img
       className="memorial-submission-qr"
-      src={assetUrl('images/donation-qr.svg')}
+      src={qrSrc}
       alt={t('donation_qr_alt')}
       decoding="async"
     />

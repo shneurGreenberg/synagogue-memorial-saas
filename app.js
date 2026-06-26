@@ -220,7 +220,7 @@ async function loadSynagogueBoard(slug) {
   synagogue.titles = normalizeTitles(synagogue);
   synagogue.title = synagogue.titles.ru || synagogue.title || synagogue.name || '';
   synagogue.boardFeatures = normalizeBoardFeatures(synagogue.boardFeatures);
-  synagogue.publicSubmission = normalizePublicSubmission(synagogue.publicSubmission);
+  synagogue.publicSubmission = normalizePublicSubmission(synagogue.publicSubmission, synagogue.provisioning);
   const { normalizeMemorialQrPanel } = require('./lib/memorial-qr-panel');
   const { normalizeFontScales } = require('./lib/theme-typography');
   const { normalizeFontScaleBaselines } = require('./lib/typography-baseline');

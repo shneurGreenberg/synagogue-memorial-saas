@@ -426,7 +426,9 @@ async function persistTitlesIfMissing(synagogue) {
 router.post('/:slug/settings', requireAdmin, requirePermission('settings'), handleUpload([
     { name: 'logo', maxCount: 1 },
     { name: 'backgroundImage', maxCount: 1 },
-    { name: 'tilesBackground', maxCount: 1 }
+    { name: 'tilesBackground', maxCount: 1 },
+    { name: 'donationQrImage', maxCount: 1 },
+    { name: 'registrationQrImage', maxCount: 1 },
 ]), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
@@ -462,6 +464,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
                 updateData[`theme.fontScales.${key}`] = value;
             });
             Object.assign(updateData, memorialQrPanelToUpdate(parseMemorialQrPanelFromBody(req.body)));
+            updateData['publicSubmission.donationUrl'] = publicSubmission.donationUrl;
         }
 
         if (permissions.settingsLanguages) {
@@ -474,7 +477,6 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
                 Object.entries(boardFeatures).map(([key, value]) => [`boardFeatures.${key}`, value]),
             ));
             updateData['publicSubmission.enabled'] = publicSubmission.enabled;
-            updateData['publicSubmission.donationUrl'] = publicSubmission.donationUrl;
             updateData['yahrzeitReminders.enabled'] = yahrzeitReminders.enabled;
             updateData['yahrzeitReminders.includeHebrewYahrzeit'] = yahrzeitReminders.includeHebrewYahrzeit;
             updateData['yahrzeitReminders.notifyEmail'] = yahrzeitReminders.notifyEmail;
@@ -488,6 +490,12 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         }
         if (permissions.settingsBranding && req.files['tilesBackground']) {
             updateData['theme.tilesBackground'] = await optimizeUploadedImage(req.files['tilesBackground'][0].path, 'tilesBackground');
+        }
+        if (permissions.settingsAppearance && req.files['donationQrImage']) {
+            updateData['publicSubmission.donationQrImage'] = await optimizeUploadedImage(req.files['donationQrImage'][0].path, 'qr');
+        }
+        if (permissions.settingsAppearance && req.files['registrationQrImage']) {
+            updateData['publicSubmission.registrationQrImage'] = await optimizeUploadedImage(req.files['registrationQrImage'][0].path, 'qr');
         }
 
         if (Object.keys(updateData).length > 0) {
