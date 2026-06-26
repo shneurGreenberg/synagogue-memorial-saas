@@ -3,7 +3,7 @@ import { useBoardData } from '../context/BoardDataContext';
 import { assetUrl } from '../lib/asset-url';
 import { buildTileThemeVars } from '../lib/tile-theme-colors';
 import { resolveFontScales, resolveTileOpacity } from '../lib/theme-typography';
-import { buildCandlePaletteCssVars, resolveCandlePalette } from '../lib/candle-palette';
+import { buildCandlePaletteCssVars, resolveCandlePalette, normalizeCandlePalette } from '../lib/candle-palette';
 import { effectiveFontScaleCss, resolveFontScaleBaselines } from '../lib/typography-baseline';
 
 function tileGlassNoise(transparency) {
@@ -56,7 +56,8 @@ export function ThemeStyles() {
   const tileVars = buildTileThemeVars(theme.tileColor, primary, resolveTileOpacity(theme.tileOpacity));
   const tileTransparency = tileVars.tileTransparency;
   const useBackdropBlur = tileTransparency > 0.01;
-  const candlePaletteCss = buildCandlePaletteCssVars(resolveCandlePalette(theme.candlePalette));
+  const candlePalette = normalizeCandlePalette(theme.candlePalette);
+  const candlePaletteCss = buildCandlePaletteCssVars(resolveCandlePalette(candlePalette));
 
   const css = `
     :root {
@@ -296,7 +297,7 @@ export function ThemeStyles() {
 
   return (
     <style
-      key={`theme-${revision}-${primary}-${text}-${accent}-${tileVars.tileColor}-${tileTransparency}`}
+      key={`theme-${revision}-${primary}-${text}-${accent}-${tileVars.tileColor}-${tileTransparency}-${candlePalette}`}
       dangerouslySetInnerHTML={{ __html: css }}
     />
   );

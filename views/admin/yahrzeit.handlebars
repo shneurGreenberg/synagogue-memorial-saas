@@ -12,11 +12,25 @@
         </div>
     </header>
 
-    {{#unless emailConfigured}}
-    <div class="alert alert-warning" role="alert">
-        {{t 'yahrzeit_email_help'}}
-    </div>
-    {{/unless}}
+    <form method="POST" action="/admin/{{synagogue.slug}}/yahrzeit/settings" class="yahrzeit-settings-form board-features-grid">
+        <div class="admin-theme-setting">
+            <div class="admin-theme-setting-label">{{t 'yahrzeit_include_hebrew'}}</div>
+            <div class="admin-theme-setting-control">
+                <label class="toggle-switch" for="yahrzeitRemindersIncludeHebrew">
+                    <input type="checkbox" id="yahrzeitRemindersIncludeHebrew" name="yahrzeitRemindersIncludeHebrew" value="1" {{#if synagogue.yahrzeitReminders.includeHebrewYahrzeit}}checked{{/if}}>
+                    <span class="toggle-slider" aria-hidden="true"></span>
+                </label>
+            </div>
+            <p class="field-hint admin-theme-setting-hint">{{t 'yahrzeit_include_hebrew_help'}}</p>
+        </div>
+        <div class="form-actions-inline">
+            <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon">{{{adminIcon 'save'}}}{{t 'save'}}</button>
+        </div>
+    </form>
+
+    {{#if saved}}
+    <div class="alert alert-success admin-alert" role="alert">{{t 'saved_settings'}}</div>
+    {{/if}}
 
     {{#if entries.length}}
     <div class="yahrzeit-list">

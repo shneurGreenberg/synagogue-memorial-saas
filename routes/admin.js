@@ -54,7 +54,6 @@ const {
   buildYahrzeitWeekMissedEntries,
   buildContactMessageEntry,
 } = require('../lib/yahrzeit-reminders');
-const { isEmailConfigured } = require('../lib/email');
 const { getDayKeyInTimezone, resolveSynagogueTimezone, buildYahrzeitEntries } = require('../lib/yahrzeit');
 const { buildFaviconPath, resolveFaviconLogoFilename } = require('../lib/favicon');
 const { OFFICIAL_LOGO_FILENAME } = require('../lib/board-defaults');
@@ -79,19 +78,31 @@ const BOARD_FEATURE_TOGGLE_META = [
 
 const BOARD_FEATURE_GROUPS = [
   {
-    groupKey: 'board_features_left_column_group',
-    helpKey: 'board_features_left_column_group_help',
+    groupKey: 'board_features_candle_group',
+    helpKey: 'board_features_candle_group_help',
+    keys: [],
+    special: 'candle',
+  },
+  {
+    groupKey: 'board_features_prayers_group',
+    helpKey: 'board_features_prayers_group_help',
     keys: ['kelMaleRachamim', 'izkor'],
   },
   {
-    groupKey: 'board_features_right_column_group',
-    helpKey: 'board_features_right_column_group_help',
+    groupKey: 'board_features_sidebar_group',
+    helpKey: 'board_features_sidebar_group_help',
     keys: ['officialLogo', 'sidebarNames', 'upcomingHolidays', 'communityEvents', 'weather', 'sunriseSunset'],
   },
   {
     groupKey: 'board_features_learning_group',
     helpKey: 'board_features_learning_group_help',
     keys: ['dailyChumash', 'dailyTehillim', 'dailyTanya', 'dailyRambam', 'hayomYom'],
+  },
+  {
+    groupKey: 'board_features_public_submission_group',
+    helpKey: 'board_features_public_submission_group_help',
+    keys: [],
+    special: 'publicSubmission',
   },
 ];
 
@@ -113,7 +124,7 @@ const TEXTS_FONT_SCALE_GROUPS = [
   {
     groupKey: 'typography_center_column',
     helpKey: 'typography_center_column_help',
-    keys: ['tileTitle', 'tileDate', 'boardHeader', 'candle', 'torahNames', 'prayerOverlay'],
+    keys: ['tileTitle', 'tileDate', 'boardHeader', 'torahNames', 'prayerOverlay'],
   },
   {
     groupKey: 'typography_left_column',
@@ -148,13 +159,23 @@ function buildBoardFeatureToggles(boardFeatures) {
   return byKey;
 }
 
-function buildBoardFeatureGroups(boardFeatures) {
+function buildBoardFeatureGroups(boardFeatures, theme, synagogue) {
   const togglesByKey = buildBoardFeatureToggles(boardFeatures);
+  const fontScales = theme?.fontScales || {};
+  const candleSlider = buildFontScaleSlider(
+    FONT_SCALE_SLIDER_META.find((entry) => entry.key === 'candle'),
+    fontScales,
+  );
 
   return BOARD_FEATURE_GROUPS.map((group) => ({
     groupKey: group.groupKey,
     helpKey: group.helpKey,
+    special: group.special || '',
     toggles: group.keys.map((key) => togglesByKey[key]).filter(Boolean),
+    candleSlider,
+    synagogueSlug: synagogue?.slug || '',
+    shabbatTimesEnabled: synagogue?.shabbatTimesEnabled === true,
+    publicSubmissionEnabled: synagogue?.publicSubmission?.enabled === true,
   }));
 }
 
@@ -451,7 +472,6 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
         const boardFeatures = parseBoardFeaturesFromBody(req.body);
         const publicSubmission = parsePublicSubmissionFromBody(req.body);
-        const yahrzeitReminders = parseYahrzeitRemindersFromBody(req.body);
         const fontScales = parseFontScalesFromBody(req.body, synagogue?.theme?.fontScales);
         const updateData = {};
 
@@ -475,7 +495,9 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
                 updateData[`theme.fontScales.${key}`] = value;
             });
             Object.assign(updateData, memorialQrPanelToUpdate(parseMemorialQrPanelFromBody(req.body)));
-            updateData['publicSubmission.donationUrl'] = publicSubmission.donationUrl;
+            if ('publicSubmissionDonationUrl' in req.body) {
+                updateData['publicSubmission.donationUrl'] = publicSubmission.donationUrl || '';
+            }
         }
 
         if (permissions.settingsLanguages) {
@@ -483,14 +505,21 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         }
 
         if (permissions.settingsFeatures) {
-            updateData.shabbatTimesEnabled = !!shabbatTimesEnabled;
+            if ('shabbatTimesEnabled' in req.body) {
+                updateData.shabbatTimesEnabled = !!shabbatTimesEnabled;
+            }
             Object.assign(updateData, Object.fromEntries(
                 Object.entries(boardFeatures).map(([key, value]) => [`boardFeatures.${key}`, value]),
             ));
-            updateData['publicSubmission.enabled'] = publicSubmission.enabled;
-            updateData['yahrzeitReminders.enabled'] = yahrzeitReminders.enabled;
-            updateData['yahrzeitReminders.includeHebrewYahrzeit'] = yahrzeitReminders.includeHebrewYahrzeit;
-            updateData['yahrzeitReminders.notifyEmail'] = yahrzeitReminders.notifyEmail;
+            if ('publicSubmissionEnabled' in req.body) {
+                updateData['publicSubmission.enabled'] = !!publicSubmission.enabled;
+            }
+            if ('candlePalette' in req.body) {
+                updateData['theme.candlePalette'] = normalizeCandlePalette(candlePalette);
+            }
+            if ('fontScale_candle' in req.body && fontScales.candle != null) {
+                updateData['theme.fontScales.candle'] = fontScales.candle;
+            }
         }
 
         if (permissions.settingsBranding && req.files['logo']) {
@@ -519,7 +548,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
 });
 
 router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('settings'), async (req, res) => {
-    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
     const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
     if (!canManageSavedViews(permissions)) {
         return res.status(403).json({ ok: false, error: 'Forbidden' });
@@ -573,7 +602,7 @@ router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('sett
 });
 
 router.post('/:slug/settings/saved-views/:viewId/apply', requireAdmin, requirePermission('settings'), async (req, res) => {
-    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
     const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
     if (!canApplySavedViews(permissions)) {
         return res.status(403).json({ ok: false, error: 'Forbidden' });
@@ -591,16 +620,20 @@ router.post('/:slug/settings/saved-views/:viewId/apply', requireAdmin, requirePe
             update.language = view.snapshot.language;
         }
 
-        await Synagogue.updateOne({ slug: req.params.slug }, { $set: update });
-        await Synagogue.updateOne({ slug: req.params.slug }, { $set: { activeSavedViewId: req.params.viewId } });
-        return res.json({ ok: true, activeSavedViewId: req.params.viewId });
+        await Synagogue.updateOne({ slug: req.params.slug }, { $set: { ...update, activeSavedViewId: req.params.viewId } });
+        return res.json({
+            ok: true,
+            activeSavedViewId: req.params.viewId,
+            viewName: view.name,
+            snapshot: view.snapshot,
+        });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
     }
 });
 
 router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermission('settings'), async (req, res) => {
-    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
     const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
     if (!canManageSavedViews(permissions)) {
         return res.status(403).json({ ok: false, error: 'Forbidden' });
@@ -655,7 +688,7 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
 });
 
 router.delete('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermission('settings'), async (req, res) => {
-    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
     const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
     if (!canManageSavedViews(permissions)) {
         return res.status(403).json({ ok: false, error: 'Forbidden' });
@@ -784,7 +817,7 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             adminPermissions: req.adminPermissions,
             canSaveBoardSettings: canSaveBoardSettings(req.adminPermissions),
             boardTitles: enriched.titles,
-            boardFeatureGroups: buildBoardFeatureGroups(enriched.boardFeatures),
+            boardFeatureGroups: buildBoardFeatureGroups(enriched.boardFeatures, enriched.theme, enriched),
             textsFontScaleGroups: buildTextsFontScaleGroups(enriched.theme.fontScales),
             candlePaletteOptions: buildCandlePaletteOptions(),
             savedViews: serializeSavedViews(enriched.savedViews),
@@ -830,6 +863,22 @@ function normalizeImportedPerson(raw, fallbackId) {
 }
 
 // People Management
+router.post('/:slug/yahrzeit/settings', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const includeHebrew = req.body.yahrzeitRemindersIncludeHebrew === '1'
+            || req.body.yahrzeitRemindersIncludeHebrew === 'on';
+        await Synagogue.updateOne({ slug: req.params.slug }, {
+            $set: {
+                'yahrzeitReminders.includeHebrewYahrzeit': includeHebrew,
+            },
+        });
+        return res.redirect(`/admin/${req.params.slug}/yahrzeit?saved=1`);
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+});
+
 router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
@@ -853,7 +902,7 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
             weekEntries,
             yahrzeitPeople,
             todayLabel,
-            emailConfigured: isEmailConfigured(),
+            saved: req.query.saved === '1',
         });
     } catch (err) {
         res.status(500).send(err.message);

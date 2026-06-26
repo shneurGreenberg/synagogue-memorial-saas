@@ -25,6 +25,8 @@ const CITY_GEONAME_IDS = {
 const CITY_NAME_ALIASES = {
   томск: 'tomsk',
   תומסק: 'tomsk',
+  'tomsk, russia': 'tomsk',
+  'томск, россия': 'tomsk',
   новосибирск: 'novosibirsk',
   נובוסיבירסק: 'novosibirsk',
   москва: 'moscow',
@@ -36,7 +38,26 @@ const CITY_NAME_ALIASES = {
 
 function normalizeCityKey(city) {
   const key = String(city || '').trim().toLowerCase();
-  return CITY_NAME_ALIASES[key] || key;
+  if (CITY_NAME_ALIASES[key]) {
+    return CITY_NAME_ALIASES[key];
+  }
+  if (CITY_COORDINATES[key]) {
+    return key;
+  }
+
+  for (const [alias, canonical] of Object.entries(CITY_NAME_ALIASES)) {
+    if (key.includes(alias)) {
+      return canonical;
+    }
+  }
+
+  for (const canonical of Object.keys(CITY_COORDINATES)) {
+    if (key.includes(canonical)) {
+      return canonical;
+    }
+  }
+
+  return key;
 }
 
 function coordinatesFromCity(city) {
@@ -60,6 +81,7 @@ export function getBoardTimezone(data) {
 export function getBoardLocation(data) {
   const loc = (data && data.location) || {};
   const city = String(loc.city || '').trim();
+  const cityKey = normalizeCityKey(city);
   const cityCoords = coordinatesFromCity(city);
   const geonameId = geonameIdFromCity(city);
   let lat = Number(loc.lat);
@@ -72,7 +94,7 @@ export function getBoardLocation(data) {
     lng = DEFAULT_LNG;
   }
 
-  if (cityCoords && (geonameId || isDefaultCoordinates(lat, lng))) {
+  if (cityCoords && (geonameId || cityKey in CITY_COORDINATES || isDefaultCoordinates(lat, lng))) {
     lat = cityCoords.lat;
     lng = cityCoords.lng;
   }
@@ -147,12 +169,23 @@ function parseHebcalItems(items, now = new Date()) {
   candles.sort((a, b) => a - b);
   havdalah.sort((a, b) => a - b);
 
-  for (const enter of candles) {
+  const nowMs = now.getTime();
+
+  for (let i = 0; i < candles.length; i += 1) {
+    const enter = candles[i];
     const exit = havdalah.find((candidate) => candidate > enter);
     if (!exit) {
       continue;
     }
-    if (exit > now) {
+
+    const enterMs = enter.getTime();
+    const exitMs = exit.getTime();
+
+    if (enterMs <= nowMs && nowMs < exitMs) {
+      return { enter, exit };
+    }
+
+    if (enterMs > nowMs) {
       return { enter, exit };
     }
   }
