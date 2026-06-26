@@ -235,7 +235,7 @@ router.post('/:slug/add-name', handlePublicPhotoUpload, async (req, res) => {
       photoCrop = parsePhotoCropFromBody(req.body);
     }
 
-    synagogue.people.push({
+    const newPerson = {
       id: maxId + 1,
       name,
       gregorianDateOfDeath: deathDate,
@@ -244,9 +244,12 @@ router.post('/:slug/add-name', handlePublicPhotoUpload, async (req, res) => {
       title: '',
       text: '',
       contact,
-    });
+    };
 
-    await synagogue.save();
+    await Synagogue.updateOne(
+      { slug: req.params.slug },
+      { $push: { people: newPerson } },
+    );
 
     return res.redirect(`/s/${req.params.slug}/add-name/success?lang=${lang}&name=${encodeURIComponent(name)}`);
   } catch (err) {

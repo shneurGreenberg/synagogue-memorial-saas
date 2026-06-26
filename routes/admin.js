@@ -17,6 +17,9 @@ const {
   saveViewThumbnail,
   deleteScreenshot,
   buildApplyUpdate,
+  findSavedView,
+  normalizeSavedViews,
+  repairSavedViewsInDb,
   serializeSavedViews,
 } = require('../lib/saved-views');
 const { parseMemorialQrPanelFromBody, memorialQrPanelToUpdate } = require('../lib/memorial-qr-panel');
@@ -304,6 +307,9 @@ async function loadAdminContext(req, res, next) {
 
     try {
         const synagogue = await Synagogue.findOne({ slug: req.session.adminSlug }).lean();
+        if (req.session.adminSlug && slug === req.session.adminSlug) {
+            await repairSavedViewsInDb(slug);
+        }
         req.adminPermissions = resolveAdminPermissions(req.session, synagogue);
         req.adminUser = req.session.adminUsername
             ? findAdminUser(synagogue, req.session.adminUsername)
@@ -580,8 +586,8 @@ router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('sett
             snapshot,
         };
 
-        synagogue.savedViews = synagogue.savedViews || [];
-        synagogue.savedViews.unshift(view);
+        const savedViews = normalizeSavedViews(synagogue.savedViews);
+        savedViews.unshift(view);
 
         const themeUpdate = buildApplyUpdate(snapshot);
         await Synagogue.updateOne(
@@ -590,9 +596,10 @@ router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('sett
                 $set: {
                     ...themeUpdate,
                     activeSavedViewId: view.id,
-                    savedViews: synagogue.savedViews,
+                    savedViews,
                 },
             },
+            { runValidators: false },
         );
 
         return res.json({ ok: true, view, resetTypography: true });
@@ -610,7 +617,7 @@ router.post('/:slug/settings/saved-views/:viewId/apply', requireAdmin, requirePe
 
     try {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
-        const view = (synagogue.savedViews || []).find((entry) => entry.id === req.params.viewId);
+        const view = findSavedView(synagogue?.savedViews, req.params.viewId);
         if (!view) {
             return res.status(404).json({ ok: false, error: 'View not found' });
         }
@@ -645,12 +652,13 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
             return res.status(404).json({ ok: false, error: 'Not found' });
         }
 
-        const viewIndex = (synagogue.savedViews || []).findIndex((entry) => entry.id === req.params.viewId);
+        const normalizedViews = normalizeSavedViews(synagogue.savedViews);
+        const viewIndex = normalizedViews.findIndex((entry) => entry.id === req.params.viewId);
         if (viewIndex === -1) {
             return res.status(404).json({ ok: false, error: 'View not found' });
         }
 
-        const existing = synagogue.savedViews[viewIndex];
+        const existing = normalizedViews[viewIndex];
         const snapshot = normalizeSnapshot({
             ...req.body,
             logo: synagogue.theme?.logo || existing.snapshot?.theme?.logo || '',
@@ -662,7 +670,7 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
             deleteScreenshot(existing.screenshot);
         }
 
-        synagogue.savedViews[viewIndex] = {
+        normalizedViews[viewIndex] = {
             ...existing,
             savedAt: new Date(),
             screenshot,
@@ -676,12 +684,13 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
                 $set: {
                     ...themeUpdate,
                     activeSavedViewId: req.params.viewId,
-                    [`savedViews.${viewIndex}`]: synagogue.savedViews[viewIndex],
+                    savedViews: normalizedViews,
                 },
             },
+            { runValidators: false },
         );
 
-        return res.json({ ok: true, view: synagogue.savedViews[viewIndex], resetTypography: true });
+        return res.json({ ok: true, view: normalizedViews[viewIndex], resetTypography: true });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
     }
@@ -695,21 +704,24 @@ router.delete('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermis
     }
 
     try {
-        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
         if (!synagogue) {
             return res.status(404).json({ ok: false, error: 'Not found' });
         }
 
-        const view = (synagogue.savedViews || []).find((entry) => entry.id === req.params.viewId);
+        const view = findSavedView(synagogue.savedViews, req.params.viewId);
         if (view && view.screenshot) {
             deleteScreenshot(view.screenshot);
         }
 
-        synagogue.savedViews = (synagogue.savedViews || []).filter((entry) => entry.id !== req.params.viewId);
+        const savedViews = normalizeSavedViews(synagogue.savedViews)
+            .filter((entry) => entry.id !== req.params.viewId);
+        const update = { savedViews };
         if (synagogue.activeSavedViewId === req.params.viewId) {
-            synagogue.activeSavedViewId = '';
+            update.activeSavedViewId = '';
         }
-        await synagogue.save();
+
+        await Synagogue.updateOne({ slug: req.params.slug }, { $set: update }, { runValidators: false });
         return res.json({ ok: true });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
@@ -808,9 +820,7 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
         await persistTitlesIfMissing(synagogue);
         const refreshed = await Synagogue.findOne({ slug: req.params.slug }).lean();
         const enriched = enrichSynagogueForAdmin(refreshed);
-        const activeSavedView = (enriched.savedViews || []).find(
-            (view) => view.id === enriched.activeSavedViewId,
-        );
+        const activeSavedView = findSavedView(enriched.savedViews, enriched.activeSavedViewId);
         renderAdmin(res, 'admin/dashboard', {
             synagogue: enriched,
             adminUser: req.adminUser,
