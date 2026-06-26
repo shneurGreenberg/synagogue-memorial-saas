@@ -79,11 +79,6 @@ const BOARD_FEATURE_TOGGLE_META = [
 
 const BOARD_FEATURE_GROUPS = [
   {
-    groupKey: 'board_features_center_group',
-    helpKey: 'board_features_center_group_help',
-    keys: ['officialLogo'],
-  },
-  {
     groupKey: 'board_features_left_column_group',
     helpKey: 'board_features_left_column_group_help',
     keys: ['kelMaleRachamim', 'izkor'],
@@ -91,7 +86,7 @@ const BOARD_FEATURE_GROUPS = [
   {
     groupKey: 'board_features_right_column_group',
     helpKey: 'board_features_right_column_group_help',
-    keys: ['sidebarNames', 'upcomingHolidays', 'communityEvents', 'weather', 'sunriseSunset'],
+    keys: ['officialLogo', 'sidebarNames', 'upcomingHolidays', 'communityEvents', 'weather', 'sunriseSunset'],
   },
   {
     groupKey: 'board_features_learning_group',
@@ -104,7 +99,7 @@ const FONT_SCALE_SLIDER_META = [
   { key: 'tileTitle', labelKey: 'font_scale_tile_title', helpKey: 'font_scale_tile_title_help' },
   { key: 'tileDate', labelKey: 'font_scale_tile_date', helpKey: 'font_scale_tile_date_help' },
   { key: 'boardHeader', labelKey: 'font_scale_board_header', helpKey: 'font_scale_board_header_help' },
-  { key: 'sidebar', labelKey: 'font_scale_left_column', helpKey: 'font_scale_left_column_help' },
+  { key: 'sidebar', labelKey: 'font_scale_sidebar', helpKey: 'font_scale_sidebar_help' },
   { key: 'clock', labelKey: 'font_scale_clock', helpKey: 'font_scale_clock_help' },
   { key: 'prayers', labelKey: 'font_scale_prayers', helpKey: 'font_scale_prayers_help' },
   { key: 'prayerOverlay', labelKey: 'font_scale_prayer_overlay', helpKey: 'font_scale_prayer_overlay_help' },
@@ -118,17 +113,17 @@ const TEXTS_FONT_SCALE_GROUPS = [
   {
     groupKey: 'typography_center_column',
     helpKey: 'typography_center_column_help',
-    keys: ['tileTitle', 'tileDate', 'boardHeader', 'candle'],
+    keys: ['tileTitle', 'tileDate', 'boardHeader', 'candle', 'torahNames', 'prayerOverlay'],
   },
   {
     groupKey: 'typography_left_column',
     helpKey: 'typography_left_column_help',
-    keys: ['sidebar'],
+    keys: ['prayers'],
   },
   {
     groupKey: 'typography_right_column',
     helpKey: 'typography_right_column_help',
-    keys: ['clock', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat'],
+    keys: ['sidebar', 'clock', 'weather', 'shabbat'],
   },
 ];
 
@@ -187,6 +182,18 @@ function buildFontScaleGroups(fontScales, groups) {
 
 function buildTextsFontScaleGroups(fontScales) {
   return buildFontScaleGroups(fontScales, TEXTS_FONT_SCALE_GROUPS);
+}
+
+function canManageSavedViews(permissions) {
+  return !!(
+    permissions.settingsAppearance
+    || permissions.settingsPreview
+    || permissions.settingsSavedViews
+  );
+}
+
+function canApplySavedViews(permissions) {
+  return !!(permissions.settingsAppearance || permissions.settingsSavedViews);
 }
 
 const MIME_EXT = {
@@ -510,7 +517,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
 router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('settings'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
-    if (!permissions.settingsAppearance && !permissions.settingsPreview) {
+    if (!canManageSavedViews(permissions)) {
         return res.status(403).json({ ok: false, error: 'Forbidden' });
     }
 
@@ -564,7 +571,7 @@ router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('sett
 router.post('/:slug/settings/saved-views/:viewId/apply', requireAdmin, requirePermission('settings'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
-    if (!permissions.settingsAppearance) {
+    if (!canApplySavedViews(permissions)) {
         return res.status(403).json({ ok: false, error: 'Forbidden' });
     }
 
@@ -591,7 +598,7 @@ router.post('/:slug/settings/saved-views/:viewId/apply', requireAdmin, requirePe
 router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermission('settings'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
-    if (!permissions.settingsAppearance && !permissions.settingsPreview) {
+    if (!canManageSavedViews(permissions)) {
         return res.status(403).json({ ok: false, error: 'Forbidden' });
     }
 
@@ -646,7 +653,7 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
 router.delete('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermission('settings'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
-    if (!permissions.settingsAppearance && !permissions.settingsPreview) {
+    if (!canManageSavedViews(permissions)) {
         return res.status(403).json({ ok: false, error: 'Forbidden' });
     }
 

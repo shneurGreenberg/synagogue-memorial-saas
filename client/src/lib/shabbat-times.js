@@ -6,15 +6,48 @@ const DEFAULT_TIMEZONE = 'Asia/Novosibirsk';
 const DEFAULT_LAT = 54.9833;
 const DEFAULT_LNG = 82.8964;
 
+const CITY_COORDINATES = {
+  tomsk: { lat: 56.4977, lng: 84.9744 },
+  novosibirsk: { lat: 54.9833, lng: 82.8964 },
+  moscow: { lat: 55.7558, lng: 37.6173 },
+  jerusalem: { lat: 31.7683, lng: 35.2137 },
+  'tel aviv': { lat: 32.0853, lng: 34.7818 },
+};
+
+function isDefaultCoordinates(lat, lng) {
+  return Math.abs(lat - DEFAULT_LAT) < 0.0001 && Math.abs(lng - DEFAULT_LNG) < 0.0001;
+}
+
+function coordinatesFromCity(city) {
+  const key = String(city || '').trim().toLowerCase();
+  return CITY_COORDINATES[key] || null;
+}
+
 export function getBoardTimezone(data) {
   return resolveBoardTimezone(data);
 }
 
 export function getBoardLocation(data) {
   const loc = (data && data.location) || {};
+  let lat = Number(loc.lat);
+  let lng = Number(loc.long);
+
+  if (!Number.isFinite(lat)) {
+    lat = DEFAULT_LAT;
+  }
+  if (!Number.isFinite(lng)) {
+    lng = DEFAULT_LNG;
+  }
+
+  const cityCoords = coordinatesFromCity(loc.city);
+  if (cityCoords && isDefaultCoordinates(lat, lng)) {
+    lat = cityCoords.lat;
+    lng = cityCoords.lng;
+  }
+
   return {
-    lat: Number.isFinite(Number(loc.lat)) ? Number(loc.lat) : DEFAULT_LAT,
-    lng: Number.isFinite(Number(loc.long)) ? Number(loc.long) : DEFAULT_LNG,
+    lat,
+    lng,
     timezone: getBoardTimezone(data),
   };
 }
@@ -97,20 +130,31 @@ async function fetchHebcalItems(location, now = new Date()) {
   return payload.items || [];
 }
 
+async function fetchShabbatTimesForDate(location, now) {
+  let items = await fetchHebcalItems(location, now);
+  let times = parseHebcalItems(items, now);
+  if (times) {
+    return times;
+  }
+
+  const retryOffsets = [24, 48, 72, 96, 120, 144, 168];
+  for (const hours of retryOffsets) {
+    const retryAt = new Date(now.getTime() + hours * 60 * 60 * 1000);
+    items = await fetchHebcalItems(location, retryAt);
+    times = parseHebcalItems(items, now);
+    if (times) {
+      return times;
+    }
+  }
+
+  return null;
+}
+
 export async function fetchShabbatTimes(data, now = new Date()) {
   const location = getBoardLocation(data);
 
   try {
-    let items = await fetchHebcalItems(location, now);
-    let times = parseHebcalItems(items, now);
-
-    if (!times) {
-      const retryAt = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-      items = await fetchHebcalItems(location, retryAt);
-      times = parseHebcalItems(items, now);
-    }
-
-    return times;
+    return await fetchShabbatTimesForDate(location, now);
   } catch (err) {
     console.error('Shabbat times fetch failed:', err);
     return null;

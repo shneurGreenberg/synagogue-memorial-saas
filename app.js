@@ -217,6 +217,8 @@ async function loadSynagogueBoard(slug) {
   }
 
   synagogue.baseUrl = `/s/${slug}`;
+  const { normalizeSynagogueLocation } = require('./lib/normalize-location');
+  synagogue.location = normalizeSynagogueLocation(synagogue.location);
   synagogue.titles = normalizeTitles(synagogue);
   synagogue.title = synagogue.titles.ru || synagogue.title || synagogue.name || '';
   synagogue.boardFeatures = normalizeBoardFeatures(synagogue.boardFeatures);
