@@ -17,6 +17,45 @@ const CITY_TIMEZONE_ALIASES = {
   'תל-אביב': 'Asia/Jerusalem',
 };
 
+const CITY_ALIAS_TO_CANONICAL = {
+  томск: 'tomsk',
+  תומסק: 'tomsk',
+  'tomsk, russia': 'tomsk',
+  новосибирск: 'novosibirsk',
+  נובוסיבירסק: 'novosibirsk',
+  москва: 'moscow',
+  מוסקבה: 'moscow',
+  ירושלים: 'jerusalem',
+  'תל אביב': 'tel aviv',
+  'תל-אביב': 'tel aviv',
+};
+
+const CITY_CANONICAL_KEYS = Object.keys(CITY_TIMEZONE_ALIASES).filter((key) => !CITY_ALIAS_TO_CANONICAL[key]);
+
+function normalizeCityKey(city) {
+  const key = String(city || '').trim().toLowerCase();
+  if (CITY_CANONICAL_KEYS.includes(key)) {
+    return key;
+  }
+  if (CITY_ALIAS_TO_CANONICAL[key]) {
+    return CITY_ALIAS_TO_CANONICAL[key];
+  }
+
+  for (const [alias, canonical] of Object.entries(CITY_ALIAS_TO_CANONICAL)) {
+    if (key.includes(alias)) {
+      return canonical;
+    }
+  }
+
+  for (const canonical of CITY_CANONICAL_KEYS) {
+    if (key.includes(canonical)) {
+      return canonical;
+    }
+  }
+
+  return key;
+}
+
 export function isValidIanaTimezone(timezone) {
   const value = String(timezone || '').trim();
   if (!value) {
@@ -44,8 +83,8 @@ export function resolveBoardTimezone(data) {
     return raw;
   }
 
-  const cityKey = String(loc.city || '').trim().toLowerCase();
-  const cityAlias = cityKey && CITY_TIMEZONE_ALIASES[cityKey];
+  const cityKey = normalizeCityKey(loc.city || '');
+  const cityAlias = CITY_TIMEZONE_ALIASES[cityKey];
   if (cityAlias && isValidIanaTimezone(cityAlias)) {
     return cityAlias;
   }

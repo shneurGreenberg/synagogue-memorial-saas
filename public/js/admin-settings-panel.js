@@ -139,6 +139,104 @@
     });
   }
 
+  function setInputValue(id, value) {
+    var el = document.getElementById(id);
+    if (!el || value === undefined || value === null) {
+      return;
+    }
+    el.value = value;
+  }
+
+  function setCheckboxValue(id, checked) {
+    var el = document.getElementById(id);
+    if (!el) {
+      return;
+    }
+    el.checked = !!checked;
+  }
+
+  function setColorPair(colorId, hexId, value) {
+    setInputValue(colorId, value);
+    setInputValue(hexId, value);
+  }
+
+  function applySnapshotToSettingsForm(snapshot) {
+    if (!snapshot) {
+      return;
+    }
+
+    var theme = snapshot.theme || {};
+    var titles = snapshot.titles || {};
+    var memorialQr = snapshot.memorialQrPanel || {};
+
+    setInputValue('titleRu', titles.ru || '');
+    setInputValue('titleEn', titles.en || '');
+    setInputValue('titleHe', titles.he || '');
+    setColorPair('primaryColor', 'primaryColorHex', theme.primaryColor);
+    setColorPair('textColor', 'textColorHex', theme.textColor);
+    setColorPair('accentColor', 'accentColorHex', theme.accentColor);
+    setColorPair('tileColor', 'tileColorHex', theme.tileColor);
+
+    if (theme.tileOpacity != null) {
+      setInputValue('tileOpacity', theme.tileOpacity);
+      var tileOpacityValue = document.getElementById('tileOpacityValue');
+      if (tileOpacityValue) {
+        tileOpacityValue.textContent = theme.tileOpacity + '%';
+      }
+    }
+
+    if (theme.candlePalette) {
+      setInputValue('candlePalette', theme.candlePalette);
+    }
+
+    if (snapshot.language) {
+      setInputValue('language', snapshot.language);
+    }
+
+    var fontScales = theme.fontScales || {};
+    Object.keys(fontScales).forEach(function (key) {
+      var input = document.querySelector('.font-scale-input[data-font-scale-key="' + key + '"]');
+      if (!input) {
+        return;
+      }
+      input.value = fontScales[key];
+      var output = document.querySelector('.font-scale-value[data-for="' + input.id + '"]');
+      if (output) {
+        output.textContent = fontScales[key] + '%';
+      }
+    });
+
+    [
+      ['memorialQrTitleScale', memorialQr.titleScale],
+      ['memorialQrTextScale', memorialQr.textScale],
+      ['memorialQrQrScale', memorialQr.qrScale],
+    ].forEach(function (pair) {
+      if (pair[1] == null) {
+        return;
+      }
+      setInputValue(pair[0], pair[1]);
+      var output = document.getElementById(pair[0] + 'Value');
+      if (output) {
+        output.textContent = pair[1] + '%';
+      }
+    });
+  }
+
+  function parseJsonResponse(response) {
+    return response.text().then(function (text) {
+      if (!text) {
+        return {};
+      }
+      try {
+        return JSON.parse(text);
+      } catch (err) {
+        return { ok: false, error: text };
+      }
+    }).then(function (data) {
+      return { ok: response.ok, data: data };
+    });
+  }
+
   function initSavedViewsGrid(options) {
     options = options || {};
     var grid = document.getElementById('savedViewsGrid');
@@ -170,20 +268,27 @@
 
       if (applyBtn) {
         applyBtn.disabled = true;
+        card.classList.add('is-applying');
         var viewNameEl = card.querySelector('.saved-view-meta h3, .saved-view-thumb-label');
         fetch('/admin/' + slug + '/settings/saved-views/' + encodeURIComponent(viewId) + '/apply', {
           method: 'POST',
           headers: { 'X-Requested-With': 'XMLHttpRequest' },
-        }).then(function (response) {
-          return response.json().then(function (data) {
-            return { ok: response.ok, data: data };
-          });
-        }).then(function (result) {
+        }).then(parseJsonResponse).then(function (result) {
           if (result.ok && result.data && result.data.ok) {
+            var viewName = (result.data.viewName || (viewNameEl ? viewNameEl.textContent : '')).trim();
             if (typeof options.onApply === 'function') {
-              options.onApply(viewId, viewNameEl ? viewNameEl.textContent : '');
+              options.onApply(viewId, viewName);
             }
-            window.location.reload();
+            if (result.data.snapshot) {
+              applySnapshotToSettingsForm(result.data.snapshot);
+              if (typeof options.onSnapshotApplied === 'function') {
+                options.onSnapshotApplied(result.data.snapshot);
+              }
+            }
+            card.classList.add('is-applied');
+            window.setTimeout(function () {
+              card.classList.remove('is-applied');
+            }, 1200);
             return;
           }
           window.alert(options.applyError || 'Could not apply saved view.');
@@ -191,6 +296,7 @@
           window.alert(options.applyError || 'Could not apply saved view.');
         }).finally(function () {
           applyBtn.disabled = false;
+          card.classList.remove('is-applying');
         });
         return;
       }
@@ -201,14 +307,11 @@
         }
 
         deleteBtn.disabled = true;
+        card.classList.add('is-deleting');
         fetch('/admin/' + slug + '/settings/saved-views/' + encodeURIComponent(viewId), {
           method: 'DELETE',
           headers: { 'X-Requested-With': 'XMLHttpRequest' },
-        }).then(function (response) {
-          return response.json().then(function (data) {
-            return { ok: response.ok, data: data };
-          });
-        }).then(function (result) {
+        }).then(parseJsonResponse).then(function (result) {
           if (result.ok && result.data && result.data.ok) {
             card.remove();
             if (typeof options.onDelete === 'function') {
@@ -228,6 +331,9 @@
           window.alert(options.deleteError || 'Could not delete saved view.');
         }).finally(function () {
           deleteBtn.disabled = false;
+          if (card.parentNode) {
+            card.classList.remove('is-deleting');
+          }
         });
       }
     });
@@ -237,6 +343,7 @@
     initCollapsiblePanels: initCollapsiblePanels,
     capturePreviewScreenshot: capturePreviewScreenshot,
     updateActiveViewBadge: updateActiveViewBadge,
+    applySnapshotToSettingsForm: applySnapshotToSettingsForm,
     initSavedViewsGrid: initSavedViewsGrid,
   };
 

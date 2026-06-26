@@ -301,15 +301,6 @@
                         </div>
                         <span class="field-hint">{{t 'tile_opacity_help'}}</span>
                     </div>
-                    <div class="form-field candle-palette-field">
-                        <label for="candlePalette">{{t 'candle_palette'}}</label>
-                        <select name="candlePalette" id="candlePalette" class="form-control admin-select-modern">
-                            {{#each candlePaletteOptions}}
-                            <option value="{{this.key}}" {{#if (eq ../synagogue.theme.candlePalette this.key)}}selected{{else}}{{#unless ../synagogue.theme.candlePalette}}{{#if (eq this.key 'classic')}}selected{{/if}}{{/unless}}{{/if}}>{{t this.labelKey}}</option>
-                            {{/each}}
-                        </select>
-                        <span class="field-hint">{{t 'candle_palette_help'}}</span>
-                    </div>
                 </div>
             </div>
         </section>
@@ -400,12 +391,15 @@
                 <span class="admin-panel-chevron" aria-hidden="true"></span>
             </button>
             <div class="admin-panel-body board-features-layout" hidden>
+                {{#if yahrzeitTodayCount}}
+                <p class="public-submission-yahrzeit-notice">{{t 'public_submission_yahrzeit_alert'}}</p>
+                {{/if}}
                 {{#each boardFeatureGroups}}
                 <div class="board-features-group">
                     <h3 class="board-features-group-title">{{t this.groupKey}}</h3>
                     <p class="field-hint">{{t this.helpKey}}</p>
                     <div class="board-features-grid">
-                        {{#if (eq this.groupKey 'board_features_right_column_group')}}
+                        {{#if (eq this.special 'candle')}}
                         <div class="admin-theme-setting shabbat-times-setting">
                             <div class="admin-theme-setting-label">{{t 'enable_shabbat_times'}}</div>
                             <div class="admin-theme-setting-control">
@@ -415,6 +409,46 @@
                                 </label>
                             </div>
                             <p class="field-hint admin-theme-setting-hint">{{t 'enable_shabbat_times_help'}}</p>
+                        </div>
+                        <div class="form-field candle-palette-field admin-theme-setting admin-theme-setting-wide">
+                            <label for="candlePalette">{{t 'candle_palette'}}</label>
+                            <select name="candlePalette" id="candlePalette" class="form-control admin-select-modern">
+                                {{#each ../candlePaletteOptions}}
+                                <option value="{{this.key}}" {{#if (eq ../../synagogue.theme.candlePalette this.key)}}selected{{else}}{{#unless ../../synagogue.theme.candlePalette}}{{#if (eq this.key 'classic')}}selected{{/if}}{{/unless}}{{/if}}>{{t this.labelKey}}</option>
+                                {{/each}}
+                            </select>
+                            <p class="field-hint admin-theme-setting-hint">{{t 'candle_palette_help'}}</p>
+                        </div>
+                        {{#if this.candleSlider}}
+                        <div class="slider-field-modern admin-theme-setting admin-theme-setting-wide">
+                            <label for="fontScale_candle">{{t this.candleSlider.labelKey}}</label>
+                            <div class="slider-row">
+                                <input type="range" name="fontScale_candle" id="fontScale_candle"
+                                    class="admin-range-input font-scale-input" data-font-scale-key="candle"
+                                    min="{{#if this.candleSlider.min}}{{this.candleSlider.min}}{{else}}40{{/if}}"
+                                    max="{{#if this.candleSlider.max}}{{this.candleSlider.max}}{{else}}150{{/if}}"
+                                    step="{{#if this.candleSlider.step}}{{this.candleSlider.step}}{{else}}5{{/if}}"
+                                    value="{{this.candleSlider.value}}">
+                                <output class="slider-value-display font-scale-value" data-for="fontScale_candle">{{this.candleSlider.value}}%</output>
+                            </div>
+                            <p class="field-hint admin-theme-setting-hint">{{t this.candleSlider.helpKey}}</p>
+                        </div>
+                        {{/if}}
+                        {{/if}}
+                        {{#if (eq this.special 'publicSubmission')}}
+                        <div class="admin-theme-setting">
+                            <div class="admin-theme-setting-label">{{t 'public_submission_enabled'}}</div>
+                            <div class="admin-theme-setting-control">
+                                <label class="toggle-switch" for="publicSubmissionEnabled">
+                                    <input type="checkbox" id="publicSubmissionEnabled" name="publicSubmissionEnabled" value="1" {{#if ../synagogue.publicSubmission.enabled}}checked{{/if}}>
+                                    <span class="toggle-slider" aria-hidden="true"></span>
+                                </label>
+                            </div>
+                            <p class="field-hint admin-theme-setting-hint">{{t 'public_submission_enabled_help'}}</p>
+                        </div>
+                        <div class="form-field admin-theme-setting admin-theme-setting-wide">
+                            <label>{{t 'public_submission_url_hint'}}</label>
+                            <p class="admin-copy-link"><code>/s/{{../synagogue.slug}}/add-name</code></p>
                         </div>
                         {{/if}}
                         {{#each this.toggles}}
@@ -432,74 +466,6 @@
                     </div>
                 </div>
                 {{/each}}
-            </div>
-        </section>
-        <section class="admin-panel admin-panel-collapsible is-collapsed{{#if yahrzeitTodayCount}} public-submission-yahrzeit-alert{{/if}}">
-            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
-                <h2 class="admin-panel-title">
-                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                    {{t 'public_submission_section'}}
-                </h2>
-                <span class="admin-panel-chevron" aria-hidden="true"></span>
-            </button>
-            <div class="admin-panel-body board-features-grid" hidden>
-                {{#if yahrzeitTodayCount}}
-                <p class="public-submission-yahrzeit-notice">{{t 'public_submission_yahrzeit_alert'}}</p>
-                {{/if}}
-                <div class="admin-theme-setting">
-                    <div class="admin-theme-setting-label">{{t 'public_submission_enabled'}}</div>
-                    <div class="admin-theme-setting-control">
-                        <label class="toggle-switch" for="publicSubmissionEnabled">
-                            <input type="checkbox" id="publicSubmissionEnabled" name="publicSubmissionEnabled" value="1" {{#if synagogue.publicSubmission.enabled}}checked{{/if}}>
-                            <span class="toggle-slider" aria-hidden="true"></span>
-                        </label>
-                    </div>
-                    <p class="field-hint admin-theme-setting-hint">{{t 'public_submission_enabled_help'}}</p>
-                </div>
-                <div class="form-field admin-theme-setting">
-                    <label>{{t 'public_submission_url_hint'}}</label>
-                    <p class="admin-copy-link"><code>/s/{{synagogue.slug}}/add-name</code></p>
-                </div>
-            </div>
-        </section>
-        <section class="admin-panel admin-panel-collapsible is-collapsed">
-            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
-                <h2 class="admin-panel-title">
-                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2c-1.1 0-2 .9-2 2v1.07C7.06 5.56 5 7.92 5 11v5l-2 2v1h18v-1l-2-2v-5c0-3.08-2.06-5.44-5-5.93V4c0-1.1-.9-2-2-2m0 2c.55 0 1 .45 1 1v1h-2V5c0-.55.45-1 1-1m-1 9h2v3h-2v-3Z"/></svg>
-                    {{t 'yahrzeit_section'}}
-                </h2>
-                <span class="admin-panel-chevron" aria-hidden="true"></span>
-            </button>
-            <div class="admin-panel-body board-features-grid" hidden>
-                <div class="admin-theme-setting">
-                    <div class="admin-theme-setting-label">{{t 'yahrzeit_enabled'}}</div>
-                    <div class="admin-theme-setting-control">
-                        <label class="toggle-switch" for="yahrzeitRemindersEnabled">
-                            <input type="checkbox" id="yahrzeitRemindersEnabled" name="yahrzeitRemindersEnabled" value="1" {{#if synagogue.yahrzeitReminders.enabled}}checked{{/if}}>
-                            <span class="toggle-slider" aria-hidden="true"></span>
-                        </label>
-                    </div>
-                    <p class="field-hint admin-theme-setting-hint">{{t 'yahrzeit_enabled_help'}}</p>
-                </div>
-                <div class="admin-theme-setting">
-                    <div class="admin-theme-setting-label">{{t 'yahrzeit_include_hebrew'}}</div>
-                    <div class="admin-theme-setting-control">
-                        <label class="toggle-switch" for="yahrzeitRemindersIncludeHebrew">
-                            <input type="checkbox" id="yahrzeitRemindersIncludeHebrew" name="yahrzeitRemindersIncludeHebrew" value="1" {{#if synagogue.yahrzeitReminders.includeHebrewYahrzeit}}checked{{/if}}>
-                            <span class="toggle-slider" aria-hidden="true"></span>
-                        </label>
-                    </div>
-                    <p class="field-hint admin-theme-setting-hint">{{t 'yahrzeit_include_hebrew_help'}}</p>
-                </div>
-                <div class="form-field admin-theme-setting">
-                    <label for="yahrzeitRemindersEmail">{{t 'yahrzeit_email'}}</label>
-                    <input type="email" class="form-control" id="yahrzeitRemindersEmail" name="yahrzeitRemindersEmail" value="{{synagogue.yahrzeitReminders.notifyEmail}}" placeholder="admin@example.com">
-                    <p class="field-hint admin-theme-setting-hint">{{t 'yahrzeit_email_help'}}</p>
-                </div>
-                <div class="form-field admin-theme-setting">
-                    <label>{{t 'yahrzeit_page'}}</label>
-                    <p class="admin-copy-link"><code>/admin/{{synagogue.slug}}/yahrzeit</code></p>
-                </div>
             </div>
         </section>
         {{/if}}
@@ -834,6 +800,9 @@
             params.set('accentColor', patch.accentColor);
             params.set('tileColor', patch.tileColor);
             params.set('tileOpacity', patch.tileOpacity);
+            if (patch.candlePalette) {
+                params.set('candlePalette', patch.candlePalette);
+            }
             Object.keys(patch).forEach(function (key) {
                 if (key.indexOf('fontScale_') === 0 || key.indexOf('memorialQr') === 0) {
                     params.set(key, patch[key]);
@@ -862,6 +831,9 @@
             params.set('accentColor', initial.accentColor);
             params.set('tileColor', initial.tileColor);
             params.set('tileOpacity', initial.tileOpacity);
+            if (initial.candlePalette) {
+                params.set('candlePalette', initial.candlePalette);
+            }
             Object.keys(initial).forEach(function (key) {
                 if (key.indexOf('fontScale_') === 0 || key.indexOf('memorialQr') === 0) {
                     params.set(key, initial[key]);
@@ -940,6 +912,7 @@
                 accentColor: patch.accentColor,
                 tileColor: patch.tileColor,
                 tileOpacity: patch.tileOpacity,
+                candlePalette: patch.candlePalette,
                 language: languageSelect ? languageSelect.value : 'ru',
             };
             Object.keys(patch).forEach(function (key) {
@@ -1132,6 +1105,9 @@
                     if (viewId === activeSavedViewId) {
                         setActiveSavedView('', '');
                     }
+                },
+                onSnapshotApplied: function () {
+                    schedulePreview();
                 },
             });
         }
