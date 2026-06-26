@@ -218,7 +218,12 @@
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
         var closeLabel = btn.dataset.labelClose || 'Close';
         var editLabel = btn.dataset.labelEdit || 'Edit';
-        btn.textContent = open ? closeLabel : editLabel;
+        var labelEl = btn.querySelector('.master-toggle-edit-label');
+        if (labelEl) {
+          labelEl.textContent = open ? closeLabel : editLabel;
+        } else {
+          btn.textContent = open ? closeLabel : editLabel;
+        }
 
         if (open) {
           var form = panel.querySelector('.master-community-form');

@@ -20,6 +20,7 @@
     <header class="master-topbar">
         <div class="master-topbar-inner">
             <div class="master-brand">
+                <img class="master-brand-logo" src="{{officialLogoUrl}}" alt="">
                 <span class="master-brand-badge">{{t 'platform_badge'}}</span>
                 <span class="master-brand-title">{{t 'master_title'}}</span>
             </div>
@@ -45,6 +46,8 @@
     </main>
     {{#if showMasterMap}}
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    {{/if}}
+    {{#if showMasterNav}}
     <script src="/js/master-dashboard.js"></script>
     {{/if}}
     {{#if showMasterWizard}}

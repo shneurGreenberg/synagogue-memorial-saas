@@ -1,5 +1,13 @@
 .css-candle {
   --css-candle-unit: 1px;
+  --candle-wax-top: #a7a2a2;
+  --candle-wax-bottom: #212121;
+  --candle-wax-ring: #d1c3ac;
+  --candle-wax-ring-edge: #6f6f6f;
+  --candle-flame-glow: #ff6000;
+  --candle-flame-core: white;
+  --candle-flame-shadow: orange;
+  --candle-blue-part: rgba(0, 133, 255, 0.7);
   width: calc(120 * var(--css-candle-unit));
   height: calc(385 * var(--css-candle-unit));
   position: relative;
@@ -28,7 +36,7 @@
   bottom: 0;
   z-index: 2;
   filter: blur(calc(35 * var(--css-candle-unit)));
-  background: #ff6000;
+  background: var(--candle-flame-glow);
   animation: css-candle-flicker 0.1s infinite;
 }
 
@@ -41,8 +49,8 @@
   height: calc(102 * var(--css-candle-unit));
   transform-origin: bottom center;
   border-radius: 50% 50% 20% 20%;
-  box-shadow: 0 calc(-5 * var(--css-candle-unit)) calc(7 * var(--css-candle-unit)) 0 orange;
-  background: linear-gradient(white 70%, transparent);
+  box-shadow: 0 calc(-5 * var(--css-candle-unit)) calc(7 * var(--css-candle-unit)) 0 var(--candle-flame-shadow);
+  background: linear-gradient(var(--candle-flame-core) 70%, transparent);
   animation:
     css-candle-flame-tilt 4s linear infinite,
     css-candle-flame-grow 4s linear infinite;
@@ -53,7 +61,7 @@
   margin-left: calc(-10 * var(--css-candle-unit));
   width: calc(20 * var(--css-candle-unit));
   height: calc(45 * var(--css-candle-unit));
-  background: rgba(0, 133, 255, 0.7);
+  background: var(--candle-blue-part);
   z-index: 2;
   bottom: calc(5 * var(--css-candle-unit));
   border-radius: 50% 50% 40% 40%;
@@ -101,7 +109,7 @@
   height: calc(250 * var(--css-candle-unit));
   z-index: 1;
   position: absolute;
-  background: linear-gradient(180deg, #a7a2a2, #212121);
+  background: linear-gradient(180deg, var(--candle-wax-top), var(--candle-wax-bottom));
   box-shadow:
     inset calc(20 * var(--css-candle-unit)) calc(-30 * var(--css-candle-unit)) calc(50 * var(--css-candle-unit)) 0 rgba(0, 0, 0, 0.4),
     inset calc(-20 * var(--css-candle-unit)) 0 calc(50 * var(--css-candle-unit)) 0 rgba(0, 0, 0, 0.4);
@@ -113,7 +121,7 @@
   bottom: 95%;
   position: absolute;
   border-radius: 50%;
-  background: radial-gradient(#d1c3ac, #6f6f6f 46%, #817e7c 67%);
+  background: radial-gradient(var(--candle-wax-ring), var(--candle-wax-ring-edge) 46%, #817e7c 67%);
 }
 
 .css-candle-bottom {

@@ -69,6 +69,7 @@ function getMasterLang(req) {
 function renderMaster(req, res, view, options = {}) {
   const masterLanguage = getMasterLang(req);
   const locale = getAdminLocaleContext(masterLanguage);
+  const { OFFICIAL_LOGO_FILENAME } = require('../lib/board-defaults');
 
   res.render(view, {
     ...options,
@@ -76,6 +77,7 @@ function renderMaster(req, res, view, options = {}) {
     masterTranslate: getMasterTranslator(masterLanguage),
     masterDir: locale.adminDir,
     masterIsRtl: locale.adminIsRtl,
+    officialLogoUrl: `/images/${OFFICIAL_LOGO_FILENAME}`,
     layout: options.layout === false ? false : (options.layout || 'master'),
   });
 }
@@ -209,7 +211,7 @@ router.get('/dashboard', requireMaster, async (req, res) => {
         renderMaster(req, res, 'master/dashboard', {
             synagogues,
             showMasterNav: true,
-            showMasterMap: false,
+            showMasterMap: true,
             saved: req.query.saved === '1',
             error: req.query.error || null,
         });

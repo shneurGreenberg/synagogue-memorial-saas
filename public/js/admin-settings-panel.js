@@ -76,18 +76,20 @@
   }
 
   function updateActiveViewBadge(name) {
-    var badge = document.getElementById('activeSavedViewBadge');
-    if (!badge) {
-      return;
-    }
+    ['activeSavedViewBadge', 'boardPreviewViewBadge'].forEach(function (id) {
+      var badge = document.getElementById(id);
+      if (!badge) {
+        return;
+      }
 
-    if (name) {
-      badge.textContent = name;
-      badge.hidden = false;
-    } else {
-      badge.textContent = '';
-      badge.hidden = true;
-    }
+      if (name) {
+        badge.textContent = name;
+        badge.hidden = false;
+      } else {
+        badge.textContent = '';
+        badge.hidden = true;
+      }
+    });
   }
 
   window.AdminSettingsPanel = {

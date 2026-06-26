@@ -58,6 +58,7 @@ const { isEmailConfigured } = require('../lib/email');
 const { getDayKeyInTimezone, resolveSynagogueTimezone, buildYahrzeitEntries } = require('../lib/yahrzeit');
 const { buildFaviconPath, resolveFaviconLogoFilename } = require('../lib/favicon');
 const { OFFICIAL_LOGO_FILENAME } = require('../lib/board-defaults');
+const { CANDLE_PALETTE_KEYS, normalizeCandlePalette } = require('../lib/candle-palette');
 const { normalizeBoardFeatures } = require('../lib/board-features');
 
 const BOARD_FEATURE_TOGGLE_META = [
@@ -130,6 +131,13 @@ const TEXTS_FONT_SCALE_GROUPS = [
     keys: ['clock', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat'],
   },
 ];
+
+function buildCandlePaletteOptions() {
+  return CANDLE_PALETTE_KEYS.map((key) => ({
+    key,
+    labelKey: `candle_palette_${key}`,
+  }));
+}
 
 function buildBoardFeatureToggles(boardFeatures) {
   const features = boardFeatures || {};
@@ -425,7 +433,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
         const {
             titleRu, titleEn, titleHe, primaryColor, textColor, accentColor, tileColor, tileOpacity,
-            language, shabbatTimesEnabled,
+            language, shabbatTimesEnabled, candlePalette,
         } = req.body;
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
         const boardFeatures = parseBoardFeaturesFromBody(req.body);
@@ -449,6 +457,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             updateData['theme.accentColor'] = sanitizeHexColor(accentColor, BOARD_THEME_DEFAULTS.accentColor);
             updateData['theme.tileColor'] = sanitizeHexColor(tileColor, BOARD_THEME_DEFAULTS.tileColor);
             updateData['theme.tileOpacity'] = normalizeTileOpacity(tileOpacity);
+            updateData['theme.candlePalette'] = normalizeCandlePalette(candlePalette);
             Object.entries(fontScales).forEach(([key, value]) => {
                 updateData[`theme.fontScales.${key}`] = value;
             });
@@ -680,6 +689,7 @@ router.post('/:slug/settings/reset-theme', requireAdmin, requirePermission('sett
                 'theme.fontScales.weather': 100,
                 'theme.fontScales.shabbat': 100,
                 'theme.fontScales.candle': 75,
+                'theme.candlePalette': 'classic',
             },
             $unset: {
                 'theme.backgroundImage': '',
@@ -757,6 +767,7 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             boardTitles: enriched.titles,
             boardFeatureGroups: buildBoardFeatureGroups(enriched.boardFeatures),
             textsFontScaleGroups: buildTextsFontScaleGroups(enriched.theme.fontScales),
+            candlePaletteOptions: buildCandlePaletteOptions(),
             savedViews: serializeSavedViews(enriched.savedViews),
             activeSavedViewId: enriched.activeSavedViewId || '',
             activeSavedViewName: activeSavedView ? activeSavedView.name : '',
