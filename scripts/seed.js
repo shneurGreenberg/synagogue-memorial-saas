@@ -5,6 +5,12 @@ const database = require('../database.json');
 const { hashPassword } = require('../lib/password');
 
 const MONGODB_URI = process.env.MONGODB_URI;
+const MONGO_OPTIONS = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 15000,
+  connectTimeoutMS: 15000,
+};
 
 if (!MONGODB_URI) {
     console.error('MONGODB_URI is not defined in .env');
@@ -12,7 +18,7 @@ if (!MONGODB_URI) {
 }
 
 mongoose.set('strictQuery', false);
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MONGODB_URI, MONGO_OPTIONS)
     .then(async () => {
         console.log('Connected to MongoDB');
 

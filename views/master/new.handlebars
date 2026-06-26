@@ -247,10 +247,22 @@
             </section>
 
             <footer class="master-wizard-actions">
-                <button type="button" class="btn master-btn master-btn-secondary" id="wizardBackBtn" hidden>{{t 'wizard_back'}}</button>
-                <button type="button" class="btn master-btn master-btn-secondary" id="wizardSkipBtn">{{t 'wizard_skip'}}</button>
-                <button type="button" class="btn master-btn master-btn-primary" id="wizardNextBtn">{{t 'wizard_next'}}</button>
-                <button type="submit" class="btn master-btn master-btn-primary" id="wizardSubmitBtn" hidden>{{t 'wizard_create'}}</button>
+                <button type="button" class="btn master-btn master-btn-secondary" id="wizardBackBtn" hidden>
+                    <svg class="master-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                    {{t 'wizard_back'}}
+                </button>
+                <button type="button" class="btn master-btn master-btn-secondary" id="wizardSkipBtn">
+                    <svg class="master-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 11v2h12.17l-5.59 5.59L12 20l8-8-8-8-1.41 1.41L16.17 11H4z"/></svg>
+                    {{t 'wizard_skip'}}
+                </button>
+                <button type="button" class="btn master-btn master-btn-primary" id="wizardNextBtn">
+                    {{t 'wizard_next'}}
+                    <svg class="master-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 11v2h12.17l-5.59 5.59L12 20l8-8-8-8-1.41 1.41L16.17 11H4z"/></svg>
+                </button>
+                <button type="submit" class="btn master-btn master-btn-primary" id="wizardSubmitBtn" hidden>
+                    <svg class="master-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                    {{t 'wizard_create'}}
+                </button>
             </footer>
         </form>
     </div>
