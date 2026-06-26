@@ -38,6 +38,11 @@
             <div class="admin-panel-body">
                 <div class="board-preview-stage" id="boardPreviewStage">
                     <div class="board-preview-frame-wrap" id="boardPreviewWrap">
+                        {{#if activeSavedViewName}}
+                        <span class="board-preview-view-badge" id="boardPreviewViewBadge">{{activeSavedViewName}}</span>
+                        {{else}}
+                        <span class="board-preview-view-badge" id="boardPreviewViewBadge" hidden></span>
+                        {{/if}}
                         <iframe id="boardPreviewFrame" class="board-preview-frame" title="{{t 'live_preview'}}"
                             src="/s/{{synagogue.slug}}"></iframe>
                     </div>
@@ -409,6 +414,15 @@
                         </div>
                         <span class="field-hint">{{t 'tile_opacity_help'}}</span>
                     </div>
+                    <div class="form-field candle-palette-field">
+                        <label for="candlePalette">{{t 'candle_palette'}}</label>
+                        <select name="candlePalette" id="candlePalette" class="form-control admin-input-modern">
+                            {{#each candlePaletteOptions}}
+                            <option value="{{this.key}}" {{#if (eq ../synagogue.theme.candlePalette this.key)}}selected{{else}}{{#unless ../synagogue.theme.candlePalette}}{{#if (eq this.key 'classic')}}selected{{/if}}{{/unless}}{{/if}}>{{t this.labelKey}}</option>
+                            {{/each}}
+                        </select>
+                        <span class="field-hint">{{t 'candle_palette_help'}}</span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -651,6 +665,10 @@
                 accentColor: accent ? accent.value : '',
                 tileColor: tile ? tile.value : '',
                 tileOpacity: tileOpacity ? tileOpacity.value : '100',
+                candlePalette: (function () {
+                    var el = document.getElementById('candlePalette');
+                    return el ? el.value : 'classic';
+                })(),
                 previewLang: languageSelect ? languageSelect.value : 'ru',
             }, readFontScalePatch(), readMemorialQrPatch());
         }
@@ -735,6 +753,11 @@
         var languageSelect = document.getElementById('language');
         if (languageSelect) {
             languageSelect.addEventListener('change', schedulePreview);
+        }
+
+        var candlePaletteSelect = document.getElementById('candlePalette');
+        if (candlePaletteSelect) {
+            candlePaletteSelect.addEventListener('change', schedulePreview);
         }
 
         var activeSavedViewId = '{{activeSavedViewId}}' || '';

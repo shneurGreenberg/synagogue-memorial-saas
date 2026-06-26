@@ -37,6 +37,13 @@ body.master-body {
   gap: 0.65rem;
 }
 
+.master-brand-logo {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .master-brand-badge {
   display: inline-block;
   font-size: 0.65rem;
@@ -503,8 +510,34 @@ body.master-body {
 
 .master-rtl {
   font-family: 'Heebo', 'DM Sans', sans-serif;
+  direction: rtl;
+  text-align: right;
+
+  .master-topbar-inner,
+  .master-page-header,
+  .master-panel-header,
+  .master-community-card-header,
+  .master-field,
+  .master-location-block,
+  .master-lang-block,
+  .master-wizard-card {
+    text-align: right;
+  }
+
+  .master-input,
+  .master-lang-select,
+  .master-city-search,
+  select.master-input,
+  textarea.master-input {
+    direction: rtl;
+    text-align: right;
+  }
 
   .master-topnav {
+    flex-direction: row-reverse;
+  }
+
+  .master-brand {
     flex-direction: row-reverse;
   }
 
@@ -513,9 +546,32 @@ body.master-body {
     direction: rtl;
   }
 
-  .master-community-card-links {
+  .master-community-card-links,
+  .master-edit-actions,
+  .master-panel-header-split {
     flex-direction: row-reverse;
   }
+
+  .master-btn {
+    flex-direction: row-reverse;
+  }
+
+  .master-lang-form {
+    flex-direction: row-reverse;
+  }
+}
+
+.master-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.master-btn-icon {
+  width: 1.05em;
+  height: 1.05em;
+  flex-shrink: 0;
+  opacity: 0.92;
 }
 
 @media (max-width: 768px) {

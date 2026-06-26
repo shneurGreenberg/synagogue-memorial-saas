@@ -177,6 +177,7 @@ const SynagogueSchema = new mongoose.Schema({
         logo: String,
         backgroundImage: String,
         tilesBackground: String,
+        candlePalette: String,
       },
       memorialQrPanel: {
         titles: {
@@ -239,7 +240,8 @@ const SynagogueSchema = new mongoose.Schema({
     },
     backgroundImage: String,
     tilesBackground: String,
-    logo: String
+    logo: String,
+    candlePalette: { type: String, default: 'classic' },
   },
   location: {
     lat: { type: Number, default: 54.9833 },

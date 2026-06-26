@@ -3,6 +3,7 @@ import { useBoardData } from '../context/BoardDataContext';
 import { assetUrl } from '../lib/asset-url';
 import { buildTileThemeVars } from '../lib/tile-theme-colors';
 import { resolveFontScales, resolveTileOpacity } from '../lib/theme-typography';
+import { buildCandlePaletteCssVars, resolveCandlePalette } from '../lib/candle-palette';
 import { effectiveFontScaleCss, resolveFontScaleBaselines } from '../lib/typography-baseline';
 
 function tileGlassNoise(transparency) {
@@ -55,6 +56,7 @@ export function ThemeStyles() {
   const tileVars = buildTileThemeVars(theme.tileColor, primary, resolveTileOpacity(theme.tileOpacity));
   const tileTransparency = tileVars.tileTransparency;
   const useBackdropBlur = tileTransparency > 0.01;
+  const candlePaletteCss = buildCandlePaletteCssVars(resolveCandlePalette(theme.candlePalette));
 
   const css = `
     :root {
@@ -96,6 +98,8 @@ export function ThemeStyles() {
       --font-scale-candle: ${scale('candle')};
       --candle-display-scale: calc(0.2 * var(--font-scale-candle, 0.75));
       --candle-display-scale-big: calc(0.38 * var(--font-scale-candle, 0.75));
+      --prayer-candle-scale: var(--candle-display-scale-big);
+      ${candlePaletteCss}
     }
     .main-container .board-header h1 {
       color: var(--primary-color) !important;

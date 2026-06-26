@@ -1862,11 +1862,12 @@
 }
 
 .prayer-reading-candle.css-candle {
-  --css-candle-unit: 1.35px;
-  width: 100%;
-  max-width: clamp(180px, 27vw, 360px);
-  height: clamp(240px, 33vw, 420px);
-  max-height: 88%;
+  --css-candle-unit: 1px;
+  position: relative;
+  width: calc(120 * var(--css-candle-unit));
+  height: calc(385 * var(--css-candle-unit));
+  transform: scale(var(--prayer-candle-scale, var(--candle-display-scale-big, 0.285)));
+  transform-origin: center bottom;
   filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.45));
 }
 
@@ -1915,7 +1916,7 @@
   }
 
   .prayer-reading-candle {
-    max-height: 100%;
+    transform: scale(var(--prayer-candle-scale, var(--candle-display-scale-big, 0.285)));
   }
 
   .prayer-reading-content {

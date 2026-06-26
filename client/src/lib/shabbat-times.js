@@ -19,7 +19,19 @@ export function getBoardLocation(data) {
   };
 }
 
-function buildHebcalUrl(location) {
+function formatHebcalDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function buildHebcalUrl(location, now = new Date()) {
+  const start = new Date(now);
+  start.setDate(start.getDate() - 1);
+  const end = new Date(now);
+  end.setDate(end.getDate() + 14);
+
   const params = new URLSearchParams({
     geo: 'pos',
     latitude: String(location.lat),
@@ -27,32 +39,47 @@ function buildHebcalUrl(location) {
     tzid: location.timezone,
     M: 'on',
     b: '18',
+    start: formatHebcalDate(start),
+    end: formatHebcalDate(end),
   });
   return `${HEBCAL_API}&${params.toString()}`;
 }
 
 function parseHebcalItems(items, now = new Date()) {
-  let enter = null;
-  let exit = null;
+  const candles = [];
+  const havdalah = [];
 
   for (const item of items || []) {
     if (item.category === 'candles' && item.date) {
-      enter = new Date(item.date);
+      candles.push(new Date(item.date));
     }
     if (item.category === 'havdalah' && item.date) {
-      exit = new Date(item.date);
+      havdalah.push(new Date(item.date));
     }
   }
 
-  if (!enter || !exit) {
-    return null;
+  candles.sort((a, b) => a - b);
+  havdalah.sort((a, b) => a - b);
+
+  for (const exit of havdalah) {
+    if (exit <= now) {
+      continue;
+    }
+    const enter = candles.filter((candidate) => candidate < exit).pop();
+    if (enter) {
+      return { enter, exit };
+    }
   }
 
-  if (exit <= now) {
-    return null;
+  const nextEnter = candles.find((candidate) => candidate > now);
+  if (nextEnter) {
+    const nextExit = havdalah.find((candidate) => candidate > nextEnter);
+    if (nextExit) {
+      return { enter: nextEnter, exit: nextExit };
+    }
   }
 
-  return { enter, exit };
+  return null;
 }
 
 export async function fetchShabbatTimes(data, now = new Date()) {

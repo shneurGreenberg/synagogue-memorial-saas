@@ -35,7 +35,10 @@ export function mergePreviewPatch(data, patch) {
   if (patch.tileOpacity !== undefined && patch.tileOpacity !== '') {
     next.theme.tileOpacity = Number(patch.tileOpacity);
   }
-  const fontScaleKeys = ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat'];
+  if (patch.candlePalette) {
+    next.theme.candlePalette = patch.candlePalette;
+  }
+  const fontScaleKeys = ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat', 'candle'];
   fontScaleKeys.forEach((key) => {
     const value = patch[`fontScale_${key}`];
     if (value !== undefined && value !== '') {
@@ -85,6 +88,7 @@ export function previewPatchFromSearchParams(params) {
     || params.has('accentColor')
     || params.has('tileColor')
     || params.has('tileOpacity')
+    || params.has('candlePalette')
     || params.has('fontScale_tileTitle')
     || params.has('titleRu')
     || params.has('titleEn')
@@ -105,7 +109,8 @@ export function previewPatchFromSearchParams(params) {
   if (params.has('accentColor')) patch.accentColor = params.get('accentColor');
   if (params.has('tileColor')) patch.tileColor = params.get('tileColor');
   if (params.has('tileOpacity')) patch.tileOpacity = params.get('tileOpacity');
-  ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat'].forEach((key) => {
+  if (params.has('candlePalette')) patch.candlePalette = params.get('candlePalette');
+  ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat', 'candle'].forEach((key) => {
     if (params.has(`fontScale_${key}`)) {
       patch[`fontScale_${key}`] = params.get(`fontScale_${key}`);
     }
