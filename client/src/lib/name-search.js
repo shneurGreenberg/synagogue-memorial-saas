@@ -103,6 +103,19 @@ export function searchPeopleByString(string, allPeople) {
     .map((entry) => entry.person);
 }
 
+export function prioritizeYahrzeitForKadish(people) {
+  const yahrzeitToday = people.filter((person) => person.passedToday);
+
+  if (yahrzeitToday.length !== 1 || people.length <= 1) {
+    return people;
+  }
+
+  const [centerPerson] = yahrzeitToday;
+  const others = people.filter((person) => person.id !== centerPerson.id);
+
+  return [centerPerson, ...others];
+}
+
 export function getPageShift(state) {
   const { page, hasKadishToday } = state;
 
@@ -122,11 +135,14 @@ export function shouldUseKadishLayout(state) {
 }
 
 export function applySearchToPaginationState(state, string) {
-  const people = searchPeopleByString(string, state.allPeople);
+  let people = searchPeopleByString(string, state.allPeople);
 
-  const hasKadishToday =
-    people.length === 1
-    || people.filter((person) => person.passedToday).length === 1;
+  const yahrzeitTodayCount = people.filter((person) => person.passedToday).length;
+  const hasKadishToday = people.length === 1 || yahrzeitTodayCount === 1;
+
+  if (hasKadishToday && yahrzeitTodayCount === 1 && people.length > 1) {
+    people = prioritizeYahrzeitForKadish(people);
+  }
 
   let totalPages = 1;
   if (hasKadishToday) {
