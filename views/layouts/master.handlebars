@@ -25,6 +25,7 @@
             </div>
             <nav class="master-topnav">
                 <a href="/master/dashboard" class="master-topnav-link">{{t 'communities'}}</a>
+                <a href="/master/new" class="master-topnav-link">{{t 'wizard_start_short'}}</a>
                 <a href="/" class="master-topnav-link" target="_blank" rel="noopener">{{t 'public_home'}}</a>
                 <form method="POST" action="/master/language" class="master-lang-form">
                     <label class="master-lang-label" for="masterLangSelect">{{t 'master_language'}}</label>
@@ -45,6 +46,10 @@
     {{#if showMasterMap}}
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="/js/master-dashboard.js"></script>
+    {{/if}}
+    {{#if showMasterWizard}}
+    <script type="application/json" id="masterWizardLabels">{{{wizardLabelsJson}}}</script>
+    <script src="/js/master-wizard.js"></script>
     {{/if}}
 </body>
 
