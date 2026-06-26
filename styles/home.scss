@@ -500,6 +500,7 @@
       }
 
       .card {
+        --candle-zone-width: clamp(26%, 26%, 28%);
         position: relative;
         cursor: pointer;
         width: 100%;
@@ -530,9 +531,9 @@
         .css-candle.candle {
           position: absolute;
           bottom: 4px;
-          left: 4px;
+          left: calc(var(--candle-zone-width) * 0.5);
           top: auto;
-          transform: scale(var(--candle-display-scale, 0.2));
+          transform: translateX(-50%) scale(var(--candle-display-scale, 0.2));
           transform-origin: center bottom;
           pointer-events: none;
           z-index: 0;
@@ -546,7 +547,7 @@
         &.card-big {
           .candle,
           .css-candle.candle {
-            transform: scale(var(--candle-display-scale-big, var(--candle-display-scale, 0.28)));
+            transform: translateX(-50%) scale(var(--candle-display-scale-big, var(--candle-display-scale, 0.38)));
           }
         }
 
@@ -560,7 +561,7 @@
           z-index: 1;
           flex: 1;
           min-height: 0;
-          margin-left: clamp(26%, 26%, 28%);
+          margin-left: var(--candle-zone-width);
           margin-right: 6px;
           padding: 8px 4px 4px;
           text-align: center;
