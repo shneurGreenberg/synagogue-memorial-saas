@@ -80,17 +80,6 @@
     const sendLabel = (page && page.getAttribute('data-send-label')) || 'Send';
     let activePerson = null;
     let activeMessageLink = null;
-    let activeTileUrl = null;
-
-    function downloadTileImage(tileUrl, personName) {
-      const link = document.createElement('a');
-      link.href = tileUrl;
-      link.download = String(personName || 'memorial').replace(/[^\w\u0590-\u05FF.-]+/g, '_') + '-tile.png';
-      link.rel = 'noopener';
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    }
 
     function populateCard(person) {
       activePerson = person;
@@ -151,7 +140,6 @@
       }
 
       activeMessageLink = null;
-      activeTileUrl = null;
       if (sendBtn) {
         sendBtn.hidden = true;
         sendBtn.disabled = true;
@@ -167,7 +155,6 @@
             }
 
             activeMessageLink = payload.contactLink;
-            activeTileUrl = payload.tileUrl;
             sendBtn.hidden = false;
             sendBtn.disabled = false;
           })
@@ -212,17 +199,30 @@
       $modal.modal('hide');
     }
 
+    function downloadTileImage(person) {
+      if (!window.AdminTileCapture || !synagogueSlug || !person || person.id == null) {
+        return Promise.resolve();
+      }
+
+      return window.AdminTileCapture.downloadBoardTileImage(
+        synagogueSlug,
+        person.id,
+        person.name,
+        { yahrzeit: false },
+      ).catch(function () {
+        /* ignore capture errors; still allow sending the message */
+      });
+    }
+
     if (sendBtn) {
       sendBtn.addEventListener('click', function () {
         if (!activePerson || !activeMessageLink) {
           return;
         }
 
-        if (activeTileUrl) {
-          downloadTileImage(activeTileUrl, activePerson.name);
-        }
-
-        window.open(activeMessageLink, '_blank', 'noopener,noreferrer');
+        downloadTileImage(activePerson).finally(function () {
+          window.open(activeMessageLink, '_blank', 'noopener,noreferrer');
+        });
       });
     }
 

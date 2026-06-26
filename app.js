@@ -217,6 +217,8 @@ async function loadSynagogueBoard(slug) {
   }
 
   synagogue.baseUrl = `/s/${slug}`;
+  const { normalizeSynagogueLocation } = require('./lib/normalize-location');
+  synagogue.location = normalizeSynagogueLocation(synagogue.location);
   synagogue.titles = normalizeTitles(synagogue);
   synagogue.title = synagogue.titles.ru || synagogue.title || synagogue.name || '';
   synagogue.boardFeatures = normalizeBoardFeatures(synagogue.boardFeatures);
@@ -341,6 +343,20 @@ app.get('/s/:slug/api/jewish-content', async (req, res) => {
     return res.json(feed);
   } catch (err) {
     return res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/s/:slug/export/tile/:personId', async (req, res) => {
+  try {
+    const synagogue = await loadSynagogueBoard(req.params.slug);
+
+    if (!synagogue) {
+      return res.status(404).send('Synagogue not found');
+    }
+
+    return renderMemorialBoard(req, res, synagogue);
+  } catch (err) {
+    return res.status(500).send(err.message);
   }
 });
 

@@ -23,7 +23,8 @@ export function isValidIanaTimezone(timezone) {
 }
 
 export function resolveBoardTimezone(data) {
-  const raw = data && data.location && data.location.timezone;
+  const loc = (data && data.location) || {};
+  const raw = loc.timezone;
   const alias = raw && CITY_TIMEZONE_ALIASES[String(raw).trim().toLowerCase()];
 
   if (alias && isValidIanaTimezone(alias)) {
@@ -32,6 +33,12 @@ export function resolveBoardTimezone(data) {
 
   if (isValidIanaTimezone(raw)) {
     return raw;
+  }
+
+  const cityKey = String(loc.city || '').trim().toLowerCase();
+  const cityAlias = cityKey && CITY_TIMEZONE_ALIASES[cityKey];
+  if (cityAlias && isValidIanaTimezone(cityAlias)) {
+    return cityAlias;
   }
 
   return DEFAULT_TIMEZONE;
