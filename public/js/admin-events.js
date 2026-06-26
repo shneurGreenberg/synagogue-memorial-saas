@@ -83,6 +83,13 @@
       + pad(date.getMinutes());
   }
 
+  function icon(name, className) {
+    if (window.AdminIcons && typeof window.AdminIcons.render === 'function') {
+      return window.AdminIcons.render(name, className || 'btn-admin-inline-icon');
+    }
+    return '';
+  }
+
   function renderEventCard(event, options) {
     var id = String(event._id);
     var isHistory = options.isHistory;
@@ -96,27 +103,27 @@
     var actions = '<div class="event-card-actions">';
 
     if (!isHistory) {
-      actions += '<button type="button" class="btn-admin btn-admin-ghost btn-admin-sm event-edit-btn" data-event-id="' + id + '">'
-        + escapeHtml(labels.edit) + '</button>';
+      actions += '<button type="button" class="btn-admin btn-admin-ghost btn-admin-sm btn-admin-with-icon event-edit-btn" data-event-id="' + id + '">'
+        + icon('edit') + escapeHtml(labels.edit) + '</button>';
     }
 
     if (showPublishNow) {
       actions += '<form method="POST" action="/admin/' + slug + '/events/publish-now" class="event-action-form">'
         + '<input type="hidden" name="eventId" value="' + id + '">'
-        + '<button type="submit" class="btn-admin btn-admin-accent btn-admin-sm">' + escapeHtml(labels.publishNow) + '</button>'
+        + '<button type="submit" class="btn-admin btn-admin-accent btn-admin-sm btn-admin-with-icon">' + icon('publish') + escapeHtml(labels.publishNow) + '</button>'
         + '</form>';
     }
 
     if (showEndNow) {
       actions += '<form method="POST" action="/admin/' + slug + '/events/end-now" class="event-action-form">'
         + '<input type="hidden" name="eventId" value="' + id + '">'
-        + '<button type="submit" class="btn-admin btn-admin-ghost btn-admin-sm">' + escapeHtml(labels.endNow) + '</button>'
+        + '<button type="submit" class="btn-admin btn-admin-ghost btn-admin-sm btn-admin-with-icon">' + icon('end') + escapeHtml(labels.endNow) + '</button>'
         + '</form>';
     }
 
     actions += '<form method="POST" action="/admin/' + slug + '/events/delete" class="event-delete-form">'
       + '<input type="hidden" name="eventId" value="' + id + '">'
-      + '<button type="submit" class="btn-admin btn-admin-danger btn-admin-sm">' + escapeHtml(labels.delete) + '</button>'
+      + '<button type="submit" class="btn-admin btn-admin-danger btn-admin-sm btn-admin-with-icon">' + icon('delete') + escapeHtml(labels.delete) + '</button>'
       + '</form>';
 
     actions += '</div>';

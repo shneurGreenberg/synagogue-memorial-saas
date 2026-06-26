@@ -5,8 +5,9 @@
             <p class="admin-subtitle">{{t 'user_management_subtitle'}}</p>
         </div>
         <div class="header-actions">
-            <button type="button" class="btn-admin btn-admin-primary" data-toggle="modal" data-target="#addUserModal">
-                + {{t 'add_user'}}
+            <button type="button" class="btn-admin btn-admin-primary btn-admin-with-icon" data-toggle="modal" data-target="#addUserModal">
+                {{{adminIcon 'add' class='btn-admin-inline-icon'}}}
+                {{t 'add_user'}}
             </button>
         </div>
     </header>
@@ -69,7 +70,7 @@
                             <td>{{this.adminLanguage}}</td>
                             <td>{{#if (eq this.adminColorMode 'light')}}{{t 'light_mode'}}{{else}}{{t 'dark_mode'}}{{/if}}</td>
                             <td>
-                                <button type="button" class="btn-admin btn-admin-secondary btn-sm" data-toggle="modal"
+                                <button type="button" class="btn-admin btn-admin-secondary btn-sm btn-admin-with-icon" data-toggle="modal"
                                     data-target="#editUserModal"
                                     data-user-id="{{this.id}}"
                                     data-username="{{this.username}}"
@@ -86,12 +87,12 @@
                                     data-perm-settings-languages="{{#if this.permissions.settingsLanguages}}1{{/if}}"
                                     data-perm-settings-saved-views="{{#if this.permissions.settingsSavedViews}}1{{/if}}"
                                     data-perm-settings-admin-panel="{{#if this.permissions.settingsAdminPanel}}1{{/if}}">
-                                    {{t 'edit'}}
+                                    {{{adminIcon 'edit' class='btn-admin-inline-icon'}}}{{t 'edit'}}
                                 </button>
                                 <form method="POST" action="/admin/{{../synagogue.slug}}/users/delete" class="d-inline"
                                     onsubmit="return confirm('{{t 'are_you_sure'}}');">
                                     <input type="hidden" name="userId" value="{{this.id}}">
-                                    <button type="submit" class="btn-admin btn-admin-danger btn-sm">{{t 'delete'}}</button>
+                                    <button type="submit" class="btn-admin btn-admin-danger btn-sm btn-admin-with-icon">{{{adminIcon 'delete' class='btn-admin-inline-icon'}}}{{t 'delete'}}</button>
                                 </form>
                             </td>
                         </tr>
@@ -118,8 +119,8 @@
                     {{> user-form-fields}}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn-admin btn-admin-secondary" data-dismiss="modal">{{t 'cancel'}}</button>
-                    <button type="submit" class="btn-admin btn-admin-primary">{{t 'add'}}</button>
+                    <button type="button" class="btn-admin btn-admin-secondary btn-admin-with-icon" data-dismiss="modal">{{{adminIcon 'cancel' class='btn-admin-inline-icon'}}}{{t 'cancel'}}</button>
+                    <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon">{{{adminIcon 'add' class='btn-admin-inline-icon'}}}{{t 'add'}}</button>
                 </div>
             </form>
         </div>
@@ -139,8 +140,8 @@
                     {{> user-form-fields prefix="edit"}}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn-admin btn-admin-secondary" data-dismiss="modal">{{t 'cancel'}}</button>
-                    <button type="submit" class="btn-admin btn-admin-primary">{{t 'save_changes'}}</button>
+                    <button type="button" class="btn-admin btn-admin-secondary btn-admin-with-icon" data-dismiss="modal">{{{adminIcon 'cancel' class='btn-admin-inline-icon'}}}{{t 'cancel'}}</button>
+                    <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon">{{{adminIcon 'save' class='btn-admin-inline-icon'}}}{{t 'save_changes'}}</button>
                 </div>
             </form>
         </div>

@@ -34,9 +34,9 @@
                 </div>
             </div>
             <div class="modal-footer admin-person-card-footer">
-                <button type="button" class="btn-admin btn-admin-primary" id="personCardSendBtn" hidden>{{t 'yahrzeit_send_contact'}}</button>
-                <button type="button" class="btn-admin btn-admin-secondary" id="personCardEditBtn">{{t 'edit'}}</button>
-                <button type="button" class="btn-admin btn-admin-danger" id="personCardDeleteBtn">{{t 'delete'}}</button>
+                <button type="button" class="btn-admin btn-admin-primary btn-admin-with-icon" id="personCardSendBtn" hidden>{{{adminIcon 'send' class='btn-admin-inline-icon'}}}{{t 'yahrzeit_send_contact'}}</button>
+                <button type="button" class="btn-admin btn-admin-secondary btn-admin-with-icon" id="personCardEditBtn">{{{adminIcon 'edit' class='btn-admin-inline-icon'}}}{{t 'edit'}}</button>
+                <button type="button" class="btn-admin btn-admin-danger btn-admin-with-icon" id="personCardDeleteBtn">{{{adminIcon 'delete' class='btn-admin-inline-icon'}}}{{t 'delete'}}</button>
             </div>
             <form method="POST" action="/admin/{{synagogue.slug}}/people/delete" id="personCardDeleteForm" class="d-none">
                 <input type="hidden" name="id" id="personCardDeleteId">

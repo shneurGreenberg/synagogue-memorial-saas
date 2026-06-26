@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const handlebars = require('express-handlebars');
+const { SafeString } = require('handlebars');
 const { buildTileThemeVars } = require('./lib/tile-theme-colors');
 const { BOARD_THEME_DEFAULTS } = require('./lib/board-defaults');
 const sass = require('sass');
@@ -19,6 +20,7 @@ const { photoCropToInlineStyle } = require('./lib/photo-crop');
 const { buildPhotoThumbUrl } = require('./lib/photo-url');
 const { normalizeTitles } = require('./lib/admin-theme');
 const { getTranslator, humanizeLabel } = require('./lib/admin-translations');
+const { renderAdminIcon } = require('./lib/admin-icons');
 const adminRoutes = require('./routes/admin');
 const masterRoutes = require('./routes/master');
 const publicSubmissionRoutes = require('./routes/public-submission');
@@ -116,6 +118,10 @@ app.engine('handlebars', handlebars({
     },
     initials(name) {
       return getInitials(name);
+    },
+    adminIcon(name, options) {
+      const className = (options && options.hash && options.hash.class) || 'btn-admin-icon';
+      return new SafeString(renderAdminIcon(name, className));
     },
     photoCropStyle(photoCrop) {
       return photoCropToInlineStyle(photoCrop);
