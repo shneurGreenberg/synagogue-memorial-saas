@@ -74,6 +74,76 @@ const CommunityEventSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
+const SavedViewSchema = new mongoose.Schema({
+  id: { type: String, default: '' },
+  name: { type: String, default: '' },
+  savedAt: { type: Date, default: Date.now },
+  screenshot: String,
+  snapshot: {
+    titles: {
+      ru: String,
+      en: String,
+      he: String,
+    },
+    language: String,
+    theme: {
+      primaryColor: String,
+      textColor: String,
+      accentColor: String,
+      tileColor: String,
+      tileOpacity: Number,
+      fontScales: {
+        tileTitle: Number,
+        tileDate: Number,
+        clock: Number,
+        boardHeader: Number,
+        sidebar: Number,
+        prayers: Number,
+        prayerOverlay: Number,
+        torahNames: Number,
+        weather: Number,
+        shabbat: Number,
+        candle: Number,
+      },
+      fontScaleBaselines: {
+        tileTitle: Number,
+        tileDate: Number,
+        clock: Number,
+        boardHeader: Number,
+        sidebar: Number,
+        prayers: Number,
+        prayerOverlay: Number,
+        torahNames: Number,
+        weather: Number,
+        shabbat: Number,
+        candle: Number,
+      },
+      logo: String,
+      backgroundImage: String,
+      tilesBackground: String,
+      candlePalette: String,
+    },
+    memorialQrPanel: {
+      titles: {
+        ru: String,
+        en: String,
+        he: String,
+      },
+      texts: {
+        ru: String,
+        en: String,
+        he: String,
+      },
+      titleScale: Number,
+      textScale: Number,
+      qrScale: Number,
+      titleScaleBaseline: Number,
+      textScaleBaseline: Number,
+      qrScaleBaseline: Number,
+    },
+  },
+}, { _id: true, id: false });
+
 const SynagogueSchema = new mongoose.Schema({
   slug: { type: String, required: true, unique: true },
   name: String,
@@ -132,75 +202,7 @@ const SynagogueSchema = new mongoose.Schema({
     textScaleBaseline: { type: Number, default: 100 },
     qrScaleBaseline: { type: Number, default: 100 },
   },
-  savedViews: [{
-    id: { type: String, required: true },
-    name: { type: String, required: true },
-    savedAt: { type: Date, default: Date.now },
-    screenshot: String,
-    snapshot: {
-      titles: {
-        ru: String,
-        en: String,
-        he: String,
-      },
-      language: String,
-      theme: {
-        primaryColor: String,
-        textColor: String,
-        accentColor: String,
-        tileColor: String,
-        tileOpacity: Number,
-        fontScales: {
-          tileTitle: Number,
-          tileDate: Number,
-          clock: Number,
-          boardHeader: Number,
-          sidebar: Number,
-          prayers: Number,
-          prayerOverlay: Number,
-          torahNames: Number,
-          weather: Number,
-          shabbat: Number,
-          candle: Number,
-        },
-        fontScaleBaselines: {
-          tileTitle: Number,
-          tileDate: Number,
-          clock: Number,
-          boardHeader: Number,
-          sidebar: Number,
-          prayers: Number,
-          prayerOverlay: Number,
-          torahNames: Number,
-          weather: Number,
-          shabbat: Number,
-          candle: Number,
-        },
-        logo: String,
-        backgroundImage: String,
-        tilesBackground: String,
-        candlePalette: String,
-      },
-      memorialQrPanel: {
-        titles: {
-          ru: String,
-          en: String,
-          he: String,
-        },
-        texts: {
-          ru: String,
-          en: String,
-          he: String,
-        },
-        titleScale: Number,
-        textScale: Number,
-        qrScale: Number,
-        titleScaleBaseline: Number,
-        textScaleBaseline: Number,
-        qrScaleBaseline: Number,
-      },
-    },
-  }],
+  savedViews: [SavedViewSchema],
   dailyCites: [DailyCiteSchema],
   communityEvents: [CommunityEventSchema],
   people: [PersonSchema],
@@ -267,6 +269,16 @@ const SynagogueSchema = new mongoose.Schema({
     skippedSteps: [String],
     createdAt: Date,
   },
+});
+
+SynagogueSchema.pre('save', function normalizeSavedViewsBeforeSave(next) {
+  try {
+    const { normalizeSavedViews } = require('../lib/saved-views');
+    this.set('savedViews', normalizeSavedViews(this.savedViews));
+    return next();
+  } catch (err) {
+    return next(err);
+  }
 });
 
 module.exports = mongoose.model('Synagogue', SynagogueSchema);

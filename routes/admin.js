@@ -286,6 +286,9 @@ async function loadAdminContext(req, res, next) {
 
     try {
         const synagogue = await Synagogue.findOne({ slug: req.session.adminSlug }).lean();
+        if (req.session.adminSlug && slug === req.session.adminSlug) {
+            await repairSavedViewsInDb(slug);
+        }
         req.adminPermissions = resolveAdminPermissions(req.session, synagogue);
         req.adminUser = req.session.adminUsername
             ? findAdminUser(synagogue, req.session.adminUsername)
@@ -567,6 +570,7 @@ router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('sett
                     savedViews,
                 },
             },
+            { runValidators: false },
         );
 
         return res.json({ ok: true, view, resetTypography: true });
@@ -583,7 +587,6 @@ router.post('/:slug/settings/saved-views/:viewId/apply', requireAdmin, requirePe
     }
 
     try {
-        await repairSavedViewsInDb(req.params.slug);
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
         const view = findSavedView(synagogue?.savedViews, req.params.viewId);
         if (!view) {
@@ -611,7 +614,6 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
     }
 
     try {
-        await repairSavedViewsInDb(req.params.slug);
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
         if (!synagogue) {
             return res.status(404).json({ ok: false, error: 'Not found' });
@@ -652,6 +654,7 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
                     savedViews: normalizedViews,
                 },
             },
+            { runValidators: false },
         );
 
         return res.json({ ok: true, view: normalizedViews[viewIndex], resetTypography: true });
@@ -668,7 +671,6 @@ router.delete('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermis
     }
 
     try {
-        await repairSavedViewsInDb(req.params.slug);
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
         if (!synagogue) {
             return res.status(404).json({ ok: false, error: 'Not found' });
@@ -686,7 +688,7 @@ router.delete('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermis
             update.activeSavedViewId = '';
         }
 
-        await Synagogue.updateOne({ slug: req.params.slug }, { $set: update });
+        await Synagogue.updateOne({ slug: req.params.slug }, { $set: update }, { runValidators: false });
         return res.json({ ok: true });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
@@ -781,14 +783,11 @@ router.post('/:slug/my-preferences', requireAdmin, parseFormBody, async (req, re
 router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        await repairSavedViewsInDb(req.params.slug);
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
         await persistTitlesIfMissing(synagogue);
         const refreshed = await Synagogue.findOne({ slug: req.params.slug }).lean();
         const enriched = enrichSynagogueForAdmin(refreshed);
-        const activeSavedView = (enriched.savedViews || []).find(
-            (view) => view.id === enriched.activeSavedViewId,
-        );
+        const activeSavedView = findSavedView(enriched.savedViews, enriched.activeSavedViewId);
         renderAdmin(res, 'admin/dashboard', {
             synagogue: enriched,
             adminUser: req.adminUser,
