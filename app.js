@@ -346,6 +346,20 @@ app.get('/s/:slug/api/jewish-content', async (req, res) => {
   }
 });
 
+app.get('/s/:slug/export/tile/:personId', async (req, res) => {
+  try {
+    const synagogue = await loadSynagogueBoard(req.params.slug);
+
+    if (!synagogue) {
+      return res.status(404).send('Synagogue not found');
+    }
+
+    return renderMemorialBoard(req, res, synagogue);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
 app.get('/s/:slug/card/:personId', async (req, res) => {
   try {
     const synagogue = await loadSynagogueBoard(req.params.slug);

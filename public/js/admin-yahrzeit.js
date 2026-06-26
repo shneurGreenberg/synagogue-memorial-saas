@@ -27,6 +27,29 @@
     });
   });
 
+  document.querySelectorAll('.yahrzeit-send-btn').forEach(function (button) {
+    button.addEventListener('click', function (event) {
+      if (!window.AdminTileCapture) {
+        return;
+      }
+
+      event.preventDefault();
+      var exportUrl = button.getAttribute('data-export-url');
+      var personName = button.getAttribute('data-person-name') || '';
+      var contactLink = button.getAttribute('href');
+
+      window.AdminTileCapture.captureBoardTilePng(exportUrl).then(function (dataUrl) {
+        window.AdminTileCapture.downloadDataUrl(dataUrl, personName);
+      }).catch(function () {
+        /* still open the contact app even if capture fails */
+      }).finally(function () {
+        if (contactLink) {
+          window.open(contactLink, '_blank', 'noopener,noreferrer');
+        }
+      });
+    });
+  });
+
   const dataEl = document.getElementById('yahrzeit-people-data');
   if (!page || !dataEl || !window.AdminPersonCard) {
     return;

@@ -2196,3 +2196,81 @@ body.board-lang-he {
     font-variant-numeric: tabular-nums;
   }
 }
+
+body.tile-export-mode {
+  overflow: hidden;
+  margin: 0;
+  background: #2a2118;
+
+  #main-entry,
+  .tile-export-board {
+    width: 1920px;
+    height: 1080px;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .tile-export-board {
+    display: block;
+    box-sizing: border-box;
+    background: url(/images/brickwall.jpg) center / cover no-repeat;
+  }
+
+  .tile-export-middle {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(8px, 1.5vw, 20px);
+    box-sizing: border-box;
+
+    > .wooden-panel {
+      width: min(1120px, 58vw);
+      height: min(760px, 70vh);
+      margin: 0;
+      max-height: none;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+
+    .cards-area {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      padding: clamp(4px, 0.6vw, 10px);
+      box-sizing: border-box;
+    }
+
+    .tile-export-grid {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-rows: repeat(4, minmax(0, 1fr));
+      gap: clamp(4px, 0.6vw, 10px);
+      box-sizing: border-box;
+    }
+
+    .tile-export-cell {
+      grid-column: 2 / span 2;
+      grid-row: 2 / span 2;
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+
+      > .card {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  .tile-export-missing {
+    color: #fff;
+    text-align: center;
+    padding: 2rem;
+  }
+}
