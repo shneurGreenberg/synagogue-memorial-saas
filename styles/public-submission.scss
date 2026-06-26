@@ -318,6 +318,65 @@
   background: var(--card-button, #a88919);
   border-color: var(--card-button-border, #806f10);
   color: var(--card-button-text, #1a1a1a);
+  gap: 0.55rem;
+}
+
+.public-button-primary:disabled {
+  opacity: 0.85;
+  cursor: wait;
+}
+
+.public-submit-spinner,
+.public-submit-overlay-spinner {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.18);
+  border-top-color: rgba(0, 0, 0, 0.72);
+  animation: public-submit-spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+.public-submit-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.58);
+  backdrop-filter: blur(2px);
+}
+
+.public-submit-overlay-card {
+  width: min(100%, 320px);
+  border-radius: 16px;
+  padding: 22px 20px;
+  text-align: center;
+  background: rgba(20, 16, 12, 0.92);
+  border: 1px solid rgba(207, 175, 31, 0.35);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.public-submit-overlay-spinner {
+  width: 2.4rem;
+  height: 2.4rem;
+  margin: 0 auto 12px;
+  border-color: rgba(255, 255, 255, 0.18);
+  border-top-color: var(--primary-color, #cfaf1f);
+}
+
+.public-submit-overlay-text {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-color, #f0f0f0);
+}
+
+@keyframes public-submit-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .public-button-secondary {

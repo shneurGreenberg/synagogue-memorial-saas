@@ -2356,6 +2356,61 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
   font-size: 1.4rem;
 }
 
+body.admin-theme-light {
+  .admin-person-card-preview {
+    background: linear-gradient(180deg, #f8fafc 0%, #e8edf5 100%);
+    border-color: rgba(15, 23, 42, 0.12);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  .admin-person-card-placeholder {
+    background: rgba(15, 23, 42, 0.06);
+    color: var(--admin-text);
+    border-color: rgba(15, 23, 42, 0.08);
+  }
+
+  .admin-person-card-body {
+    h2 {
+      color: #312e81;
+    }
+
+    p {
+      color: #475569;
+    }
+  }
+
+  .yahrzeit-tile-preview {
+    background: linear-gradient(180deg, #f8fafc 0%, #e8edf5 100%);
+    border-color: rgba(15, 23, 42, 0.12);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  }
+
+  .yahrzeit-tile-placeholder {
+    background: rgba(15, 23, 42, 0.06);
+    color: var(--admin-text);
+    border-color: rgba(15, 23, 42, 0.08);
+  }
+
+  .yahrzeit-tile-photo {
+    border-color: rgba(15, 23, 42, 0.12);
+  }
+
+  .yahrzeit-tile-body {
+    h2 {
+      color: #312e81;
+    }
+
+    .yahrzeit-kind-label {
+      color: #4338ca;
+    }
+
+    .yahrzeit-date-label,
+    p {
+      color: #475569;
+    }
+  }
+}
+
 .yahrzeit-details {
   display: grid;
   gap: 1rem;

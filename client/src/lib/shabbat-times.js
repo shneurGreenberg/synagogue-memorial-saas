@@ -19,18 +19,25 @@ export function getBoardLocation(data) {
   };
 }
 
-function formatHebcalDate(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
+function getLocalDateParts(date, timezone) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: timezone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(date);
+
+  const read = (type) => parts.find((part) => part.type === type)?.value || '';
+
+  return {
+    year: Number(read('year')),
+    month: Number(read('month')),
+    day: Number(read('day')),
+  };
 }
 
 function buildHebcalUrl(location, now = new Date()) {
-  const start = new Date(now);
-  start.setDate(start.getDate() - 1);
-  const end = new Date(now);
-  end.setDate(end.getDate() + 14);
+  const { year, month, day } = getLocalDateParts(now, location.timezone);
 
   const params = new URLSearchParams({
     geo: 'pos',
@@ -39,8 +46,9 @@ function buildHebcalUrl(location, now = new Date()) {
     tzid: location.timezone,
     M: 'on',
     b: '18',
-    start: formatHebcalDate(start),
-    end: formatHebcalDate(end),
+    gy: String(year),
+    gm: String(month),
+    gd: String(day),
   });
   return `${HEBCAL_API}&${params.toString()}`;
 }
@@ -61,38 +69,48 @@ function parseHebcalItems(items, now = new Date()) {
   candles.sort((a, b) => a - b);
   havdalah.sort((a, b) => a - b);
 
-  for (const exit of havdalah) {
-    if (exit <= now) {
+  for (const enter of candles) {
+    const exit = havdalah.find((candidate) => candidate > enter);
+    if (!exit) {
       continue;
     }
-    const enter = candles.filter((candidate) => candidate < exit).pop();
-    if (enter) {
+    if (exit > now) {
       return { enter, exit };
     }
   }
 
-  const nextEnter = candles.find((candidate) => candidate > now);
-  if (nextEnter) {
-    const nextExit = havdalah.find((candidate) => candidate > nextEnter);
-    if (nextExit) {
-      return { enter: nextEnter, exit: nextExit };
-    }
+  const lastEnter = candles[candles.length - 1];
+  const lastExit = havdalah[havdalah.length - 1];
+  if (lastEnter && lastExit && lastExit > lastEnter) {
+    return { enter: lastEnter, exit: lastExit };
   }
 
   return null;
 }
 
+async function fetchHebcalItems(location, now = new Date()) {
+  const response = await fetch(buildHebcalUrl(location, now));
+  if (!response.ok) {
+    throw new Error(`Hebcal API ${response.status}`);
+  }
+  const payload = await response.json();
+  return payload.items || [];
+}
+
 export async function fetchShabbatTimes(data, now = new Date()) {
   const location = getBoardLocation(data);
-  const url = buildHebcalUrl(location);
 
   try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Hebcal API ${response.status}`);
+    let items = await fetchHebcalItems(location, now);
+    let times = parseHebcalItems(items, now);
+
+    if (!times) {
+      const retryAt = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+      items = await fetchHebcalItems(location, retryAt);
+      times = parseHebcalItems(items, now);
     }
-    const payload = await response.json();
-    return parseHebcalItems(payload.items, now);
+
+    return times;
   } catch (err) {
     console.error('Shabbat times fetch failed:', err);
     return null;

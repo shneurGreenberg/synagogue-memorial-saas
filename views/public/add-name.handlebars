@@ -101,9 +101,19 @@
         </div>
 
         <div class="public-actions">
-            <button type="submit" class="public-button public-button-primary">{{publicT 'submit'}}</button>
+            <button type="submit" class="public-button public-button-primary" id="publicSubmitBtn">
+                <span class="public-submit-label">{{publicT 'submit'}}</span>
+                <span class="public-submit-spinner" hidden aria-hidden="true"></span>
+            </button>
         </div>
     </form>
+
+    <div class="public-submit-overlay" id="publicSubmitOverlay" hidden aria-hidden="true">
+        <div class="public-submit-overlay-card" role="status" aria-live="polite">
+            <div class="public-submit-overlay-spinner" aria-hidden="true"></div>
+            <p class="public-submit-overlay-text">{{publicT 'submitting'}}</p>
+        </div>
+    </div>
 
     <div class="public-lang-switch">
         <a href="{{formUrl}}?lang=ru" class="{{#if (eq lang 'ru')}}is-active{{/if}}">RU</a>
@@ -168,5 +178,30 @@
   });
 
   syncContactFields();
+})();
+
+(function () {
+  var form = document.querySelector('.public-form');
+  var overlay = document.getElementById('publicSubmitOverlay');
+  var submitBtn = document.getElementById('publicSubmitBtn');
+  if (!form || !overlay || !submitBtn) {
+    return;
+  }
+
+  var submitted = false;
+  form.addEventListener('submit', function () {
+    if (submitted) {
+      return;
+    }
+    submitted = true;
+    overlay.hidden = false;
+    overlay.setAttribute('aria-hidden', 'false');
+    submitBtn.disabled = true;
+    submitBtn.setAttribute('aria-busy', 'true');
+    var spinner = submitBtn.querySelector('.public-submit-spinner');
+    if (spinner) {
+      spinner.hidden = false;
+    }
+  });
 })();
 </script>
