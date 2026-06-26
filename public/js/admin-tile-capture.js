@@ -16,10 +16,10 @@
     });
   }
 
-  function waitForExportReady(doc, timeoutMs) {
+  function waitForExportReady(doc, readyClass, timeoutMs) {
     return new Promise(function (resolve, reject) {
       var timeout = window.setTimeout(function () {
-        reject(new Error('tile_export_timeout'));
+        reject(new Error('card_export_timeout'));
       }, timeoutMs || 30000);
 
       function check() {
@@ -28,7 +28,7 @@
           return;
         }
 
-        if (doc.body.classList.contains('tile-export-ready')) {
+        if (doc.body.classList.contains(readyClass)) {
           window.clearTimeout(timeout);
           resolve();
           return;
@@ -42,7 +42,7 @@
   }
 
   function sanitizeFilename(name) {
-    return String(name || 'memorial').replace(/[^\w\u0590-\u05FF.-]+/g, '_') + '-tile.png';
+    return String(name || 'memorial').replace(/[^\w\u0590-\u05FF.-]+/g, '_') + '-card.png';
   }
 
   function downloadDataUrl(dataUrl, personName) {
@@ -59,7 +59,7 @@
     link.remove();
   }
 
-  function captureBoardTilePng(exportUrl) {
+  function captureBoardCardPng(exportUrl) {
     return new Promise(function (resolve, reject) {
       var iframe = document.createElement('iframe');
       iframe.setAttribute('aria-hidden', 'true');
@@ -75,19 +75,19 @@
 
       iframe.addEventListener('error', function () {
         cleanup();
-        reject(new Error('tile_export_frame_error'));
+        reject(new Error('card_export_frame_error'));
       });
 
       iframe.addEventListener('load', function () {
         var doc = iframe.contentDocument;
-        waitForExportReady(doc, 30000).then(function () {
-          return new Promise(function (resolve) {
-            window.setTimeout(resolve, 250);
+        waitForExportReady(doc, 'card-export-ready', 30000).then(function () {
+          return new Promise(function (resolveDelay) {
+            window.setTimeout(resolveDelay, 250);
           });
         }).then(function () {
-          var card = doc && doc.querySelector('#tileExportCard .card');
+          var card = doc && doc.querySelector('#cardExportRoot .card-detail');
           if (!card) {
-            throw new Error('tile_export_card_missing');
+            throw new Error('card_export_detail_missing');
           }
 
           return loadHtml2Canvas().then(function (html2canvas) {
@@ -113,27 +113,22 @@
     });
   }
 
-  function buildTileExportUrl(slug, personId, options) {
-    options = options || {};
-    var url = '/s/' + encodeURIComponent(slug) + '/export/tile/' + encodeURIComponent(personId);
-    if (options.yahrzeit) {
-      url += '?yahrzeit=1';
-    }
-    return url;
+  function buildCardExportUrl(slug, personId) {
+    return '/s/' + encodeURIComponent(slug) + '/card/' + encodeURIComponent(personId) + '?export=1';
   }
 
-  function downloadBoardTileImage(slug, personId, personName, options) {
-    var exportUrl = buildTileExportUrl(slug, personId, options);
-    return captureBoardTilePng(exportUrl).then(function (dataUrl) {
+  function downloadBoardCardImage(slug, personId, personName) {
+    var exportUrl = buildCardExportUrl(slug, personId);
+    return captureBoardCardPng(exportUrl).then(function (dataUrl) {
       downloadDataUrl(dataUrl, personName);
       return dataUrl;
     });
   }
 
   window.AdminTileCapture = {
-    buildTileExportUrl: buildTileExportUrl,
-    captureBoardTilePng: captureBoardTilePng,
-    downloadBoardTileImage: downloadBoardTileImage,
+    buildCardExportUrl: buildCardExportUrl,
+    captureBoardCardPng: captureBoardCardPng,
+    downloadBoardCardImage: downloadBoardCardImage,
     downloadDataUrl: downloadDataUrl,
   };
 })();

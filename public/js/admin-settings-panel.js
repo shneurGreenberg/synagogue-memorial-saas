@@ -139,10 +139,105 @@
     });
   }
 
+  function initSavedViewsGrid(options) {
+    options = options || {};
+    var grid = document.getElementById('savedViewsGrid');
+    if (!grid || grid.dataset.savedViewsBound === '1') {
+      return;
+    }
+
+    grid.dataset.savedViewsBound = '1';
+    var slug = options.slug || grid.dataset.slug || '';
+    var deleteConfirm = options.deleteConfirm || grid.dataset.deleteConfirm || 'Delete this saved view?';
+    var emptyText = options.emptyText || grid.dataset.emptyText || '';
+
+    grid.addEventListener('click', function (event) {
+      var applyBtn = event.target.closest('.saved-view-apply-btn');
+      var deleteBtn = event.target.closest('.saved-view-delete-btn');
+      if (!applyBtn && !deleteBtn) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      var card = event.target.closest('.saved-view-card');
+      if (!card || !card.dataset.viewId) {
+        return;
+      }
+
+      var viewId = card.dataset.viewId;
+
+      if (applyBtn) {
+        applyBtn.disabled = true;
+        var viewNameEl = card.querySelector('.saved-view-meta h3, .saved-view-thumb-label');
+        fetch('/admin/' + slug + '/settings/saved-views/' + encodeURIComponent(viewId) + '/apply', {
+          method: 'POST',
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        }).then(function (response) {
+          return response.json().then(function (data) {
+            return { ok: response.ok, data: data };
+          });
+        }).then(function (result) {
+          if (result.ok && result.data && result.data.ok) {
+            if (typeof options.onApply === 'function') {
+              options.onApply(viewId, viewNameEl ? viewNameEl.textContent : '');
+            }
+            window.location.reload();
+            return;
+          }
+          window.alert(options.applyError || 'Could not apply saved view.');
+        }).catch(function () {
+          window.alert(options.applyError || 'Could not apply saved view.');
+        }).finally(function () {
+          applyBtn.disabled = false;
+        });
+        return;
+      }
+
+      if (deleteBtn) {
+        if (!window.confirm(deleteConfirm)) {
+          return;
+        }
+
+        deleteBtn.disabled = true;
+        fetch('/admin/' + slug + '/settings/saved-views/' + encodeURIComponent(viewId), {
+          method: 'DELETE',
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        }).then(function (response) {
+          return response.json().then(function (data) {
+            return { ok: response.ok, data: data };
+          });
+        }).then(function (result) {
+          if (result.ok && result.data && result.data.ok) {
+            card.remove();
+            if (typeof options.onDelete === 'function') {
+              options.onDelete(viewId);
+            }
+            if (!grid.querySelector('.saved-view-card')) {
+              var empty = document.createElement('p');
+              empty.className = 'saved-views-empty';
+              empty.id = 'savedViewsEmpty';
+              empty.textContent = emptyText;
+              grid.appendChild(empty);
+            }
+            return;
+          }
+          window.alert(options.deleteError || 'Could not delete saved view.');
+        }).catch(function () {
+          window.alert(options.deleteError || 'Could not delete saved view.');
+        }).finally(function () {
+          deleteBtn.disabled = false;
+        });
+      }
+    });
+  }
+
   window.AdminSettingsPanel = {
     initCollapsiblePanels: initCollapsiblePanels,
     capturePreviewScreenshot: capturePreviewScreenshot,
     updateActiveViewBadge: updateActiveViewBadge,
+    initSavedViewsGrid: initSavedViewsGrid,
   };
 
   if (document.readyState === 'loading') {

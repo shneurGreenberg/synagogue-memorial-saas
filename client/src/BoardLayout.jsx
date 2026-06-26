@@ -21,6 +21,7 @@ function BoardLayoutInner() {
     ? new URLSearchParams(window.location.search)
     : new URLSearchParams();
   const highlightYahrzeit = exportParams.get('yahrzeit') === '1';
+  const cardExportMode = exportParams.get('export') === '1';
 
   if (exportPersonId) {
     return (
@@ -28,6 +29,15 @@ function BoardLayoutInner() {
         <ThemeStyles />
         <TileExportPage personId={exportPersonId} highlightYahrzeit={highlightYahrzeit} />
       </>
+    );
+  }
+
+  if (cardMatch && cardExportMode) {
+    return (
+      <BoardNavigationProvider>
+        <ThemeStyles />
+        <CardPage personId={personId} exportMode />
+      </BoardNavigationProvider>
     );
   }
 

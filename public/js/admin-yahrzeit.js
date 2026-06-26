@@ -38,10 +38,10 @@
       var personName = button.getAttribute('data-person-name') || '';
       var contactLink = button.getAttribute('href');
 
-      window.AdminTileCapture.captureBoardTilePng(exportUrl).then(function (dataUrl) {
+      window.AdminTileCapture.captureBoardCardPng(exportUrl).then(function (dataUrl) {
         window.AdminTileCapture.downloadDataUrl(dataUrl, personName);
       }).catch(function () {
-        /* still open the contact app even if capture fails */
+        /* skip image when capture fails */
       }).finally(function () {
         if (contactLink) {
           window.open(contactLink, '_blank', 'noopener,noreferrer');

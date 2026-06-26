@@ -14,13 +14,43 @@ const CITY_COORDINATES = {
   'tel aviv': { lat: 32.0853, lng: 34.7818 },
 };
 
-function isDefaultCoordinates(lat, lng) {
-  return Math.abs(lat - DEFAULT_LAT) < 0.0001 && Math.abs(lng - DEFAULT_LNG) < 0.0001;
+const CITY_GEONAME_IDS = {
+  tomsk: '1489425',
+  novosibirsk: '1496747',
+  moscow: '524901',
+  jerusalem: '281184',
+  'tel aviv': '293397',
+};
+
+const CITY_NAME_ALIASES = {
+  томск: 'tomsk',
+  תומסק: 'tomsk',
+  новосибирск: 'novosibirsk',
+  נובוסיבירסק: 'novosibirsk',
+  москва: 'moscow',
+  מוסקבה: 'moscow',
+  ירושלים: 'jerusalem',
+  'תל אביב': 'tel aviv',
+  'תל-אביב': 'tel aviv',
+};
+
+function normalizeCityKey(city) {
+  const key = String(city || '').trim().toLowerCase();
+  return CITY_NAME_ALIASES[key] || key;
 }
 
 function coordinatesFromCity(city) {
-  const key = String(city || '').trim().toLowerCase();
+  const key = normalizeCityKey(city);
   return CITY_COORDINATES[key] || null;
+}
+
+function geonameIdFromCity(city) {
+  const key = normalizeCityKey(city);
+  return CITY_GEONAME_IDS[key] || null;
+}
+
+function isDefaultCoordinates(lat, lng) {
+  return Math.abs(lat - DEFAULT_LAT) < 0.0001 && Math.abs(lng - DEFAULT_LNG) < 0.0001;
 }
 
 export function getBoardTimezone(data) {
@@ -29,6 +59,9 @@ export function getBoardTimezone(data) {
 
 export function getBoardLocation(data) {
   const loc = (data && data.location) || {};
+  const city = String(loc.city || '').trim();
+  const cityCoords = coordinatesFromCity(city);
+  const geonameId = geonameIdFromCity(city);
   let lat = Number(loc.lat);
   let lng = Number(loc.long);
 
@@ -39,8 +72,7 @@ export function getBoardLocation(data) {
     lng = DEFAULT_LNG;
   }
 
-  const cityCoords = coordinatesFromCity(loc.city);
-  if (cityCoords && isDefaultCoordinates(lat, lng)) {
+  if (cityCoords && (geonameId || isDefaultCoordinates(lat, lng))) {
     lat = cityCoords.lat;
     lng = cityCoords.lng;
   }
@@ -48,6 +80,8 @@ export function getBoardLocation(data) {
   return {
     lat,
     lng,
+    city,
+    geonameId,
     timezone: getBoardTimezone(data),
   };
 }
@@ -71,6 +105,17 @@ function getLocalDateParts(date, timezone) {
 
 function buildHebcalUrl(location, now = new Date()) {
   const { year, month, day } = getLocalDateParts(now, location.timezone);
+
+  if (location.geonameId) {
+    const params = new URLSearchParams({
+      geonameid: location.geonameId,
+      M: 'on',
+      gy: String(year),
+      gm: String(month),
+      gd: String(day),
+    });
+    return `${HEBCAL_API}&${params.toString()}`;
+  }
 
   const params = new URLSearchParams({
     geo: 'pos',

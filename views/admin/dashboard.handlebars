@@ -86,7 +86,12 @@
                 {{/if}}
                 {{/if}}
                 <p class="field-hint">{{t 'saved_views_help'}}</p>
-                <div class="saved-views-grid" id="savedViewsGrid">
+                <div class="saved-views-grid" id="savedViewsGrid"
+                    data-slug="{{synagogue.slug}}"
+                    data-delete-confirm="{{t 'saved_view_delete_confirm'}}"
+                    data-empty-text="{{t 'saved_views_empty'}}"
+                    data-apply-error="{{t 'saved_view_apply_error'}}"
+                    data-delete-error="{{t 'saved_view_delete_error'}}">
                     {{#if savedViews.length}}
                         {{#each savedViews}}
                         <article class="saved-view-card{{#if (eq ../activeSavedViewId this.id)}} is-active{{/if}}" data-view-id="{{this.id}}">
@@ -1113,61 +1118,21 @@
             });
         }
 
-        var savedViewsGridEl = savedViewsGrid;
-        if (savedViewsGridEl) {
-            savedViewsGridEl.addEventListener('click', function (event) {
-                event.preventDefault();
-                var applyBtn = event.target.closest('.saved-view-apply-btn');
-                var deleteBtn = event.target.closest('.saved-view-delete-btn');
-                var card = event.target.closest('.saved-view-card');
-                if (!card || !card.dataset.viewId) {
-                    return;
-                }
-
-                var viewId = card.dataset.viewId;
-
-                if (applyBtn) {
-                    var viewName = card.querySelector('.saved-view-meta h3');
-                    fetch('/admin/' + slug + '/settings/saved-views/' + viewId + '/apply', {
-                        method: 'POST',
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                    }).then(function (response) {
-                        return response.json();
-                    }).then(function (data) {
-                        if (data && data.ok) {
-                            setActiveSavedView(viewId, viewName ? viewName.textContent : '');
-                            window.location.reload();
-                        }
-                    });
-                    return;
-                }
-
-                if (deleteBtn) {
-                    if (!window.confirm('{{t 'saved_view_delete_confirm'}}')) {
-                        return;
+        if (savedViewsGrid && window.AdminSettingsPanel && typeof window.AdminSettingsPanel.initSavedViewsGrid === 'function') {
+            window.AdminSettingsPanel.initSavedViewsGrid({
+                slug: slug,
+                deleteConfirm: savedViewsGrid.dataset.deleteConfirm,
+                emptyText: savedViewsGrid.dataset.emptyText,
+                applyError: savedViewsGrid.dataset.applyError,
+                deleteError: savedViewsGrid.dataset.deleteError,
+                onApply: function (viewId, viewName) {
+                    setActiveSavedView(viewId, viewName);
+                },
+                onDelete: function (viewId) {
+                    if (viewId === activeSavedViewId) {
+                        setActiveSavedView('', '');
                     }
-
-                    fetch('/admin/' + slug + '/settings/saved-views/' + viewId, {
-                        method: 'DELETE',
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                    }).then(function (response) {
-                        return response.json();
-                    }).then(function (data) {
-                        if (data && data.ok) {
-                            card.remove();
-                            if (viewId === activeSavedViewId) {
-                                setActiveSavedView('', '');
-                            }
-                            if (!savedViewsGridEl.querySelector('.saved-view-card')) {
-                                var empty = document.createElement('p');
-                                empty.className = 'saved-views-empty';
-                                empty.id = 'savedViewsEmpty';
-                                empty.textContent = '{{t 'saved_views_empty'}}';
-                                savedViewsGridEl.appendChild(empty);
-                            }
-                        }
-                    });
-                }
+                },
             });
         }
 
