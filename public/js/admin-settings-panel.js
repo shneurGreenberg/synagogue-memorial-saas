@@ -38,38 +38,85 @@
     });
   }
 
+  function waitForImages(root) {
+    var images = Array.prototype.slice.call(root.querySelectorAll('img'));
+    var pending = images.filter(function (img) {
+      return !img.complete;
+    });
+
+    if (!pending.length) {
+      return Promise.resolve();
+    }
+
+    return Promise.all(pending.map(function (img) {
+      return new Promise(function (resolve) {
+        img.addEventListener('load', resolve, { once: true });
+        img.addEventListener('error', resolve, { once: true });
+      });
+    }));
+  }
+
   function capturePreviewScreenshot() {
     var frame = document.getElementById('boardPreviewFrame');
     var doc = frame && frame.contentDocument;
-    var root = doc && (doc.querySelector('.main-container') || doc.body);
+    var root = doc && (doc.querySelector('.wooden-panel') || doc.querySelector('.main-container'));
     if (!root) {
       return Promise.resolve('');
     }
 
-    return loadHtml2Canvas().then(function (html2canvas) {
+    var BOARD_W = 1920;
+    var BOARD_H = 1080;
+    var TARGET_W = 480;
+    var TARGET_H = 270;
+
+    return waitForImages(root).then(function () {
+      return loadHtml2Canvas();
+    }).then(function (html2canvas) {
       return html2canvas(root, {
-        backgroundColor: null,
-        scale: 0.45,
+        backgroundColor: '#2a2118',
+        scale: TARGET_W / BOARD_W,
+        width: BOARD_W,
+        height: BOARD_H,
+        windowWidth: BOARD_W,
+        windowHeight: BOARD_H,
         useCORS: true,
+        allowTaint: true,
         logging: false,
-        width: root.scrollWidth,
-        height: root.scrollHeight,
-        windowWidth: root.scrollWidth,
-        windowHeight: root.scrollHeight,
+        imageTimeout: 15000,
       });
     }).then(function (canvas) {
       var thumb = document.createElement('canvas');
-      thumb.width = 480;
-      thumb.height = 270;
+      thumb.width = TARGET_W;
+      thumb.height = TARGET_H;
       var ctx = thumb.getContext('2d');
       if (!ctx) {
         return '';
       }
 
-      ctx.fillStyle = '#1a1410';
+      ctx.fillStyle = '#2a2118';
       ctx.fillRect(0, 0, thumb.width, thumb.height);
-      ctx.drawImage(canvas, 0, 0, thumb.width, thumb.height);
-      return thumb.toDataURL('image/jpeg', 0.86);
+
+      var sourceW = canvas.width;
+      var sourceH = canvas.height;
+      var sourceRatio = sourceW / sourceH;
+      var targetRatio = TARGET_W / TARGET_H;
+      var drawW;
+      var drawH;
+      var offsetX = 0;
+      var offsetY = 0;
+
+      if (sourceRatio > targetRatio) {
+        drawH = TARGET_H;
+        drawW = Math.round(TARGET_H * sourceRatio);
+        offsetX = Math.round((TARGET_W - drawW) / 2);
+      } else {
+        drawW = TARGET_W;
+        drawH = Math.round(TARGET_W / sourceRatio);
+        offsetY = Math.round((TARGET_H - drawH) / 2);
+      }
+
+      ctx.drawImage(canvas, 0, 0, sourceW, sourceH, offsetX, offsetY, drawW, drawH);
+      return thumb.toDataURL('image/jpeg', 0.9);
     }).catch(function () {
       return '';
     });

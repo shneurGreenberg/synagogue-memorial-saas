@@ -557,7 +557,7 @@
 
         {{#if canSaveBoardSettings}}
         <div class="form-actions-sticky">
-            <button type="submit" class="btn-admin btn-admin-primary">{{t 'save'}}</button>
+            <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon">{{{adminIcon 'save'}}}{{t 'save'}}</button>
         </div>
         {{/if}}
     </form>
@@ -1010,12 +1010,12 @@
             actions.className = 'saved-view-card-actions';
             var applyBtn = document.createElement('button');
             applyBtn.type = 'button';
-            applyBtn.className = 'btn-admin btn-admin-secondary saved-view-apply-btn';
-            applyBtn.textContent = '{{t 'saved_view_apply'}}';
+            applyBtn.className = 'btn-admin btn-admin-secondary saved-view-apply-btn btn-admin-with-icon';
+            applyBtn.innerHTML = (window.AdminIcons ? window.AdminIcons.render('apply', 'btn-admin-icon') : '') + ' {{t 'saved_view_apply'}}';
             var deleteBtn = document.createElement('button');
             deleteBtn.type = 'button';
-            deleteBtn.className = 'btn-admin btn-admin-danger saved-view-delete-btn';
-            deleteBtn.textContent = '{{t 'saved_view_delete'}}';
+            deleteBtn.className = 'btn-admin btn-admin-danger saved-view-delete-btn btn-admin-with-icon';
+            deleteBtn.innerHTML = (window.AdminIcons ? window.AdminIcons.render('delete', 'btn-admin-icon') : '') + ' {{t 'saved_view_delete'}}';
             actions.appendChild(applyBtn);
             actions.appendChild(deleteBtn);
 

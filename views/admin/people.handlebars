@@ -6,12 +6,14 @@
         </div>
         <div class="header-actions">
             {{#if adminPermissions.peopleImport}}
-            <button type="button" class="btn-admin btn-admin-secondary" data-toggle="modal" data-target="#importPeopleModal">
+            <button type="button" class="btn-admin btn-admin-secondary btn-admin-with-icon" data-toggle="modal" data-target="#importPeopleModal">
+                {{{adminIcon 'import' class='btn-admin-inline-icon'}}}
                 {{t 'import_people'}}
             </button>
             {{/if}}
-            <button type="button" class="btn-admin btn-admin-primary" data-toggle="modal" data-target="#addPersonModal">
-                + {{t 'add_person'}}
+            <button type="button" class="btn-admin btn-admin-primary btn-admin-with-icon" data-toggle="modal" data-target="#addPersonModal">
+                {{{adminIcon 'add' class='btn-admin-inline-icon'}}}
+                {{t 'add_person'}}
             </button>
         </div>
     </header>
@@ -91,8 +93,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn-admin btn-admin-ghost" data-dismiss="modal">{{t 'cancel'}}</button>
-                    <button type="submit" class="btn-admin btn-admin-primary">{{t 'import_submit'}}</button>
+                    <button type="button" class="btn-admin btn-admin-ghost btn-admin-with-icon" data-dismiss="modal">{{{adminIcon 'cancel' class='btn-admin-inline-icon'}}}{{t 'cancel'}}</button>
+                    <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon">{{{adminIcon 'import' class='btn-admin-inline-icon'}}}{{t 'import_submit'}}</button>
                 </div>
             </form>
         </div>
@@ -184,8 +186,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn-admin btn-admin-ghost" data-dismiss="modal">{{t 'cancel'}}</button>
-                    <button type="submit" class="btn-admin btn-admin-primary">{{t 'save'}}</button>
+                    <button type="button" class="btn-admin btn-admin-ghost btn-admin-with-icon" data-dismiss="modal">{{{adminIcon 'cancel' class='btn-admin-inline-icon'}}}{{t 'cancel'}}</button>
+                    <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon">{{{adminIcon 'save' class='btn-admin-inline-icon'}}}{{t 'save'}}</button>
                 </div>
             </form>
         </div>
@@ -224,7 +226,7 @@
                                 <input type="file" name="photo" accept="image/*" data-crop-editor="edit">
                             </label>
                             <input type="hidden" name="deletePhoto" id="editDeletePhoto" value="">
-                            <button type="button" class="btn-admin btn-admin-danger btn-delete-photo" id="editDeletePhotoBtn">
+                            <button type="button" class="btn-admin btn-admin-danger btn-delete-photo btn-admin-with-icon" id="editDeletePhotoBtn">
                                 <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
                                 {{t 'delete_photo'}}
                             </button>
@@ -281,8 +283,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn-admin btn-admin-ghost" data-dismiss="modal">{{t 'cancel'}}</button>
-                    <button type="submit" class="btn-admin btn-admin-primary">{{t 'save_changes'}}</button>
+                    <button type="button" class="btn-admin btn-admin-ghost btn-admin-with-icon" data-dismiss="modal">{{{adminIcon 'cancel' class='btn-admin-inline-icon'}}}{{t 'cancel'}}</button>
+                    <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon">{{{adminIcon 'save' class='btn-admin-inline-icon'}}}{{t 'save_changes'}}</button>
                 </div>
             </form>
         </div>

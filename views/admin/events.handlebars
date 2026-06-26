@@ -59,10 +59,12 @@
                     </div>
                 </div>
                 <div class="event-form-actions">
-                    <button type="submit" class="btn-admin btn-admin-primary" data-publish-now="0">
+                    <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon" data-publish-now="0">
+                        {{{adminIcon 'schedule' class='btn-admin-inline-icon'}}}
                         {{t 'schedule_event'}}
                     </button>
-                    <button type="submit" class="btn-admin btn-admin-accent" data-publish-now="1">
+                    <button type="submit" class="btn-admin btn-admin-accent btn-admin-with-icon" data-publish-now="1">
+                        {{{adminIcon 'publish' class='btn-admin-inline-icon'}}}
                         {{t 'publish_now'}}
                     </button>
                 </div>
@@ -140,8 +142,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn-admin btn-admin-ghost" data-dismiss="modal">{{t 'cancel'}}</button>
-                    <button type="submit" class="btn-admin btn-admin-primary">{{t 'save_changes'}}</button>
+                    <button type="button" class="btn-admin btn-admin-ghost btn-admin-with-icon" data-dismiss="modal">{{{adminIcon 'cancel' class='btn-admin-inline-icon'}}}{{t 'cancel'}}</button>
+                    <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon">{{{adminIcon 'save' class='btn-admin-inline-icon'}}}{{t 'save_changes'}}</button>
                 </div>
             </form>
         </div>

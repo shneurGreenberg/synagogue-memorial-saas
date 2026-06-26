@@ -5,7 +5,10 @@
             <p class="admin-subtitle">{{t 'yahrzeit_subtitle'}} · {{todayLabel}}</p>
         </div>
         <div class="header-actions">
-            <a href="/admin/{{synagogue.slug}}/people" class="btn-admin btn-admin-secondary">{{t 'people'}}</a>
+            <a href="/admin/{{synagogue.slug}}/people" class="btn-admin btn-admin-secondary btn-admin-with-icon">
+                {{{adminIcon 'people' class='btn-admin-inline-icon'}}}
+                {{t 'people'}}
+            </a>
         </div>
     </header>
 
