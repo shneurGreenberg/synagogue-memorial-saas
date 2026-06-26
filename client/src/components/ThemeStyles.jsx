@@ -95,7 +95,7 @@ export function ThemeStyles() {
       --font-scale-shabbat: ${scale('shabbat')};
       --font-scale-candle: ${scale('candle')};
       --candle-display-scale: calc(0.2 * var(--font-scale-candle, 0.75));
-      --candle-display-scale-big: calc(0.28 * var(--font-scale-candle, 0.75));
+      --candle-display-scale-big: calc(0.38 * var(--font-scale-candle, 0.75));
     }
     .main-container .board-header h1 {
       color: var(--primary-color) !important;
