@@ -35,7 +35,9 @@ if (process.env.NODE_ENV === 'production' || process.env.TRUST_PROXY === '1') {
 mongoose.set('strictQuery', false);
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue', {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 15000,
+  connectTimeoutMS: 15000,
 }).then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 

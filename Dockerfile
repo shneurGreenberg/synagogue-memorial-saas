@@ -14,4 +14,4 @@ ENV PORT=3000
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "node scripts/seed.js || true && node app.js"]
+CMD ["sh", "-c", "(node scripts/seed.js || true) & exec node app.js"]
