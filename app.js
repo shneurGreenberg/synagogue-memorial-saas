@@ -220,7 +220,7 @@ async function loadSynagogueBoard(slug) {
   synagogue.theme = synagogue.theme || {};
   synagogue.theme.fontScales = normalizeFontScales(synagogue.theme.fontScales);
   synagogue.theme.fontScaleBaselines = normalizeFontScaleBaselines(synagogue.theme.fontScaleBaselines);
-  const { normalizeCandlePalette } = require('./candle-palette');
+  const { normalizeCandlePalette } = require('./lib/candle-palette');
   synagogue.theme.candlePalette = normalizeCandlePalette(synagogue.theme.candlePalette);
   return synagogue;
 }

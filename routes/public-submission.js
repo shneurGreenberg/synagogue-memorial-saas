@@ -48,8 +48,31 @@ const upload = multer({
       cb(null, `${Date.now()}${ext || '.jpg'}`);
     },
   }),
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter(req, file, cb) {
+    if (!file.mimetype || !file.mimetype.startsWith('image/')) {
+      return cb(new Error('image_only'));
+    }
+    cb(null, true);
+  },
 });
+
+function handlePublicPhotoUpload(req, res, next) {
+  upload.single('photo')(req, res, (err) => {
+    if (!err) {
+      return next();
+    }
+
+    const lang = resolvePublicSubmissionLang(req.body && req.body.lang, 'ru');
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.redirect(`/s/${req.params.slug}/add-name?lang=${lang}&error=upload`);
+    }
+    if (err.message === 'image_only') {
+      return res.redirect(`/s/${req.params.slug}/add-name?lang=${lang}&error=upload`);
+    }
+    return res.status(400).send(err.message);
+  });
+}
 
 function renderPublicPage(res, view, data) {
   return res.render(view, {
@@ -142,7 +165,9 @@ router.get('/:slug/add-name', async (req, res) => {
           ? pt('contact_required_error')
           : req.query.error === 'date'
             ? pt('invalid_date_error')
-            : '',
+            : req.query.error === 'upload'
+              ? pt('upload_error')
+              : '',
       contactPlatformOptions: getContactPlatformOptions(lang),
     });
   } catch (err) {
@@ -150,7 +175,7 @@ router.get('/:slug/add-name', async (req, res) => {
   }
 });
 
-router.post('/:slug/add-name', upload.single('photo'), async (req, res) => {
+router.post('/:slug/add-name', handlePublicPhotoUpload, async (req, res) => {
   try {
     const synagogue = await Synagogue.findOne({ slug: req.params.slug });
     if (!synagogue) {

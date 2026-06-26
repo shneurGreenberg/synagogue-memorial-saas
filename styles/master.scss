@@ -166,6 +166,14 @@ body.master-body {
   }
 }
 
+select.master-input,
+.master-lang-select {
+  min-height: 2.85rem;
+  line-height: 1.45;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+}
+
 .master-hint {
   display: block;
   margin-top: 0.3rem;

@@ -277,6 +277,14 @@
     padding: 10px 12px;
     font: inherit;
   }
+
+  select {
+    min-height: 2.85rem;
+    line-height: 1.45;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    appearance: none;
+  }
 }
 
 .public-date-grid {

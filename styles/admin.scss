@@ -75,6 +75,14 @@ body.admin-login-page {
     }
   }
 
+  select.form-control {
+    min-height: 3rem;
+    line-height: 1.45;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    appearance: none;
+  }
+
   select.form-control option {
     background: var(--admin-surface);
     color: var(--admin-text);

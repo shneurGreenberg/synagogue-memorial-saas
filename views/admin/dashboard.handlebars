@@ -416,7 +416,7 @@
                     </div>
                     <div class="form-field candle-palette-field">
                         <label for="candlePalette">{{t 'candle_palette'}}</label>
-                        <select name="candlePalette" id="candlePalette" class="form-control admin-input-modern">
+                        <select name="candlePalette" id="candlePalette" class="form-control admin-select-modern">
                             {{#each candlePaletteOptions}}
                             <option value="{{this.key}}" {{#if (eq ../synagogue.theme.candlePalette this.key)}}selected{{else}}{{#unless ../synagogue.theme.candlePalette}}{{#if (eq this.key 'classic')}}selected{{/if}}{{/unless}}{{/if}}>{{t this.labelKey}}</option>
                             {{/each}}
