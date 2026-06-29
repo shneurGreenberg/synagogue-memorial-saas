@@ -38,6 +38,9 @@ export function mergePreviewPatch(data, patch) {
   if (patch.candlePalette) {
     next.theme.candlePalette = patch.candlePalette;
   }
+  if (patch.logoBorderRadius !== undefined && patch.logoBorderRadius !== '') {
+    next.theme.logoBorderRadius = Number(patch.logoBorderRadius);
+  }
   const fontScaleKeys = ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat', 'candle'];
   fontScaleKeys.forEach((key) => {
     const value = patch[`fontScale_${key}`];

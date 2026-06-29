@@ -23,7 +23,7 @@ const {
   serializeSavedViews,
 } = require('../lib/saved-views');
 const { parseMemorialQrPanelFromBody, memorialQrPanelToUpdate } = require('../lib/memorial-qr-panel');
-const { parseFontScalesFromBody, normalizeTileOpacity } = require('../lib/theme-typography');
+const { parseFontScalesFromBody, normalizeTileOpacity, normalizeLogoBorderRadius } = require('../lib/theme-typography');
 const {
   IMAGES_DIR,
   PHOTOS_DIR,
@@ -521,7 +521,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
         const {
             titleRu, titleEn, titleHe, primaryColor, textColor, accentColor, tileColor, tileOpacity,
-            language, shabbatTimesEnabled, candlePalette,
+            language, shabbatTimesEnabled, candlePalette, logoBorderRadius,
         } = req.body;
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
         const boardFeatures = parseBoardFeaturesFromBody(req.body);
@@ -545,6 +545,9 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             updateData['theme.tileColor'] = sanitizeHexColor(tileColor, BOARD_THEME_DEFAULTS.tileColor);
             updateData['theme.tileOpacity'] = normalizeTileOpacity(tileOpacity);
             updateData['theme.candlePalette'] = normalizeCandlePalette(candlePalette);
+            if ('logoBorderRadius' in req.body) {
+                updateData['theme.logoBorderRadius'] = normalizeLogoBorderRadius(logoBorderRadius);
+            }
             Object.entries(fontScales).forEach(([key, value]) => {
                 updateData[`theme.fontScales.${key}`] = value;
             });
@@ -568,21 +571,15 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             if ('publicSubmissionEnabled' in req.body) {
                 updateData['publicSubmission.enabled'] = !!publicSubmission.enabled;
             }
-            if ('candlePalette' in req.body) {
-                updateData['theme.candlePalette'] = normalizeCandlePalette(candlePalette);
-            }
-            if ('fontScale_candle' in req.body && fontScales.candle != null) {
-                updateData['theme.fontScales.candle'] = fontScales.candle;
-            }
         }
 
         if (permissions.settingsBranding && req.files['logo']) {
             updateData['theme.logo'] = await optimizeUploadedImage(req.files['logo'][0].path, 'logo');
         }
-        if (permissions.settingsBranding && req.files['backgroundImage']) {
+        if (permissions.settingsAppearance && req.files['backgroundImage']) {
             updateData['theme.backgroundImage'] = await optimizeUploadedImage(req.files['backgroundImage'][0].path, 'background');
         }
-        if (permissions.settingsBranding && req.files['tilesBackground']) {
+        if (permissions.settingsAppearance && req.files['tilesBackground']) {
             updateData['theme.tilesBackground'] = await optimizeUploadedImage(req.files['tilesBackground'][0].path, 'tilesBackground');
         }
         if (permissions.settingsAppearance && req.files['donationQrImage']) {
@@ -894,6 +891,10 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             boardFeatureGroups: buildBoardFeatureGroups(enriched.boardFeatures, enriched.theme, enriched),
             textsFontScaleGroups: buildTextsFontScaleGroups(enriched.theme.fontScales),
             candlePaletteOptions: buildCandlePaletteOptions(),
+            candleSlider: buildFontScaleSlider(
+                FONT_SCALE_SLIDER_META.find((entry) => entry.key === 'candle'),
+                enriched.theme.fontScales,
+            ),
             savedViews: serializeSavedViews(enriched.savedViews),
             activeSavedViewId: enriched.activeSavedViewId || '',
             activeSavedViewName: activeSavedView ? activeSavedView.name : '',

@@ -1,7 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
-export function CommunityLogo({ src, alt }) {
+export function CommunityLogo({ src, alt, borderRadius = 100 }) {
   const [flipping, setFlipping] = useState(false);
+  const logoRadius = useMemo(() => `${(Number(borderRadius) / 100) * 50}%`, [borderRadius]);
 
   const goToAdmin = useCallback(() => {
     if (flipping) {
@@ -26,6 +27,7 @@ export function CommunityLogo({ src, alt }) {
       onClick={goToAdmin}
       aria-label={alt || 'Community logo'}
       title="Admin"
+      style={{ '--community-logo-radius': logoRadius }}
     >
       <span className="community-logo-flip">
         <img className="banner community-logo-img" src={src} alt="" />

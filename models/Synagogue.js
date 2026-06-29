@@ -138,6 +138,7 @@ const SavedViewSchema = new mongoose.Schema({
         candle: Number,
       },
       logo: String,
+      logoBorderRadius: Number,
       backgroundImage: String,
       tilesBackground: String,
       candlePalette: String,
@@ -287,6 +288,7 @@ const SynagogueSchema = new mongoose.Schema({
     backgroundImage: String,
     tilesBackground: String,
     logo: String,
+    logoBorderRadius: { type: Number, default: 100, min: 0, max: 100 },
     candlePalette: { type: String, default: 'classic' },
   },
   location: {

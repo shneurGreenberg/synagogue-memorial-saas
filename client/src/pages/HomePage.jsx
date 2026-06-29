@@ -376,6 +376,9 @@ class HomePageBase extends React.Component {
 
     const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
     const logo = (appData.theme && appData.theme.logo) || 'banner-transparent.png';
+    const logoBorderRadius = appData.theme && appData.theme.logoBorderRadius != null
+      ? appData.theme.logoBorderRadius
+      : 100;
     const showOfficialLogo = boardFeatures.officialLogo !== false;
     const officialLogo = 'kaddish-official-logo.svg';
     const showMemorialPrayers = boardFeatures.kelMaleRachamim || boardFeatures.izkor;
@@ -395,7 +398,11 @@ class HomePageBase extends React.Component {
             <div className="left-panel-inner">
               <div className="left-panel-header">
                 <div className="banner-wrap">
-                  <CommunityLogo src={assetUrl(`images/${logo}`)} alt={appData.title || 'Synagogue'} />
+                  <CommunityLogo
+                    src={assetUrl(`images/${logo}`)}
+                    alt={appData.title || 'Synagogue'}
+                    borderRadius={logoBorderRadius}
+                  />
                 </div>
               </div>
               {showMemorialPrayers && (
