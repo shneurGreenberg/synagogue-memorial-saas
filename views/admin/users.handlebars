@@ -54,7 +54,8 @@
                             <td class="user-permissions-cell">
                                 {{#if this.permissions.people}}{{t 'perm_people_short'}}{{/if}}
                                 {{#if this.permissions.peopleImport}}{{#if this.permissions.people}}, {{/if}}{{t 'perm_people_import_short'}}{{/if}}
-                                {{#if this.permissions.events}}{{#if (or this.permissions.people this.permissions.peopleImport)}}, {{/if}}{{t 'perm_events_short'}}{{/if}}
+                                {{#if this.permissions.contactDirectory}}{{#if (or this.permissions.people this.permissions.peopleImport)}}, {{/if}}{{t 'perm_contact_directory_short'}}{{/if}}
+                                {{#if this.permissions.events}}{{#if (or this.permissions.people this.permissions.peopleImport this.permissions.contactDirectory)}}, {{/if}}{{t 'perm_events_short'}}{{/if}}
                                 {{#if this.permissions.settings}}
                                 <div class="user-settings-perms">{{t 'settings_sections_label'}}:
                                     {{#if this.permissions.settingsPreview}}{{t 'perm_settings_preview_short'}}{{/if}}
@@ -79,6 +80,7 @@
                                     data-color-mode="{{this.adminColorMode}}"
                                     data-perm-people="{{#if this.permissions.people}}1{{/if}}"
                                     data-perm-people-import="{{#if this.permissions.peopleImport}}1{{/if}}"
+                                    data-perm-contact-directory="{{#if this.permissions.contactDirectory}}1{{/if}}"
                                     data-perm-events="{{#if this.permissions.events}}1{{/if}}"
                                     data-perm-settings-preview="{{#if this.permissions.settingsPreview}}1{{/if}}"
                                     data-perm-settings-appearance="{{#if this.permissions.settingsAppearance}}1{{/if}}"

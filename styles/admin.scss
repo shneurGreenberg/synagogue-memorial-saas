@@ -849,6 +849,15 @@ body.admin-login-page {
   white-space: nowrap;
 }
 
+.manage-contacts-panel .admin-panel-body {
+  padding: 1.25rem;
+}
+
+.contacts-directory-count {
+  white-space: nowrap;
+  align-self: center;
+}
+
 .manage-contacts-empty {
   padding: 1.25rem;
   text-align: center;

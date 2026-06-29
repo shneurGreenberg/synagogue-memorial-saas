@@ -6,7 +6,15 @@
   var manageContactsCache = [];
 
   function getPage() {
-    return document.querySelector('.people-page');
+    return document.querySelector('.contacts-page') || document.querySelector('.people-page');
+  }
+
+  function isContactsPage() {
+    return !!document.querySelector('.contacts-page');
+  }
+
+  function isPeoplePage() {
+    return !!document.querySelector('.people-page');
   }
 
   function getSlug() {
@@ -36,8 +44,14 @@
     }
 
     if (!count) {
-      el.hidden = true;
-      el.textContent = '';
+      if (isContactsPage()) {
+        el.hidden = false;
+        var emptyTemplate = (page && page.getAttribute('data-contact-directory-count-label')) || '{{count}}';
+        el.textContent = emptyTemplate.replace(/\{\{count\}\}/g, '0');
+      } else {
+        el.hidden = true;
+        el.textContent = '';
+      }
       return;
     }
 
@@ -317,26 +331,19 @@
     return fetchDirectoryContacts(query).then(renderManageContactsList);
   }
 
-  function initManageContactsModal() {
-    var modal = document.getElementById('manageContactsModal');
+  function initContactsPage() {
     var searchInput = document.getElementById('manageContactsSearch');
     var addBtn = document.getElementById('manageContactsAddBtn');
     var form = document.getElementById('manageContactForm');
     var cancelBtn = document.getElementById('manageContactCancelBtn');
     var listEl = document.getElementById('manageContactsList');
+    var page = document.querySelector('.contacts-page');
 
-    if (!modal || modal.dataset.bound === '1') {
+    if (!page || page.dataset.bound === '1') {
       return;
     }
 
-    modal.dataset.bound = '1';
-
-    if (window.jQuery) {
-      window.jQuery(modal).on('shown.bs.modal', function () {
-        hideManageContactForm();
-        loadManageContacts();
-      });
-    }
+    page.dataset.bound = '1';
 
     if (searchInput) {
       searchInput.addEventListener('input', function () {
@@ -515,7 +522,7 @@
         if (window.jQuery) {
           window.jQuery('#importContactsModal').modal('hide');
         }
-        window.location.href = '/admin/' + encodeURIComponent(slug) + '/people?contactsImported=1';
+        window.location.href = '/admin/' + encodeURIComponent(slug) + '/contact-directory?contactsImported=1';
       }).catch(function (err) {
         window.alert(err.message || 'Import failed');
       }).finally(function () {
@@ -535,10 +542,29 @@
   window.AdminContactDirectory = {
     attachToRow: attachAutocompleteToRow,
     init: function () {
-      refreshCountLabel();
-      initImportForm();
-      initManageContactsModal();
-      document.querySelectorAll('.admin-contact-row').forEach(attachAutocompleteToRow);
+      if (isPeoplePage()) {
+        document.querySelectorAll('.admin-contact-row').forEach(attachAutocompleteToRow);
+      }
+
+      if (isContactsPage()) {
+        refreshCountLabel();
+        initImportForm();
+        initContactsPage();
+        hideManageContactForm();
+        loadManageContacts();
+      }
     },
   };
+
+  function autoInitContactDirectory() {
+    if (isContactsPage()) {
+      window.AdminContactDirectory.init();
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', autoInitContactDirectory);
+  } else {
+    autoInitContactDirectory();
+  }
 })();

@@ -50,6 +50,14 @@
                     </a>
                 </li>
                 {{/if}}
+                {{#if adminPermissions.contactDirectory}}
+                <li class="nav-item">
+                    <a class="nav-link{{#if (eq adminNavActive 'contact-directory')}} active{{/if}}" href="/admin/{{synagogue.slug}}/contact-directory">
+                        <svg class="admin-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 0H4v2h16V0M4 24h16v-2H4v2M4 4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H4m9 7H7v2h6v-2m5-2H7v2h11V9m0 4H7v2h11v-2Z"/></svg>
+                        {{t 'contact_directory'}}
+                    </a>
+                </li>
+                {{/if}}
                 {{#if adminPermissions.events}}
                 <li class="nav-item">
                     <a class="nav-link{{#if (eq adminNavActive 'events')}} active{{/if}}" href="/admin/{{synagogue.slug}}/events">

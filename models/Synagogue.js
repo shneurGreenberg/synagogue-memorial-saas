@@ -53,6 +53,7 @@ const AdminUserSchema = new mongoose.Schema({
   permissions: {
     people: { type: Boolean, default: true },
     peopleImport: { type: Boolean, default: false },
+    contactDirectory: { type: Boolean, default: false },
     events: { type: Boolean, default: false },
     settings: { type: Boolean, default: false },
     settingsPreview: { type: Boolean, default: false },
