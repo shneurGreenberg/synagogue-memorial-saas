@@ -800,6 +800,99 @@ body.admin-login-page {
   color: var(--admin-text);
 }
 
+.contacts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  min-height: 88px;
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: $admin-radius;
+  box-shadow: var(--admin-shadow);
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+
+  .contact-meta {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  &:hover {
+    border-color: var(--admin-primary);
+    box-shadow: 0 12px 32px rgba(99, 102, 241, 0.15);
+  }
+
+  strong {
+    color: var(--admin-text);
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  small {
+    color: var(--admin-text-muted);
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.contact-row-clickable {
+  cursor: pointer;
+}
+
+.contact-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  flex: 0 0 64px;
+  border-radius: 50%;
+  background: var(--admin-primary-dim);
+  color: var(--admin-primary);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.contact-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 0 0 auto;
+}
+
+.contacts-toolbar {
+  margin-bottom: 1rem;
+}
+
+.contacts-directory-count {
+  white-space: nowrap;
+  align-self: center;
+}
+
+.manage-contacts-empty {
+  margin-top: 0.5rem;
+}
+
+.appearance-subsections {
+  margin-top: 1.25rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.community-logo-settings {
+  margin-bottom: 1.5rem;
+}
+
 .manage-contacts-subtitle {
   margin: 0.35rem 0 0;
 }
@@ -1517,6 +1610,7 @@ body.admin-is-busy {
       object-fit: contain;
       padding: 8px;
       background: #0a0c10;
+      border-radius: calc(var(--preview-logo-radius, 100) * 0.5%);
     }
   }
 

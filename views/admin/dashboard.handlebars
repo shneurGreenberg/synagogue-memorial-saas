@@ -127,96 +127,6 @@
         </section>
         {{/if}}
 
-        {{#if adminPermissions.settingsBranding}}
-        <section class="admin-panel admin-panel-collapsible is-collapsed">
-            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
-                <h2 class="admin-panel-title">
-                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2M8.5 13.5l2.5 3 3.5-4.5 4.5 6H5l3.5-4.5z"/></svg>
-                    {{t 'branding_section'}}
-                </h2>
-                <span class="admin-panel-chevron" aria-hidden="true"></span>
-            </button>
-            <div class="admin-panel-body" hidden>
-                <div class="branding-subsections">
-                    <section class="admin-panel admin-panel-collapsible branding-subsection is-collapsed">
-                        <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
-                            <h3 class="admin-panel-title">
-                                <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2M8.5 13.5l2.5 3 3.5-4.5 4.5 6H5l3.5-4.5z"/></svg>
-                                {{t 'logo'}}
-                            </h3>
-                            <span class="admin-panel-chevron" aria-hidden="true"></span>
-                        </button>
-                        <div class="admin-panel-body" hidden>
-                            <div class="media-upload-card media-upload-card-flat">
-                                <div class="media-preview media-preview-logo">
-                                    {{#if synagogue.theme.logo}}
-                                    <img src="/images/{{synagogue.theme.logo}}" alt="{{t 'logo'}}">
-                                    {{else}}
-                                    <span class="media-preview-empty">{{t 'no_photo'}}</span>
-                                    {{/if}}
-                                </div>
-                                <label class="file-drop-label">
-                                    {{t 'replace_image'}}
-                                    <input type="file" name="logo" accept="image/*">
-                                </label>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="admin-panel admin-panel-collapsible branding-subsection is-collapsed">
-                        <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
-                            <h3 class="admin-panel-title">
-                                <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 4h7V2H4c-1.1 0-2 .9-2 2v7h2V4m6 0v2h7v7h2V6c0-1.1-.9-2-2-2h-7M4 14v7h7v2H4c-1.1 0-2-.9-2-2v-7h2m12 2h-2v7h-7v2h7c1.1 0 2-.9 2-2v-7h2v-2z"/></svg>
-                                {{t 'background_image'}}
-                            </h3>
-                            <span class="admin-panel-chevron" aria-hidden="true"></span>
-                        </button>
-                        <div class="admin-panel-body" hidden>
-                            <div class="media-upload-card media-upload-card-flat">
-                                <p class="field-hint">{{t 'background_image_help'}}</p>
-                                <div class="media-preview">
-                                    {{#if synagogue.theme.backgroundImage}}
-                                    <img src="/images/{{synagogue.theme.backgroundImage}}" alt="{{t 'background_image'}}">
-                                    {{else}}
-                                    <img src="/images/brickwall.jpg" alt="{{t 'background_image'}}">
-                                    {{/if}}
-                                </div>
-                                <label class="file-drop-label">
-                                    {{t 'replace_image'}}
-                                    <input type="file" name="backgroundImage" accept="image/*">
-                                </label>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="admin-panel admin-panel-collapsible branding-subsection is-collapsed">
-                        <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
-                            <h3 class="admin-panel-title">
-                                <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 3h8v8H3V3m10 0h8v5h-8V3M3 13h5v8H3v-8m7 4h11v4H10v-4Z"/></svg>
-                                {{t 'tiles_background'}}
-                            </h3>
-                            <span class="admin-panel-chevron" aria-hidden="true"></span>
-                        </button>
-                        <div class="admin-panel-body" hidden>
-                            <div class="media-upload-card media-upload-card-flat">
-                                <p class="field-hint">{{t 'tiles_background_help'}}</p>
-                                <div class="media-preview">
-                                    {{#if synagogue.theme.tilesBackground}}
-                                    <img src="/images/{{synagogue.theme.tilesBackground}}" alt="{{t 'tiles_background'}}">
-                                    {{else}}
-                                    <img src="/images/wood2.png" alt="{{t 'tiles_background'}}">
-                                    {{/if}}
-                                </div>
-                                <label class="file-drop-label">
-                                    {{t 'replace_image'}}
-                                    <input type="file" name="tilesBackground" accept="image/*">
-                                </label>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-            </div>
-        </section>
-        {{/if}}
-
         {{#if adminPermissions.settingsAppearance}}
         <section class="admin-panel admin-panel-collapsible is-collapsed">
             <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
@@ -302,6 +212,86 @@
                         <span class="field-hint">{{t 'tile_opacity_help'}}</span>
                     </div>
                 </div>
+                <div class="appearance-subsections">
+                    <h3 class="typography-controls-title">{{t 'backgrounds_section'}}</h3>
+                    <div class="branding-subsections">
+                        <section class="admin-panel admin-panel-collapsible branding-subsection is-collapsed">
+                            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
+                                <h4 class="admin-panel-title">
+                                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 4h7V2H4c-1.1 0-2 .9-2 2v7h2V4m6 0v2h7v7h2V6c0-1.1-.9-2-2-2h-7M4 14v7h7v2H4c-1.1 0-2-.9-2-2v-7h2m12 2h-2v7h-7v2h7c1.1 0 2-.9 2-2v-7h2v-2z"/></svg>
+                                    {{t 'background_image'}}
+                                </h4>
+                                <span class="admin-panel-chevron" aria-hidden="true"></span>
+                            </button>
+                            <div class="admin-panel-body" hidden>
+                                <div class="media-upload-card media-upload-card-flat">
+                                    <p class="field-hint">{{t 'background_image_help'}}</p>
+                                    <div class="media-preview">
+                                        {{#if synagogue.theme.backgroundImage}}
+                                        <img src="/images/{{synagogue.theme.backgroundImage}}" alt="{{t 'background_image'}}">
+                                        {{else}}
+                                        <img src="/images/brickwall.jpg" alt="{{t 'background_image'}}">
+                                        {{/if}}
+                                    </div>
+                                    <label class="file-drop-label">
+                                        {{t 'replace_image'}}
+                                        <input type="file" name="backgroundImage" accept="image/*">
+                                    </label>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="admin-panel admin-panel-collapsible branding-subsection is-collapsed">
+                            <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
+                                <h4 class="admin-panel-title">
+                                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 3h8v8H3V3m10 0h8v5h-8V3M3 13h5v8H3v-8m7 4h11v4H10v-4Z"/></svg>
+                                    {{t 'tiles_background'}}
+                                </h4>
+                                <span class="admin-panel-chevron" aria-hidden="true"></span>
+                            </button>
+                            <div class="admin-panel-body" hidden>
+                                <div class="media-upload-card media-upload-card-flat">
+                                    <p class="field-hint">{{t 'tiles_background_help'}}</p>
+                                    <div class="media-preview">
+                                        {{#if synagogue.theme.tilesBackground}}
+                                        <img src="/images/{{synagogue.theme.tilesBackground}}" alt="{{t 'tiles_background'}}">
+                                        {{else}}
+                                        <img src="/images/wood2.png" alt="{{t 'tiles_background'}}">
+                                        {{/if}}
+                                    </div>
+                                    <label class="file-drop-label">
+                                        {{t 'replace_image'}}
+                                        <input type="file" name="tilesBackground" accept="image/*">
+                                    </label>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <h3 class="typography-controls-title">{{t 'candle_appearance_section'}}</h3>
+                    <div class="board-features-grid">
+                        <div class="form-field candle-palette-field admin-theme-setting admin-theme-setting-wide">
+                            <label for="candlePalette">{{t 'candle_palette'}}</label>
+                            <select name="candlePalette" id="candlePalette" class="form-control admin-select-modern">
+                                {{#each candlePaletteOptions}}
+                                <option value="{{this.key}}" {{#if (eq ../synagogue.theme.candlePalette this.key)}}selected{{else}}{{#unless ../synagogue.theme.candlePalette}}{{#if (eq this.key 'classic')}}selected{{/if}}{{/unless}}{{/if}}>{{t this.labelKey}}</option>
+                                {{/each}}
+                            </select>
+                            <p class="field-hint admin-theme-setting-hint">{{t 'candle_palette_help'}}</p>
+                        </div>
+                        <div class="slider-field-modern admin-theme-setting admin-theme-setting-wide">
+                            <label for="fontScale_candle">{{t candleSlider.labelKey}}</label>
+                            <div class="slider-row">
+                                <input type="range" name="fontScale_candle" id="fontScale_candle"
+                                    class="admin-range-input font-scale-input" data-font-scale-key="candle"
+                                    min="{{#if candleSlider.min}}{{candleSlider.min}}{{else}}40{{/if}}"
+                                    max="{{#if candleSlider.max}}{{candleSlider.max}}{{else}}150{{/if}}"
+                                    step="{{#if candleSlider.step}}{{candleSlider.step}}{{else}}5{{/if}}"
+                                    value="{{candleSlider.value}}">
+                                <output class="slider-value-display font-scale-value" data-for="fontScale_candle">{{candleSlider.value}}%</output>
+                            </div>
+                            <p class="field-hint admin-theme-setting-hint">{{t candleSlider.helpKey}}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -366,17 +356,50 @@
                 </div>
             </div>
         </section>
+        {{/if}}
 
+        {{#if (or adminPermissions.settingsBranding adminPermissions.settingsAppearance)}}
         <section class="admin-panel admin-panel-collapsible is-collapsed">
             <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
                 <h2 class="admin-panel-title">
-                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v3h-3v-3zm-5 0h3v3h-3v-3zm5 5h3v3h-3v-3zm-5 0h3v3h-3v-3z"/></svg>
-                    {{t 'qr_codes_section'}}
+                    <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3m-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3m0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5m8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5Z"/></svg>
+                    {{t 'community_section'}}
                 </h2>
                 <span class="admin-panel-chevron" aria-hidden="true"></span>
             </button>
             <div class="admin-panel-body" hidden>
+                {{#if adminPermissions.settingsBranding}}
+                <div class="community-logo-settings">
+                    <h3 class="typography-controls-title">{{t 'logo'}}</h3>
+                    <div class="media-upload-card media-upload-card-flat">
+                        <div class="media-preview media-preview-logo" id="communityLogoPreview"
+                            style="--preview-logo-radius: {{#if synagogue.theme.logoBorderRadius}}{{synagogue.theme.logoBorderRadius}}{{else}}100{{/if}};">
+                            {{#if synagogue.theme.logo}}
+                            <img src="/images/{{synagogue.theme.logo}}" alt="{{t 'logo'}}" id="communityLogoPreviewImg">
+                            {{else}}
+                            <span class="media-preview-empty">{{t 'no_photo'}}</span>
+                            {{/if}}
+                        </div>
+                        <label class="file-drop-label">
+                            {{t 'replace_image'}}
+                            <input type="file" name="logo" accept="image/*">
+                        </label>
+                    </div>
+                    <div class="slider-field-modern">
+                        <label for="logoBorderRadius">{{t 'logo_border_radius'}}</label>
+                        <div class="slider-row">
+                            <input type="range" name="logoBorderRadius" id="logoBorderRadius" class="admin-range-input logo-radius-input"
+                                min="0" max="100" step="1"
+                                value="{{#if synagogue.theme.logoBorderRadius}}{{synagogue.theme.logoBorderRadius}}{{else}}100{{/if}}">
+                            <output class="slider-value-display" id="logoBorderRadiusValue">{{#if synagogue.theme.logoBorderRadius}}{{synagogue.theme.logoBorderRadius}}{{else}}100{{/if}}%</output>
+                        </div>
+                        <span class="field-hint">{{t 'logo_border_radius_help'}}</span>
+                    </div>
+                </div>
+                {{/if}}
+                {{#if adminPermissions.settingsAppearance}}
                 {{> admin-settings-qr-codes}}
+                {{/if}}
             </div>
         </section>
         {{/if}}
@@ -410,30 +433,6 @@
                             </div>
                             <p class="field-hint admin-theme-setting-hint">{{t 'enable_shabbat_times_help'}}</p>
                         </div>
-                        <div class="form-field candle-palette-field admin-theme-setting admin-theme-setting-wide">
-                            <label for="candlePalette">{{t 'candle_palette'}}</label>
-                            <select name="candlePalette" id="candlePalette" class="form-control admin-select-modern">
-                                {{#each ../candlePaletteOptions}}
-                                <option value="{{this.key}}" {{#if (eq ../../synagogue.theme.candlePalette this.key)}}selected{{else}}{{#unless ../../synagogue.theme.candlePalette}}{{#if (eq this.key 'classic')}}selected{{/if}}{{/unless}}{{/if}}>{{t this.labelKey}}</option>
-                                {{/each}}
-                            </select>
-                            <p class="field-hint admin-theme-setting-hint">{{t 'candle_palette_help'}}</p>
-                        </div>
-                        {{#if this.candleSlider}}
-                        <div class="slider-field-modern admin-theme-setting admin-theme-setting-wide">
-                            <label for="fontScale_candle">{{t this.candleSlider.labelKey}}</label>
-                            <div class="slider-row">
-                                <input type="range" name="fontScale_candle" id="fontScale_candle"
-                                    class="admin-range-input font-scale-input" data-font-scale-key="candle"
-                                    min="{{#if this.candleSlider.min}}{{this.candleSlider.min}}{{else}}40{{/if}}"
-                                    max="{{#if this.candleSlider.max}}{{this.candleSlider.max}}{{else}}150{{/if}}"
-                                    step="{{#if this.candleSlider.step}}{{this.candleSlider.step}}{{else}}5{{/if}}"
-                                    value="{{this.candleSlider.value}}">
-                                <output class="slider-value-display font-scale-value" data-for="fontScale_candle">{{this.candleSlider.value}}%</output>
-                            </div>
-                            <p class="field-hint admin-theme-setting-hint">{{t this.candleSlider.helpKey}}</p>
-                        </div>
-                        {{/if}}
                         {{/if}}
                         {{#if (eq this.special 'publicSubmission')}}
                         <div class="admin-theme-setting">
@@ -616,6 +615,10 @@
                     var el = document.getElementById('candlePalette');
                     return el ? el.value : 'classic';
                 })(),
+                logoBorderRadius: (function () {
+                    var el = document.getElementById('logoBorderRadius');
+                    return el ? el.value : '100';
+                })(),
                 previewLang: languageSelect ? languageSelect.value : 'ru',
             }, readFontScalePatch(), readMemorialQrPatch());
         }
@@ -705,6 +708,11 @@
         var candlePaletteSelect = document.getElementById('candlePalette');
         if (candlePaletteSelect) {
             candlePaletteSelect.addEventListener('change', schedulePreview);
+        }
+
+        var logoBorderRadiusInput = document.getElementById('logoBorderRadius');
+        if (logoBorderRadiusInput) {
+            logoBorderRadiusInput.addEventListener('input', schedulePreview);
         }
 
         var activeSavedViewId = '{{activeSavedViewId}}' || '';
