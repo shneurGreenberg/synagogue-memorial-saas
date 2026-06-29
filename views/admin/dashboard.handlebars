@@ -174,10 +174,11 @@
                             <div class="media-upload-card media-upload-card-flat">
                                 <p class="field-hint">{{t 'background_image_help'}}</p>
                                 <div class="media-preview">
+                                    <input type="hidden" id="backgroundImageCurrent" name="backgroundImageCurrent" value="{{synagogue.theme.backgroundImage}}">
                                     {{#if synagogue.theme.backgroundImage}}
-                                    <img src="/images/{{synagogue.theme.backgroundImage}}" alt="{{t 'background_image'}}">
+                                    <img id="backgroundImagePreview" src="/images/{{synagogue.theme.backgroundImage}}" alt="{{t 'background_image'}}">
                                     {{else}}
-                                    <img src="/images/brickwall.jpg" alt="{{t 'background_image'}}">
+                                    <img id="backgroundImagePreview" src="/images/brickwall.jpg" alt="{{t 'background_image'}}">
                                     {{/if}}
                                 </div>
                                 <label class="file-drop-label">
@@ -199,10 +200,11 @@
                             <div class="media-upload-card media-upload-card-flat">
                                 <p class="field-hint">{{t 'tiles_background_help'}}</p>
                                 <div class="media-preview">
+                                    <input type="hidden" id="tilesBackgroundCurrent" name="tilesBackgroundCurrent" value="{{synagogue.theme.tilesBackground}}">
                                     {{#if synagogue.theme.tilesBackground}}
-                                    <img src="/images/{{synagogue.theme.tilesBackground}}" alt="{{t 'tiles_background'}}">
+                                    <img id="tilesBackgroundPreview" src="/images/{{synagogue.theme.tilesBackground}}" alt="{{t 'tiles_background'}}">
                                     {{else}}
-                                    <img src="/images/wood2.png" alt="{{t 'tiles_background'}}">
+                                    <img id="tilesBackgroundPreview" src="/images/wood2.png" alt="{{t 'tiles_background'}}">
                                     {{/if}}
                                 </div>
                                 <label class="file-drop-label">
@@ -616,6 +618,14 @@
                     var el = document.getElementById('candlePalette');
                     return el ? el.value : 'classic';
                 })(),
+                backgroundImage: (function () {
+                    var el = document.getElementById('backgroundImageCurrent');
+                    return el ? el.value : '';
+                })(),
+                tilesBackground: (function () {
+                    var el = document.getElementById('tilesBackgroundCurrent');
+                    return el ? el.value : '';
+                })(),
                 previewLang: languageSelect ? languageSelect.value : 'ru',
             }, readFontScalePatch(), readMemorialQrPatch());
         }
@@ -803,6 +813,8 @@
             if (patch.candlePalette) {
                 params.set('candlePalette', patch.candlePalette);
             }
+            params.set('backgroundImage', patch.backgroundImage || '');
+            params.set('tilesBackground', patch.tilesBackground || '');
             Object.keys(patch).forEach(function (key) {
                 if (key.indexOf('fontScale_') === 0 || key.indexOf('memorialQr') === 0) {
                     params.set(key, patch[key]);
@@ -834,6 +846,8 @@
             if (initial.candlePalette) {
                 params.set('candlePalette', initial.candlePalette);
             }
+            params.set('backgroundImage', initial.backgroundImage || '');
+            params.set('tilesBackground', initial.tilesBackground || '');
             Object.keys(initial).forEach(function (key) {
                 if (key.indexOf('fontScale_') === 0 || key.indexOf('memorialQr') === 0) {
                     params.set(key, initial[key]);

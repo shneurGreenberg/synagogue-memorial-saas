@@ -297,7 +297,7 @@ export function ThemeStyles() {
 
   return (
     <style
-      key={`theme-${revision}-${primary}-${text}-${accent}-${tileVars.tileColor}-${tileTransparency}-${candlePalette}`}
+      key={`theme-${revision}-${primary}-${text}-${accent}-${tileVars.tileColor}-${tileTransparency}-${candlePalette}-${theme.backgroundImage || ''}-${theme.tilesBackground || ''}`}
       dangerouslySetInnerHTML={{ __html: css }}
     />
   );
