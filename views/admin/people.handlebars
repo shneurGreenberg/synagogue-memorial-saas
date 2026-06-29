@@ -1,4 +1,4 @@
-<div class="admin-page people-page" data-synagogue-slug="{{synagogue.slug}}" data-edit-label="{{t 'edit'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-delete-photo-confirm="{{t 'delete_photo_confirm'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-send-label="{{t 'yahrzeit_send_contact'}}" data-download-tile-label="{{t 'yahrzeit_download_tile'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}">
+<div class="admin-page people-page" data-synagogue-slug="{{synagogue.slug}}" data-contact-directory-count="{{synagogue.contactDirectoryCount}}" data-contact-directory-count-label="{{t 'contact_directory_count'}}" data-edit-label="{{t 'edit'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-delete-photo-confirm="{{t 'delete_photo_confirm'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-send-label="{{t 'yahrzeit_send_contact'}}" data-download-tile-label="{{t 'yahrzeit_download_tile'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}" data-contact-suggestion-label="{{t 'contact_pick_suggestion'}}">
     <header class="admin-page-header">
         <div>
             <h1>{{t 'people'}}</h1>
@@ -11,6 +11,10 @@
                 {{t 'import_people'}}
             </button>
             {{/if}}
+            <button type="button" class="btn-admin btn-admin-secondary btn-admin-with-icon" data-toggle="modal" data-target="#importContactsModal">
+                {{{adminIcon 'import' class='btn-admin-inline-icon'}}}
+                {{t 'import_contacts'}}
+            </button>
             <button type="button" class="btn-admin btn-admin-primary btn-admin-with-icon" data-toggle="modal" data-target="#addPersonModal">
                 {{{adminIcon 'add' class='btn-admin-inline-icon'}}}
                 {{t 'add_person'}}
@@ -30,10 +34,23 @@
         <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div>
     {{/if}}
+    {{#if contactsImported}}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{t 'import_contacts_done'}}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {{/if}}
+    {{#if contactsImportError}}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{t 'import_contacts_error'}}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {{/if}}
 
     <div class="people-toolbar">
         <input type="search" id="peopleSearch" class="form-control admin-input" style="max-width: 300px; flex: 1;"
             placeholder="{{t 'search_people'}}" aria-label="{{t 'search_people'}}">
+        <p class="seed-notice people-directory-count" id="contactDirectoryCount" hidden></p>
     </div>
 
     <div class="people-list" id="peopleList">
@@ -101,6 +118,31 @@
     </div>
 </div>
 {{/if}}
+
+<!-- Import Contacts Modal -->
+<div class="modal fade admin-modal" id="importContactsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="importContactsForm" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{t 'import_contacts'}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{t 'cancel'}}">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p class="seed-notice">{{t 'import_contacts_help'}}</p>
+                    <div class="form-field">
+                        <label for="importContactsFile">CSV / vCard</label>
+                        <input type="file" name="file" id="importContactsFile" class="form-control" accept=".csv,.vcf,.txt,text/csv,text/vcard" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-admin btn-admin-ghost btn-admin-with-icon" data-dismiss="modal">{{{adminIcon 'cancel' class='btn-admin-inline-icon'}}}{{t 'cancel'}}</button>
+                    <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon" id="importContactsSubmit">{{{adminIcon 'import' class='btn-admin-inline-icon'}}}{{t 'import_contacts_submit'}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- Add Person Modal -->
 <div class="modal fade admin-modal" id="addPersonModal" tabindex="-1">

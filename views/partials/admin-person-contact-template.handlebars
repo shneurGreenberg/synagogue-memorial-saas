@@ -6,9 +6,10 @@
                 {{{adminIcon 'delete' class='btn-admin-inline-icon'}}}{{t 'contact_remove'}}
             </button>
         </div>
-        <div class="form-field">
+        <div class="form-field admin-contact-name-field" data-contact-name-field>
             <label>{{t 'contact_name'}}</label>
-            <input type="text" data-field="name" class="form-control" maxlength="120">
+            <input type="text" data-field="name" class="form-control" maxlength="120" autocomplete="off">
+            <ul class="admin-contact-suggestions" data-contact-suggestions hidden></ul>
         </div>
         <div class="admin-contact-channel-row">
             <div class="form-field admin-contact-platform-field">

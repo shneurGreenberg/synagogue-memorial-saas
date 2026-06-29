@@ -768,6 +768,9 @@
     }
 
     reindexContactRows(listEl);
+    if (window.AdminContactDirectory && typeof window.AdminContactDirectory.attachToRow === 'function') {
+      window.AdminContactDirectory.attachToRow(appended);
+    }
     return appended;
   }
 
@@ -963,6 +966,9 @@
     resetContactsSection(document.getElementById('addPersonModal'));
     if (window.ContactPlatformUI) {
       window.ContactPlatformUI.init();
+    }
+    if (window.AdminContactDirectory && typeof window.AdminContactDirectory.init === 'function') {
+      window.AdminContactDirectory.init();
     }
 
     window.AdminPeople = {

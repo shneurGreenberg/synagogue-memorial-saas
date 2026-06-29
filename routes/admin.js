@@ -51,6 +51,12 @@ const {
 } = require('../lib/admin-users');
 const { parsePublicSubmissionFromBody } = require('../lib/public-submission');
 const { parsePersonContactsFromBody, normalizePersonContact, personContactsToLegacyFields, getPersonContacts, hasContactDetails } = require('../lib/person-contact');
+const { parseContactImportFile } = require('../lib/google-contacts-import');
+const {
+    mergeContactDirectories,
+    normalizeContactDirectory,
+    searchContactDirectory,
+} = require('../lib/contact-directory');
 const {
   parseYahrzeitRemindersFromBody,
   buildYahrzeitPageEntries,
@@ -263,6 +269,26 @@ const upload = multer({
     fileFilter: function (req, file, cb) {
         if (!file.mimetype || !file.mimetype.startsWith('image/')) {
             return cb(new Error('Only image uploads are allowed'));
+        }
+        cb(null, true);
+    },
+});
+
+const contactImportUpload = multer({
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: function (req, file, cb) {
+        const name = String(file.originalname || '').toLowerCase();
+        const allowed = name.endsWith('.csv')
+            || name.endsWith('.vcf')
+            || name.endsWith('.txt')
+            || (file.mimetype && (
+                file.mimetype.includes('text/')
+                || file.mimetype.includes('csv')
+                || file.mimetype.includes('vcard')
+            ));
+        if (!allowed) {
+            return cb(new Error('Only CSV or vCard contact files are allowed'));
         }
         cb(null, true);
     },
@@ -1038,15 +1064,90 @@ router.get('/:slug/people', requireAdmin, requirePermission('people'), async (re
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        const enriched = enrichSynagogueForAdmin(synagogue);
+        enriched.contactDirectoryCount = normalizeContactDirectory(enriched.contactDirectory).length;
         renderAdmin(res, 'admin/people', {
-            synagogue: enrichSynagogueForAdmin(synagogue),
+            synagogue: enriched,
             adminUser: req.adminUser,
             adminPermissions: req.adminPermissions,
             imported: req.query.imported === '1',
             importError: req.query.importError === '1',
+            contactsImported: req.query.contactsImported === '1',
+            contactsImportError: req.query.contactsImportError === '1',
         });
     } catch (err) {
         res.status(500).send(err.message);
+    }
+});
+
+router.get('/:slug/contacts/search', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        if (!synagogue) {
+            return res.status(404).json({ ok: false, error: 'Not found' });
+        }
+
+        const results = searchContactDirectory(synagogue.contactDirectory, req.query.q, 12);
+        return res.json({ ok: true, results });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.post('/:slug/contacts/import', requireAdmin, requirePermission('people'), contactImportUpload.single('file'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
+
+    const wantsJson = req.get('X-Requested-With') === 'XMLHttpRequest'
+        || String(req.headers.accept || '').includes('application/json');
+
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        if (!synagogue) {
+            return res.status(404).json({ ok: false, error: 'Not found' });
+        }
+
+        let parsed = [];
+        if (req.file && req.file.buffer) {
+            parsed = parseContactImportFile(req.file.buffer, req.file.originalname);
+        } else if (typeof req.body.text === 'string' && req.body.text.trim()) {
+            parsed = parseContactImportFile(Buffer.from(req.body.text, 'utf8'), 'contacts.csv');
+        }
+
+        if (!parsed.length) {
+            const message = 'No contacts found in file';
+            if (wantsJson) {
+                return res.status(400).json({ ok: false, error: message });
+            }
+            return res.redirect(`/admin/${req.params.slug}/people?contactsImportError=1`);
+        }
+
+        const beforeCount = normalizeContactDirectory(synagogue.contactDirectory).length;
+        const merged = mergeContactDirectories(synagogue.contactDirectory, parsed);
+        const importedCount = merged.length - beforeCount;
+
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            { $set: { contactDirectory: merged } },
+            { runValidators: false },
+        );
+
+        if (wantsJson) {
+            return res.json({
+                ok: true,
+                imported: importedCount,
+                total: merged.length,
+                updated: parsed.length - importedCount,
+            });
+        }
+
+        return res.redirect(`/admin/${req.params.slug}/people?contactsImported=1`);
+    } catch (err) {
+        console.error('Contact import error:', err);
+        if (wantsJson) {
+            return res.status(500).json({ ok: false, error: err.message });
+        }
+        return res.redirect(`/admin/${req.params.slug}/people?contactsImportError=1`);
     }
 });
 

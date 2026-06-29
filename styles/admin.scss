@@ -735,6 +735,57 @@ body.admin-login-page {
   font-weight: 600;
 }
 
+.admin-contact-name-field {
+  position: relative;
+}
+
+.admin-contact-suggestions {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0.35rem 0;
+  list-style: none;
+  border: 1px solid var(--admin-border);
+  border-radius: 10px;
+  background: var(--admin-surface-elevated);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.admin-contact-suggestion-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.55rem 0.85rem;
+  border: 0;
+  background: transparent;
+  color: var(--admin-text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-contact-suggestion-btn:hover,
+.admin-contact-suggestion-btn:focus {
+  background: var(--admin-surface-hover);
+}
+
+.admin-contact-suggestion-meta {
+  color: var(--admin-text-muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.people-directory-count {
+  margin: 0;
+  align-self: center;
+}
+
 .admin-add-contact-btn {
   margin-top: 0.75rem;
 }
