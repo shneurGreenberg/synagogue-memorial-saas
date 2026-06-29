@@ -1023,6 +1023,7 @@ router.get('/:slug/yahrzeit/tile/:personId.png', requireAdmin, requirePermission
             name: person.name,
             datesLine,
             photoFilename: person.photo,
+            photoCrop: person.photoCrop,
             theme: synagogue.theme,
         });
 

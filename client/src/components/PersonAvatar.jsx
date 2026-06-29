@@ -1,5 +1,5 @@
 import React from 'react';
-import { photoUrl } from '../lib/asset-url';
+import { photoUrl, isStaticSite } from '../lib/asset-url';
 
 const PHOTO_WIDTH_BY_SIZE = {
   sm: 96,
@@ -23,7 +23,14 @@ function getInitials(name) {
     .toUpperCase();
 }
 
-function getPhotoCropStyle(person) {
+function getPhotoCropStyle(person, useServerCrop) {
+  if (useServerCrop) {
+    return {
+      objectFit: 'cover',
+      objectPosition: 'center center',
+    };
+  }
+
   const crop = person && person.photoCrop;
   const x = typeof crop?.x === 'number' ? crop.x : 50;
   const y = typeof crop?.y === 'number' ? crop.y : 50;
@@ -89,12 +96,16 @@ export class PersonAvatar extends React.Component {
     const photoWidth = PHOTO_WIDTH_BY_SIZE[size] || PHOTO_WIDTH_BY_SIZE.md;
     const initials = getInitials(name);
     const { imageLoaded, useFullSize } = this.state;
-    const cropStyle = getPhotoCropStyle(person);
+    const useServerCrop = !useFullSize && !isStaticSite();
+    const cropStyle = getPhotoCropStyle(person, useServerCrop);
 
     if (showPhoto) {
       const src = useFullSize
         ? photoUrl(person.photo)
-        : photoUrl(person.photo, { width: photoWidth });
+        : photoUrl(person.photo, {
+          width: photoWidth,
+          crop: useServerCrop ? person.photoCrop : undefined,
+        });
 
       return (
         <span className={`${classes} person-avatar-wrap${imageLoaded ? ' is-loaded' : ''}`} aria-label={name}>
