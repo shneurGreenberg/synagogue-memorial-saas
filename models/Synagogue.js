@@ -13,6 +13,7 @@ const PersonContactSchema = new mongoose.Schema({
 }, { _id: false });
 
 const ContactDirectoryEntrySchema = new mongoose.Schema({
+  id: { type: String, default: '' },
   name: { type: String, default: '' },
   phone: { type: String, default: '' },
   email: { type: String, default: '' },

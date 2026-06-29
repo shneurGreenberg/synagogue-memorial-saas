@@ -2,19 +2,30 @@
   var activeSuggestionList = null;
   var activeSuggestionRow = null;
   var searchTimer = null;
+  var manageSearchTimer = null;
+  var manageContactsCache = [];
+
+  function getPage() {
+    return document.querySelector('.people-page');
+  }
 
   function getSlug() {
-    var page = document.querySelector('.people-page');
+    var page = getPage();
     return page ? page.getAttribute('data-synagogue-slug') || '' : '';
   }
 
+  function getPageMessage(key) {
+    var page = getPage();
+    return page ? page.getAttribute(key) || '' : '';
+  }
+
   function getDirectoryCount() {
-    var page = document.querySelector('.people-page');
+    var page = getPage();
     return Number(page && page.getAttribute('data-contact-directory-count')) || 0;
   }
 
   function setDirectoryCount(count) {
-    var page = document.querySelector('.people-page');
+    var page = getPage();
     if (page) {
       page.setAttribute('data-contact-directory-count', String(count));
     }
@@ -185,6 +196,279 @@
     });
   }
 
+  function fetchDirectoryContacts(query) {
+    var slug = getSlug();
+    if (!slug) {
+      return Promise.resolve([]);
+    }
+
+    var params = new URLSearchParams();
+    if (query) {
+      params.set('q', query);
+    }
+
+    return fetch('/admin/' + encodeURIComponent(slug) + '/contacts?' + params.toString(), {
+      headers: { Accept: 'application/json' },
+      credentials: 'same-origin',
+    }).then(function (response) {
+      return response.json();
+    }).then(function (data) {
+      if (!data || !data.ok || !Array.isArray(data.contacts)) {
+        return [];
+      }
+      if (typeof data.total === 'number') {
+        setDirectoryCount(data.total);
+      } else {
+        setDirectoryCount(data.contacts.length);
+      }
+      manageContactsCache = data.contacts;
+      return data.contacts;
+    }).catch(function () {
+      return [];
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function renderManageContactsList(contacts) {
+    var listEl = document.getElementById('manageContactsList');
+    var emptyEl = document.getElementById('manageContactsEmpty');
+    var tableEl = document.getElementById('manageContactsTable');
+    if (!listEl) {
+      return;
+    }
+
+    listEl.innerHTML = '';
+
+    if (!contacts.length) {
+      if (emptyEl) {
+        emptyEl.hidden = false;
+      }
+      if (tableEl) {
+        tableEl.hidden = true;
+      }
+      return;
+    }
+
+    if (emptyEl) {
+      emptyEl.hidden = true;
+    }
+    if (tableEl) {
+      tableEl.hidden = false;
+    }
+
+    contacts.forEach(function (contact) {
+      var row = document.createElement('tr');
+      row.dataset.contactId = contact.id || '';
+      row.innerHTML = ''
+        + '<td>' + escapeHtml(contact.name || '—') + '</td>'
+        + '<td>' + escapeHtml(contact.phone || '—') + '</td>'
+        + '<td>' + escapeHtml(contact.email || '—') + '</td>'
+        + '<td class="manage-contacts-actions-col">'
+        + '<button type="button" class="btn-admin btn-admin-ghost btn-admin-sm manage-contact-edit-btn" data-contact-id="' + escapeHtml(contact.id) + '">' + escapeHtml(getPageMessage('data-edit-label') || 'Edit') + '</button> '
+        + '<button type="button" class="btn-admin btn-admin-danger btn-admin-sm manage-contact-delete-btn" data-contact-id="' + escapeHtml(contact.id) + '">×</button>'
+        + '</td>';
+      listEl.appendChild(row);
+    });
+  }
+
+  function showManageContactForm(contact) {
+    var form = document.getElementById('manageContactForm');
+    var idInput = document.getElementById('manageContactId');
+    var nameInput = document.getElementById('manageContactName');
+    var phoneInput = document.getElementById('manageContactPhone');
+    var emailInput = document.getElementById('manageContactEmail');
+    if (!form || !idInput || !nameInput || !phoneInput || !emailInput) {
+      return;
+    }
+
+    var source = contact || {};
+    idInput.value = source.id || '';
+    nameInput.value = source.name || '';
+    phoneInput.value = source.phone || '';
+    emailInput.value = source.email || '';
+    form.hidden = false;
+    nameInput.focus();
+  }
+
+  function hideManageContactForm() {
+    var form = document.getElementById('manageContactForm');
+    if (!form) {
+      return;
+    }
+
+    form.hidden = true;
+    form.reset();
+    var idInput = document.getElementById('manageContactId');
+    if (idInput) {
+      idInput.value = '';
+    }
+  }
+
+  function loadManageContacts() {
+    var searchInput = document.getElementById('manageContactsSearch');
+    var query = searchInput ? searchInput.value.trim() : '';
+    return fetchDirectoryContacts(query).then(renderManageContactsList);
+  }
+
+  function initManageContactsModal() {
+    var modal = document.getElementById('manageContactsModal');
+    var searchInput = document.getElementById('manageContactsSearch');
+    var addBtn = document.getElementById('manageContactsAddBtn');
+    var form = document.getElementById('manageContactForm');
+    var cancelBtn = document.getElementById('manageContactCancelBtn');
+    var listEl = document.getElementById('manageContactsList');
+
+    if (!modal || modal.dataset.bound === '1') {
+      return;
+    }
+
+    modal.dataset.bound = '1';
+
+    if (window.jQuery) {
+      window.jQuery(modal).on('shown.bs.modal', function () {
+        hideManageContactForm();
+        loadManageContacts();
+      });
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        clearTimeout(manageSearchTimer);
+        manageSearchTimer = window.setTimeout(loadManageContacts, 180);
+      });
+    }
+
+    if (addBtn) {
+      addBtn.addEventListener('click', function () {
+        showManageContactForm({});
+      });
+    }
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', function () {
+        hideManageContactForm();
+      });
+    }
+
+    if (listEl) {
+      listEl.addEventListener('click', function (event) {
+        var editBtn = event.target.closest('.manage-contact-edit-btn');
+        var deleteBtn = event.target.closest('.manage-contact-delete-btn');
+        var slug = getSlug();
+
+        if (editBtn) {
+          var contactId = editBtn.getAttribute('data-contact-id') || '';
+          var cached = manageContactsCache.find(function (entry) {
+            return entry.id === contactId;
+          });
+          if (cached) {
+            showManageContactForm(cached);
+            return;
+          }
+
+          var editRow = editBtn.closest('tr');
+          if (!editRow) {
+            return;
+          }
+          showManageContactForm({
+            id: contactId,
+            name: editRow.cells[0] ? editRow.cells[0].textContent : '',
+            phone: editRow.cells[1] && editRow.cells[1].textContent !== '—' ? editRow.cells[1].textContent : '',
+            email: editRow.cells[2] && editRow.cells[2].textContent !== '—' ? editRow.cells[2].textContent : '',
+          });
+          return;
+        }
+
+        if (!deleteBtn || !slug) {
+          return;
+        }
+
+        if (!window.confirm(getPageMessage('data-manage-contacts-delete-confirm') || 'Delete this contact?')) {
+          return;
+        }
+
+        var contactId = deleteBtn.getAttribute('data-contact-id');
+        fetch('/admin/' + encodeURIComponent(slug) + '/contacts/' + encodeURIComponent(contactId), {
+          method: 'DELETE',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            Accept: 'application/json',
+          },
+          credentials: 'same-origin',
+        }).then(function (response) {
+          return response.json().then(function (data) {
+            return { ok: response.ok, data: data };
+          });
+        }).then(function (result) {
+          if (!result.ok || !result.data || !result.data.ok) {
+            throw new Error((result.data && result.data.error) || 'Delete failed');
+          }
+          setDirectoryCount(result.data.total || 0);
+          hideManageContactForm();
+          return loadManageContacts();
+        }).catch(function (err) {
+          window.alert(err.message || 'Delete failed');
+        });
+      });
+    }
+
+    if (form) {
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var slug = getSlug();
+        if (!slug) {
+          return;
+        }
+
+        var idInput = document.getElementById('manageContactId');
+        var payload = {
+          name: (document.getElementById('manageContactName') || {}).value || '',
+          phone: (document.getElementById('manageContactPhone') || {}).value || '',
+          email: (document.getElementById('manageContactEmail') || {}).value || '',
+        };
+        var contactId = idInput ? idInput.value : '';
+        var url = '/admin/' + encodeURIComponent(slug) + '/contacts';
+        var method = 'POST';
+
+        if (contactId) {
+          url += '/' + encodeURIComponent(contactId);
+          method = 'PUT';
+        }
+
+        fetch(url, {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            Accept: 'application/json',
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify(payload),
+        }).then(function (response) {
+          return response.json().then(function (data) {
+            return { ok: response.ok, data: data };
+          });
+        }).then(function (result) {
+          if (!result.ok || !result.data || !result.data.ok) {
+            throw new Error((result.data && result.data.error) || 'Save failed');
+          }
+          setDirectoryCount(result.data.total || 0);
+          hideManageContactForm();
+          return loadManageContacts();
+        }).catch(function (err) {
+          window.alert(err.message || 'Save failed');
+        });
+      });
+    }
+  }
+
   function initImportForm() {
     var form = document.getElementById('importContactsForm');
     var fileInput = document.getElementById('importContactsFile');
@@ -253,6 +537,7 @@
     init: function () {
       refreshCountLabel();
       initImportForm();
+      initManageContactsModal();
       document.querySelectorAll('.admin-contact-row').forEach(attachAutocompleteToRow);
     },
   };

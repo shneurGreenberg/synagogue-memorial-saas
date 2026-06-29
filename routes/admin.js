@@ -56,6 +56,11 @@ const {
     mergeContactDirectories,
     normalizeContactDirectory,
     searchContactDirectory,
+    filterContactDirectory,
+    findDirectoryEntry,
+    addDirectoryEntry,
+    updateDirectoryEntry,
+    removeDirectoryEntry,
 } = require('../lib/contact-directory');
 const {
   parseYahrzeitRemindersFromBody,
@@ -1092,6 +1097,98 @@ router.get('/:slug/contacts/search', requireAdmin, requirePermission('people'), 
         return res.json({ ok: true, results });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.get('/:slug/contacts', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        if (!synagogue) {
+            return res.status(404).json({ ok: false, error: 'Not found' });
+        }
+
+        const contacts = filterContactDirectory(synagogue.contactDirectory, req.query.q);
+        const total = normalizeContactDirectory(synagogue.contactDirectory).length;
+        return res.json({ ok: true, contacts, total });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.post('/:slug/contacts', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        if (!synagogue) {
+            return res.status(404).json({ ok: false, error: 'Not found' });
+        }
+
+        const before = normalizeContactDirectory(synagogue.contactDirectory);
+        const contactDirectory = addDirectoryEntry(synagogue.contactDirectory, req.body || {});
+        const after = normalizeContactDirectory(contactDirectory);
+        const added = after.find((entry) => !before.some((item) => item.id === entry.id))
+            || after[after.length - 1];
+
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            { $set: { contactDirectory: after } },
+            { runValidators: false },
+        );
+
+        return res.json({ ok: true, contact: added, total: after.length });
+    } catch (err) {
+        return res.status(400).json({ ok: false, error: err.message });
+    }
+});
+
+router.put('/:slug/contacts/:contactId', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        if (!synagogue) {
+            return res.status(404).json({ ok: false, error: 'Not found' });
+        }
+
+        const contactDirectory = updateDirectoryEntry(
+            synagogue.contactDirectory,
+            req.params.contactId,
+            req.body || {},
+        );
+        const contact = findDirectoryEntry(contactDirectory, req.params.contactId);
+
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            { $set: { contactDirectory } },
+            { runValidators: false },
+        );
+
+        return res.json({ ok: true, contact, total: contactDirectory.length });
+    } catch (err) {
+        const status = /not found/i.test(err.message) ? 404 : 400;
+        return res.status(status).json({ ok: false, error: err.message });
+    }
+});
+
+router.delete('/:slug/contacts/:contactId', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        if (!synagogue) {
+            return res.status(404).json({ ok: false, error: 'Not found' });
+        }
+
+        const contactDirectory = removeDirectoryEntry(synagogue.contactDirectory, req.params.contactId);
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            { $set: { contactDirectory } },
+            { runValidators: false },
+        );
+
+        return res.json({ ok: true, total: contactDirectory.length });
+    } catch (err) {
+        const status = /not found/i.test(err.message) ? 404 : 400;
+        return res.status(status).json({ ok: false, error: err.message });
     }
 });
 
