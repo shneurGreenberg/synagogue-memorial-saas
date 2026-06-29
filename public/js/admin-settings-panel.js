@@ -160,6 +160,18 @@
     setInputValue(hexId, value);
   }
 
+  var DEFAULT_BACKGROUND_IMAGE = 'brickwall.jpg';
+  var DEFAULT_TILES_BACKGROUND = 'wood2.png';
+
+  function applyBackgroundPath(hiddenId, previewId, path, defaultPath) {
+    var resolved = path ? String(path).trim() : '';
+    setInputValue(hiddenId, resolved);
+    var img = document.getElementById(previewId);
+    if (img) {
+      img.src = '/images/' + (resolved || defaultPath);
+    }
+  }
+
   function applySnapshotToSettingsForm(snapshot) {
     if (!snapshot) {
       return;
@@ -188,6 +200,19 @@
     if (theme.candlePalette) {
       setInputValue('candlePalette', theme.candlePalette);
     }
+
+    applyBackgroundPath(
+      'backgroundImageCurrent',
+      'backgroundImagePreview',
+      theme.backgroundImage,
+      DEFAULT_BACKGROUND_IMAGE,
+    );
+    applyBackgroundPath(
+      'tilesBackgroundCurrent',
+      'tilesBackgroundPreview',
+      theme.tilesBackground,
+      DEFAULT_TILES_BACKGROUND,
+    );
 
     if (snapshot.language) {
       setInputValue('language', snapshot.language);

@@ -38,6 +38,12 @@ export function mergePreviewPatch(data, patch) {
   if (patch.candlePalette) {
     next.theme.candlePalette = patch.candlePalette;
   }
+  if (patch.backgroundImage !== undefined) {
+    next.theme.backgroundImage = patch.backgroundImage;
+  }
+  if (patch.tilesBackground !== undefined) {
+    next.theme.tilesBackground = patch.tilesBackground;
+  }
   const fontScaleKeys = ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat', 'candle'];
   fontScaleKeys.forEach((key) => {
     const value = patch[`fontScale_${key}`];
@@ -89,6 +95,8 @@ export function previewPatchFromSearchParams(params) {
     || params.has('tileColor')
     || params.has('tileOpacity')
     || params.has('candlePalette')
+    || params.has('backgroundImage')
+    || params.has('tilesBackground')
     || params.has('fontScale_tileTitle')
     || params.has('titleRu')
     || params.has('titleEn')
@@ -110,6 +118,8 @@ export function previewPatchFromSearchParams(params) {
   if (params.has('tileColor')) patch.tileColor = params.get('tileColor');
   if (params.has('tileOpacity')) patch.tileOpacity = params.get('tileOpacity');
   if (params.has('candlePalette')) patch.candlePalette = params.get('candlePalette');
+  if (params.has('backgroundImage')) patch.backgroundImage = params.get('backgroundImage');
+  if (params.has('tilesBackground')) patch.tilesBackground = params.get('tilesBackground');
   ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat', 'candle'].forEach((key) => {
     if (params.has(`fontScale_${key}`)) {
       patch[`fontScale_${key}`] = params.get(`fontScale_${key}`);
