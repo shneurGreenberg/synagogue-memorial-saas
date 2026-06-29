@@ -151,37 +151,7 @@
                                 <label for="addText">{{t 'biography'}}</label>
                                 <textarea name="text" id="addText" class="form-control"></textarea>
                             </div>
-                            <div class="form-field">
-                                <h3 class="form-subsection-title">{{t 'contact_section'}}</h3>
-                            </div>
-                            <div class="form-field">
-                                <label for="addContactName">{{t 'contact_name'}}</label>
-                                <input type="text" name="contactName" id="addContactName" class="form-control">
-                            </div>
-                            <div class="admin-contact-channel-row">
-                                <div class="form-field admin-contact-platform-field">
-                                    <label for="addContactPlatform">{{t 'contact_platform'}}</label>
-                                    <div class="contact-platform-select-wrap">
-                                        <span class="contact-platform-icon" data-platform="none" aria-hidden="true"></span>
-                                        <select name="contactPlatform" id="addContactPlatform" class="form-control admin-contact-platform">
-                                            <option value="">{{t 'contact_platform_none'}}</option>
-                                            <option value="whatsapp">{{t 'contact_platform_whatsapp'}}</option>
-                                            <option value="telegram">{{t 'contact_platform_telegram'}}</option>
-                                            <option value="max">{{t 'contact_platform_max'}}</option>
-                                            <option value="sms">{{t 'contact_platform_sms'}}</option>
-                                            <option value="email">{{t 'contact_platform_email'}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-field admin-contact-phone-field">
-                                    <label for="addContactPhone">{{t 'contact_phone'}}</label>
-                                    <input type="tel" name="contactPhone" id="addContactPhone" class="form-control">
-                                </div>
-                            </div>
-                            <div class="form-field admin-contact-email-field" hidden>
-                                <label for="addContactEmail">{{t 'contact_email'}}</label>
-                                <input type="email" name="contactEmail" id="addContactEmail" class="form-control">
-                            </div>
+                            {{> admin-person-contacts}}
                         </div>
                     </div>
                 </div>
@@ -248,37 +218,7 @@
                                 <label for="editText">{{t 'biography'}}</label>
                                 <textarea name="text" id="editText" class="form-control"></textarea>
                             </div>
-                            <div class="form-field">
-                                <h3 class="form-subsection-title">{{t 'contact_section'}}</h3>
-                            </div>
-                            <div class="form-field">
-                                <label for="editContactName">{{t 'contact_name'}}</label>
-                                <input type="text" name="contactName" id="editContactName" class="form-control">
-                            </div>
-                            <div class="admin-contact-channel-row">
-                                <div class="form-field admin-contact-platform-field">
-                                    <label for="editContactPlatform">{{t 'contact_platform'}}</label>
-                                    <div class="contact-platform-select-wrap">
-                                        <span class="contact-platform-icon" data-platform="none" aria-hidden="true"></span>
-                                        <select name="contactPlatform" id="editContactPlatform" class="form-control admin-contact-platform">
-                                            <option value="">{{t 'contact_platform_none'}}</option>
-                                            <option value="whatsapp">{{t 'contact_platform_whatsapp'}}</option>
-                                            <option value="telegram">{{t 'contact_platform_telegram'}}</option>
-                                            <option value="max">{{t 'contact_platform_max'}}</option>
-                                            <option value="sms">{{t 'contact_platform_sms'}}</option>
-                                            <option value="email">{{t 'contact_platform_email'}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-field admin-contact-phone-field">
-                                    <label for="editContactPhone">{{t 'contact_phone'}}</label>
-                                    <input type="tel" name="contactPhone" id="editContactPhone" class="form-control">
-                                </div>
-                            </div>
-                            <div class="form-field admin-contact-email-field" hidden>
-                                <label for="editContactEmail">{{t 'contact_email'}}</label>
-                                <input type="email" name="contactEmail" id="editContactEmail" class="form-control">
-                            </div>
+                            {{> admin-person-contacts}}
                         </div>
                     </div>
                 </div>
@@ -291,4 +231,5 @@
     </div>
 </div>
 
+{{> admin-person-contact-template}}
 {{> admin-person-card-modal}}

@@ -7,6 +7,8 @@ const resources = {
       search_placeholder: 'Search by name...',
       nearest_dates: 'Upcoming Dates',
       memorial_prayer: 'Memorial Prayer',
+      kel_male_section_title: 'Memorial Prayer',
+      izkor_section_title: 'Yizkor',
       kel_male_rachamim: 'El Malei Rachamim',
       kel_male_rachamim_text:
         'God, full of mercy, Who dwells on high, grant proper rest on the wings of the Divine Presence, among the holy and pure who shine like the sky, to the souls of our brethren, the children of Israel, remembered here and to all the souls of Israel. For we pray for the elevation of their souls. Therefore may the Merciful One shelter them in the shelter of His wings for eternity, and bind their souls in the bond of life. The Lord is their heritage; may they rest in peace upon their beds, and let us say: Amen.',
@@ -71,6 +73,8 @@ const resources = {
       search_placeholder: 'Поиск по имени, фамилии, отчеству',
       nearest_dates: 'Ближайшие даты',
       memorial_prayer: 'Поминальная молитва',
+      kel_male_section_title: 'Поминальная молитва',
+      izkor_section_title: 'Поминальная молитва',
       kel_male_rachamim: 'Эль Мале Рахамим',
       kel_male_rachamim_text:
         'Б-г, исполненный милосердия, обитающий на высотах, даруй истинный покой на крыльях Шехины, среди святых и чистых, сияющих как небеса, душам наших братьев и сестёр, детей Израиля, поминаемых здесь, и всем душам Израиля. Ибо мы молимся о возвышении их душ. Пусть же Владыка милосердия укроет их в тени Своих крыльев навеки и свяжет их души в узел жизни. Господь — их удел; да упокоятся они с миром на ложе своём, и скажем: аминь.',
@@ -134,6 +138,8 @@ const resources = {
       search_placeholder: 'חיפוש לפי שם...',
       nearest_dates: 'תאריכים קרובים',
       memorial_prayer: 'תפילת זיכרון',
+      kel_male_section_title: 'תפילת זיכרון',
+      izkor_section_title: 'תפילת זיכרון',
       kel_male_rachamim: 'אל מלא רחמים',
       kel_male_rachamim_text:
         'אֵל מָלֵא רַחֲמִים, שׁוֹכֵן בַּמְּרוֹמִים, הַמְצֵא מְנוּחָה נְכוֹנָה עַל כַּנְפֵי הַשְּׁכִינָה, בְּמַעֲלוֹת קְדוֹשִׁים וּטְהוֹרִים כְּזוֹהַר הָרָקִיעַ מַזְהִירִים, לְנִשְׁמוֹת אַחֵינוּ וְאַחְיוֹתֵינוּ בְּנֵי יִשְׂרָאֵל הַנִּזְכָּרִים בְּמָקוֹם זֶה וּלְכָל נִשְׁמוֹת יִשְׂרָאֵל. בַּעֲבוּר שֶׁאֲנַחְנוּ מִתְפַּלְּלִים לְעִלּוּי נִשְׁמוֹתֵיהֶם. לָכֵן בַּעַל הָרַחֲמִים יַסְתִּירֵם בְּסֵתֶר כְּנָפָיו לְעוֹלָמִים, וְיִצְרוֹר בִּצְרוֹר הַחַיִּים אֶת נִשְׁמוֹתֵיהֶם, ה׳ הוּא נַחֲלָתָם, וְיָנוּחוּ בְּשָׁלוֹם עַל מִשְׁכָּבָם, וְנֹאמַר אָמֵן.',

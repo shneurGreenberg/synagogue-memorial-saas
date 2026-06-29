@@ -1,0 +1,38 @@
+<template id="adminContactRowTemplate">
+    <div class="admin-contact-row">
+        <div class="admin-contact-row-header">
+            <h4 class="admin-contact-row-title">{{t 'contact_section'}}</h4>
+            <button type="button" class="btn-admin btn-admin-ghost btn-admin-with-icon admin-remove-contact-btn" data-remove-contact>
+                {{{adminIcon 'delete' class='btn-admin-inline-icon'}}}{{t 'contact_remove'}}
+            </button>
+        </div>
+        <div class="form-field">
+            <label>{{t 'contact_name'}}</label>
+            <input type="text" data-field="name" class="form-control" maxlength="120">
+        </div>
+        <div class="admin-contact-channel-row">
+            <div class="form-field admin-contact-platform-field">
+                <label>{{t 'contact_platform'}}</label>
+                <div class="contact-platform-select-wrap">
+                    <span class="contact-platform-icon" data-platform="none" aria-hidden="true"></span>
+                    <select data-field="platform" class="form-control admin-contact-platform">
+                        <option value="">{{t 'contact_platform_none'}}</option>
+                        <option value="whatsapp">{{t 'contact_platform_whatsapp'}}</option>
+                        <option value="telegram">{{t 'contact_platform_telegram'}}</option>
+                        <option value="max">{{t 'contact_platform_max'}}</option>
+                        <option value="sms">{{t 'contact_platform_sms'}}</option>
+                        <option value="email">{{t 'contact_platform_email'}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-field admin-contact-phone-field">
+                <label>{{t 'contact_phone'}}</label>
+                <input type="tel" data-field="phone" class="form-control" maxlength="30">
+            </div>
+        </div>
+        <div class="form-field admin-contact-email-field" hidden>
+            <label>{{t 'contact_email'}}</label>
+            <input type="email" data-field="email" class="form-control" maxlength="200">
+        </div>
+    </div>
+</template>

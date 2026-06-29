@@ -899,10 +899,29 @@
             schedulePreview();
         }
 
+        function readBoardFeaturesPatch() {
+            var patch = {};
+            document.querySelectorAll('input[id^="feature_"]').forEach(function (input) {
+                patch[input.id] = input.checked ? '1' : '';
+            });
+            return patch;
+        }
+
+        function readFeatureSettingsPatch() {
+            var shabbat = document.getElementById('shabbatTimesEnabled');
+            var publicSubmission = document.getElementById('publicSubmissionEnabled');
+            var donationUrl = document.getElementById('publicSubmissionDonationUrl');
+            return {
+                shabbatTimesEnabled: shabbat && shabbat.checked ? '1' : '',
+                publicSubmissionEnabled: publicSubmission && publicSubmission.checked ? '1' : '',
+                publicSubmissionDonationUrl: donationUrl ? donationUrl.value.trim() : '',
+            };
+        }
+
         function readCurrentDesignPatch() {
             var patch = readPreviewPatch();
             var languageSelect = document.getElementById('language');
-            var payload = {
+            var payload = Object.assign({
                 name: '',
                 titleRu: patch.titleRu,
                 titleEn: patch.titleEn,
@@ -914,7 +933,7 @@
                 tileOpacity: patch.tileOpacity,
                 candlePalette: patch.candlePalette,
                 language: languageSelect ? languageSelect.value : 'ru',
-            };
+            }, readBoardFeaturesPatch(), readFeatureSettingsPatch());
             Object.keys(patch).forEach(function (key) {
                 if (key.indexOf('fontScale_') === 0 || key.indexOf('memorialQr') === 0) {
                     payload[key] = patch[key];

@@ -518,6 +518,19 @@
     });
   }
 
+  function collectContactsFromForm(form) {
+    const listEl = form.querySelector('[data-contacts-list]');
+    if (!listEl) {
+      return [];
+    }
+
+    return Array.from(listEl.querySelectorAll('.admin-contact-row'))
+      .map(readContactFromRow)
+      .filter(function (contact) {
+        return !!(contact.name || contact.phone || contact.email);
+      });
+  }
+
   async function submitPersonForm(form) {
     const submitBtn = form.querySelector('button[type="submit"]');
     if (submitBtn) {
@@ -525,9 +538,12 @@
     }
 
     try {
+      const formData = new FormData(form);
+      formData.set('contactsJson', JSON.stringify(collectContactsFromForm(form)));
+
       const response = await fetch(form.action, {
         method: 'POST',
-        body: new FormData(form),
+        body: formData,
         headers: {
           'X-Requested-With': 'XMLHttpRequest',
           Accept: 'application/json',
@@ -631,6 +647,23 @@
     });
   }
 
+  function getPersonContactList(person) {
+    if (!person) {
+      return [];
+    }
+
+    if (Array.isArray(person.contacts) && person.contacts.length) {
+      return person.contacts;
+    }
+
+    const legacy = person.contact || {};
+    if (legacy.name || legacy.phone || legacy.email) {
+      return [legacy];
+    }
+
+    return [];
+  }
+
   function syncContactPlatformFields(root) {
     if (!root) {
       return;
@@ -648,13 +681,141 @@
     emailField.hidden = !isEmail;
   }
 
-  function initContactPlatformToggles() {
-    document.querySelectorAll('.admin-contact-platform').forEach(function (select) {
-      const root = select.closest('.modal') || select.closest('form');
-      select.addEventListener('change', function () {
-        syncContactPlatformFields(root);
+  function reindexContactRows(listEl) {
+    const rows = listEl.querySelectorAll('.admin-contact-row');
+    rows.forEach(function (row, index) {
+      row.dataset.contactIndex = String(index);
+      row.querySelectorAll('[data-field]').forEach(function (input) {
+        const field = input.getAttribute('data-field');
+        input.name = 'contacts[' + index + '][' + field + ']';
       });
-      syncContactPlatformFields(root);
+
+      const removeBtn = row.querySelector('[data-remove-contact]');
+      if (removeBtn) {
+        removeBtn.hidden = rows.length <= 1;
+      }
+    });
+  }
+
+  function readContactFromRow(row) {
+    if (!row) {
+      return {};
+    }
+
+    return {
+      name: (row.querySelector('[data-field="name"]') || {}).value || '',
+      phone: (row.querySelector('[data-field="phone"]') || {}).value || '',
+      email: (row.querySelector('[data-field="email"]') || {}).value || '',
+      platform: (row.querySelector('[data-field="platform"]') || {}).value || '',
+    };
+  }
+
+  function fillContactRow(row, contact) {
+    const source = contact || {};
+    const nameInput = row.querySelector('[data-field="name"]');
+    const phoneInput = row.querySelector('[data-field="phone"]');
+    const emailInput = row.querySelector('[data-field="email"]');
+    const platformSelect = row.querySelector('[data-field="platform"]');
+
+    if (nameInput) nameInput.value = source.name || '';
+    if (phoneInput) phoneInput.value = source.phone || '';
+    if (emailInput) emailInput.value = source.email || '';
+    if (platformSelect) platformSelect.value = source.platform || '';
+
+    syncContactPlatformFields(row);
+    if (window.ContactPlatformUI && platformSelect) {
+      window.ContactPlatformUI.syncPlatformIcon(platformSelect);
+    }
+  }
+
+  function createContactRow(listEl, contact) {
+    const template = document.getElementById('adminContactRowTemplate');
+    if (!template || !listEl) {
+      return null;
+    }
+
+    const fragment = template.content.cloneNode(true);
+    const row = fragment.querySelector('.admin-contact-row');
+    if (!row) {
+      return null;
+    }
+
+    listEl.appendChild(fragment);
+    const appended = listEl.lastElementChild;
+    fillContactRow(appended, contact);
+
+    const platformSelect = appended.querySelector('[data-field="platform"]');
+    if (platformSelect) {
+      platformSelect.addEventListener('change', function () {
+        syncContactPlatformFields(appended);
+        if (window.ContactPlatformUI) {
+          window.ContactPlatformUI.syncPlatformIcon(platformSelect);
+        }
+      });
+    }
+
+    const removeBtn = appended.querySelector('[data-remove-contact]');
+    if (removeBtn) {
+      removeBtn.addEventListener('click', function () {
+        if (listEl.querySelectorAll('.admin-contact-row').length <= 1) {
+          fillContactRow(appended, {});
+          return;
+        }
+
+        appended.remove();
+        reindexContactRows(listEl);
+      });
+    }
+
+    reindexContactRows(listEl);
+    return appended;
+  }
+
+  function renderContactsList(listEl, contacts) {
+    if (!listEl) {
+      return;
+    }
+
+    listEl.innerHTML = '';
+    const items = contacts && contacts.length ? contacts : [{}];
+    items.forEach(function (contact) {
+      createContactRow(listEl, contact);
+    });
+  }
+
+  function initContactsManager(scope) {
+    if (!scope) {
+      return;
+    }
+
+    const listEl = scope.querySelector('[data-contacts-list]');
+    const addBtn = scope.querySelector('[data-add-contact]');
+    if (!listEl || !addBtn || listEl.dataset.contactsBound === '1') {
+      return;
+    }
+
+    listEl.dataset.contactsBound = '1';
+    addBtn.addEventListener('click', function () {
+      createContactRow(listEl, {});
+    });
+  }
+
+  function populateContactsSection(scope, person) {
+    const listEl = scope && scope.querySelector('[data-contacts-list]');
+    if (!listEl) {
+      return;
+    }
+
+    renderContactsList(listEl, getPersonContactList(person));
+  }
+
+  function resetContactsSection(scope) {
+    populateContactsSection(scope, null);
+  }
+
+  function initContactPlatformToggles() {
+    document.querySelectorAll('.admin-contacts-section').forEach(function (section) {
+      initContactsManager(section.closest('.modal') || section.closest('form') || section);
     });
   }
 
@@ -681,19 +842,7 @@
       deletePhotoInput.value = '';
     }
 
-    const contact = person.contact || {};
-    const editContactName = document.getElementById('editContactName');
-    const editContactPhone = document.getElementById('editContactPhone');
-    const editContactEmail = document.getElementById('editContactEmail');
-    const editContactPlatform = document.getElementById('editContactPlatform');
-    if (editContactName) editContactName.value = contact.name || '';
-    if (editContactPhone) editContactPhone.value = contact.phone || '';
-    if (editContactEmail) editContactEmail.value = contact.email || '';
-    if (editContactPlatform) editContactPlatform.value = contact.platform || '';
-    syncContactPlatformFields(document.getElementById('editPersonModal'));
-    if (window.ContactPlatformUI) {
-      window.ContactPlatformUI.syncPlatformIcon(editContactPlatform);
-    }
+    populateContactsSection(document.getElementById('editPersonModal'), person);
 
     if (person.photo) {
       cropEditors.edit.setCrop(
@@ -760,6 +909,7 @@
           list.appendChild(row);
           updateListRowPhoto(person.id, person.photoCrop, person.photo || null);
           addForm.reset();
+          resetContactsSection(document.getElementById('addPersonModal'));
           cropEditors.add.clearCrop();
           hideModal('#addPersonModal');
           applyFilters();
@@ -810,6 +960,7 @@
     initLazyPhotos(list);
     initEditModalHandlers();
     initContactPlatformToggles();
+    resetContactsSection(document.getElementById('addPersonModal'));
     if (window.ContactPlatformUI) {
       window.ContactPlatformUI.init();
     }

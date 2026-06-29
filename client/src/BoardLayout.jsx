@@ -5,7 +5,6 @@ import { BoardDataProvider } from './context/BoardDataContext';
 import { ThemeStyles } from './components/ThemeStyles';
 import { IdleReload } from './components/IdleReload';
 import { useBoardData } from './context/BoardDataContext';
-import { BoardLanguageSwitcher } from './components/BoardLanguageSwitcher';
 import { BoardVersionBadge } from './components/BoardVersionBadge';
 import { BaruchHashemBadge } from './components/BaruchHashemBadge';
 import HomePage from './pages/HomePage';
@@ -47,7 +46,6 @@ function BoardLayoutInner() {
       <IdleReload />
       <BoardVersionBadge />
       <BaruchHashemBadge />
-      <BoardLanguageSwitcher />
       <div id="main-entry">
         <HomePage />
         {personId ? <CardPage personId={personId} /> : null}

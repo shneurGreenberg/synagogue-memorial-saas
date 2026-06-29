@@ -55,43 +55,53 @@
                     <div class="yahrzeit-tile-candle" aria-hidden="true">🕯</div>
                 </div>
 
-                <div class="yahrzeit-details">
-                    <div class="yahrzeit-contact-block">
-                        <h3>{{t 'contact_section'}}</h3>
-                        {{#if this.hasContactDetails}}
-                        {{#if this.contact.phone}}
-                        <p><strong>{{t 'contact_phone'}}:</strong> {{this.contact.phone}}</p>
-                        {{/if}}
-                        {{#if this.contact.email}}
-                        <p><strong>{{t 'contact_email'}}:</strong> {{this.contact.email}}</p>
-                        {{/if}}
-                        {{#if this.contact.name}}
-                        <p><strong>{{t 'contact_name'}}:</strong> {{this.contact.name}}</p>
-                        {{/if}}
-                        {{#if this.contact.platform}}
-                        {{#if (or this.contact.phone this.contact.email)}}
-                        <p><strong>{{t 'contact_platform'}}:</strong> {{this.contactPlatformLabel}}</p>
-                        {{/if}}
-                        {{/if}}
-                        {{else}}
-                        <p class="seed-notice">{{t 'yahrzeit_no_contact'}}</p>
-                        {{/if}}
-                    </div>
-
-                    <div class="yahrzeit-message-block">
-                        <h3>{{t 'yahrzeit_prepared_message'}}</h3>
-                        <textarea class="form-control yahrzeit-message" rows="8" readonly>{{this.preparedMessage}}</textarea>
-                        <div class="yahrzeit-actions">
-                            <button type="button" class="btn-admin btn-admin-secondary yahrzeit-copy-btn btn-admin-with-icon" data-message="{{this.preparedMessage}}">
-                                <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                                {{t 'yahrzeit_copy_message'}}
-                            </button>
-                            {{#if this.contactLink}}
-                            <a href="{{this.contactLink}}" class="btn-admin btn-admin-primary yahrzeit-send-btn btn-admin-with-icon" data-person-id="{{this.id}}" data-person-name="{{this.name}}" data-export-url="/s/{{../synagogue.slug}}/card/{{this.id}}?export=1" target="_blank" rel="noopener noreferrer">
-                                <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-                                {{t 'yahrzeit_send_contact'}}
-                            </a>
+                    <div class="yahrzeit-details">
+                        {{#if this.contacts.length}}
+                        {{#each this.contacts}}
+                        <div class="yahrzeit-contact-block">
+                            <h3>{{t 'contact_section'}}{{#if this.contact.name}} — {{this.contact.name}}{{/if}}</h3>
+                            {{#if this.hasContactDetails}}
+                            {{#if this.contact.phone}}
+                            <p><strong>{{t 'contact_phone'}}:</strong> {{this.contact.phone}}</p>
                             {{/if}}
+                            {{#if this.contact.email}}
+                            <p><strong>{{t 'contact_email'}}:</strong> {{this.contact.email}}</p>
+                            {{/if}}
+                            {{#if this.contact.platform}}
+                            {{#if (or this.contact.phone this.contact.email)}}
+                            <p><strong>{{t 'contact_platform'}}:</strong> {{this.contactPlatformLabel}}</p>
+                            {{/if}}
+                            {{/if}}
+                            {{else}}
+                            <p class="seed-notice">{{t 'yahrzeit_no_contact'}}</p>
+                            {{/if}}
+
+                            <div class="yahrzeit-message-block">
+                                <h3>{{t 'yahrzeit_prepared_message'}}</h3>
+                                <textarea class="form-control yahrzeit-message" rows="8" readonly>{{this.preparedMessage}}</textarea>
+                                <div class="yahrzeit-actions">
+                                    <button type="button" class="btn-admin btn-admin-secondary yahrzeit-copy-btn btn-admin-with-icon" data-message="{{this.preparedMessage}}">
+                                        <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                                        {{t 'yahrzeit_copy_message'}}
+                                    </button>
+                                    {{#if this.contactLink}}
+                                    <a href="{{this.contactLink}}" class="btn-admin btn-admin-primary yahrzeit-send-btn btn-admin-with-icon" data-person-id="{{../id}}" data-contact-index="{{this.contactIndex}}" data-person-name="{{../name}}" data-export-url="/s/{{../../synagogue.slug}}/card/{{../id}}?export=1" target="_blank" rel="noopener noreferrer">
+                                        <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                                        {{t 'yahrzeit_send_contact'}}
+                                    </a>
+                                    {{/if}}
+                                </div>
+                            </div>
+                        </div>
+                        {{/each}}
+                        {{else}}
+                        <div class="yahrzeit-contact-block">
+                            <h3>{{t 'contact_section'}}</h3>
+                            <p class="seed-notice">{{t 'yahrzeit_no_contact'}}</p>
+                        </div>
+                        {{/if}}
+
+                        <div class="yahrzeit-actions yahrzeit-card-actions">
                             <a href="{{this.boardCardUrl}}" class="btn-admin btn-admin-ghost btn-admin-with-icon" target="_blank" rel="noopener noreferrer">
                                 <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
                                 {{t 'yahrzeit_view_board'}}
@@ -102,7 +112,6 @@
                             </a>
                         </div>
                     </div>
-                </div>
             </div>
         </article>
         {{/each}}
@@ -141,43 +150,53 @@
                     <div class="yahrzeit-tile-candle" aria-hidden="true">🕯</div>
                 </div>
 
-                <div class="yahrzeit-details">
-                    <div class="yahrzeit-contact-block">
-                        <h3>{{t 'contact_section'}}</h3>
-                        {{#if this.hasContactDetails}}
-                        {{#if this.contact.phone}}
-                        <p><strong>{{t 'contact_phone'}}:</strong> {{this.contact.phone}}</p>
-                        {{/if}}
-                        {{#if this.contact.email}}
-                        <p><strong>{{t 'contact_email'}}:</strong> {{this.contact.email}}</p>
-                        {{/if}}
-                        {{#if this.contact.name}}
-                        <p><strong>{{t 'contact_name'}}:</strong> {{this.contact.name}}</p>
-                        {{/if}}
-                        {{#if this.contact.platform}}
-                        {{#if (or this.contact.phone this.contact.email)}}
-                        <p><strong>{{t 'contact_platform'}}:</strong> {{this.contactPlatformLabel}}</p>
-                        {{/if}}
-                        {{/if}}
-                        {{else}}
-                        <p class="seed-notice">{{t 'yahrzeit_no_contact'}}</p>
-                        {{/if}}
-                    </div>
-
-                    <div class="yahrzeit-message-block">
-                        <h3>{{t 'yahrzeit_prepared_message'}}</h3>
-                        <textarea class="form-control yahrzeit-message" rows="8" readonly>{{this.preparedMessage}}</textarea>
-                        <div class="yahrzeit-actions">
-                            <button type="button" class="btn-admin btn-admin-secondary yahrzeit-copy-btn btn-admin-with-icon" data-message="{{this.preparedMessage}}">
-                                <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                                {{t 'yahrzeit_copy_message'}}
-                            </button>
-                            {{#if this.contactLink}}
-                            <a href="{{this.contactLink}}" class="btn-admin btn-admin-primary yahrzeit-send-btn btn-admin-with-icon" data-person-id="{{this.id}}" data-person-name="{{this.name}}" data-export-url="/s/{{../synagogue.slug}}/card/{{this.id}}?export=1" target="_blank" rel="noopener noreferrer">
-                                <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-                                {{t 'yahrzeit_send_contact'}}
-                            </a>
+                    <div class="yahrzeit-details">
+                        {{#if this.contacts.length}}
+                        {{#each this.contacts}}
+                        <div class="yahrzeit-contact-block">
+                            <h3>{{t 'contact_section'}}{{#if this.contact.name}} — {{this.contact.name}}{{/if}}</h3>
+                            {{#if this.hasContactDetails}}
+                            {{#if this.contact.phone}}
+                            <p><strong>{{t 'contact_phone'}}:</strong> {{this.contact.phone}}</p>
                             {{/if}}
+                            {{#if this.contact.email}}
+                            <p><strong>{{t 'contact_email'}}:</strong> {{this.contact.email}}</p>
+                            {{/if}}
+                            {{#if this.contact.platform}}
+                            {{#if (or this.contact.phone this.contact.email)}}
+                            <p><strong>{{t 'contact_platform'}}:</strong> {{this.contactPlatformLabel}}</p>
+                            {{/if}}
+                            {{/if}}
+                            {{else}}
+                            <p class="seed-notice">{{t 'yahrzeit_no_contact'}}</p>
+                            {{/if}}
+
+                            <div class="yahrzeit-message-block">
+                                <h3>{{t 'yahrzeit_prepared_message'}}</h3>
+                                <textarea class="form-control yahrzeit-message" rows="8" readonly>{{this.preparedMessage}}</textarea>
+                                <div class="yahrzeit-actions">
+                                    <button type="button" class="btn-admin btn-admin-secondary yahrzeit-copy-btn btn-admin-with-icon" data-message="{{this.preparedMessage}}">
+                                        <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                                        {{t 'yahrzeit_copy_message'}}
+                                    </button>
+                                    {{#if this.contactLink}}
+                                    <a href="{{this.contactLink}}" class="btn-admin btn-admin-primary yahrzeit-send-btn btn-admin-with-icon" data-person-id="{{../id}}" data-contact-index="{{this.contactIndex}}" data-person-name="{{../name}}" data-export-url="/s/{{../../synagogue.slug}}/card/{{../id}}?export=1" target="_blank" rel="noopener noreferrer">
+                                        <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                                        {{t 'yahrzeit_send_contact'}}
+                                    </a>
+                                    {{/if}}
+                                </div>
+                            </div>
+                        </div>
+                        {{/each}}
+                        {{else}}
+                        <div class="yahrzeit-contact-block">
+                            <h3>{{t 'contact_section'}}</h3>
+                            <p class="seed-notice">{{t 'yahrzeit_no_contact'}}</p>
+                        </div>
+                        {{/if}}
+
+                        <div class="yahrzeit-actions yahrzeit-card-actions">
                             <a href="{{this.boardCardUrl}}" class="btn-admin btn-admin-ghost btn-admin-with-icon" target="_blank" rel="noopener noreferrer">
                                 <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
                                 {{t 'yahrzeit_view_board'}}
@@ -188,7 +207,6 @@
                             </a>
                         </div>
                     </div>
-                </div>
             </div>
         </article>
         {{/each}}

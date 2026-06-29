@@ -123,7 +123,7 @@ export class MemorialPrayersPanel extends React.Component {
     }
   }
 
-  renderPrayerBlock(id, heading, text, extraClass, audioSrc) {
+  renderPrayerBlock(id, sectionTitle, heading, text, extraClass, audioSrc) {
     const prayer = { id, heading, text, extraClass, audioSrc };
 
     return (
@@ -136,6 +136,9 @@ export class MemorialPrayersPanel extends React.Component {
         onClick={() => this.openPrayer(prayer)}
         onKeyDown={(event) => this.onPrayerKeyDown(event, prayer)}
       >
+        {sectionTitle && (
+          <h2 className="memorial-prayers-section-title">{sectionTitle}</h2>
+        )}
         <h1 id={id}>{heading}</h1>
         <PrayerTextScroller text={text} big={this.props.big} />
       </section>
@@ -145,7 +148,8 @@ export class MemorialPrayersPanel extends React.Component {
   render() {
     const {
       big,
-      memorialPrayerLabel,
+      kelMaleSectionTitle,
+      izkorSectionTitle,
       kelMaleHeading,
       kelMaleText,
       izkorHeading,
@@ -171,11 +175,9 @@ export class MemorialPrayersPanel extends React.Component {
           />
         )}
         <div className={`memorial-prayers ${big ? 'memorial-prayers-big' : ''}`}>
-          {(showKelMale && showIzkor) && (
-            <h2 className="memorial-prayers-section-title">{memorialPrayerLabel}</h2>
-          )}
           {showKelMale && this.renderPrayerBlock(
             'kel-male-heading',
+            kelMaleSectionTitle,
             kelMaleHeading,
             kelMaleText,
             'kel-male',
@@ -183,6 +185,7 @@ export class MemorialPrayersPanel extends React.Component {
           )}
           {showIzkor && this.renderPrayerBlock(
             'yizkor-heading',
+            izkorSectionTitle,
             izkorHeading,
             izkorText,
             'yizkor',

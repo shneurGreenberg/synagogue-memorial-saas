@@ -29,6 +29,7 @@ const PersonSchema = new mongoose.Schema({
   title: String,
   text: String,
   contact: { type: PersonContactSchema, default: () => ({}) },
+  contacts: { type: [PersonContactSchema], default: undefined },
 });
 
 const DailyCiteSchema = new mongoose.Schema({
@@ -140,6 +141,28 @@ const SavedViewSchema = new mongoose.Schema({
       titleScaleBaseline: Number,
       textScaleBaseline: Number,
       qrScaleBaseline: Number,
+    },
+    boardFeatures: {
+      sidebarNames: Boolean,
+      dailyChumash: Boolean,
+      dailyTehillim: Boolean,
+      dailyTanya: Boolean,
+      dailyRambam: Boolean,
+      hayomYom: Boolean,
+      upcomingHolidays: Boolean,
+      communityEvents: Boolean,
+      kelMaleRachamim: Boolean,
+      izkor: Boolean,
+      weather: Boolean,
+      sunriseSunset: Boolean,
+      officialLogo: Boolean,
+    },
+    shabbatTimesEnabled: Boolean,
+    publicSubmission: {
+      enabled: Boolean,
+      donationUrl: String,
+      donationQrImage: String,
+      registrationQrImage: String,
     },
   },
 }, { _id: true, id: false });

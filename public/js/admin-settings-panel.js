@@ -220,6 +220,18 @@
         output.textContent = pair[1] + '%';
       }
     });
+
+    var boardFeatures = snapshot.boardFeatures || {};
+    Object.keys(boardFeatures).forEach(function (key) {
+      setCheckboxValue('feature_' + key, boardFeatures[key]);
+    });
+    setCheckboxValue('shabbatTimesEnabled', snapshot.shabbatTimesEnabled);
+
+    var publicSubmission = snapshot.publicSubmission || {};
+    setCheckboxValue('publicSubmissionEnabled', publicSubmission.enabled);
+    if (publicSubmission.donationUrl != null) {
+      setInputValue('publicSubmissionDonationUrl', publicSubmission.donationUrl);
+    }
   }
 
   function parseJsonResponse(response) {

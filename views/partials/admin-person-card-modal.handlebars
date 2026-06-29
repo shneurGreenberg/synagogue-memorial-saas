@@ -25,16 +25,13 @@
                         <div class="admin-person-card-section" id="personCardContactSection">
                             <h3>{{t 'contact_section'}}</h3>
                             <p id="personCardNoContact" class="seed-notice">{{t 'yahrzeit_no_contact'}}</p>
-                            <p id="personCardContactName" hidden><strong>{{t 'contact_name'}}:</strong> <span></span></p>
-                            <p id="personCardContactPhone" hidden><strong>{{t 'contact_phone'}}:</strong> <span></span></p>
-                            <p id="personCardContactEmail" hidden><strong>{{t 'contact_email'}}:</strong> <span></span></p>
-                            <p id="personCardContactPlatform" hidden><strong>{{t 'contact_platform'}}:</strong> <span></span></p>
+                            <div id="personCardContactsList" class="admin-person-card-contacts"></div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer admin-person-card-footer">
-                <button type="button" class="btn-admin btn-admin-primary btn-admin-with-icon" id="personCardSendBtn" hidden>{{{adminIcon 'send' class='btn-admin-inline-icon'}}}{{t 'yahrzeit_send_contact'}}</button>
+                <div id="personCardSendActions" class="admin-person-card-send-actions"></div>
                 <button type="button" class="btn-admin btn-admin-secondary btn-admin-with-icon" id="personCardEditBtn">{{{adminIcon 'edit' class='btn-admin-inline-icon'}}}{{t 'edit'}}</button>
                 <button type="button" class="btn-admin btn-admin-danger btn-admin-with-icon" id="personCardDeleteBtn">{{{adminIcon 'delete' class='btn-admin-inline-icon'}}}{{t 'delete'}}</button>
             </div>

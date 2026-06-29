@@ -705,6 +705,71 @@ body.admin-login-page {
   }
 }
 
+.admin-contacts-section {
+  margin-top: 0.5rem;
+}
+
+.admin-contacts-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-contact-row {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.admin-contact-row-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.admin-contact-row-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.admin-add-contact-btn {
+  margin-top: 0.75rem;
+}
+
+.admin-person-card-contacts {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-person-card-contact-block {
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 10px;
+
+  h4 {
+    margin: 0 0 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  p {
+    margin: 0.2rem 0;
+  }
+}
+
+.admin-person-card-send-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-inline-end: auto;
+}
+
+.yahrzeit-card-actions {
+  margin-top: 0.75rem;
+}
+
 .contact-platform-select-wrap {
   position: relative;
   display: block;

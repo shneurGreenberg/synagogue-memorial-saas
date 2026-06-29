@@ -395,7 +395,8 @@ class HomePageBase extends React.Component {
                   big
                   showKelMale={boardFeatures.kelMaleRachamim}
                   showIzkor={boardFeatures.izkor}
-                  memorialPrayerLabel={this.props.t('memorial_prayer')}
+                  kelMaleSectionTitle={this.props.t('kel_male_section_title')}
+                  izkorSectionTitle={this.props.t('izkor_section_title')}
                   kelMaleHeading={this.props.t('kel_male_rachamim')}
                   kelMaleText={this.props.t('kel_male_rachamim_text')}
                   izkorHeading={this.props.t('izkor')}

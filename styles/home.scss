@@ -384,7 +384,7 @@
 
         h1 {
           flex-shrink: 0;
-          font-size: clamp(18px, 1.7vw, 24px);
+          font-size: clamp(16px, 1.45vw, 21px);
           white-space: normal;
           margin: 0 0 6px;
           @include golden-text-mixin;

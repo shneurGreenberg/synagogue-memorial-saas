@@ -50,7 +50,7 @@ const {
   permissionAllows,
 } = require('../lib/admin-users');
 const { parsePublicSubmissionFromBody } = require('../lib/public-submission');
-const { parsePersonContactFromBody, normalizePersonContact } = require('../lib/person-contact');
+const { parsePersonContactsFromBody, normalizePersonContact, personContactsToLegacyFields, getPersonContacts, hasContactDetails } = require('../lib/person-contact');
 const {
   parseYahrzeitRemindersFromBody,
   buildYahrzeitPageEntries,
@@ -576,6 +576,12 @@ router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('sett
             logo: synagogue.theme?.logo || '',
             backgroundImage: synagogue.theme?.backgroundImage || '',
             tilesBackground: synagogue.theme?.tilesBackground || '',
+            publicSubmission: {
+                enabled: req.body.publicSubmissionEnabled,
+                donationUrl: req.body.publicSubmissionDonationUrl,
+                donationQrImage: synagogue.publicSubmission?.donationQrImage || '',
+                registrationQrImage: synagogue.publicSubmission?.registrationQrImage || '',
+            },
         }, synagogue);
         const screenshot = await saveViewThumbnail(snapshot, req.body.screenshotDataUrl);
         const view = {
@@ -664,6 +670,16 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
             logo: synagogue.theme?.logo || existing.snapshot?.theme?.logo || '',
             backgroundImage: synagogue.theme?.backgroundImage || existing.snapshot?.theme?.backgroundImage || '',
             tilesBackground: synagogue.theme?.tilesBackground || existing.snapshot?.theme?.tilesBackground || '',
+            publicSubmission: {
+                enabled: req.body.publicSubmissionEnabled,
+                donationUrl: req.body.publicSubmissionDonationUrl,
+                donationQrImage: synagogue.publicSubmission?.donationQrImage
+                    || existing.snapshot?.publicSubmission?.donationQrImage
+                    || '',
+                registrationQrImage: synagogue.publicSubmission?.registrationQrImage
+                    || existing.snapshot?.publicSubmission?.registrationQrImage
+                    || '',
+            },
         }, synagogue);
         const screenshot = await saveViewThumbnail(snapshot, req.body.screenshotDataUrl);
         if (existing.screenshot && existing.screenshot !== screenshot) {
@@ -852,7 +868,7 @@ router.get('/:slug/preview-board', requireAdmin, requirePermission('settings'), 
 
 function normalizeImportedPerson(raw, fallbackId) {
     const death = raw.gregorianDateOfDeath || raw.dateOfDeath || {};
-    return {
+    const person = {
         id: fallbackId,
         name: String(raw.name || '').trim(),
         text: sanitizeRichText(raw.text || ''),
@@ -869,7 +885,19 @@ function normalizeImportedPerson(raw, fallbackId) {
             email: raw.contactEmail,
             platform: raw.contactPlatform,
         }),
+        contacts: Array.isArray(raw.contacts)
+            ? raw.contacts.map(normalizePersonContact).filter((entry) => entry.name || entry.phone || entry.email)
+            : undefined,
     };
+
+    const legacy = personContactsToLegacyFields(
+        person.contacts && person.contacts.length
+            ? person.contacts
+            : (hasContactDetails(person.contact) ? [person.contact] : []),
+    );
+    person.contact = legacy.contact;
+    person.contacts = legacy.contacts;
+    return person;
 }
 
 // People Management
@@ -973,7 +1001,21 @@ router.get('/:slug/people/message/:personId.json', requireAdmin, requirePermissi
 
         const enriched = enrichSynagogueForAdmin(synagogue);
         const displaySynagogue = applyUserDisplaySettings(enriched, req.adminUser);
-        const entry = buildContactMessageEntry(enriched, person, {
+        const contactIndex = Number.parseInt(req.query.contactIndex, 10);
+        const contacts = getPersonContacts(person);
+        const selectedContact = Number.isFinite(contactIndex) && contactIndex >= 0
+            ? contacts[contactIndex]
+            : contacts[0];
+
+        if (!selectedContact) {
+            return res.json({ ok: true, preparedMessage: '', contactLink: '', tileUrl: '', canSend: false });
+        }
+
+        const entry = buildContactMessageEntry(enriched, {
+            ...person,
+            contact: selectedContact,
+            contacts,
+        }, {
             adminLanguage: displaySynagogue.adminLanguage,
             missed: req.query.missed === '1',
         });
@@ -984,6 +1026,8 @@ router.get('/:slug/people/message/:personId.json', requireAdmin, requirePermissi
             contactLink: entry.contactLink,
             tileUrl: entry.tileUrl,
             canSend: !!entry.contactLink,
+            contactIndex: Number.isFinite(contactIndex) ? contactIndex : 0,
+            contactName: selectedContact.name || '',
         });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
@@ -1055,7 +1099,8 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { name, text, month, date, year } = req.body;
-        const contact = parsePersonContactFromBody(req.body);
+        const contacts = parsePersonContactsFromBody(req.body);
+        const legacy = personContactsToLegacyFields(contacts);
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
         const maxId = synagogue.people.reduce((max, p) => p.id > max ? p.id : max, 0);
 
@@ -1067,7 +1112,8 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
             photo: req.file ? await optimizeUploadedImage(req.file.path, 'photo') : '',
             photoCrop: req.file ? parsePhotoCropFromBody(req.body) : undefined,
             title: '',
-            contact,
+            contact: legacy.contact,
+            contacts: legacy.contacts,
         };
 
         await Synagogue.updateOne(
@@ -1089,14 +1135,16 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { id, name, text, month, date, year, deletePhoto } = req.body;
-        const contact = parsePersonContactFromBody(req.body);
+        const contacts = parsePersonContactsFromBody(req.body);
+        const legacy = personContactsToLegacyFields(contacts);
         const personId = parseInt(id);
 
         const updateFields = {
             'people.$.name': name,
             'people.$.text': sanitizeRichText(text),
             'people.$.gregorianDateOfDeath': { month: parseInt(month), date: parseInt(date), year: parseInt(year) },
-            'people.$.contact': contact,
+            'people.$.contact': legacy.contact,
+            'people.$.contacts': legacy.contacts,
         };
 
         if (req.file) {
