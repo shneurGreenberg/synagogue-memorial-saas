@@ -1,4 +1,4 @@
-<div class="admin-page people-page" data-synagogue-slug="{{synagogue.slug}}" data-contact-directory-count="{{synagogue.contactDirectoryCount}}" data-contact-directory-count-label="{{t 'contact_directory_count'}}" data-edit-label="{{t 'edit'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-delete-photo-confirm="{{t 'delete_photo_confirm'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-send-label="{{t 'yahrzeit_send_contact'}}" data-download-tile-label="{{t 'yahrzeit_download_tile'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}" data-contact-suggestion-label="{{t 'contact_pick_suggestion'}}">
+<div class="admin-page people-page" data-synagogue-slug="{{synagogue.slug}}" data-contact-directory-count="{{synagogue.contactDirectoryCount}}" data-contact-directory-count-label="{{t 'contact_directory_count'}}" data-manage-contacts-empty="{{t 'manage_contacts_empty'}}" data-manage-contacts-delete-confirm="{{t 'manage_contacts_delete_confirm'}}" data-manage-contacts-saved="{{t 'manage_contacts_saved'}}" data-manage-contacts-deleted="{{t 'manage_contacts_deleted'}}" data-edit-label="{{t 'edit'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-delete-photo-confirm="{{t 'delete_photo_confirm'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-send-label="{{t 'yahrzeit_send_contact'}}" data-download-tile-label="{{t 'yahrzeit_download_tile'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}" data-contact-suggestion-label="{{t 'contact_pick_suggestion'}}">
     <header class="admin-page-header">
         <div>
             <h1>{{t 'people'}}</h1>
@@ -14,6 +14,10 @@
             <button type="button" class="btn-admin btn-admin-secondary btn-admin-with-icon" data-toggle="modal" data-target="#importContactsModal">
                 {{{adminIcon 'import' class='btn-admin-inline-icon'}}}
                 {{t 'import_contacts'}}
+            </button>
+            <button type="button" class="btn-admin btn-admin-secondary btn-admin-with-icon" data-toggle="modal" data-target="#manageContactsModal" id="manageContactsBtn">
+                {{{adminIcon 'edit' class='btn-admin-inline-icon'}}}
+                {{t 'manage_contacts'}}
             </button>
             <button type="button" class="btn-admin btn-admin-primary btn-admin-with-icon" data-toggle="modal" data-target="#addPersonModal">
                 {{{adminIcon 'add' class='btn-admin-inline-icon'}}}
@@ -50,7 +54,7 @@
     <div class="people-toolbar">
         <input type="search" id="peopleSearch" class="form-control admin-input" style="max-width: 300px; flex: 1;"
             placeholder="{{t 'search_people'}}" aria-label="{{t 'search_people'}}">
-        <p class="seed-notice people-directory-count" id="contactDirectoryCount" hidden></p>
+        <button type="button" class="seed-notice people-directory-count people-directory-count-btn" id="contactDirectoryCount" hidden data-toggle="modal" data-target="#manageContactsModal"></button>
     </div>
 
     <div class="people-list" id="peopleList">
@@ -140,6 +144,62 @@
                     <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon" id="importContactsSubmit">{{{adminIcon 'import' class='btn-admin-inline-icon'}}}{{t 'import_contacts_submit'}}</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Manage Contacts Modal -->
+<div class="modal fade admin-modal" id="manageContactsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title">{{t 'manage_contacts_title'}}</h5>
+                    <p class="seed-notice manage-contacts-subtitle">{{t 'manage_contacts_subtitle'}}</p>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="{{t 'cancel'}}">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="manage-contacts-toolbar">
+                    <input type="search" id="manageContactsSearch" class="form-control admin-input" placeholder="{{t 'manage_contacts_search'}}" aria-label="{{t 'manage_contacts_search'}}">
+                    <button type="button" class="btn-admin btn-admin-secondary btn-admin-with-icon" id="manageContactsAddBtn">
+                        {{{adminIcon 'add' class='btn-admin-inline-icon'}}}{{t 'manage_contacts_add'}}
+                    </button>
+                </div>
+                <div class="manage-contacts-list-wrap">
+                    <table class="manage-contacts-table" id="manageContactsTable">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{t 'contact_name'}}</th>
+                                <th scope="col">{{t 'contact_phone'}}</th>
+                                <th scope="col">{{t 'contact_email'}}</th>
+                                <th scope="col" class="manage-contacts-actions-col">{{t 'actions'}}</th>
+                            </tr>
+                        </thead>
+                        <tbody id="manageContactsList"></tbody>
+                    </table>
+                    <p class="seed-notice manage-contacts-empty" id="manageContactsEmpty" hidden>{{t 'manage_contacts_empty'}}</p>
+                </div>
+                <form id="manageContactForm" class="manage-contact-form" hidden>
+                    <input type="hidden" id="manageContactId" value="">
+                    <div class="form-field">
+                        <label for="manageContactName">{{t 'contact_name'}}</label>
+                        <input type="text" id="manageContactName" class="form-control" maxlength="120">
+                    </div>
+                    <div class="form-field">
+                        <label for="manageContactPhone">{{t 'contact_phone'}}</label>
+                        <input type="tel" id="manageContactPhone" class="form-control" maxlength="30">
+                    </div>
+                    <div class="form-field">
+                        <label for="manageContactEmail">{{t 'contact_email'}}</label>
+                        <input type="email" id="manageContactEmail" class="form-control" maxlength="200">
+                    </div>
+                    <div class="manage-contact-form-actions">
+                        <button type="button" class="btn-admin btn-admin-ghost" id="manageContactCancelBtn">{{t 'cancel'}}</button>
+                        <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon" id="manageContactSaveBtn">{{{adminIcon 'save' class='btn-admin-inline-icon'}}}{{t 'manage_contacts_save'}}</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
