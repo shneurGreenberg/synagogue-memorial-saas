@@ -57,6 +57,46 @@
     return [];
   }
 
+  function normalizeCrop(crop) {
+    return {
+      x: Number(crop && crop.x) || 50,
+      y: Number(crop && crop.y) || 50,
+      zoom: Number(crop && crop.zoom) || 1,
+    };
+  }
+
+  function buildPhotoPreviewUrl(photo, crop, width) {
+    if (!photo) {
+      return '';
+    }
+
+    const normalized = normalizeCrop(crop);
+    let url = '/photos/' + encodeURIComponent(photo) + '?w=' + width;
+    url += '&cx=' + encodeURIComponent(normalized.x);
+    url += '&cy=' + encodeURIComponent(normalized.y);
+    if (normalized.zoom !== 1) {
+      url += '&cz=' + encodeURIComponent(normalized.zoom);
+    }
+    return url;
+  }
+
+  function resolveContactPlatform(contact) {
+    const platform = String(contact.platform || '').trim();
+    if (platform) {
+      return platform;
+    }
+
+    if (contact.phone) {
+      return 'max';
+    }
+
+    if (contact.email) {
+      return 'email';
+    }
+
+    return '';
+  }
+
   function initAdminPersonCard(options) {
     options = options || {};
     const modal = document.getElementById('personCardModal');
@@ -72,6 +112,7 @@
     const bioEl = document.getElementById('personCardBio');
     const contactSection = document.getElementById('personCardContactSection');
     const contactNoContact = document.getElementById('personCardNoContact');
+    const collectContactBtn = document.getElementById('personCardCollectContactBtn');
     const contactsList = document.getElementById('personCardContactsList');
     const sendActions = document.getElementById('personCardSendActions');
     const editBtn = document.getElementById('personCardEditBtn');
@@ -106,7 +147,7 @@
       addRow('Phone', contact.phone);
       addRow('Email', contact.email);
 
-      const platform = String(contact.platform || '').trim();
+      const platform = resolveContactPlatform(contact);
       if (platform && (contact.phone || contact.email)) {
         addRow('Platform', labels.platformLabels[platform] || platform);
       }
@@ -158,13 +199,17 @@
         contactNoContact.hidden = contacts.length > 0;
       }
 
+      if (collectContactBtn) {
+        collectContactBtn.classList.toggle('d-none', contacts.length > 0);
+      }
+
       contacts.forEach(function (contact, index) {
         if (contactsList) {
           contactsList.appendChild(renderContactBlock(contact, index));
         }
 
-        const platform = String(contact.platform || '').trim();
-        const canSend = !!platform && !!(contact.phone || contact.email);
+        const platform = resolveContactPlatform(contact);
+        const canSend = !!platform && (platform === 'email' ? !!contact.email : !!contact.phone);
         if (!canSend || !sendActions || !synagogueSlug || !person || person.id == null) {
           return;
         }
@@ -191,7 +236,7 @@
       activePerson = person;
       const hasPhoto = !!(person && person.photo);
       const thumbSrc = hasPhoto
-        ? '/photos/' + encodeURIComponent(person.photo) + '?w=400'
+        ? buildPhotoPreviewUrl(person.photo, person.photoCrop, 400)
         : '';
 
       if (photo) {
@@ -199,6 +244,9 @@
         if (hasPhoto) {
           photo.src = thumbSrc;
           photo.alt = person.name || '';
+          photo.style.objectFit = 'cover';
+          photo.style.objectPosition = 'center center';
+          photo.style.transform = '';
         }
       }
 
@@ -268,26 +316,32 @@
       $modal.modal('hide');
     }
 
-    if (editBtn) {
-      editBtn.addEventListener('click', function () {
-        if (!activePerson) {
+    function openEditFromCard() {
+      if (!activePerson) {
+        return;
+      }
+
+      const person = activePerson;
+      closePersonCardModal(function () {
+        const personId = person && person.id;
+        if (personId == null) {
           return;
         }
 
-        const person = activePerson;
-        closePersonCardModal(function () {
-          const personId = person && person.id;
-          if (personId == null) {
-            return;
-          }
-
-          if (typeof options.onEdit === 'function') {
-            options.onEdit(personId);
-          } else if (window.AdminPeople && typeof window.AdminPeople.openEditModal === 'function') {
-            window.AdminPeople.openEditModal(personId);
-          }
-        });
+        if (typeof options.onEdit === 'function') {
+          options.onEdit(personId);
+        } else if (window.AdminPeople && typeof window.AdminPeople.openEditModal === 'function') {
+          window.AdminPeople.openEditModal(personId);
+        }
       });
+    }
+
+    if (editBtn) {
+      editBtn.addEventListener('click', openEditFromCard);
+    }
+
+    if (collectContactBtn) {
+      collectContactBtn.addEventListener('click', openEditFromCard);
     }
 
     if (deleteBtn && deleteForm) {

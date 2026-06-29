@@ -26,8 +26,28 @@ export function photoUrl(filename, options = {}) {
     return base;
   }
 
+  const params = new URLSearchParams();
+  params.set('w', String(Math.round(width)));
+
+  const crop = options.crop;
+  if (crop && typeof crop === 'object') {
+    const x = Number(crop.x);
+    const y = Number(crop.y);
+    const zoom = Number(crop.zoom);
+
+    if (Number.isFinite(x)) {
+      params.set('cx', String(x));
+    }
+    if (Number.isFinite(y)) {
+      params.set('cy', String(y));
+    }
+    if (Number.isFinite(zoom) && zoom !== 1) {
+      params.set('cz', String(zoom));
+    }
+  }
+
   const separator = base.includes('?') ? '&' : '?';
-  return `${base}${separator}w=${Math.round(width)}`;
+  return `${base}${separator}${params.toString()}`;
 }
 
 export function isStaticSite() {

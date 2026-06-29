@@ -780,7 +780,7 @@
     }
 
     listEl.innerHTML = '';
-    const items = contacts && contacts.length ? contacts : [{}];
+    const items = contacts && contacts.length ? contacts : [{ platform: 'max' }];
     items.forEach(function (contact) {
       createContactRow(listEl, contact);
     });
@@ -799,7 +799,7 @@
 
     listEl.dataset.contactsBound = '1';
     addBtn.addEventListener('click', function () {
-      createContactRow(listEl, {});
+      createContactRow(listEl, { platform: 'max' });
     });
   }
 
