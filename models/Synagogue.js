@@ -12,6 +12,12 @@ const PersonContactSchema = new mongoose.Schema({
   },
 }, { _id: false });
 
+const ContactDirectoryEntrySchema = new mongoose.Schema({
+  name: { type: String, default: '' },
+  phone: { type: String, default: '' },
+  email: { type: String, default: '' },
+}, { _id: false });
+
 const PersonSchema = new mongoose.Schema({
   id: Number,
   name: String,
@@ -239,6 +245,7 @@ const SynagogueSchema = new mongoose.Schema({
   dailyCites: [DailyCiteSchema],
   communityEvents: [CommunityEventSchema],
   people: [PersonSchema],
+  contactDirectory: { type: [ContactDirectoryEntrySchema], default: [] },
   adminUsers: [AdminUserSchema],
   adminTheme: {
     colorMode: { type: String, enum: ['dark', 'light'], default: 'dark' },
