@@ -366,6 +366,22 @@ function requirePermission(permission) {
     };
 }
 
+function requireAnyPermission(...permissionKeys) {
+    return (req, res, next) => {
+        if (req.params.slug !== req.session.adminSlug) {
+            return res.status(403).send('Forbidden');
+        }
+
+        const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
+        const allowed = permissionKeys.some((key) => permissionAllows(permissions, key));
+        if (!allowed) {
+            return res.redirect(getDefaultLandingPath(req.params.slug, permissions));
+        }
+
+        return next();
+    };
+}
+
 router.get('/login', (req, res) => {
     res.render('admin/login', { layout: false });
 });
@@ -428,6 +444,7 @@ const ADMIN_NAV_BY_VIEW = {
     'admin/dashboard': 'settings',
     'admin/yahrzeit': 'yahrzeit',
     'admin/people': 'people',
+    'admin/contacts': 'contact-directory',
     'admin/events': 'events',
     'admin/users': 'users',
 };
@@ -1077,6 +1094,22 @@ router.get('/:slug/people', requireAdmin, requirePermission('people'), async (re
             adminPermissions: req.adminPermissions,
             imported: req.query.imported === '1',
             importError: req.query.importError === '1',
+        });
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+router.get('/:slug/contact-directory', requireAdmin, requirePermission('contactDirectory'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        const enriched = enrichSynagogueForAdmin(synagogue);
+        enriched.contactDirectoryCount = normalizeContactDirectory(enriched.contactDirectory).length;
+        renderAdmin(res, 'admin/contacts', {
+            synagogue: enriched,
+            adminUser: req.adminUser,
+            adminPermissions: req.adminPermissions,
             contactsImported: req.query.contactsImported === '1',
             contactsImportError: req.query.contactsImportError === '1',
         });
@@ -1085,7 +1118,7 @@ router.get('/:slug/people', requireAdmin, requirePermission('people'), async (re
     }
 });
 
-router.get('/:slug/contacts/search', requireAdmin, requirePermission('people'), async (req, res) => {
+router.get('/:slug/contacts/search', requireAdmin, requireAnyPermission('people', 'contactDirectory'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
     try {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
@@ -1100,7 +1133,7 @@ router.get('/:slug/contacts/search', requireAdmin, requirePermission('people'), 
     }
 });
 
-router.get('/:slug/contacts', requireAdmin, requirePermission('people'), async (req, res) => {
+router.get('/:slug/contacts', requireAdmin, requirePermission('contactDirectory'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
     try {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
@@ -1116,7 +1149,7 @@ router.get('/:slug/contacts', requireAdmin, requirePermission('people'), async (
     }
 });
 
-router.post('/:slug/contacts', requireAdmin, requirePermission('people'), async (req, res) => {
+router.post('/:slug/contacts', requireAdmin, requirePermission('contactDirectory'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
     try {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
@@ -1142,7 +1175,7 @@ router.post('/:slug/contacts', requireAdmin, requirePermission('people'), async 
     }
 });
 
-router.put('/:slug/contacts/:contactId', requireAdmin, requirePermission('people'), async (req, res) => {
+router.put('/:slug/contacts/:contactId', requireAdmin, requirePermission('contactDirectory'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
     try {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
@@ -1170,7 +1203,7 @@ router.put('/:slug/contacts/:contactId', requireAdmin, requirePermission('people
     }
 });
 
-router.delete('/:slug/contacts/:contactId', requireAdmin, requirePermission('people'), async (req, res) => {
+router.delete('/:slug/contacts/:contactId', requireAdmin, requirePermission('contactDirectory'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
     try {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
@@ -1192,7 +1225,7 @@ router.delete('/:slug/contacts/:contactId', requireAdmin, requirePermission('peo
     }
 });
 
-router.post('/:slug/contacts/import', requireAdmin, requirePermission('people'), contactImportUpload.single('file'), async (req, res) => {
+router.post('/:slug/contacts/import', requireAdmin, requirePermission('contactDirectory'), contactImportUpload.single('file'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
 
     const wantsJson = req.get('X-Requested-With') === 'XMLHttpRequest'
@@ -1216,7 +1249,7 @@ router.post('/:slug/contacts/import', requireAdmin, requirePermission('people'),
             if (wantsJson) {
                 return res.status(400).json({ ok: false, error: message });
             }
-            return res.redirect(`/admin/${req.params.slug}/people?contactsImportError=1`);
+            return res.redirect(`/admin/${req.params.slug}/contact-directory?contactsImportError=1`);
         }
 
         const beforeCount = normalizeContactDirectory(synagogue.contactDirectory).length;
@@ -1238,13 +1271,13 @@ router.post('/:slug/contacts/import', requireAdmin, requirePermission('people'),
             });
         }
 
-        return res.redirect(`/admin/${req.params.slug}/people?contactsImported=1`);
+        return res.redirect(`/admin/${req.params.slug}/contact-directory?contactsImported=1`);
     } catch (err) {
         console.error('Contact import error:', err);
         if (wantsJson) {
             return res.status(500).json({ ok: false, error: err.message });
         }
-        return res.redirect(`/admin/${req.params.slug}/people?contactsImportError=1`);
+        return res.redirect(`/admin/${req.params.slug}/contact-directory?contactsImportError=1`);
     }
 });
 
