@@ -30,6 +30,7 @@ import { useBoardNavigation } from '../context/BoardNavigationContext';
 import { useBoardData } from '../context/BoardDataContext';
 import { resolveBoardTitle } from '../lib/board-title';
 import { getSidebarCommunityEvents, hasEventDate } from '../lib/community-events';
+import { resolveCommunityEventCopy } from '../lib/community-event-copy';
 import { resolveBoardFeatures } from '../lib/board-features';
 import { SidebarUpcomingPanel } from '../components/SidebarUpcomingPanel';
 import { BoardWeatherSection } from '../components/BoardWeatherSection';
@@ -142,11 +143,18 @@ function toEventDatetimeAttr(eventDate) {
   return `${year}-${month}-${day}`;
 }
 
-function prepareCommunityEvents(events) {
+function prepareCommunityEvents(events, boardLang) {
   return getSidebarCommunityEvents(events).map((event) => {
+    const localized = resolveCommunityEventCopy(event, boardLang);
+    const base = {
+      ...event,
+      title: localized.title,
+      text: localized.text,
+    };
+
     if (!hasEventDate(event)) {
       return {
-        ...event,
+        ...base,
         listType: 'event',
         id: `event-${event._id}`,
         isUndated: true,
@@ -163,7 +171,7 @@ function prepareCommunityEvents(events) {
     const gregorianDate = new Date(year, month - 1, day);
 
     return {
-      ...event,
+      ...base,
       listType: 'event',
       id: `event-${event._id}`,
       isUndated: false,
@@ -181,7 +189,7 @@ class HomePageBase extends React.Component {
 
     const appData = getAppData();
     const calendarState = buildCalendarState(appData);
-    const communityEvents = prepareCommunityEvents(appData.communityEvents);
+    const communityEvents = prepareCommunityEvents(appData.communityEvents, appData.language);
 
     const initialState = {
       ...calendarState,
@@ -397,10 +405,10 @@ class HomePageBase extends React.Component {
                   showIzkor={boardFeatures.izkor}
                   kelMaleSectionTitle={this.props.t('kel_male_section_title')}
                   izkorSectionTitle={this.props.t('izkor_section_title')}
-                  kelMaleHeading={this.props.t('kel_male_rachamim')}
                   kelMaleText={this.props.t('kel_male_rachamim_text')}
-                  izkorHeading={this.props.t('izkor')}
+                  kelMaleHebrewText={this.props.t('kel_male_rachamim_text_hebrew', { defaultValue: '' })}
                   izkorText={this.props.t('izkor_text')}
+                  izkorHebrewText={this.props.t('izkor_text_hebrew', { defaultValue: '' })}
                 />
               )}
               <DonationQrPanel />

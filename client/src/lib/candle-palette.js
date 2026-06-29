@@ -81,5 +81,8 @@ export function buildCandlePaletteCssVars(palette) {
       --candle-flame-core: ${p.flameCore};
       --candle-flame-shadow: ${p.flameShadow};
       --candle-blue-part: ${p.bluePart};
+      --candle-thread-hot: ${p.threadHot || '#ff7800'};
+      --candle-base-outer: ${p.baseOuter || p.waxBottom};
+      --candle-base-inner: ${p.baseInner || p.waxBottom};
     `;
 }

@@ -123,8 +123,15 @@ export class MemorialPrayersPanel extends React.Component {
     }
   }
 
-  renderPrayerBlock(id, sectionTitle, heading, text, extraClass, audioSrc) {
-    const prayer = { id, heading, text, extraClass, audioSrc };
+  renderPrayerBlock(id, sectionTitle, text, hebrewText, extraClass, audioSrc) {
+    const prayer = {
+      id,
+      sectionTitle,
+      text,
+      hebrewText,
+      extraClass,
+      audioSrc,
+    };
 
     return (
       <section
@@ -137,9 +144,8 @@ export class MemorialPrayersPanel extends React.Component {
         onKeyDown={(event) => this.onPrayerKeyDown(event, prayer)}
       >
         {sectionTitle && (
-          <h2 className="memorial-prayers-section-title">{sectionTitle}</h2>
+          <h2 className="memorial-prayers-section-title" id={id}>{sectionTitle}</h2>
         )}
-        <h1 id={id}>{heading}</h1>
         <PrayerTextScroller text={text} big={this.props.big} />
       </section>
     );
@@ -150,10 +156,10 @@ export class MemorialPrayersPanel extends React.Component {
       big,
       kelMaleSectionTitle,
       izkorSectionTitle,
-      kelMaleHeading,
       kelMaleText,
-      izkorHeading,
+      kelMaleHebrewText,
       izkorText,
+      izkorHebrewText,
       showKelMale = true,
       showIzkor = true,
     } = this.props;
@@ -167,8 +173,9 @@ export class MemorialPrayersPanel extends React.Component {
       <>
         {activePrayer && (
           <PrayerReadingOverlay
-            heading={activePrayer.heading}
+            sectionTitle={activePrayer.sectionTitle}
             text={activePrayer.text}
+            hebrewText={activePrayer.hebrewText}
             extraClass={activePrayer.extraClass}
             audioSrc={activePrayer.audioSrc}
             onClose={this.closePrayer}
@@ -178,16 +185,16 @@ export class MemorialPrayersPanel extends React.Component {
           {showKelMale && this.renderPrayerBlock(
             'kel-male-heading',
             kelMaleSectionTitle,
-            kelMaleHeading,
             kelMaleText,
+            kelMaleHebrewText,
             'kel-male',
             assetUrl('audio/prayer-placeholder.mp3'),
           )}
           {showIzkor && this.renderPrayerBlock(
             'yizkor-heading',
             izkorSectionTitle,
-            izkorHeading,
             izkorText,
+            izkorHebrewText,
             'yizkor',
             assetUrl('audio/prayer-placeholder.mp3'),
           )}

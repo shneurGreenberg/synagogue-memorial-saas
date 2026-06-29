@@ -1247,6 +1247,12 @@ router.post('/:slug/events/edit', requireAdmin, requirePermission('events'), par
         const updateSet = {
           'communityEvents.$.title': payload.title,
           'communityEvents.$.text': payload.text,
+          'communityEvents.$.titles.ru': payload.titles.ru,
+          'communityEvents.$.titles.en': payload.titles.en,
+          'communityEvents.$.titles.he': payload.titles.he,
+          'communityEvents.$.texts.ru': payload.texts.ru,
+          'communityEvents.$.texts.en': payload.texts.en,
+          'communityEvents.$.texts.he': payload.texts.he,
           'communityEvents.$.startAt': payload.startAt,
           'communityEvents.$.endAt': payload.endAt || null,
         };

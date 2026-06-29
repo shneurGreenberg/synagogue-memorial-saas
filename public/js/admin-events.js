@@ -83,7 +83,93 @@
       + pad(date.getMinutes());
   }
 
-  function icon(name, className) {
+  function resolvePreviewLang(boardLang) {
+    if (boardLang === 'he' || boardLang === 'en') {
+      return 'en';
+    }
+    return 'ru';
+  }
+
+  function formatPreviewDate(month, day, year, lang) {
+    if (!month || !day) {
+      return '';
+    }
+
+    var eventYear = year || new Date().getFullYear();
+    var date = new Date(eventYear, Number(month) - 1, Number(day));
+    if (Number.isNaN(date.getTime())) {
+      return '';
+    }
+
+    if (lang === 'en') {
+      return date.toLocaleDateString('en-US', { day: 'numeric', month: 'long' });
+    }
+
+    return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
+  }
+
+  function updateEventsPreview() {
+    var previewRoot = document.getElementById('eventsBoardPreview');
+    if (!previewRoot) {
+      return;
+    }
+
+    var boardLang = previewRoot.getAttribute('data-board-lang') || window.eventsBoardLang || 'ru';
+    var previewLang = resolvePreviewLang(boardLang);
+    var labels = (window.eventsPreviewLabels && window.eventsPreviewLabels[previewLang])
+      || (window.eventsPreviewLabels && window.eventsPreviewLabels.ru)
+      || {};
+
+    var titleRu = document.getElementById('eventTitleRu');
+    var titleEn = document.getElementById('eventTitleEn');
+    var textRu = document.getElementById('eventTextRu');
+    var textEn = document.getElementById('eventTextEn');
+    var monthInput = document.getElementById('eventMonth');
+    var dayInput = document.getElementById('eventDay');
+    var yearInput = document.getElementById('eventYear');
+
+    var title = previewLang === 'en'
+      ? String((titleEn && titleEn.value) || (titleRu && titleRu.value) || '').trim()
+      : String((titleRu && titleRu.value) || (titleEn && titleEn.value) || '').trim();
+    var text = previewLang === 'en'
+      ? String((textEn && textEn.value) || (textRu && textRu.value) || '').trim()
+      : String((textRu && textRu.value) || (textEn && textEn.value) || '').trim();
+
+    var sectionTitleEl = document.getElementById('eventsPreviewSectionTitle');
+    var titleEl = document.getElementById('eventsPreviewTitle');
+    var textEl = document.getElementById('eventsPreviewText');
+    var dateEl = document.getElementById('eventsPreviewDate');
+
+    if (sectionTitleEl) {
+      sectionTitleEl.textContent = labels.sectionTitle || '';
+    }
+    if (titleEl) {
+      titleEl.textContent = title || labels.titleSample || '';
+    }
+    if (textEl) {
+      textEl.textContent = text || labels.textSample || '';
+      textEl.hidden = !text && !labels.textSample;
+    }
+    if (dateEl) {
+      var formatted = formatPreviewDate(
+        monthInput && monthInput.value,
+        dayInput && dayInput.value,
+        yearInput && yearInput.value,
+        previewLang,
+      );
+      dateEl.textContent = formatted || labels.dateSample || '';
+      dateEl.hidden = !formatted && !labels.dateSample;
+    }
+  }
+
+  function bindEventsPreview() {
+    document.querySelectorAll('.event-preview-input, #eventMonth, #eventDay, #eventYear').forEach(function (input) {
+      input.addEventListener('input', updateEventsPreview);
+      input.addEventListener('change', updateEventsPreview);
+    });
+    updateEventsPreview();
+  }
+
     if (window.AdminIcons && typeof window.AdminIcons.render === 'function') {
       return window.AdminIcons.render(name, className || 'btn-admin-inline-icon');
     }
@@ -258,8 +344,12 @@
     }
 
     document.getElementById('editEventId').value = eventId;
-    document.getElementById('editEventTitle').value = event.title || '';
-    document.getElementById('editEventText').value = event.text || '';
+    var titles = event.titles || {};
+    var texts = event.texts || {};
+    document.getElementById('editEventTitleRu').value = titles.ru || event.title || '';
+    document.getElementById('editEventTitleEn').value = titles.en || event.title || '';
+    document.getElementById('editEventTextRu').value = texts.ru || event.text || '';
+    document.getElementById('editEventTextEn').value = texts.en || event.text || '';
     document.getElementById('editEventMonth').value = event.eventDate && event.eventDate.month ? event.eventDate.month : '';
     document.getElementById('editEventDay').value = event.eventDate && event.eventDate.date ? event.eventDate.date : '';
     document.getElementById('editEventYear').value = event.eventDate && event.eventDate.year ? event.eventDate.year : '';
@@ -288,6 +378,16 @@
         input.name = 'publishNow';
         input.value = publishNow ? '1' : '0';
         form.appendChild(input);
+      }
+
+      if (form.id === 'addEventForm') {
+        var titleRu = document.getElementById('eventTitleRu');
+        var titleEn = document.getElementById('eventTitleEn');
+        var hasTitle = (titleRu && titleRu.value.trim()) || (titleEn && titleEn.value.trim());
+        if (!hasTitle) {
+          window.alert(labels.eventTitleRequired || 'Enter a title in Russian or English.');
+          return;
+        }
       }
 
       submitAjax(form, labels.saving || 'Saving…');
@@ -339,9 +439,10 @@
   });
 
   try {
+    bindEventsPreview();
     var initial = JSON.parse(document.getElementById('events-data').textContent);
     renderAllEvents(initial);
   } catch (e) {
-    /* ignore */
+    bindEventsPreview();
   }
 })();

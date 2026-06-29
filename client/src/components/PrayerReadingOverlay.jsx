@@ -83,16 +83,26 @@ class PrayerReadingOverlayBase extends React.Component {
   }
 
   render() {
-    const { heading, text, extraClass, audioSrc, onClose, t } = this.props;
+    const {
+      sectionTitle,
+      text,
+      hebrewText,
+      extraClass,
+      audioSrc,
+      onClose,
+      t,
+      i18n,
+    } = this.props;
     const resolvedAudioSrc = audioSrc || assetUrl('audio/prayer-placeholder.mp3');
     const playLabel = this.state.isPlaying ? t('pause_prayer') : t('play_prayer');
+    const showHebrewText = i18n?.language !== 'he' && hebrewText;
 
     return createPortal(
       <div
         className="prayer-reading-overlay"
         role="dialog"
         aria-modal="true"
-        aria-label={heading || t('memorial_prayer')}
+        aria-label={sectionTitle || t('memorial_prayer')}
         onClick={this.onOverlayClick}
       >
         <div className="prayer-reading-popup golden-panel" onClick={this.stopPropagation}>
@@ -104,10 +114,18 @@ class PrayerReadingOverlayBase extends React.Component {
               <CandleVideo className="prayer-reading-candle" />
             </div>
             <div className="prayer-reading-content">
-              {heading && <h1 className="prayer-reading-heading">{heading}</h1>}
+              {sectionTitle && <h1 className="prayer-reading-heading">{sectionTitle}</h1>}
               <p className="prayer-reading-text">
                 {text}
               </p>
+              {showHebrewText && (
+                <div className="prayer-reading-hebrew-block">
+                  <h2 className="prayer-reading-hebrew-label">{t('prayer_text_hebrew_label')}</h2>
+                  <p className="prayer-reading-hebrew-text" dir="rtl" lang="he">
+                    {hebrewText}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
           <div className="prayer-reading-footer">

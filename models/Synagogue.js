@@ -65,6 +65,16 @@ const AdminUserSchema = new mongoose.Schema({
 const CommunityEventSchema = new mongoose.Schema({
   title: { type: String, required: true },
   text: { type: String, default: '' },
+  titles: {
+    ru: { type: String, default: '' },
+    en: { type: String, default: '' },
+    he: { type: String, default: '' },
+  },
+  texts: {
+    ru: { type: String, default: '' },
+    en: { type: String, default: '' },
+    he: { type: String, default: '' },
+  },
   eventDate: {
     month: Number,
     date: Number,

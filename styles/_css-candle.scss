@@ -8,6 +8,9 @@
   --candle-flame-core: white;
   --candle-flame-shadow: orange;
   --candle-blue-part: rgba(0, 133, 255, 0.7);
+  --candle-thread-hot: #ff7800;
+  --candle-base-outer: #121212;
+  --candle-base-inner: #101010;
   width: calc(120 * var(--css-candle-unit));
   height: calc(385 * var(--css-candle-unit));
   position: relative;
@@ -90,7 +93,7 @@
   width: calc(5 * var(--css-candle-unit));
   height: calc(25 * var(--css-candle-unit));
   border-radius: 40% 40% 0 0;
-  background: linear-gradient(#ff7800, black 40%);
+  background: linear-gradient(var(--candle-thread-hot), var(--candle-wax-bottom) 40%);
   bottom: 0;
   z-index: 2;
 }
@@ -100,7 +103,7 @@
   height: 30%;
   top: 70%;
   position: absolute;
-  background: linear-gradient(0deg, #898989, #000000);
+  background: linear-gradient(0deg, var(--candle-wax-ring-edge), var(--candle-wax-bottom));
 }
 
 .css-candle-wax {
@@ -121,7 +124,7 @@
   bottom: 95%;
   position: absolute;
   border-radius: 50%;
-  background: radial-gradient(var(--candle-wax-ring), var(--candle-wax-ring-edge) 46%, #817e7c 67%);
+  background: radial-gradient(var(--candle-wax-ring), var(--candle-wax-ring-edge) 46%, var(--candle-wax-top) 67%);
 }
 
 .css-candle-bottom {
@@ -131,7 +134,7 @@
   height: calc(30 * var(--css-candle-unit));
   width: calc(150 * var(--css-candle-unit));
   border-radius: 50%;
-  background: radial-gradient(#121212, #101010);
+  background: radial-gradient(var(--candle-base-outer), var(--candle-base-inner));
 }
 
 @keyframes css-candle-flicker {

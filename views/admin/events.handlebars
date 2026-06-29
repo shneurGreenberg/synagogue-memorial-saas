@@ -11,16 +11,27 @@
             <h2>{{t 'add_community_event'}}</h2>
             <p class="admin-panel-desc">{{t 'community_events_add_help'}}</p>
         </div>
-        <div class="admin-panel-body">
-            <form method="POST" action="/admin/{{synagogue.slug}}/events/add" class="add-event-form" id="addEventForm">
+        <div class="admin-panel-body events-form-layout">
+            <form method="POST" action="/admin/{{synagogue.slug}}/events/add" class="add-event-form events-editor-form" id="addEventForm">
+                <div class="events-editor-fields">
                 <div class="form-field">
-                    <label for="eventTitle">{{t 'event_title'}}</label>
-                    <input type="text" name="title" id="eventTitle" class="form-control admin-input-modern" required
+                    <label for="eventTitleRu">{{t 'event_title'}} ({{t 'language_ru'}})</label>
+                    <input type="text" name="titleRu" id="eventTitleRu" class="form-control admin-input-modern event-preview-input"
                         placeholder="{{t 'event_title_placeholder'}}">
                 </div>
                 <div class="form-field">
-                    <label for="eventText">{{t 'event_description_optional'}}</label>
-                    <textarea name="text" id="eventText" class="form-control admin-input-modern" rows="2"
+                    <label for="eventTitleEn">{{t 'event_title'}} ({{t 'language_en'}})</label>
+                    <input type="text" name="titleEn" id="eventTitleEn" class="form-control admin-input-modern event-preview-input"
+                        placeholder="{{t 'event_title_placeholder'}}">
+                </div>
+                <div class="form-field">
+                    <label for="eventTextRu">{{t 'event_description_optional'}} ({{t 'language_ru'}})</label>
+                    <textarea name="textRu" id="eventTextRu" class="form-control admin-input-modern event-preview-input" rows="2"
+                        placeholder="{{t 'event_description_placeholder'}}"></textarea>
+                </div>
+                <div class="form-field">
+                    <label for="eventTextEn">{{t 'event_description_optional'}} ({{t 'language_en'}})</label>
+                    <textarea name="textEn" id="eventTextEn" class="form-control admin-input-modern event-preview-input" rows="2"
                         placeholder="{{t 'event_description_placeholder'}}"></textarea>
                 </div>
                 <div class="form-field">
@@ -68,6 +79,26 @@
                         {{t 'publish_now'}}
                     </button>
                 </div>
+                </div>
+
+                <aside class="events-board-preview" id="eventsBoardPreview"
+                    data-board-lang="{{synagogue.language}}"
+                    style="--primary-color: {{synagogue.theme.primaryColor}}; --text-color: {{synagogue.theme.textColor}}; --accent-color: {{synagogue.theme.accentColor}};">
+                    <h3 class="events-board-preview-title">{{t 'event_board_preview_title'}}</h3>
+                    <p class="field-hint">{{t 'event_board_preview_help'}}</p>
+                    <div class="events-board-preview-panel">
+                        <h4 class="events-board-preview-section" id="eventsPreviewSectionTitle">{{t 'sidebar_upcoming_title'}}</h4>
+                        <ul class="events-board-preview-list">
+                            <li class="community-event-item events-board-preview-item">
+                                <div class="community-event-link" role="note">
+                                    <time id="eventsPreviewDate">{{t 'event_board_preview_date_sample'}}</time>
+                                    <span class="community-event-title" id="eventsPreviewTitle">{{t 'event_board_preview_title_sample'}}</span>
+                                    <span class="community-event-text" id="eventsPreviewText">{{t 'event_board_preview_text_sample'}}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </aside>
             </form>
         </div>
     </section>
@@ -112,12 +143,20 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-field">
-                        <label for="editEventTitle">{{t 'event_title'}}</label>
-                        <input type="text" name="title" id="editEventTitle" class="form-control admin-input-modern" required>
+                        <label for="editEventTitleRu">{{t 'event_title'}} ({{t 'language_ru'}})</label>
+                        <input type="text" name="titleRu" id="editEventTitleRu" class="form-control admin-input-modern">
                     </div>
                     <div class="form-field">
-                        <label for="editEventText">{{t 'event_description_optional'}}</label>
-                        <textarea name="text" id="editEventText" class="form-control admin-input-modern" rows="2"></textarea>
+                        <label for="editEventTitleEn">{{t 'event_title'}} ({{t 'language_en'}})</label>
+                        <input type="text" name="titleEn" id="editEventTitleEn" class="form-control admin-input-modern">
+                    </div>
+                    <div class="form-field">
+                        <label for="editEventTextRu">{{t 'event_description_optional'}} ({{t 'language_ru'}})</label>
+                        <textarea name="textRu" id="editEventTextRu" class="form-control admin-input-modern" rows="2"></textarea>
+                    </div>
+                    <div class="form-field">
+                        <label for="editEventTextEn">{{t 'event_description_optional'}} ({{t 'language_en'}})</label>
+                        <textarea name="textEn" id="editEventTextEn" class="form-control admin-input-modern" rows="2"></textarea>
                     </div>
                     <div class="form-field">
                         <label>{{t 'event_date_label'}} <span class="field-optional">({{t 'optional'}})</span></label>
@@ -165,10 +204,26 @@
         eventStartAt: '{{t 'event_start_at'}}',
         eventEndAt: '{{t 'event_end_at'}}',
         eventStartRequired: '{{t 'event_start_required'}}',
+        eventTitleRequired: '{{t 'event_title_required'}}',
         month: '{{t 'month'}}',
         day: '{{t 'day'}}',
         year: '{{t 'year'}}',
     };
     window.eventsAdminSlug = '{{synagogue.slug}}';
+    window.eventsBoardLang = '{{synagogue.language}}';
+    window.eventsPreviewLabels = {
+        ru: {
+            sectionTitle: '{{t 'sidebar_upcoming_title'}}',
+            titleSample: '{{t 'event_board_preview_title_sample'}}',
+            textSample: '{{t 'event_board_preview_text_sample'}}',
+            dateSample: '{{t 'event_board_preview_date_sample'}}',
+        },
+        en: {
+            sectionTitle: 'Upcoming dates & announcements',
+            titleSample: 'Community event',
+            textSample: 'Additional details for the announcement',
+            dateSample: '15 March / 15 Adar',
+        },
+    };
 </script>
 <script id="events-data" type="application/json">{{{json events}}}</script>

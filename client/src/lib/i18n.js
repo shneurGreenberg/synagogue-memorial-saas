@@ -12,9 +12,14 @@ const resources = {
       kel_male_rachamim: 'El Malei Rachamim',
       kel_male_rachamim_text:
         'God, full of mercy, Who dwells on high, grant proper rest on the wings of the Divine Presence, among the holy and pure who shine like the sky, to the souls of our brethren, the children of Israel, remembered here and to all the souls of Israel. For we pray for the elevation of their souls. Therefore may the Merciful One shelter them in the shelter of His wings for eternity, and bind their souls in the bond of life. The Lord is their heritage; may they rest in peace upon their beds, and let us say: Amen.',
+      kel_male_rachamim_text_hebrew:
+        'אֵל מָלֵא רַחֲמִים, שׁוֹכֵן בַּמְּרוֹמִים, הַמְצֵא מְנוּחָה נְכוֹנָה עַל כַּנְפֵי הַשְּׁכִינָה, בְּמַעֲלוֹת קְדוֹשִׁים וּטְהוֹרִים כְּזוֹהַר הָרָקִיעַ מַזְהִירִים, לְנִשְׁמוֹת אַחֵינוּ וְאַחְיוֹתֵינוּ בְּנֵי יִשְׂרָאֵל הַנִּזְכָּרִים בְּמָקוֹם זֶה וּלְכָל נִשְׁמוֹת יִשְׂרָאֵל. בַּעֲבוּר שֶׁאֲנַחְנוּ מִתְפַּלְּלִים לְעִלּוּי נִשְׁמוֹתֵיהֶם. לָכֵן בַּעַל הָרַחֲמִים יַסְתִּירֵם בְּסֵתֶר כְּנָפָיו לְעוֹלָמִים, וְיִצְרוֹר בִּצְרוֹר הַחַיִּים אֶת נִשְׁמוֹתֵיהֶם, ה׳ הוּא נַחֲלָתָם, וְיָנוּחוּ בְּשָׁלוֹם עַל מִשְׁכָּבָם, וְנֹאמַר אָמֵן.',
       izkor: 'Memorial Prayer',
       izkor_text:
         'May God remember the soul of my father, mother, grandfather, uncle, brother, son, or husband (name of the deceased), son of (father\'s name), who has departed this world, in reward for my making a charitable donation without vow, that it be credited to him or her as merit. May his or her soul be bound in the bond of life together with the souls of Abraham, Isaac, and Jacob, Sarah, Rebecca, Rachel, and Leah, and with all the righteous men and women who dwell in the Garden, and let us say: Amen.',
+      izkor_text_hebrew:
+        'יִזְכּוֹר אֱלֹהִים נִשְׁמַת אָבִי/אִמִּי (שם הנפטר) בֶּן/בַּת (שם האב), שֶׁהָלַךְ/הָלְכָה לְעוֹלָמוֹ/לְעוֹלָמָהּ, בַּעֲבוּר שֶׁאֲנִי נוֹדֵב צְדָקָה בְּעַד הַזְכָּרַת נִשְׁמָתוֹ/נִשְׁמָתָהּ. תְּהֵא נִשְׁמָתוֹ/נִשְׁמָתָהּ צְרוּרָה בִּצְרוֹר הַחַיִּים עִם נִשְׁמוֹת אַבְרָהָם, יִצְחָק וְיַעֲקֹב, שָׂרָה, רִבְקָה, רָחֵל וְלֵאָה, וְעִם שְׁאָר צַדִּיקִים וְצַדְקָנִיּוֹת הַגְּנוּזִים בַּגַּן, וְנֹאמַר אָמֵן.',
+      prayer_text_hebrew_label: 'Hebrew text',
       weekly_chapter: 'Weekly Chapter',
       clear_search: 'Clear search',
       previous_page: 'Previous page',
@@ -78,8 +83,13 @@ const resources = {
       kel_male_rachamim: 'Эль Мале Рахамим',
       kel_male_rachamim_text:
         'Б-г, исполненный милосердия, обитающий на высотах, даруй истинный покой на крыльях Шехины, среди святых и чистых, сияющих как небеса, душам наших братьев и сестёр, детей Израиля, поминаемых здесь, и всем душам Израиля. Ибо мы молимся о возвышении их душ. Пусть же Владыка милосердия укроет их в тени Своих крыльев навеки и свяжет их души в узел жизни. Господь — их удел; да упокоятся они с миром на ложе своём, и скажем: аминь.',
+      kel_male_rachamim_text_hebrew:
+        'אֵל מָלֵא רַחֲמִים, שׁוֹכֵן בַּמְּרוֹמִים, הַמְצֵא מְנוּחָה נְכוֹנָה עַל כַּנְפֵי הַשְּׁכִינָה, בְּמַעֲלוֹת קְדוֹשִׁים וּטְהוֹרִים כְּזוֹהַר הָרָקִיעַ מַזְהִירִים, לְנִשְׁמוֹת אַחֵינוּ וְאַחְיוֹתֵינוּ בְּנֵי יִשְׂרָאֵל הַנִּזְכָּרִים בְּמָקוֹם זֶה וּלְכָל נִשְׁמוֹת יִשְׂרָאֵל. בַּעֲבוּר שֶׁאֲנַחְנוּ מִתְפַּלְּלִים לְעִלּוּי נִשְׁמוֹתֵיהֶם. לָכֵן בַּעַל הָרַחֲמִים יַסְתִּירֵם בְּסֵתֶר כְּנָפָיו לְעוֹלָמִים, וְיִצְרוֹר בִּצְרוֹר הַחַיִּים אֶת נִשְׁמוֹתֵיהֶם, ה׳ הוּא נַחֲלָתָם, וְיָנוּחוּ בְּשָׁלוֹם עַל מִשְׁכָּבָם, וְנֹאמַר אָמֵן.',
       izkor: 'Поминальная молитва',
       izkor_text: 'Пусть вспомнит Б-г душу моего отца/деда/дяди/брата/сына/мужа (имя покойного) сына (имя его отца), ушедшего в иной мир, — в награду за то, что я, не связывая себя обетом, дам пожертвование, чтобы оно было засчитано ему в заслугу. За это да будет душа его пребывать в обители вечной жизни вместе с душами Авраhама, Ицхака и Яакова, Сары, Ривки, Рахели и Леи и прочих праведников и праведниц, обитающих в Ган-Эдене, и скажем: амен!',
+      izkor_text_hebrew:
+        'יִזְכּוֹר אֱלֹהִים נִשְׁמַת אָבִי/אִמִּי (שם הנפטר) בֶּן/בַּת (שם האב), שֶׁהָלַךְ/הָלְכָה לְעוֹלָמוֹ/לְעוֹלָמָהּ, בַּעֲבוּר שֶׁאֲנִי נוֹדֵב צְדָקָה בְּעַד הַזְכָּרַת נִשְׁמָתוֹ/נִשְׁמָתָהּ. תְּהֵא נִשְׁמָתוֹ/נִשְׁמָתָהּ צְרוּרָה בִּצְרוֹר הַחַיִּים עִם נִשְׁמוֹת אַבְרָהָם, יִצְחָק וְיַעֲקֹב, שָׂרָה, רִבְקָה, רָחֵל וְלֵאָה, וְעִם שְׁאָר צַדִּיקִים וְצַדְקָנִיּוֹת הַגְּנוּזִים בַּגַּן, וְנֹאמַר אָמֵן.',
+      prayer_text_hebrew_label: 'Текст на иврите',
       weekly_chapter: 'недельная глава',
       clear_search: 'Очистить поиск',
       previous_page: 'Предыдущая страница',
