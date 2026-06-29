@@ -123,12 +123,11 @@ export class MemorialPrayersPanel extends React.Component {
     }
   }
 
-  renderPrayerBlock(id, sectionTitle, text, hebrewText, extraClass, audioSrc) {
+  renderPrayerBlock(id, sectionTitle, text, extraClass, audioSrc) {
     const prayer = {
       id,
       sectionTitle,
       text,
-      hebrewText,
       extraClass,
       audioSrc,
     };
@@ -157,9 +156,7 @@ export class MemorialPrayersPanel extends React.Component {
       kelMaleSectionTitle,
       izkorSectionTitle,
       kelMaleText,
-      kelMaleHebrewText,
       izkorText,
-      izkorHebrewText,
       showKelMale = true,
       showIzkor = true,
     } = this.props;
@@ -175,7 +172,6 @@ export class MemorialPrayersPanel extends React.Component {
           <PrayerReadingOverlay
             sectionTitle={activePrayer.sectionTitle}
             text={activePrayer.text}
-            hebrewText={activePrayer.hebrewText}
             extraClass={activePrayer.extraClass}
             audioSrc={activePrayer.audioSrc}
             onClose={this.closePrayer}
@@ -186,7 +182,6 @@ export class MemorialPrayersPanel extends React.Component {
             'kel-male-heading',
             kelMaleSectionTitle,
             kelMaleText,
-            kelMaleHebrewText,
             'kel-male',
             assetUrl('audio/prayer-placeholder.mp3'),
           )}
@@ -194,7 +189,6 @@ export class MemorialPrayersPanel extends React.Component {
             'yizkor-heading',
             izkorSectionTitle,
             izkorText,
-            izkorHebrewText,
             'yizkor',
             assetUrl('audio/prayer-placeholder.mp3'),
           )}
