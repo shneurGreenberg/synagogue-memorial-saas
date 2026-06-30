@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 import { sanitizeRichText } from '../lib/html-sanitize';
 import { getBiographyDensityClass } from '../lib/text-density';
@@ -6,6 +6,7 @@ import { PersonAvatar } from '../components/PersonAvatar';
 import { useBoardNavigation } from '../context/BoardNavigationContext';
 import { useBoardData } from '../context/BoardDataContext';
 import { BiographyScroller } from '../components/BiographyScroller';
+import { getBoardSlug } from '../lib/board-slug';
 
 class CardPageBase extends React.Component {
   constructor(props) {
@@ -41,8 +42,8 @@ class CardPageBase extends React.Component {
     event.stopPropagation();
   }
 
-  renderDetail(card) {
-    const displayName = card ? card.name : '';
+  renderDetail(person, biographyText) {
+    const displayName = person ? person.name : '';
 
     return (
       <main className="card-view wooden-panel">
@@ -51,13 +52,13 @@ class CardPageBase extends React.Component {
           role="article"
         >
           <div className="card-detail-photo">
-            <PersonAvatar person={card} size="xl" />
+            <PersonAvatar person={person} size="xl" />
           </div>
           <div className="card-detail-text">
             <h1>{displayName}</h1>
             <BiographyScroller
-              className={`inner-text ${getBiographyDensityClass(card.text)}`}
-              html={sanitizeRichText(card.text)}
+              className={`inner-text ${getBiographyDensityClass(biographyText)}`}
+              html={sanitizeRichText(biographyText)}
             />
           </div>
         </div>
@@ -82,19 +83,19 @@ class CardPageBase extends React.Component {
     );
   }
 
-  renderExport(card) {
+  renderExport(person, biographyText) {
     return (
       <div id="cardExportRoot" className="card-export-root" aria-hidden="true">
-        {card ? this.renderDetail(card) : this.renderMissing()}
+        {person ? this.renderDetail(person, biographyText) : this.renderMissing()}
       </div>
     );
   }
 
   render() {
-    const { card, exportMode } = this.props;
+    const { person, biographyText, exportMode } = this.props;
 
     if (exportMode) {
-      return this.renderExport(card);
+      return this.renderExport(person, biographyText);
     }
 
     return (
@@ -111,7 +112,7 @@ class CardPageBase extends React.Component {
           aria-label={this.props.t('back_to_board')}
         />
         <div className="card-popup" onClick={this.stopPropagation}>
-          {card ? this.renderDetail(card) : this.renderMissing()}
+          {person ? this.renderDetail(person, biographyText) : this.renderMissing()}
         </div>
       </div>
     );
@@ -120,7 +121,7 @@ class CardPageBase extends React.Component {
 
 const CardPageTranslated = withTranslation()(CardPageBase);
 
-function useCardExportReady(card, exportMode) {
+function useCardExportReady(person, biographyText, exportMode) {
   useEffect(() => {
     if (!exportMode) {
       return undefined;
@@ -128,7 +129,7 @@ function useCardExportReady(card, exportMode) {
 
     document.body.classList.add('card-export-mode');
 
-    if (!card) {
+    if (!person) {
       document.body.classList.add('card-export-ready');
       return () => {
         document.body.classList.remove('card-export-mode', 'card-export-ready');
@@ -162,21 +163,63 @@ function useCardExportReady(card, exportMode) {
       cancelled = true;
       document.body.classList.remove('card-export-mode', 'card-export-ready');
     };
-  }, [card, exportMode]);
+  }, [person, biographyText, exportMode]);
+}
+
+function usePersonBiography(person, personId) {
+  const slug = getBoardSlug();
+  const [biographyText, setBiographyText] = useState(() => person?.text || '');
+
+  useEffect(() => {
+    if (person?.text) {
+      setBiographyText(person.text);
+      return undefined;
+    }
+
+    if (!person || !slug || !personId) {
+      setBiographyText('');
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    fetch(`/s/${slug}/api/board/person/${encodeURIComponent(personId)}`, {
+      headers: { Accept: 'application/json' },
+    })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload) => {
+        if (!cancelled && payload?.person?.text) {
+          setBiographyText(payload.person.text);
+        }
+      })
+      .catch(() => {
+        /* ignore biography fetch errors */
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [person?.id, person?.text, personId, slug]);
+
+  return biographyText;
 }
 
 export default function CardPage({ personId, exportMode = false }) {
   const { goToBoard } = useBoardNavigation();
   const { data } = useBoardData();
-  const people = data.people || [];
-  const card = people.find((person) => String(person.id) === String(personId));
+  const person = useMemo(
+    () => (data.people || []).find((entry) => String(entry.id) === String(personId)),
+    [data.people, personId],
+  );
+  const biographyText = usePersonBiography(person, personId);
 
-  useCardExportReady(card, exportMode);
+  useCardExportReady(person, biographyText, exportMode);
 
   return (
     <CardPageTranslated
       key={`card-${personId}-${exportMode ? 'export' : 'view'}`}
-      card={card}
+      person={person}
+      biographyText={biographyText}
       exportMode={exportMode}
       onBack={goToBoard}
     />

@@ -174,7 +174,7 @@ export function BoardDataProvider({ slug, children }) {
         return;
       }
 
-      applyData(next, { preserveText: false });
+      applyData(next);
 
       try {
         const versionResponse = await fetch(`/s/${slug}/api/board/version`, {
