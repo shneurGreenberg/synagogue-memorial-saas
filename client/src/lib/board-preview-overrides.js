@@ -92,6 +92,7 @@ export function previewPatchFromSearchParams(params) {
     || params.has('tileColor')
     || params.has('tileOpacity')
     || params.has('candlePalette')
+    || params.has('logoBorderRadius')
     || params.has('fontScale_tileTitle')
     || params.has('titleRu')
     || params.has('titleEn')
@@ -113,6 +114,7 @@ export function previewPatchFromSearchParams(params) {
   if (params.has('tileColor')) patch.tileColor = params.get('tileColor');
   if (params.has('tileOpacity')) patch.tileOpacity = params.get('tileOpacity');
   if (params.has('candlePalette')) patch.candlePalette = params.get('candlePalette');
+  if (params.has('logoBorderRadius')) patch.logoBorderRadius = params.get('logoBorderRadius');
   ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat', 'candle'].forEach((key) => {
     if (params.has(`fontScale_${key}`)) {
       patch[`fontScale_${key}`] = params.get(`fontScale_${key}`);

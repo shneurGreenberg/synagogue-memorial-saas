@@ -1,5 +1,6 @@
 const i18n = require('i18next');
 const { initReactI18next } = require('react-i18next');
+const { KEL_MALE_TRANSLITERATION } = require('../lib/kel-male-transliteration');
 
 const resources = {
   en: {
@@ -8,8 +9,7 @@ const resources = {
       nearest_dates: 'Upcoming Dates',
       memorial_prayer: 'Memorial Prayer',
       kel_male_rachamim: 'El Malei Rachamim',
-      kel_male_rachamim_text:
-        'God, full of mercy, Who dwells on high, grant proper rest on the wings of the Divine Presence, among the holy and pure who shine like the sky, to the souls of our brethren, the children of Israel, remembered here and to all the souls of Israel. For we pray for the elevation of their souls. Therefore may the Merciful One shelter them in the shelter of His wings for eternity, and bind their souls in the bond of life. The Lord is their heritage; may they rest in peace upon their beds, and let us say: Amen.',
+      kel_male_rachamim_text: KEL_MALE_TRANSLITERATION.en,
       izkor: 'Yizkor',
       izkor_text: 'May God remember the soul of my father/mother...',
       weekly_chapter: 'Weekly Chapter',
@@ -28,8 +28,7 @@ const resources = {
       nearest_dates: 'Ближайшие даты',
       memorial_prayer: 'Поминальная молитва',
       kel_male_rachamim: 'Эль Мале Рахамим',
-      kel_male_rachamim_text:
-        'Б-г, исполненный милосердия, обитающий на высотах, даруй истинный покой на крыльях Шехины, среди святых и чистых, сияющих как небеса, душам наших братьев и сестёр, детей Израиля, поминаемых здесь, и всем душам Израиля. Ибо мы молимся о возвышении их душ. Пусть же Владыка милосердия укроет их в тени Своих крыльев навеки и свяжет их души в узел жизни. Господь — их удел; да упокоятся они с миром на ложе своём, и скажем: аминь.',
+      kel_male_rachamim_text: KEL_MALE_TRANSLITERATION.ru,
       izkor: '"Изкор"',
       izkor_text: 'Пусть вспомнит Б-г душу моего отца/деда/дяди/брата/сына/мужа (имя покойного) сына (имя его отца), ушедшего в иной мир, — в награду за то, что я, не связывая себя обетом, дам пожертвование, чтобы оно было засчитано ему в заслугу. За это да будет душа его пребывать в обители вечной жизни вместе с душами Авраhама, Ицхака и Яакова, Сары, Ривки, Рахели и Леи и прочих праведников и праведниц, обитающих в Ган-Эдене, и скажем: амен!',
       weekly_chapter: 'недельная глава',

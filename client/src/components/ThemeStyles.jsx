@@ -102,6 +102,9 @@ export function ThemeStyles() {
       --prayer-candle-scale: var(--candle-display-scale-big);
       ${candlePaletteCss}
     }
+    .css-candle {
+      ${candlePaletteCss}
+    }
     .main-container .board-header h1 {
       color: var(--primary-color) !important;
       font-size: calc(clamp(28px, 3.8vw, 58px) * var(--font-scale-board-header)) !important;
