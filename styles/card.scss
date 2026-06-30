@@ -11,14 +11,25 @@
 .card-overlay {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: 1200;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: clamp(8px, 2vw, 20px);
   box-sizing: border-box;
+  pointer-events: none;
+}
+
+.card-overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
   background: rgba(0, 0, 0, 55%);
   cursor: pointer;
+  pointer-events: auto;
 }
 
 .card-popup {
@@ -27,6 +38,7 @@
   width: min(1100px, 100%);
   max-height: calc(100vh - clamp(16px, 4vw, 40px));
   cursor: default;
+  pointer-events: auto;
 }
 
 .card-view {

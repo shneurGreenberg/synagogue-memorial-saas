@@ -44,6 +44,21 @@ function getPhotoCropStyle(person, useServerCrop) {
   };
 }
 
+function personPhotoSignature(person) {
+  if (!person) {
+    return '';
+  }
+
+  const crop = person.photoCrop || {};
+  return [
+    person.id,
+    person.photo || '',
+    crop.x,
+    crop.y,
+    crop.zoom,
+  ].join('|');
+}
+
 export class PersonAvatar extends React.Component {
   constructor(props) {
     super(props);
@@ -57,11 +72,7 @@ export class PersonAvatar extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (
-      prevProps.person !== this.props.person
-      || prevProps.person?.photo !== this.props.person?.photo
-      || prevProps.person?.photoCrop !== this.props.person?.photoCrop
-    ) {
+    if (personPhotoSignature(prevProps.person) !== personPhotoSignature(this.props.person)) {
       this.setState({
         imageFailed: false,
         imageLoaded: false,

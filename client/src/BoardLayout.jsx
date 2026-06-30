@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React from 'react';
 import { useMatch, useParams } from 'react-router-dom';
 import { BoardNavigationProvider } from './context/BoardNavigationContext';
 import { BoardDataProvider } from './context/BoardDataContext';
@@ -7,13 +7,8 @@ import { IdleReload } from './components/IdleReload';
 import { BoardVersionBadge } from './components/BoardVersionBadge';
 import { BaruchHashemBadge } from './components/BaruchHashemBadge';
 import HomePage from './pages/HomePage';
-
-const CardPage = lazy(() => import('./pages/CardPage'));
-const TileExportPage = lazy(() => import('./pages/TileExportPage'));
-
-function BoardRouteFallback() {
-  return null;
-}
+import CardPage from './pages/CardPage';
+import TileExportPage from './pages/TileExportPage';
 
 function BoardLayoutInner() {
   const cardMatch = useMatch('/s/:slug/card/:personId');
@@ -25,15 +20,12 @@ function BoardLayoutInner() {
     : new URLSearchParams();
   const highlightYahrzeit = exportParams.get('yahrzeit') === '1';
   const cardExportMode = exportParams.get('export') === '1';
-  const cardOpen = Boolean(personId && !cardExportMode);
 
   if (exportPersonId) {
     return (
       <>
         <ThemeStyles />
-        <Suspense fallback={<BoardRouteFallback />}>
-          <TileExportPage personId={exportPersonId} highlightYahrzeit={highlightYahrzeit} />
-        </Suspense>
+        <TileExportPage personId={exportPersonId} highlightYahrzeit={highlightYahrzeit} />
       </>
     );
   }
@@ -42,9 +34,7 @@ function BoardLayoutInner() {
     return (
       <BoardNavigationProvider>
         <ThemeStyles />
-        <Suspense fallback={<BoardRouteFallback />}>
-          <CardPage personId={personId} exportMode />
-        </Suspense>
+        <CardPage personId={personId} exportMode />
       </BoardNavigationProvider>
     );
   }
@@ -55,15 +45,9 @@ function BoardLayoutInner() {
       <IdleReload />
       <BoardVersionBadge />
       <BaruchHashemBadge />
-      <div id="main-entry" className={cardOpen ? 'board-card-open' : ''}>
-        <div className={cardOpen ? 'board-home-paused' : ''} aria-hidden={cardOpen}>
-          <HomePage paused={cardOpen} />
-        </div>
-        {personId ? (
-          <Suspense fallback={<BoardRouteFallback />}>
-            <CardPage personId={personId} />
-          </Suspense>
-        ) : null}
+      <div id="main-entry">
+        <HomePage />
+        {personId ? <CardPage personId={personId} /> : null}
       </div>
     </BoardNavigationProvider>
   );
