@@ -526,7 +526,6 @@ function HomePageConnected(props) {
       calendarDayKey={calendarDayKey}
       boardTitle={boardTitle}
       revision={revision}
-      paused={props.paused}
     />
   );
 }

@@ -57,9 +57,8 @@ export function BoardDataProvider({ slug, children }) {
   });
 
   const setUiLang = useCallback((lang) => {
-    applyBoardLanguage(lang).then((safe) => {
-      setUiLangState(safe);
-    });
+    const safe = applyBoardLanguage(lang);
+    setUiLangState(safe);
   }, []);
 
   useEffect(() => {

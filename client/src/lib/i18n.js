@@ -40,35 +40,34 @@ export async function ensureLanguageLoaded(lang) {
   return safe;
 }
 
-export async function initBoardI18n() {
-  const initialLng = getInitialLng();
-  await ensureLanguageLoaded(initialLng);
+const initialLng = getInitialLng();
 
-  if (!i18n.isInitialized) {
-    i18n
-      .use(initReactI18next)
-      .init({
-        resources: {
-          ru: { translation: ru },
-        },
-        lng: initialLng,
-        fallbackLng: 'ru',
-        interpolation: {
-          escapeValue: false,
-        },
-        partialBundledLanguages: true,
-      });
+i18n
+  .use(initReactI18next)
+  .init({
+    resources: {
+      ru: { translation: ru },
+    },
+    lng: initialLng,
+    fallbackLng: 'ru',
+    interpolation: {
+      escapeValue: false,
+    },
+    partialBundledLanguages: true,
+  });
 
-    i18n.on('languageChanged', (lang) => {
-      ensureLanguageLoaded(lang).catch(() => {
-        /* ignore language load errors */
-      });
-    });
-  } else if (initialLng !== i18n.language) {
-    await i18n.changeLanguage(initialLng);
-  }
-
-  return i18n;
+if (initialLng !== 'ru') {
+  ensureLanguageLoaded(initialLng).then((lang) => {
+    if (lang !== i18n.language) {
+      i18n.changeLanguage(lang);
+    }
+  });
 }
+
+i18n.on('languageChanged', (lang) => {
+  ensureLanguageLoaded(lang).catch(() => {
+    /* ignore language load errors */
+  });
+});
 
 export default i18n;
