@@ -413,9 +413,9 @@ class HomePageBase extends React.Component {
                   kelMaleSectionTitle={this.props.t('kel_male_section_title')}
                   izkorSectionTitle={this.props.t('izkor_section_title')}
                   kelMaleText={this.props.t('kel_male_rachamim_text')}
-                  kelMaleHebrewText={this.props.t('kel_male_rachamim_text_hebrew', { defaultValue: '' })}
+                  kelMaleTransliterationText={this.props.t('kel_male_rachamim_text_transliteration', { defaultValue: '' })}
                   izkorText={this.props.t('izkor_text')}
-                  izkorHebrewText={this.props.t('izkor_text_hebrew', { defaultValue: '' })}
+                  izkorTransliterationText={this.props.t('izkor_text_transliteration', { defaultValue: '' })}
                 />
               )}
               <DonationQrPanel />

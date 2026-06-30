@@ -1934,6 +1934,32 @@
   font-size: calc(18px * var(--font-scale-prayer-overlay, 1));
 }
 
+.prayer-reading-transliteration-block {
+  margin-top: clamp(14px, 2vh, 22px);
+  padding-top: clamp(12px, 1.8vh, 18px);
+  border-top: 1px solid rgba(207, 175, 31, 0.28);
+  overflow-y: auto;
+}
+
+.prayer-reading-transliteration-label {
+  margin: 0 0 0.5rem;
+  font-size: calc(14px * var(--font-scale-prayer-overlay, 1));
+  font-weight: 600;
+  color: var(--accent-color, #ffd54f);
+  text-align: center;
+}
+
+.prayer-reading-transliteration-text {
+  margin: 0;
+  color: #fff;
+  line-height: 1.55;
+  text-align: left;
+  white-space: pre-wrap;
+  overflow-y: auto;
+  width: 100%;
+  font-size: calc(16px * var(--font-scale-prayer-overlay, 1));
+}
+
 .prayer-reading-hebrew-block {
   margin-top: clamp(14px, 2vh, 22px);
   padding-top: clamp(12px, 1.8vh, 18px);
