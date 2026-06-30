@@ -4,6 +4,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { getDisplayLanguage } from '../lib/person-names';
@@ -21,30 +22,11 @@ import {
   subscribeToCalendarDayChange,
 } from '../lib/board-calendar';
 import { resolveBoardTimezone } from '../lib/timezone';
+import { mergeBoardPayload } from '../lib/board-payload';
 
 const POLL_MS = 8000;
 
 const BoardDataContext = createContext(null);
-
-function snapshotForCompare(data) {
-  if (!data) {
-    return '';
-  }
-
-  return JSON.stringify({
-    title: data.title,
-    titles: data.titles,
-    language: data.language,
-    weeklyChapterEnabled: data.weeklyChapterEnabled,
-    theme: data.theme,
-    people: data.people,
-    dailyCites: data.dailyCites,
-    communityEvents: data.communityEvents,
-    boardFeatures: data.boardFeatures,
-    shabbatTimesEnabled: data.shabbatTimesEnabled,
-    memorialQrPanel: data.memorialQrPanel,
-  });
-}
 
 function initialBoardData() {
   const base = window.data || {};
@@ -62,6 +44,7 @@ export function BoardDataProvider({ slug, children }) {
   const [data, setData] = useState(initialBoardData);
   const [revision, setRevision] = useState(0);
   const [calendarDayKey, setCalendarDayKey] = useState(() => getDayKeyInTimezone(getBoardTimezone()));
+  const boardVersionRef = useRef(null);
   const [uiLang, setUiLangState] = useState(() => {
     if (previewMode) {
       const previewLang = getPreviewLanguage();
@@ -74,17 +57,21 @@ export function BoardDataProvider({ slug, children }) {
   });
 
   const setUiLang = useCallback((lang) => {
-    const safe = applyBoardLanguage(lang);
-    setUiLangState(safe);
+    applyBoardLanguage(lang).then((safe) => {
+      setUiLangState(safe);
+    });
   }, []);
 
   useEffect(() => {
     applyBoardLanguage(uiLang);
   }, [uiLang]);
 
-  const applyData = useCallback((next) => {
-    window.data = next;
-    setData(next);
+  const applyData = useCallback((next, { preserveText = true } = {}) => {
+    setData((current) => {
+      const merged = mergeBoardPayload(current, next, { preserveText });
+      window.data = merged;
+      return merged;
+    });
     setRevision((value) => value + 1);
   }, []);
 
@@ -134,30 +121,78 @@ export function BoardDataProvider({ slug, children }) {
 
     let cancelled = false;
 
+    const fetchBoard = async () => {
+      const response = await fetch(`/s/${slug}/api/board?slim=1`, {
+        cache: 'no-store',
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!response.ok || cancelled) {
+        return null;
+      }
+
+      const etag = response.headers.get('ETag');
+      const next = await response.json();
+      if (etag) {
+        boardVersionRef.current = etag.replace(/"/g, '');
+      } else if (next && next.version) {
+        boardVersionRef.current = next.version;
+      }
+
+      return next;
+    };
+
     const poll = async () => {
       try {
-        const response = await fetch(`/s/${slug}/api/board`, {
+        const versionResponse = await fetch(`/s/${slug}/api/board/version`, {
           cache: 'no-store',
           headers: { Accept: 'application/json' },
         });
 
-        if (!response.ok || cancelled) {
+        if (!versionResponse.ok || cancelled) {
           return;
         }
 
-        const next = await response.json();
-        const currentSnap = snapshotForCompare(window.data);
-        const nextSnap = snapshotForCompare(next);
-
-        if (currentSnap !== nextSnap) {
-          applyData(next);
+        const { version } = await versionResponse.json();
+        if (boardVersionRef.current && boardVersionRef.current === version) {
+          return;
         }
+
+        const next = await fetchBoard();
+        if (!next || cancelled) {
+          return;
+        }
+
+        boardVersionRef.current = version;
+        applyData(next);
       } catch {
         /* ignore network errors between polls */
       }
     };
 
-    poll();
+    fetchBoard().then(async (next) => {
+      if (!next || cancelled) {
+        return;
+      }
+
+      applyData(next, { preserveText: false });
+
+      try {
+        const versionResponse = await fetch(`/s/${slug}/api/board/version`, {
+          cache: 'no-store',
+          headers: { Accept: 'application/json' },
+        });
+        if (versionResponse.ok) {
+          const { version } = await versionResponse.json();
+          boardVersionRef.current = version;
+        }
+      } catch {
+        /* ignore */
+      }
+    }).catch(() => {
+      /* ignore initial fetch errors */
+    });
+
     const timer = window.setInterval(poll, POLL_MS);
 
     return () => {

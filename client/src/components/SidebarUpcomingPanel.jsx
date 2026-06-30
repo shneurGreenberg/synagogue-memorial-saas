@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 import { getBoardData } from '../lib/board-data';
+import { isBoardPreviewMode } from '../lib/board-preview-mode';
 import { resolveBoardFeatures } from '../lib/board-features';
 import { buildSidebarAnnouncements } from '../lib/sidebar-announcements';
 
@@ -180,7 +181,7 @@ function SidebarUpcomingPanelBase({
   const [chabadDates, setChabadDates] = useState([]);
 
   useEffect(() => {
-    if (!slug || (!boardFeatures.upcomingHolidays && !boardFeatures.communityEvents)) {
+    if (!slug || (!boardFeatures.upcomingHolidays && !boardFeatures.communityEvents) || isBoardPreviewMode()) {
       return undefined;
     }
 

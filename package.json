@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "start:prod": "(node scripts/seed.js || true) & exec node app.js",
+    "start:prod": "(node scripts/seed.js || true) && node scripts/prebuild-css.js && exec node app.js",
     "restart": "yarn stop && pm2 start app.js && pm2 logs",
     "stop": "pm2 kill",
     "seed": "node scripts/seed.js",
@@ -15,6 +15,8 @@
     "seed:hayom-yom": "node scripts/seed-hayom-yom.js",
     "seed:photos": "node scripts/seed-photos.js --slug=novosibirsk --force",
     "build:board": "node scripts/bump-board-version.js && vite build --config vite.board.config.mjs",
+    "prebuild:css": "node scripts/prebuild-css.js",
+    "build:css": "node scripts/prebuild-css.js",
     "build:pages": "node scripts/build-github-pages.js",
     "dev:board": "vite build --config vite.board.config.mjs --watch"
   },
@@ -25,6 +27,7 @@
     "babelify": "^10.0.0",
     "bcryptjs": "^3.0.3",
     "body-parser": "^1.19.0",
+    "compression": "^1.8.1",
     "connect-mongo": "^4.0.0",
     "cookie-parser": "^1.4.0",
     "dotenv": "^10.0.0",

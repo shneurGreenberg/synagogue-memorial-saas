@@ -1,12 +1,12 @@
 import React from 'react';
 
-export function CandleVideo({ className = 'candle', active = true }) {
+export function CandleVideo({ className = 'candle', active = true, animated = true }) {
   if (!active) {
     return null;
   }
 
   return (
-    <div className={`css-candle ${className}`} aria-hidden="true">
+    <div className={`css-candle${animated ? '' : ' css-candle-static'} ${className}`} aria-hidden="true">
       <div className="css-candle-top">
         <div className="css-candle-glow" />
         <div className="css-candle-flame" />

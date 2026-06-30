@@ -1,214 +1,16 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { KEL_MALE_TRANSLATION, KEL_MALE_TRANSLITERATION } from './kel-male-transliteration';
+import ru from './i18n-resources/ru.js';
 
-const resources = {
-  en: {
-    translation: {
-      search_placeholder: 'Search by name...',
-      nearest_dates: 'Upcoming Dates',
-      memorial_prayer: 'Memorial Prayer',
-      kel_male_section_title: 'Memorial Prayer',
-      izkor_section_title: 'Yizkor',
-      kel_male_rachamim: 'El Malei Rachamim',
-      kel_male_rachamim_text: KEL_MALE_TRANSLATION.en,
-      kel_male_rachamim_text_transliteration: KEL_MALE_TRANSLITERATION.en,
-      izkor: 'Memorial Prayer',
-      izkor_text:
-        'May God remember the soul of my father, mother, grandfather, uncle, brother, son, or husband (name of the deceased), son of (father\'s name), who has departed this world, in reward for my making a charitable donation without vow, that it be credited to him or her as merit. May his or her soul be bound in the bond of life together with the souls of Abraham, Isaac, and Jacob, Sarah, Rebecca, Rachel, and Leah, and with all the righteous men and women who dwell in the Garden, and let us say: Amen.',
-      izkor_text_hebrew:
-        'יִזְכּוֹר אֱלֹהִים נִשְׁמַת אָבִי/אִמִּי (שם הנפטר) בֶּן/בַּת (שם האב), שֶׁהָלַךְ/הָלְכָה לְעוֹלָמוֹ/לְעוֹלָמָהּ, בַּעֲבוּר שֶׁאֲנִי נוֹדֵב צְדָקָה בְּעַד הַזְכָּרַת נִשְׁמָתוֹ/נִשְׁמָתָהּ. תְּהֵא נִשְׁמָתוֹ/נִשְׁמָתָהּ צְרוּרָה בִּצְרוֹר הַחַיִּים עִם נִשְׁמוֹת אַבְרָהָם, יִצְחָק וְיַעֲקֹב, שָׂרָה, רִבְקָה, רָחֵל וְלֵאָה, וְעִם שְׁאָר צַדִּיקִים וְצַדְקָנִיּוֹת הַגְּנוּזִים בַּגַּן, וְנֹאמַר אָמֵן.',
-      prayer_text_transliteration_label: 'Transliteration',
-      weekly_chapter: 'Weekly Chapter',
-      clear_search: 'Clear search',
-      previous_page: 'Previous page',
-      next_page: 'Next page',
-      person_not_found: 'Person not found',
-      back_to_board: 'Back to memorial board',
-      shabbat_enter: 'Shabbat enters',
-      shabbat_exit: 'Shabbat ends',
-      shabbat_enter_short: 'Enter',
-      shabbat_exit_short: 'Exit',
-      language: 'Language',
-      daily_gates_title: 'Daily study',
-      daily_chumash: 'Chumash',
-      daily_tehillim: 'Tehillim',
-      daily_tanya: 'Tanya',
-      daily_rambam: 'Rambam',
-      daily_rambam_one: '1 chapter',
-      daily_rambam_three: '3 chapters',
-      hayom_yom_title: 'Hayom Yom',
-      hayom_yom_loading: 'Loading Hayom Yom...',
-      upcoming_holidays_title: 'Upcoming holidays',
-      sidebar_upcoming_title: 'Upcoming dates & announcements',
-      community_announcements: 'Announcements',
-      weather_title: 'Weather',
-      weather_loading: 'Loading weather…',
-      weather_unavailable: 'Weather is temporarily unavailable.',
-      sun_times_title: 'Sunrise & sunset',
-      sunrise_label: 'Sunrise',
-      sunset_label: 'Sunset',
-      weather_clear: 'Clear',
-      weather_mainly_clear: 'Mainly clear',
-      weather_partly_cloudy: 'Partly cloudy',
-      weather_overcast: 'Overcast',
-      weather_fog: 'Fog',
-      weather_drizzle: 'Drizzle',
-      weather_rain: 'Rain',
-      weather_snow: 'Snow',
-      weather_showers: 'Showers',
-      weather_thunderstorm: 'Thunderstorm',
-      weather_unknown: 'Weather',
-      torah_reading_names: 'Names for Torah reading',
-      memorial_submission_title: 'Add your loved one',
-      memorial_submission_scan: 'Scan the QR code to register loved ones',
-      memorial_submission_qr_alt: 'QR code for name submission',
-      donation_qr_title: 'Charity',
-      donation_qr_scan: 'Scan the QR code to make a donation in memory of loved ones',
-      donation_qr_alt: 'QR code for charity',
-      play_prayer: 'Play prayer',
-      pause_prayer: 'Pause prayer',
-      baruch_hashem: 'Baruch Hashem',
-      close: 'Close',
-    },
-  },
-  ru: {
-    translation: {
-      search_placeholder: 'Поиск по имени, фамилии, отчеству',
-      nearest_dates: 'Ближайшие даты',
-      memorial_prayer: 'Поминальная молитва',
-      kel_male_section_title: 'Поминальная молитва',
-      izkor_section_title: 'Поминальная молитва',
-      kel_male_rachamim: 'Эль Мале Рахамим',
-      kel_male_rachamim_text: KEL_MALE_TRANSLATION.ru,
-      kel_male_rachamim_text_transliteration: KEL_MALE_TRANSLITERATION.ru,
-      izkor: 'Поминальная молитва',
-      izkor_text: 'Пусть вспомнит Б-г душу моего отца/деда/дяди/брата/сына/мужа (имя покойного) сына (имя его отца), ушедшего в иной мир, — в награду за то, что я, не связывая себя обетом, дам пожертвование, чтобы оно было засчитано ему в заслугу. За это да будет душа его пребывать в обители вечной жизни вместе с душами Авраhама, Ицхака и Яакова, Сары, Ривки, Рахели и Леи и прочих праведников и праведниц, обитающих в Ган-Эдене, и скажем: амен!',
-      izkor_text_hebrew:
-        'יִזְכּוֹר אֱלֹהִים נִשְׁמַת אָבִי/אִמִּי (שם הנפטר) בֶּן/בַּת (שם האב), שֶׁהָלַךְ/הָלְכָה לְעוֹלָמוֹ/לְעוֹלָמָהּ, בַּעֲבוּר שֶׁאֲנִי נוֹדֵב צְדָקָה בְּעַד הַזְכָּרַת נִשְׁמָתוֹ/נִשְׁמָתָהּ. תְּהֵא נִשְׁמָתוֹ/נִשְׁמָתָהּ צְרוּרָה בִּצְרוֹר הַחַיִּים עִם נִשְׁמוֹת אַבְרָהָם, יִצְחָק וְיַעֲקֹב, שָׂרָה, רִבְקָה, רָחֵל וְלֵאָה, וְעִם שְׁאָר צַדִּיקִים וְצַדְקָנִיּוֹת הַגְּנוּזִים בַּגַּן, וְנֹאמַר אָמֵן.',
-      prayer_text_transliteration_label: 'Транслитерация',
-      weekly_chapter: 'недельная глава',
-      clear_search: 'Очистить поиск',
-      previous_page: 'Предыдущая страница',
-      next_page: 'Следующая страница',
-      person_not_found: 'Человек не найден',
-      back_to_board: 'Вернуться к доске',
-      shabbat_enter: 'Начало Шаббата',
-      shabbat_exit: 'Окончание Шаббата',
-      shabbat_enter_short: 'Вход',
-      shabbat_exit_short: 'Выход',
-      language: 'Язык',
-      daily_gates_title: 'Лимуд на сегодня',
-      daily_chumash: 'Хумаш',
-      daily_tehillim: 'Тегилим',
-      daily_tanya: 'Тания',
-      daily_rambam: 'Рамбам',
-      daily_rambam_one: '1 глава',
-      daily_rambam_three: '3 главы',
-      hayom_yom_title: 'ХаЙом Йом',
-      hayom_yom_loading: 'Загрузка ХаЙом Йом...',
-      upcoming_holidays_title: 'Ближайшие праздники',
-      sidebar_upcoming_title: 'Ближайшие даты и объявления',
-      community_announcements: 'Объявления',
-      weather_title: 'Погода',
-      weather_loading: 'Загрузка погоды…',
-      weather_unavailable: 'Погода временно недоступна.',
-      sun_times_title: 'Восход и закат',
-      sunrise_label: 'Восход',
-      sunset_label: 'Закат',
-      weather_clear: 'Ясно',
-      weather_mainly_clear: 'Преимущественно ясно',
-      weather_partly_cloudy: 'Переменная облачность',
-      weather_overcast: 'Пасмурно',
-      weather_fog: 'Туман',
-      weather_drizzle: 'Морось',
-      weather_rain: 'Дождь',
-      weather_snow: 'Снег',
-      weather_showers: 'Ливень',
-      weather_thunderstorm: 'Гроза',
-      weather_unknown: 'Погода',
-      torah_reading_names: 'Имена для чтения Торы',
-      memorial_submission_title: 'Добавить имя близкого',
-      memorial_submission_scan: 'Сканируйте QR-код для регистрации близких',
-      memorial_submission_qr_alt: 'QR-код для добавления имени',
-      donation_qr_title: 'Цдака',
-      donation_qr_scan: 'Отсканируйте QR-код, чтобы сделать пожертвование в память о близких',
-      donation_qr_alt: 'QR-код для цдаки',
-      play_prayer: 'Воспроизвести молитву',
-      pause_prayer: 'Пауза',
-      baruch_hashem: 'Барух Ашем',
-      close: 'Закрыть',
-    },
-  },
-  he: {
-    translation: {
-      search_placeholder: 'חיפוש לפי שם...',
-      nearest_dates: 'תאריכים קרובים',
-      memorial_prayer: 'תפילת זיכרון',
-      kel_male_section_title: 'תפילת זיכרון',
-      izkor_section_title: 'תפילת זיכרון',
-      kel_male_rachamim: 'אל מלא רחמים',
-      kel_male_rachamim_text:
-        'אֵל מָלֵא רַחֲמִים, שׁוֹכֵן בַּמְּרוֹמִים, הַמְצֵא מְנוּחָה נְכוֹנָה עַל כַּנְפֵי הַשְּׁכִינָה, בְּמַעֲלוֹת קְדוֹשִׁים וּטְהוֹרִים כְּזוֹהַר הָרָקִיעַ מַזְהִירִים, לְנִשְׁמוֹת אַחֵינוּ וְאַחְיוֹתֵינוּ בְּנֵי יִשְׂרָאֵל הַנִּזְכָּרִים בְּמָקוֹם זֶה וּלְכָל נִשְׁמוֹת יִשְׂרָאֵל. בַּעֲבוּר שֶׁאֲנַחְנוּ מִתְפַּלְּלִים לְעִלּוּי נִשְׁמוֹתֵיהֶם. לָכֵן בַּעַל הָרַחֲמִים יַסְתִּירֵם בְּסֵתֶר כְּנָפָיו לְעוֹלָמִים, וְיִצְרוֹר בִּצְרוֹר הַחַיִּים אֶת נִשְׁמוֹתֵיהֶם, ה׳ הוּא נַחֲלָתָם, וְיָנוּחוּ בְּשָׁלוֹם עַל מִשְׁכָּבָם, וְנֹאמַר אָמֵן.',
-      izkor: 'תפילת זיכרון',
-      izkor_text:
-        'יִזְכּוֹר אֱלֹהִים נִשְׁמַת אָבִי/אִמִּי (שם הנפטר) בֶּן/בַּת (שם האב), שֶׁהָלַךְ/הָלְכָה לְעוֹלָמוֹ/לְעוֹלָמָהּ, בַּעֲבוּר שֶׁאֲנִי נוֹדֵב צְדָקָה בְּעַד הַזְכָּרַת נִשְׁמָתוֹ/נִשְׁמָתָהּ. תְּהֵא נִשְׁמָתוֹ/נִשְׁמָתָהּ צְרוּרָה בִּצְרוֹר הַחַיִּים עִם נִשְׁמוֹת אַבְרָהָם, יִצְחָק וְיַעֲקֹב, שָׂרָה, רִבְקָה, רָחֵל וְלֵאָה, וְעִם שְׁאָר צַדִּיקִים וְצַדְקָנִיּוֹת הַגְּנוּזִים בַּגַּן, וְנֹאמַר אָמֵן.',
-      weekly_chapter: 'פרשת השבוע',
-      clear_search: 'נקה חיפוש',
-      previous_page: 'עמוד קודם',
-      next_page: 'עמוד הבא',
-      person_not_found: 'לא נמצא',
-      back_to_board: 'חזרה ללוח',
-      shabbat_enter: 'כניסת שבת',
-      shabbat_exit: 'יציאת שבת',
-      shabbat_enter_short: 'כניסה',
-      shabbat_exit_short: 'יציאה',
-      language: 'שפה',
-      daily_gates_title: 'לימוד יומי',
-      daily_chumash: 'חומש',
-      daily_tehillim: 'תהילים',
-      daily_tanya: 'תניא',
-      daily_rambam: 'רמב"ם',
-      daily_rambam_one: 'פרק אחד',
-      daily_rambam_three: 'שלושה פרקים',
-      hayom_yom_title: 'היום יום',
-      hayom_yom_loading: 'טוען היום יום...',
-      upcoming_holidays_title: 'חגים קרובים',
-      sidebar_upcoming_title: 'תאריכים קרובים והודעות',
-      community_announcements: 'הודעות',
-      weather_title: 'מזג אוויר',
-      weather_loading: 'טוען מזג אוויר…',
-      weather_unavailable: 'מזג האוויר אינו זמין כרגע.',
-      sun_times_title: 'זריחה ושקיעה',
-      sunrise_label: 'זריחה',
-      sunset_label: 'שקיעה',
-      weather_clear: 'בהיר',
-      weather_mainly_clear: 'בהיר ברובו',
-      weather_partly_cloudy: 'מעונן חלקית',
-      weather_overcast: 'מעונן',
-      weather_fog: 'ערפל',
-      weather_drizzle: 'טפטוף',
-      weather_rain: 'גשם',
-      weather_snow: 'שלג',
-      weather_showers: 'ממטרים',
-      weather_thunderstorm: 'סופת רעמים',
-      weather_unknown: 'מזג אוויר',
-      torah_reading_names: 'שמות לקריאה בתורה',
-      memorial_submission_title: 'רוצים להוסיף את שם יקירכם?',
-      memorial_submission_scan: 'סרקו את הברקוד לרישום יקירים',
-      memorial_submission_qr_alt: 'ברקוד להוספת שם',
-      donation_qr_title: 'צדקה',
-      donation_qr_scan: 'סרקו את הברקוד לתרומה לזכר יקירים',
-      donation_qr_alt: 'ברקוד לצדקה',
-      play_prayer: 'השמעת התפילה',
-      pause_prayer: 'השהיית השמעה',
-      baruch_hashem: 'ברוך ה׳',
-      close: 'סגור',
-    },
-  },
+const LANGUAGE_LOADERS = {
+  en: () => import('./i18n-resources/en.js'),
+  ru: () => Promise.resolve({ default: ru }),
+  he: () => import('./i18n-resources/he.js'),
 };
 
-function getInitialLng() {
+const loadedLanguages = new Set(['ru']);
+
+export function getInitialLng() {
   try {
     const stored = sessionStorage.getItem('boardLang');
     if (stored) {
@@ -221,15 +23,52 @@ function getInitialLng() {
   return (window.data && window.data.language) || 'ru';
 }
 
-i18n
-  .use(initReactI18next)
-  .init({
-    resources,
-    lng: getInitialLng(),
-    fallbackLng: 'ru',
-    interpolation: {
-      escapeValue: false,
-    },
-  });
+export async function ensureLanguageLoaded(lang) {
+  const safe = ['ru', 'he', 'en'].includes(lang) ? lang : 'ru';
+  if (loadedLanguages.has(safe)) {
+    return safe;
+  }
+
+  const loader = LANGUAGE_LOADERS[safe];
+  if (!loader) {
+    return safe;
+  }
+
+  const module = await loader();
+  i18n.addResourceBundle(safe, 'translation', module.default, true, true);
+  loadedLanguages.add(safe);
+  return safe;
+}
+
+export async function initBoardI18n() {
+  const initialLng = getInitialLng();
+  await ensureLanguageLoaded(initialLng);
+
+  if (!i18n.isInitialized) {
+    i18n
+      .use(initReactI18next)
+      .init({
+        resources: {
+          ru: { translation: ru },
+        },
+        lng: initialLng,
+        fallbackLng: 'ru',
+        interpolation: {
+          escapeValue: false,
+        },
+        partialBundledLanguages: true,
+      });
+
+    i18n.on('languageChanged', (lang) => {
+      ensureLanguageLoaded(lang).catch(() => {
+        /* ignore language load errors */
+      });
+    });
+  } else if (initialLng !== i18n.language) {
+    await i18n.changeLanguage(initialLng);
+  }
+
+  return i18n;
+}
 
 export default i18n;

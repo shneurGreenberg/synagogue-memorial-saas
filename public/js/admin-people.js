@@ -1008,7 +1008,47 @@
     return normalized;
   }
 
+  function loadPeopleFromApi() {
+    if (!window.peopleListApiUrl) {
+      return Promise.resolve();
+    }
+
+    return fetch(window.peopleListApiUrl, {
+      headers: { Accept: 'application/json' },
+    })
+      .then(function (response) {
+        return response.ok ? response.json() : null;
+      })
+      .then(function (payload) {
+        if (!payload || !payload.ok) {
+          return;
+        }
+
+        people = payload.people || [];
+        Object.keys(peopleById).forEach(function (key) {
+          delete peopleById[key];
+        });
+        people.forEach(function (person) {
+          peopleById[person.id] = person;
+        });
+        list.innerHTML = '';
+        people.forEach(function (person) {
+          list.appendChild(createPersonRow(person));
+        });
+        syncPeopleData();
+      })
+      .catch(function () {
+        /* ignore */
+      });
+  }
+
   function initPeoplePage() {
+    loadPeopleFromApi().finally(function () {
+      startPeoplePage();
+    });
+  }
+
+  function startPeoplePage() {
     const personCard = window.AdminPersonCard
       ? window.AdminPersonCard.init({ onEdit: openEditModal })
       : null;
