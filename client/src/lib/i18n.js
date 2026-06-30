@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { KEL_MALE_TRANSLITERATION } from './kel-male-transliteration';
+import { KEL_MALE_TRANSLATION, KEL_MALE_TRANSLITERATION } from './kel-male-transliteration';
 
 const resources = {
   en: {
@@ -11,15 +11,14 @@ const resources = {
       kel_male_section_title: 'Memorial Prayer',
       izkor_section_title: 'Yizkor',
       kel_male_rachamim: 'El Malei Rachamim',
-      kel_male_rachamim_text: KEL_MALE_TRANSLITERATION.en,
-      kel_male_rachamim_text_hebrew:
-        'אֵל מָלֵא רַחֲמִים, שׁוֹכֵן בַּמְּרוֹמִים, הַמְצֵא מְנוּחָה נְכוֹנָה עַל כַּנְפֵי הַשְּׁכִינָה, בְּמַעֲלוֹת קְדוֹשִׁים וּטְהוֹרִים כְּזוֹהַר הָרָקִיעַ מַזְהִירִים, לְנִשְׁמוֹת אַחֵינוּ וְאַחְיוֹתֵינוּ בְּנֵי יִשְׂרָאֵל הַנִּזְכָּרִים בְּמָקוֹם זֶה וּלְכָל נִשְׁמוֹת יִשְׂרָאֵל. בַּעֲבוּר שֶׁאֲנַחְנוּ מִתְפַּלְּלִים לְעִלּוּי נִשְׁמוֹתֵיהֶם. לָכֵן בַּעַל הָרַחֲמִים יַסְתִּירֵם בְּסֵתֶר כְּנָפָיו לְעוֹלָמִים, וְיִצְרוֹר בִּצְרוֹר הַחַיִּים אֶת נִשְׁמוֹתֵיהֶם, ה׳ הוּא נַחֲלָתָם, וְיָנוּחוּ בְּשָׁלוֹם עַל מִשְׁכָּבָם, וְנֹאמַר אָמֵן.',
+      kel_male_rachamim_text: KEL_MALE_TRANSLATION.en,
+      kel_male_rachamim_text_transliteration: KEL_MALE_TRANSLITERATION.en,
       izkor: 'Memorial Prayer',
       izkor_text:
         'May God remember the soul of my father, mother, grandfather, uncle, brother, son, or husband (name of the deceased), son of (father\'s name), who has departed this world, in reward for my making a charitable donation without vow, that it be credited to him or her as merit. May his or her soul be bound in the bond of life together with the souls of Abraham, Isaac, and Jacob, Sarah, Rebecca, Rachel, and Leah, and with all the righteous men and women who dwell in the Garden, and let us say: Amen.',
       izkor_text_hebrew:
         'יִזְכּוֹר אֱלֹהִים נִשְׁמַת אָבִי/אִמִּי (שם הנפטר) בֶּן/בַּת (שם האב), שֶׁהָלַךְ/הָלְכָה לְעוֹלָמוֹ/לְעוֹלָמָהּ, בַּעֲבוּר שֶׁאֲנִי נוֹדֵב צְדָקָה בְּעַד הַזְכָּרַת נִשְׁמָתוֹ/נִשְׁמָתָהּ. תְּהֵא נִשְׁמָתוֹ/נִשְׁמָתָהּ צְרוּרָה בִּצְרוֹר הַחַיִּים עִם נִשְׁמוֹת אַבְרָהָם, יִצְחָק וְיַעֲקֹב, שָׂרָה, רִבְקָה, רָחֵל וְלֵאָה, וְעִם שְׁאָר צַדִּיקִים וְצַדְקָנִיּוֹת הַגְּנוּזִים בַּגַּן, וְנֹאמַר אָמֵן.',
-      prayer_text_hebrew_label: 'Hebrew text',
+      prayer_text_transliteration_label: 'Transliteration',
       weekly_chapter: 'Weekly Chapter',
       clear_search: 'Clear search',
       previous_page: 'Previous page',
@@ -81,14 +80,13 @@ const resources = {
       kel_male_section_title: 'Поминальная молитва',
       izkor_section_title: 'Поминальная молитва',
       kel_male_rachamim: 'Эль Мале Рахамим',
-      kel_male_rachamim_text: KEL_MALE_TRANSLITERATION.ru,
-      kel_male_rachamim_text_hebrew:
-        'אֵל מָלֵא רַחֲמִים, שׁוֹכֵן בַּמְּרוֹמִים, הַמְצֵא מְנוּחָה נְכוֹנָה עַל כַּנְפֵי הַשְּׁכִינָה, בְּמַעֲלוֹת קְדוֹשִׁים וּטְהוֹרִים כְּזוֹהַר הָרָקִיעַ מַזְהִירִים, לְנִשְׁמוֹת אַחֵינוּ וְאַחְיוֹתֵינוּ בְּנֵי יִשְׂרָאֵל הַנִּזְכָּרִים בְּמָקוֹם זֶה וּלְכָל נִשְׁמוֹת יִשְׂרָאֵל. בַּעֲבוּר שֶׁאֲנַחְנוּ מִתְפַּלְּלִים לְעִלּוּי נִשְׁמוֹתֵיהֶם. לָכֵן בַּעַל הָרַחֲמִים יַסְתִּירֵם בְּסֵתֶר כְּנָפָיו לְעוֹלָמִים, וְיִצְרוֹר בִּצְרוֹר הַחַיִּים אֶת נִשְׁמוֹתֵיהֶם, ה׳ הוּא נַחֲלָתָם, וְיָנוּחוּ בְּשָׁלוֹם עַל מִשְׁכָּבָם, וְנֹאמַר אָמֵן.',
+      kel_male_rachamim_text: KEL_MALE_TRANSLATION.ru,
+      kel_male_rachamim_text_transliteration: KEL_MALE_TRANSLITERATION.ru,
       izkor: 'Поминальная молитва',
       izkor_text: 'Пусть вспомнит Б-г душу моего отца/деда/дяди/брата/сына/мужа (имя покойного) сына (имя его отца), ушедшего в иной мир, — в награду за то, что я, не связывая себя обетом, дам пожертвование, чтобы оно было засчитано ему в заслугу. За это да будет душа его пребывать в обители вечной жизни вместе с душами Авраhама, Ицхака и Яакова, Сары, Ривки, Рахели и Леи и прочих праведников и праведниц, обитающих в Ган-Эдене, и скажем: амен!',
       izkor_text_hebrew:
         'יִזְכּוֹר אֱלֹהִים נִשְׁמַת אָבִי/אִמִּי (שם הנפטר) בֶּן/בַּת (שם האב), שֶׁהָלַךְ/הָלְכָה לְעוֹלָמוֹ/לְעוֹלָמָהּ, בַּעֲבוּר שֶׁאֲנִי נוֹדֵב צְדָקָה בְּעַד הַזְכָּרַת נִשְׁמָתוֹ/נִשְׁמָתָהּ. תְּהֵא נִשְׁמָתוֹ/נִשְׁמָתָהּ צְרוּרָה בִּצְרוֹר הַחַיִּים עִם נִשְׁמוֹת אַבְרָהָם, יִצְחָק וְיַעֲקֹב, שָׂרָה, רִבְקָה, רָחֵל וְלֵאָה, וְעִם שְׁאָר צַדִּיקִים וְצַדְקָנִיּוֹת הַגְּנוּזִים בַּגַּן, וְנֹאמַר אָמֵן.',
-      prayer_text_hebrew_label: 'Текст на иврите',
+      prayer_text_transliteration_label: 'Транслитерация',
       weekly_chapter: 'недельная глава',
       clear_search: 'Очистить поиск',
       previous_page: 'Предыдущая страница',

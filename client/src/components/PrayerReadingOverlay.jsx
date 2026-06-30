@@ -86,7 +86,7 @@ class PrayerReadingOverlayBase extends React.Component {
     const {
       sectionTitle,
       text,
-      hebrewText,
+      transliterationText,
       extraClass,
       audioSrc,
       onClose,
@@ -95,7 +95,8 @@ class PrayerReadingOverlayBase extends React.Component {
     } = this.props;
     const resolvedAudioSrc = audioSrc || assetUrl('audio/prayer-placeholder.mp3');
     const playLabel = this.state.isPlaying ? t('pause_prayer') : t('play_prayer');
-    const showHebrewText = i18n?.language !== 'he' && hebrewText;
+    const language = i18n?.language || 'ru';
+    const showTransliteration = language !== 'he' && transliterationText;
 
     return createPortal(
       <div
@@ -118,11 +119,17 @@ class PrayerReadingOverlayBase extends React.Component {
               <p className="prayer-reading-text">
                 {text}
               </p>
-              {showHebrewText && (
-                <div className="prayer-reading-hebrew-block">
-                  <h2 className="prayer-reading-hebrew-label">{t('prayer_text_hebrew_label')}</h2>
-                  <p className="prayer-reading-hebrew-text" dir="rtl" lang="he">
-                    {hebrewText}
+              {showTransliteration && (
+                <div className="prayer-reading-transliteration-block">
+                  <h2 className="prayer-reading-transliteration-label">
+                    {t('prayer_text_transliteration_label')}
+                  </h2>
+                  <p
+                    className="prayer-reading-transliteration-text"
+                    dir="ltr"
+                    lang={language}
+                  >
+                    {transliterationText}
                   </p>
                 </div>
               )}
