@@ -4,6 +4,102 @@ import { withTranslation } from 'react-i18next';
 import { assetUrl } from '../lib/asset-url';
 import { CandleVideo } from './CandleVideo';
 
+class PrayerOverlayTextScroller extends React.Component {
+  constructor(props) {
+    super(props);
+    this.viewportRef = React.createRef();
+    this.trackRef = React.createRef();
+    this.state = {
+      shouldScroll: false,
+      durationSec: 120,
+    };
+  }
+
+  componentDidMount() {
+    this.updateScrollBehavior();
+    window.addEventListener('resize', this.updateScrollBehavior);
+
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = new ResizeObserver(() => {
+        this.updateScrollBehavior();
+      });
+
+      if (this.viewportRef.current) {
+        this.resizeObserver.observe(this.viewportRef.current);
+      }
+      if (this.trackRef.current) {
+        this.resizeObserver.observe(this.trackRef.current);
+      }
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.children !== this.props.children) {
+      this.updateScrollBehavior();
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateScrollBehavior);
+    this.resizeObserver?.disconnect();
+  }
+
+  updateScrollBehavior = () => {
+    requestAnimationFrame(() => {
+      const viewport = this.viewportRef.current;
+      const track = this.trackRef.current;
+
+      if (!viewport || !track) {
+        return;
+      }
+
+      const contentHeight = this.state.shouldScroll
+        ? track.scrollHeight / 2
+        : track.scrollHeight;
+      const needsScroll = contentHeight > viewport.clientHeight + 4;
+
+      if (!needsScroll) {
+        if (this.state.shouldScroll) {
+          this.setState({ shouldScroll: false, durationSec: 120 });
+        }
+        return;
+      }
+
+      const rootStyles = getComputedStyle(document.documentElement);
+      const prayerScale = parseFloat(rootStyles.getPropertyValue('--font-scale-prayer-overlay')) || 1;
+      const pixelsPerSecond = 14 * prayerScale;
+      const durationSec = Math.max(contentHeight / pixelsPerSecond, 90);
+
+      if (!this.state.shouldScroll) {
+        this.setState({ shouldScroll: true, durationSec });
+        return;
+      }
+
+      if (Math.abs(this.state.durationSec - durationSec) > 2) {
+        this.setState({ durationSec });
+      }
+    });
+  };
+
+  render() {
+    const { children } = this.props;
+    const { shouldScroll, durationSec } = this.state;
+
+    return (
+      <div className="prayer-reading-text-scroll" ref={this.viewportRef}>
+        <div
+          className={`prayer-reading-text-track${shouldScroll ? ' is-scrolling' : ''}`}
+          ref={this.trackRef}
+          style={shouldScroll ? { animationDuration: `${durationSec}s` } : undefined}
+        >
+          <div className="prayer-reading-text-block">{children}</div>
+          {shouldScroll && <div className="prayer-reading-text-block" aria-hidden="true">{children}</div>}
+        </div>
+      </div>
+    );
+  }
+}
+
 class PrayerReadingOverlayBase extends React.Component {
   constructor(props) {
     super(props);
@@ -115,24 +211,26 @@ class PrayerReadingOverlayBase extends React.Component {
               <CandleVideo className="prayer-reading-candle" />
             </div>
             <div className="prayer-reading-content">
-              {sectionTitle && <h1 className="prayer-reading-heading">{sectionTitle}</h1>}
-              <p className="prayer-reading-text">
-                {text}
-              </p>
-              {showTransliteration && (
-                <div className="prayer-reading-transliteration-block">
-                  <h2 className="prayer-reading-transliteration-label">
-                    {t('prayer_text_transliteration_label')}
-                  </h2>
-                  <p
-                    className="prayer-reading-transliteration-text"
-                    dir="ltr"
-                    lang={language}
-                  >
-                    {transliterationText}
-                  </p>
-                </div>
-              )}
+              <PrayerOverlayTextScroller>
+                {sectionTitle && <h1 className="prayer-reading-heading">{sectionTitle}</h1>}
+                <p className="prayer-reading-text">
+                  {text}
+                </p>
+                {showTransliteration && (
+                  <div className="prayer-reading-transliteration-block">
+                    <h2 className="prayer-reading-transliteration-label">
+                      {t('prayer_text_transliteration_label')}
+                    </h2>
+                    <p
+                      className="prayer-reading-transliteration-text"
+                      dir="ltr"
+                      lang={language}
+                    >
+                      {transliterationText}
+                    </p>
+                  </div>
+                )}
+              </PrayerOverlayTextScroller>
             </div>
           </div>
           <div className="prayer-reading-footer">

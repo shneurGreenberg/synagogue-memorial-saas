@@ -726,6 +726,132 @@
     if (window.ContactPlatformUI && platformSelect) {
       window.ContactPlatformUI.syncPlatformIcon(platformSelect);
     }
+    syncFamilyNameChip(row);
+  }
+
+  function extractFamilyName(deceasedName) {
+    const trimmed = String(deceasedName || '').trim();
+    if (!trimmed) {
+      return '';
+    }
+
+    const parts = trimmed
+      .split(/\s+/)
+      .map(function (part) { return part.replace(/[(),]/g, '').trim(); })
+      .filter(Boolean);
+
+    if (!parts.length) {
+      return '';
+    }
+
+    const hasCyrillic = /[\u0400-\u04FF]/.test(trimmed);
+    const hasHebrew = /[\u0590-\u05FF]/.test(trimmed);
+
+    if (hasCyrillic) {
+      return parts[0];
+    }
+
+    if (hasHebrew) {
+      return parts[parts.length - 1];
+    }
+
+    return parts[parts.length - 1];
+  }
+
+  function getDeceasedNameInput(modal) {
+    if (!modal) {
+      return null;
+    }
+
+    if (modal.id === 'editPersonModal') {
+      return document.getElementById('editName');
+    }
+
+    if (modal.id === 'addPersonModal') {
+      return document.getElementById('addName');
+    }
+
+    return null;
+  }
+
+  function syncFamilyNameChip(row) {
+    const modal = row.closest('.modal');
+    const nameInput = row.querySelector('[data-field="name"]');
+    const wrap = row.querySelector('[data-family-name-chip-wrap]');
+    const chip = row.querySelector('[data-family-name-chip]');
+    const label = row.querySelector('[data-family-name-chip-label]');
+    const deceasedInput = getDeceasedNameInput(modal);
+
+    if (!wrap || !chip || !label || !nameInput) {
+      return;
+    }
+
+    const familyName = deceasedInput ? extractFamilyName(deceasedInput.value) : '';
+    const contactName = (nameInput.value || '').trim();
+    const show = !!familyName && !contactName;
+
+    wrap.hidden = !show;
+    if (show) {
+      label.textContent = familyName;
+      const pasteLabel = page.getAttribute('data-contact-paste-family-name') || 'Paste family name';
+      chip.setAttribute('aria-label', pasteLabel + ': ' + familyName);
+    }
+  }
+
+  function attachFamilyNameChip(row) {
+    const chip = row.querySelector('[data-family-name-chip]');
+    const nameInput = row.querySelector('[data-field="name"]');
+    const modal = row.closest('.modal');
+
+    if (!chip || !nameInput || chip.dataset.familyChipBound === '1') {
+      return;
+    }
+
+    chip.dataset.familyChipBound = '1';
+    chip.addEventListener('click', function () {
+      const deceasedInput = getDeceasedNameInput(modal);
+      const familyName = deceasedInput ? extractFamilyName(deceasedInput.value) : '';
+      if (!familyName) {
+        return;
+      }
+
+      nameInput.value = familyName;
+      nameInput.focus();
+      nameInput.dispatchEvent(new Event('input', { bubbles: true }));
+      syncFamilyNameChip(row);
+    });
+
+    nameInput.addEventListener('input', function () {
+      syncFamilyNameChip(row);
+    });
+  }
+
+  function bindDeceasedNameFamilyChips(modal) {
+    if (!modal) {
+      return;
+    }
+
+    const deceasedInput = getDeceasedNameInput(modal);
+    if (!deceasedInput || deceasedInput.dataset.familyChipBound === '1') {
+      return;
+    }
+
+    deceasedInput.dataset.familyChipBound = '1';
+    deceasedInput.addEventListener('input', function () {
+      modal.querySelectorAll('.admin-contact-row').forEach(syncFamilyNameChip);
+    });
+  }
+
+  function refreshFamilyNameChips(modal) {
+    if (!modal) {
+      return;
+    }
+
+    bindDeceasedNameFamilyChips(modal);
+    modal.querySelectorAll('.admin-contact-row').forEach(function (row) {
+      attachFamilyNameChip(row);
+      syncFamilyNameChip(row);
+    });
   }
 
   function createContactRow(listEl, contact) {
@@ -771,6 +897,9 @@
     if (window.AdminContactDirectory && typeof window.AdminContactDirectory.attachToRow === 'function') {
       window.AdminContactDirectory.attachToRow(appended);
     }
+    attachFamilyNameChip(appended);
+    syncFamilyNameChip(appended);
+    refreshFamilyNameChips(appended.closest('.modal'));
     return appended;
   }
 
@@ -801,6 +930,7 @@
     addBtn.addEventListener('click', function () {
       createContactRow(listEl, { platform: 'max' });
     });
+    refreshFamilyNameChips(scope.closest('.modal') || scope);
   }
 
   function populateContactsSection(scope, person) {
@@ -846,6 +976,7 @@
     }
 
     populateContactsSection(document.getElementById('editPersonModal'), person);
+    refreshFamilyNameChips(document.getElementById('editPersonModal'));
 
     if (person.photo) {
       cropEditors.edit.setCrop(

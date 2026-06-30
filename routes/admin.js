@@ -551,7 +551,9 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             Object.entries(fontScales).forEach(([key, value]) => {
                 updateData[`theme.fontScales.${key}`] = value;
             });
-            Object.assign(updateData, memorialQrPanelToUpdate(parseMemorialQrPanelFromBody(req.body)));
+            Object.assign(updateData, memorialQrPanelToUpdate(
+              parseMemorialQrPanelFromBody(req.body, synagogue?.memorialQrPanel),
+            ));
             if ('publicSubmissionDonationUrl' in req.body) {
                 updateData['publicSubmission.donationUrl'] = publicSubmission.donationUrl || '';
             }

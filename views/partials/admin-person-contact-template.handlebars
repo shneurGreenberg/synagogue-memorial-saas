@@ -8,6 +8,12 @@
         </div>
         <div class="form-field admin-contact-name-field" data-contact-name-field>
             <label>{{t 'contact_name'}}</label>
+            <div class="admin-contact-family-chip-wrap" data-family-name-chip-wrap hidden>
+                <button type="button" class="admin-contact-family-chip" data-family-name-chip>
+                    <span class="admin-contact-family-chip-label" data-family-name-chip-label></span>
+                    {{{adminIcon 'paste' class='admin-contact-family-chip-icon'}}}
+                </button>
+            </div>
             <input type="text" data-field="name" class="form-control" maxlength="120" autocomplete="off">
             <ul class="admin-contact-suggestions" data-contact-suggestions hidden></ul>
         </div>
