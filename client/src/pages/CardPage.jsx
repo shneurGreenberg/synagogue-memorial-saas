@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import ReactDOM from 'react-dom';
 import { withTranslation } from 'react-i18next';
 import { sanitizeRichText } from '../lib/html-sanitize';
 import { getBiographyDensityClass } from '../lib/text-density';
@@ -11,7 +12,7 @@ import { getBoardSlug } from '../lib/board-slug';
 class CardPageBase extends React.Component {
   constructor(props) {
     super(props);
-    this.onBackdropClick = this.onBackdropClick.bind(this);
+    this.onOverlayClick = this.onOverlayClick.bind(this);
     this.stopPropagation = this.stopPropagation.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
   }
@@ -28,7 +29,11 @@ class CardPageBase extends React.Component {
     }
   }
 
-  onBackdropClick() {
+  onOverlayClick(event) {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+
     this.props.onBack();
   }
 
@@ -98,28 +103,38 @@ class CardPageBase extends React.Component {
       return this.renderExport(person, biographyText);
     }
 
-    return (
+    const overlay = (
       <div
         className="card-overlay"
         role="dialog"
         aria-modal="true"
         aria-label={this.props.t('back_to_board')}
+        onClick={this.onOverlayClick}
       >
-        <button
-          type="button"
-          className="card-overlay-backdrop"
-          onClick={this.onBackdropClick}
-          aria-label={this.props.t('back_to_board')}
-        />
         <div className="card-popup" onClick={this.stopPropagation}>
           {person ? this.renderDetail(person, biographyText) : this.renderMissing()}
         </div>
       </div>
     );
+
+    return ReactDOM.createPortal(overlay, document.body);
   }
 }
 
 const CardPageTranslated = withTranslation()(CardPageBase);
+
+function useCardOverlayLock(exportMode) {
+  useEffect(() => {
+    if (exportMode) {
+      return undefined;
+    }
+
+    document.body.classList.add('board-card-overlay-open');
+    return () => {
+      document.body.classList.remove('board-card-overlay-open');
+    };
+  }, [exportMode]);
+}
 
 function useCardExportReady(person, biographyText, exportMode) {
   useEffect(() => {
@@ -213,6 +228,7 @@ export default function CardPage({ personId, exportMode = false }) {
   );
   const biographyText = usePersonBiography(person, personId);
 
+  useCardOverlayLock(exportMode);
   useCardExportReady(person, biographyText, exportMode);
 
   return (

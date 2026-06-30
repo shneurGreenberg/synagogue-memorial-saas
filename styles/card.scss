@@ -10,35 +10,42 @@
 
 .card-overlay {
   position: fixed;
-  inset: 0;
-  z-index: 1200;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: clamp(8px, 2vw, 20px);
   box-sizing: border-box;
-  pointer-events: none;
-}
-
-.card-overlay-backdrop {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: rgba(0, 0, 0, 55%);
+  background: rgba(0, 0, 0, 0.55);
   cursor: pointer;
-  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .card-popup {
   position: relative;
   z-index: 1;
-  width: min(1100px, 100%);
+  width: 100%;
+  max-width: 1100px;
   max-height: calc(100vh - clamp(16px, 4vw, 40px));
   cursor: default;
-  pointer-events: auto;
+}
+
+body.board-card-overlay-open {
+  overflow: hidden;
+
+  #main-entry,
+  #main-entry .main-container,
+  .board-version,
+  .baruch-hashem-badge,
+  .board-lang-toggle {
+    pointer-events: none !important;
+  }
 }
 
 .card-view {
