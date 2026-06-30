@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { useMatch, useParams } from 'react-router-dom';
 import { BoardNavigationProvider } from './context/BoardNavigationContext';
 import { BoardDataProvider } from './context/BoardDataContext';
 import { ThemeStyles } from './components/ThemeStyles';
 import { IdleReload } from './components/IdleReload';
-import { useBoardData } from './context/BoardDataContext';
 import { BoardVersionBadge } from './components/BoardVersionBadge';
 import { BaruchHashemBadge } from './components/BaruchHashemBadge';
 import HomePage from './pages/HomePage';
-import CardPage from './pages/CardPage';
-import TileExportPage from './pages/TileExportPage';
+
+const CardPage = lazy(() => import('./pages/CardPage'));
+const TileExportPage = lazy(() => import('./pages/TileExportPage'));
+
+function BoardRouteFallback() {
+  return null;
+}
 
 function BoardLayoutInner() {
   const cardMatch = useMatch('/s/:slug/card/:personId');
@@ -21,12 +25,15 @@ function BoardLayoutInner() {
     : new URLSearchParams();
   const highlightYahrzeit = exportParams.get('yahrzeit') === '1';
   const cardExportMode = exportParams.get('export') === '1';
+  const cardOpen = Boolean(personId && !cardExportMode);
 
   if (exportPersonId) {
     return (
       <>
         <ThemeStyles />
-        <TileExportPage personId={exportPersonId} highlightYahrzeit={highlightYahrzeit} />
+        <Suspense fallback={<BoardRouteFallback />}>
+          <TileExportPage personId={exportPersonId} highlightYahrzeit={highlightYahrzeit} />
+        </Suspense>
       </>
     );
   }
@@ -35,7 +42,9 @@ function BoardLayoutInner() {
     return (
       <BoardNavigationProvider>
         <ThemeStyles />
-        <CardPage personId={personId} exportMode />
+        <Suspense fallback={<BoardRouteFallback />}>
+          <CardPage personId={personId} exportMode />
+        </Suspense>
       </BoardNavigationProvider>
     );
   }
@@ -46,9 +55,15 @@ function BoardLayoutInner() {
       <IdleReload />
       <BoardVersionBadge />
       <BaruchHashemBadge />
-      <div id="main-entry">
-        <HomePage />
-        {personId ? <CardPage personId={personId} /> : null}
+      <div id="main-entry" className={cardOpen ? 'board-card-open' : ''}>
+        <div className={cardOpen ? 'board-home-paused' : ''} aria-hidden={cardOpen}>
+          <HomePage paused={cardOpen} />
+        </div>
+        {personId ? (
+          <Suspense fallback={<BoardRouteFallback />}>
+            <CardPage personId={personId} />
+          </Suspense>
+        ) : null}
       </div>
     </BoardNavigationProvider>
   );

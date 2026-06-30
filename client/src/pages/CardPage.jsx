@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 import { sanitizeRichText } from '../lib/html-sanitize';
 import { getBiographyDensityClass } from '../lib/text-density';
@@ -6,6 +6,7 @@ import { PersonAvatar } from '../components/PersonAvatar';
 import { useBoardNavigation } from '../context/BoardNavigationContext';
 import { useBoardData } from '../context/BoardDataContext';
 import { BiographyScroller } from '../components/BiographyScroller';
+import { getBoardSlug } from '../lib/board-slug';
 
 class CardPageBase extends React.Component {
   constructor(props) {
@@ -168,7 +169,42 @@ export default function CardPage({ personId, exportMode = false }) {
   const { goToBoard } = useBoardNavigation();
   const { data } = useBoardData();
   const people = data.people || [];
-  const card = people.find((person) => String(person.id) === String(personId));
+  const baseCard = people.find((person) => String(person.id) === String(personId));
+  const [biography, setBiography] = useState(baseCard?.text || '');
+  const slug = getBoardSlug();
+
+  useEffect(() => {
+    if (baseCard?.text) {
+      setBiography(baseCard.text);
+      return undefined;
+    }
+
+    if (!slug || !personId) {
+      setBiography('');
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    fetch(`/s/${slug}/api/board/person/${encodeURIComponent(personId)}`, {
+      headers: { Accept: 'application/json' },
+    })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload) => {
+        if (!cancelled && payload?.person?.text) {
+          setBiography(payload.person.text);
+        }
+      })
+      .catch(() => {
+        /* ignore biography fetch errors */
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [baseCard, personId, slug]);
+
+  const card = baseCard ? { ...baseCard, text: biography } : null;
 
   useCardExportReady(card, exportMode);
 

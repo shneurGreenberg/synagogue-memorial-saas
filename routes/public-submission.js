@@ -16,6 +16,7 @@ const {
   validatePublicSubmissionContact,
 } = require('../lib/person-contact');
 const { optimizeUploadedImage } = require('../lib/image-optimize');
+const { invalidateBoardCache } = require('../lib/board-cache');
 const { parsePhotoCropFromBody } = require('../lib/photo-crop');
 
 const router = express.Router();
@@ -250,6 +251,7 @@ router.post('/:slug/add-name', handlePublicPhotoUpload, async (req, res) => {
       { slug: req.params.slug },
       { $push: { people: newPerson } },
     );
+    invalidateBoardCache(req.params.slug);
 
     return res.redirect(`/s/${req.params.slug}/add-name/success?lang=${lang}&name=${encodeURIComponent(name)}`);
   } catch (err) {

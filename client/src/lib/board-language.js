@@ -1,8 +1,9 @@
-import i18n from './i18n';
+import i18n, { ensureLanguageLoaded } from './i18n';
 import { getDisplayLanguage, setDisplayLanguage } from './person-names';
 
-export function applyBoardLanguage(lang) {
+export async function applyBoardLanguage(lang) {
   const safe = ['ru', 'he', 'en'].includes(lang) ? lang : 'ru';
+  await ensureLanguageLoaded(safe);
   setDisplayLanguage(safe);
   i18n.changeLanguage(safe);
   document.documentElement.lang = safe;

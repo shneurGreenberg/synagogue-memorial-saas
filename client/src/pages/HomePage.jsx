@@ -38,6 +38,7 @@ import { isPersonYahrzeitToday } from '../lib/yahrzeit-today';
 import { MemorialSubmissionPanel } from '../components/MemorialSubmissionPanel';
 import { DonationQrPanel } from '../components/DonationQrPanel';
 import { TorahReadingOverlay } from '../components/TorahReadingOverlay';
+import { usePhotoPrefetch } from '../hooks/usePhotoPrefetch';
 
 function getDailyCite(appData, hebrewDate) {
   const currentHebrewMonth = hebrewDate.getMonth();
@@ -253,6 +254,10 @@ class HomePageBase extends React.Component {
     if (prevProps.calendarDayKey !== this.props.calendarDayKey) {
       this.refreshCalendarState();
     }
+
+    if (prevProps.revision !== this.props.revision) {
+      this.refreshCalendarState();
+    }
   }
 
   changePage(shift) {
@@ -321,54 +326,36 @@ class HomePageBase extends React.Component {
     );
   }
 
-  renderStandardPageGrid(pageIndex) {
-    const { people, page } = this.state;
-    const pageShift = getPageShift({ ...this.state, page: pageIndex });
-    const isHidden = pageIndex !== page;
+  renderCurrentGrid() {
+    const { page, hasKadishToday } = this.state;
 
-    return (
-      <div
-        key={`page-${pageIndex}`}
-        className={`cards-grid${isHidden ? ' cards-grid-hidden' : ''}`}
-        aria-hidden={isHidden}
-      >
-        {Array.from({ length: 16 }, (_, i) => {
-          const entry = people[pageShift + i];
-          return (
-            <MemorialCard
-              key={entry ? `person-${entry.id}` : `empty-${pageIndex}-${i}`}
-              entry={entry}
-              onOpen={this.props.onOpenCard}
-            />
-          );
-        })}
-      </div>
-    );
-  }
-
-  renderAllGrids() {
-    const { page, totalPages, hasKadishToday } = this.state;
-    const grids = [];
-
-    if (hasKadishToday) {
-      const isHidden = page !== 0;
-      grids.push(
-        <div
-          key="kadish-page"
-          className={`cards-grid cards-grid-kadish${isHidden ? ' cards-grid-hidden' : ''}`}
-          aria-hidden={isHidden}
-        >
-          {this.renderKadishGridContent(getPageShift({ ...this.state, page: 0 }))}
-        </div>,
+    if (hasKadishToday && page === 0) {
+      return (
+        <div className="cards-area">
+          <div className="cards-grid cards-grid-kadish">
+            {this.renderKadishGridContent(getPageShift({ ...this.state, page: 0 }))}
+          </div>
+        </div>
       );
     }
 
-    const firstStandardPage = hasKadishToday ? 1 : 0;
-    for (let pageIndex = firstStandardPage; pageIndex < totalPages; pageIndex += 1) {
-      grids.push(this.renderStandardPageGrid(pageIndex));
-    }
-
-    return <div className="cards-area">{grids}</div>;
+    const pageShift = getPageShift(this.state);
+    return (
+      <div className="cards-area">
+        <div className="cards-grid">
+          {Array.from({ length: 16 }, (_, i) => {
+            const entry = this.state.people[pageShift + i];
+            return (
+              <MemorialCard
+                key={entry ? `person-${entry.id}` : `empty-${page}-${i}`}
+                entry={entry}
+                onOpen={this.props.onOpenCard}
+              />
+            );
+          })}
+        </div>
+      </div>
+    );
   }
 
   render() {
@@ -429,7 +416,7 @@ class HomePageBase extends React.Component {
                 <h1>{this.props.boardTitle}</h1>
               </button>
             </header>
-            {this.renderAllGrids()}
+            {this.renderCurrentGrid()}
             <div className={`board-footer${this.state.totalPages <= 1 ? ' board-footer-search-only' : ''}`}>
               <div className="search">
                 <button
@@ -528,14 +515,18 @@ function HomePageConnected(props) {
   const { goToCard } = useBoardNavigation();
   const { revision, calendarDayKey, uiLang, data } = useBoardData();
   const boardTitle = resolveBoardTitle(data, uiLang);
+  const visiblePeople = (data.people || []).slice(0, 32);
+  usePhotoPrefetch(visiblePeople);
+
   return (
     <HomePageBase
-      key={`home-${revision}-${uiLang}-${calendarDayKey}`}
       {...props}
       onOpenCard={goToCard}
       uiLang={uiLang}
       calendarDayKey={calendarDayKey}
       boardTitle={boardTitle}
+      revision={revision}
+      paused={props.paused}
     />
   );
 }

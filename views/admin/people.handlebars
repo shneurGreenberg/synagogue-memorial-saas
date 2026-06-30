@@ -36,33 +36,13 @@
             placeholder="{{t 'search_people'}}" aria-label="{{t 'search_people'}}">
     </div>
 
-    <div class="people-list" id="peopleList">
-        {{#each synagogue.people}}
-        <article class="person-row person-row-clickable" data-name="{{this.name}}" data-id="{{this.id}}"
-            data-date="{{this.gregorianDateOfDeath.year}}-{{this.gregorianDateOfDeath.month}}-{{this.gregorianDateOfDeath.date}}">
-            {{#if this.photo}}
-            <span class="person-photo-wrap">
-                <img class="person-photo lazy-person-photo" alt="{{this.name}}"
-                    data-thumb-src="{{photoThumbUrl this.photo}}"
-                    data-full-src="/photos/{{this.photo}}"
-                    decoding="async"
-                    onerror="this.closest('.person-photo-wrap').classList.add('d-none'); this.closest('.person-row').querySelector('.person-photo-placeholder').classList.remove('d-none');">
-            </span>
-            <span class="person-photo-placeholder d-none" aria-hidden="true">{{initials this.name}}</span>
-            {{else}}
-            <span class="person-photo-placeholder" aria-hidden="true">{{initials this.name}}</span>
-            {{/if}}
-            <div class="person-meta">
-                <strong>{{this.name}}</strong>
-                <small>{{t 'date_of_death'}}:
-                    {{this.gregorianDateOfDeath.date}}/{{this.gregorianDateOfDeath.month}}/{{this.gregorianDateOfDeath.year}}</small>
-            </div>
-        </article>
-        {{/each}}
-    </div>
+    <div class="people-list" id="peopleList"></div>
 </div>
 
-<script id="people-data" type="application/json">{{{json synagogue.people}}}</script>
+<script id="people-data" type="application/json">[]</script>
+<script>
+    window.peopleListApiUrl = '/admin/{{synagogue.slug}}/people/list';
+</script>
 
 {{#if adminPermissions.peopleImport}}
 <!-- Import People Modal -->

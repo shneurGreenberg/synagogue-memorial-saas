@@ -1,6 +1,15 @@
 @import 'common';
 @import 'css-candle';
 
+#main-entry.board-card-open .board-home-paused {
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
 .main-container {
   user-select: none;
   -webkit-user-select: none;

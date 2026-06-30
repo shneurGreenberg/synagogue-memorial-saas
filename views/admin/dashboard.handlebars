@@ -44,7 +44,7 @@
                         <span class="board-preview-view-badge" id="boardPreviewViewBadge" hidden></span>
                         {{/if}}
                         <iframe id="boardPreviewFrame" class="board-preview-frame" title="{{t 'live_preview'}}"
-                            src="/s/{{synagogue.slug}}"></iframe>
+                            data-src="/s/{{synagogue.slug}}?preview=1"></iframe>
                     </div>
                 </div>
                 <p class="preview-hint">{{t 'live_preview_help'}}</p>
@@ -815,6 +815,15 @@
             return params;
         }
 
+        function ensureBoardPreviewLoaded(frame) {
+            if (!frame || frame.src) {
+                return;
+            }
+
+            var base = frame.getAttribute('data-src') || ('/s/' + slug);
+            frame.src = base.split('?')[0] + '?' + buildPreviewSearchParams(readPreviewPatch()).toString();
+        }
+
         function reloadBoardPreviewFromServer() {
             var frame = document.getElementById('boardPreviewFrame');
             if (!frame) {
@@ -822,20 +831,23 @@
             }
 
             frame.dataset.previewReady = '0';
-            frame.src = '/s/' + slug + '?' + buildPreviewSearchParams(readPreviewPatch()).toString();
+            var base = frame.getAttribute('data-src') || ('/s/' + slug);
+            frame.src = base.split('?')[0] + '?' + buildPreviewSearchParams(readPreviewPatch()).toString();
         }
 
         function updatePreview() {
             var frame = document.getElementById('boardPreviewFrame');
             if (!frame) return;
 
+            ensureBoardPreviewLoaded(frame);
             postPreviewToFrame(frame);
 
             if (frame.dataset.previewReady === '1') {
                 return;
             }
 
-            frame.src = '/s/' + slug + '?' + buildPreviewSearchParams(readPreviewPatch()).toString();
+            var base = frame.getAttribute('data-src') || ('/s/' + slug);
+            frame.src = base.split('?')[0] + '?' + buildPreviewSearchParams(readPreviewPatch()).toString();
         }
 
         var frame = document.getElementById('boardPreviewFrame');
@@ -846,7 +858,22 @@
                 fitBoardPreviewTv();
             });
 
-            frame.src = '/s/' + slug + '?' + buildPreviewSearchParams(readPreviewPatch()).toString();
+            var previewPanel = document.querySelector('.settings-preview-panel');
+            if (previewPanel) {
+                var previewToggle = previewPanel.querySelector('.admin-panel-toggle');
+                if (previewToggle) {
+                    previewToggle.addEventListener('click', function () {
+                        window.setTimeout(function () {
+                            ensureBoardPreviewLoaded(frame);
+                            fitBoardPreviewTv();
+                        }, 0);
+                    });
+                }
+                if (previewPanel.classList.contains('is-expanded')) {
+                    ensureBoardPreviewLoaded(frame);
+                }
+            }
+
             fitBoardPreviewTv();
         }
 

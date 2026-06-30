@@ -45,7 +45,7 @@ const GLASS_SELECTORS = `
 `;
 
 export function ThemeStyles() {
-  const { data, revision } = useBoardData();
+  const { data } = useBoardData();
   const theme = data.theme || {};
   const primary = theme.primaryColor || '#cfaf1f';
   const text = theme.textColor || '#bfbfbf';
@@ -292,15 +292,15 @@ export function ThemeStyles() {
         box-shadow:
           inset 0 1px 0 var(--tile-glass-highlight),
           inset 0 0 30px var(--tile-glass-glow) !important;
-        -webkit-backdrop-filter: blur(20px);
-        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
       }
     }` : ''}
   `;
 
   return (
     <style
-      key={`theme-${revision}-${primary}-${text}-${accent}-${tileVars.tileColor}-${tileTransparency}-${candlePalette}`}
+      key={`theme-${primary}-${text}-${accent}-${tileVars.tileColor}-${tileTransparency}-${candlePalette}`}
       dangerouslySetInnerHTML={{ __html: css }}
     />
   );

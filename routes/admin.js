@@ -12,6 +12,7 @@ const { getAdminLocaleContext, normalizeAdminLang } = require('../lib/admin-loca
 const { BOARD_THEME_DEFAULTS } = require('../lib/board-defaults');
 const { parsePhotoCropFromBody } = require('../lib/photo-crop');
 const { parseBoardFeaturesFromBody } = require('../lib/board-features');
+const { invalidateBoardCache } = require('../lib/board-cache');
 const {
   normalizeSnapshot,
   saveViewThumbnail,
@@ -20,6 +21,7 @@ const {
   findSavedView,
   normalizeSavedViews,
   repairSavedViewsInDb,
+  savedViewsNeedRepair,
   serializeSavedViews,
 } = require('../lib/saved-views');
 const { parseMemorialQrPanelFromBody, memorialQrPanelToUpdate } = require('../lib/memorial-qr-panel');
@@ -338,7 +340,7 @@ async function loadAdminContext(req, res, next) {
 
     try {
         const synagogue = await Synagogue.findOne({ slug: req.session.adminSlug }).lean();
-        if (req.session.adminSlug && slug === req.session.adminSlug) {
+        if (req.session.adminSlug && slug === req.session.adminSlug && synagogue && savedViewsNeedRepair(synagogue.savedViews)) {
             await repairSavedViewsInDb(slug);
         }
         req.adminPermissions = resolveAdminPermissions(req.session, synagogue);
@@ -425,6 +427,29 @@ router.get('/logout', (req, res) => {
 
 router.use('/:slug', loadAdminContext);
 
+function invalidateBoardOnMutation(req, res, next) {
+    if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
+        return next();
+    }
+
+    const slug = req.params.slug;
+    if (!slug) {
+        return next();
+    }
+
+    const end = res.end.bind(res);
+    res.end = function endWithCacheInvalidation(...args) {
+        if (res.statusCode < 400) {
+            invalidateBoardCache(slug);
+        }
+        return end(...args);
+    };
+
+    return next();
+}
+
+router.use('/:slug', invalidateBoardOnMutation);
+
 const getInitials = (name) => {
     if (!name) {
         return '?';
@@ -438,6 +463,15 @@ const getInitials = (name) => {
         .map((part) => part[0])
         .join('')
         .toUpperCase();
+};
+
+const ADMIN_PAGE_SCRIPTS = {
+    'admin/dashboard': [],
+    'admin/people': ['admin-people.js', 'admin-person-card.js', 'contact-platform-ui.js'],
+    'admin/contacts': ['admin-contact-directory.js', 'contact-platform-ui.js'],
+    'admin/events': ['admin-events.js'],
+    'admin/users': ['admin-users.js'],
+    'admin/yahrzeit': ['admin-yahrzeit.js', 'admin-tile-capture.js'],
 };
 
 const ADMIN_NAV_BY_VIEW = {
@@ -472,6 +506,7 @@ function renderAdmin(res, view, options = {}) {
         faviconUrl: buildFaviconPath(displaySynagogue.slug, { badge: false }),
         faviconAlertUrl: buildFaviconPath(displaySynagogue.slug, { badge: true }),
         adminNavActive: options.adminNavActive || ADMIN_NAV_BY_VIEW[view] || '',
+        adminPageScripts: ADMIN_PAGE_SCRIPTS[view] || [],
         layout: options.layout === false ? false : (options.layout || 'admin'),
     });
 }
@@ -1081,6 +1116,28 @@ router.get('/:slug/people/message/:personId.json', requireAdmin, requirePermissi
             contactIndex: Number.isFinite(contactIndex) ? contactIndex : 0,
             contactName: selectedContact.name || '',
         });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.get('/:slug/people/list', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        if (!synagogue) {
+            return res.status(404).json({ ok: false, error: 'Not found' });
+        }
+
+        const query = String(req.query.q || '').trim().toLowerCase();
+        let people = synagogue.people || [];
+        if (query) {
+            people = people.filter((person) => (
+                String(person.name || '').toLowerCase().includes(query)
+            ));
+        }
+
+        return res.json({ ok: true, people, total: (synagogue.people || []).length });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
     }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { withTranslation } from 'react-i18next';
-import { getBoardData } from '../lib/board-data';
+import { isBoardPreviewMode } from '../lib/board-preview-mode';
 import { hasJewishContentPanels, resolveBoardFeatures } from '../lib/board-features';
 import { useBoardData } from '../context/BoardDataContext';
 import { HayomYomScroller } from './HayomYomScroller';
@@ -28,7 +28,7 @@ function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
   const [feed, setFeed] = useState(null);
 
   useEffect(() => {
-    if (!slug || !hasJewishContentPanels(boardFeatures)) {
+    if (!slug || !hasJewishContentPanels(boardFeatures) || isBoardPreviewMode()) {
       return undefined;
     }
 

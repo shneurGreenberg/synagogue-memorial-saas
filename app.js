@@ -1,24 +1,23 @@
 require('dotenv').config();
 const express = require('express');
+const compression = require('compression');
 const handlebars = require('express-handlebars');
 const { SafeString } = require('handlebars');
 const { buildTileThemeVars } = require('./lib/tile-theme-colors');
 const { BOARD_THEME_DEFAULTS } = require('./lib/board-defaults');
-const sass = require('sass');
 const fs = require('fs');
 const path = require('path');
-const rimraf = require('rimraf');
 const mongoose = require('mongoose');
 const Synagogue = require('./models/Synagogue');
+const { loadSynagogueBoard } = require('./lib/load-synagogue-board');
+const { computeBoardVersion, slimBoardPayload } = require('./lib/board-payload');
 const { normalizeBoardFeatures } = require('./lib/board-features');
 const { getJewishFeed } = require('./lib/jewish-feed');
 const { fetchWeatherForecast } = require('./lib/weather-api');
-const { normalizePublicSubmission } = require('./lib/public-submission');
 const { applyBoardPreviewOverrides } = require('./lib/board-preview');
 const { BOARD_VERSION } = require('./lib/board-version');
 const { photoCropToInlineStyle } = require('./lib/photo-crop');
 const { buildPhotoThumbUrl } = require('./lib/photo-url');
-const { normalizeTitles } = require('./lib/admin-theme');
 const { getTranslator, humanizeLabel } = require('./lib/admin-translations');
 const { renderAdminIcon } = require('./lib/admin-icons');
 const adminRoutes = require('./routes/admin');
@@ -43,11 +42,12 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue
 }).then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
+app.use(compression());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 const isProduction = process.env.NODE_ENV === 'production';
 
-app.use(session({
+const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET || 'secret',
   resave: false,
   saveUninitialized: false,
@@ -56,34 +56,20 @@ app.use(session({
     sameSite: 'lax',
   },
   store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue' }),
-}));
+});
 
-app.use('/admin', adminRoutes);
-app.use('/master', masterRoutes);
-app.use('/s', publicSubmissionRoutes);
-
-// Compile SCSS on the fly
 const cssDirectory = path.join(__dirname, 'css');
 if (!fs.existsSync(cssDirectory)) {
   fs.mkdirSync(cssDirectory);
 }
 
-app.use('/css', (req, res, next) => {
-  const scssFile = path.join(__dirname, 'styles', req.path.replace('.css', '.scss'));
-  const cssFile = path.join(cssDirectory, req.path);
+app.use('/css', express.static(cssDirectory, {
+  maxAge: isProduction ? '1h' : 0,
+}));
 
-  if (fs.existsSync(scssFile)) {
-    try {
-      const result = sass.compile(scssFile);
-      fs.writeFileSync(cssFile, result.css);
-    } catch (err) {
-      console.error('SASS compilation error:', err);
-    }
-  }
-  next();
-}, express.static(cssDirectory));
-
-app.use('/css', express.static(cssDirectory));
+app.use('/admin', sessionMiddleware, adminRoutes);
+app.use('/master', sessionMiddleware, masterRoutes);
+app.use('/s', publicSubmissionRoutes);
 
 function getInitials(name) {
   if (!name) {
@@ -162,8 +148,10 @@ if (isPersistent) {
   console.log('Persistent uploads enabled:', IMAGES_DIR, PHOTOS_DIR);
 }
 
-app.use('/images', express.static(IMAGES_DIR));
-app.use('/images', express.static(BUNDLED_IMAGES_DIR));
+const staticAssetMaxAge = isProduction ? '7d' : 0;
+
+app.use('/images', express.static(IMAGES_DIR, { maxAge: staticAssetMaxAge }));
+app.use('/images', express.static(BUNDLED_IMAGES_DIR, { maxAge: staticAssetMaxAge }));
 
 app.get('/photos/:filename', async (req, res, next) => {
   const width = Number(req.query.w);
@@ -195,8 +183,8 @@ app.get('/photos/:filename', async (req, res, next) => {
   }
 });
 
-app.use('/photos', express.static(PHOTOS_DIR));
-app.use('/photos', express.static(BUNDLED_PHOTOS_DIR));
+app.use('/photos', express.static(PHOTOS_DIR, { maxAge: staticAssetMaxAge }));
+app.use('/photos', express.static(BUNDLED_PHOTOS_DIR, { maxAge: staticAssetMaxAge }));
 
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
@@ -208,32 +196,6 @@ app.use('/board', express.static(path.join(__dirname, 'public/board'), {
   },
 }));
 app.use('/js', express.static(path.join(__dirname, 'public/js')));
-
-async function loadSynagogueBoard(slug) {
-  const synagogue = await Synagogue.findOne({ slug }).lean();
-
-  if (!synagogue) {
-    return null;
-  }
-
-  synagogue.baseUrl = `/s/${slug}`;
-  const { normalizeSynagogueLocation } = require('./lib/normalize-location');
-  synagogue.location = normalizeSynagogueLocation(synagogue.location);
-  synagogue.titles = normalizeTitles(synagogue);
-  synagogue.title = synagogue.titles.ru || synagogue.title || synagogue.name || '';
-  synagogue.boardFeatures = normalizeBoardFeatures(synagogue.boardFeatures);
-  synagogue.publicSubmission = normalizePublicSubmission(synagogue.publicSubmission, synagogue.provisioning);
-  const { normalizeMemorialQrPanel } = require('./lib/memorial-qr-panel');
-  const { normalizeFontScales } = require('./lib/theme-typography');
-  const { normalizeFontScaleBaselines } = require('./lib/typography-baseline');
-  synagogue.memorialQrPanel = normalizeMemorialQrPanel(synagogue.memorialQrPanel);
-  synagogue.theme = synagogue.theme || {};
-  synagogue.theme.fontScales = normalizeFontScales(synagogue.theme.fontScales);
-  synagogue.theme.fontScaleBaselines = normalizeFontScaleBaselines(synagogue.theme.fontScaleBaselines);
-  const { normalizeCandlePalette } = require('./lib/candle-palette');
-  synagogue.theme.candlePalette = normalizeCandlePalette(synagogue.theme.candlePalette);
-  return synagogue;
-}
 
 function renderMemorialBoard(req, res, synagogue) {
   const { buildFaviconPath } = require('./lib/favicon');
@@ -291,6 +253,45 @@ async function serveSynagogueFavicon(req, res, badge) {
   }
 }
 
+app.get('/s/:slug/api/board/version', async (req, res) => {
+  try {
+    const synagogue = await loadSynagogueBoard(req.params.slug);
+
+    if (!synagogue) {
+      return res.status(404).json({ error: 'Synagogue not found' });
+    }
+
+    const version = computeBoardVersion(synagogue);
+    res.setHeader('Cache-Control', 'no-store');
+    return res.json({ version });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/s/:slug/api/board/person/:personId', async (req, res) => {
+  try {
+    const synagogue = await loadSynagogueBoard(req.params.slug);
+
+    if (!synagogue) {
+      return res.status(404).json({ error: 'Synagogue not found' });
+    }
+
+    const person = (synagogue.people || []).find(
+      (entry) => String(entry.id) === String(req.params.personId),
+    );
+
+    if (!person) {
+      return res.status(404).json({ error: 'Person not found' });
+    }
+
+    res.setHeader('Cache-Control', 'public, max-age=300');
+    return res.json({ person });
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/s/:slug/api/board', async (req, res) => {
   try {
     const synagogue = await loadSynagogueBoard(req.params.slug);
@@ -299,7 +300,12 @@ app.get('/s/:slug/api/board', async (req, res) => {
       return res.status(404).json({ error: 'Synagogue not found' });
     }
 
-    return res.json(synagogue);
+    const slim = req.query.slim !== '0';
+    const payload = slim ? slimBoardPayload(synagogue) : synagogue;
+    const version = computeBoardVersion(synagogue);
+    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('ETag', `"${version}"`);
+    return res.json(payload);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
