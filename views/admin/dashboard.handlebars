@@ -787,6 +787,44 @@
             }
         }
 
+        function buildPreviewSearchParams(patch) {
+            var params = new URLSearchParams();
+            params.set('preview', '1');
+            params.set('titleRu', patch.titleRu || '');
+            params.set('titleEn', patch.titleEn || '');
+            params.set('titleHe', patch.titleHe || '');
+            params.set('primaryColor', patch.primaryColor || '');
+            params.set('textColor', patch.textColor || '');
+            params.set('accentColor', patch.accentColor || '');
+            params.set('tileColor', patch.tileColor || '');
+            params.set('tileOpacity', patch.tileOpacity || '100');
+            if (patch.candlePalette) {
+                params.set('candlePalette', patch.candlePalette);
+            }
+            if (patch.logoBorderRadius !== undefined && patch.logoBorderRadius !== '') {
+                params.set('logoBorderRadius', patch.logoBorderRadius);
+            }
+            Object.keys(patch).forEach(function (key) {
+                if (key.indexOf('fontScale_') === 0 || key.indexOf('memorialQr') === 0) {
+                    params.set(key, patch[key]);
+                }
+            });
+            if (patch.previewLang) {
+                params.set('previewLang', patch.previewLang);
+            }
+            return params;
+        }
+
+        function reloadBoardPreviewFromServer() {
+            var frame = document.getElementById('boardPreviewFrame');
+            if (!frame) {
+                return;
+            }
+
+            frame.dataset.previewReady = '0';
+            frame.src = '/s/' + slug + '?' + buildPreviewSearchParams(readPreviewPatch()).toString();
+        }
+
         function updatePreview() {
             var frame = document.getElementById('boardPreviewFrame');
             if (!frame) return;
@@ -797,27 +835,7 @@
                 return;
             }
 
-            var patch = readPreviewPatch();
-            var params = new URLSearchParams();
-            params.set('preview', '1');
-            params.set('titleRu', patch.titleRu);
-            params.set('titleEn', patch.titleEn);
-            params.set('titleHe', patch.titleHe);
-            params.set('primaryColor', patch.primaryColor);
-            params.set('textColor', patch.textColor);
-            params.set('accentColor', patch.accentColor);
-            params.set('tileColor', patch.tileColor);
-            params.set('tileOpacity', patch.tileOpacity);
-            if (patch.candlePalette) {
-                params.set('candlePalette', patch.candlePalette);
-            }
-            Object.keys(patch).forEach(function (key) {
-                if (key.indexOf('fontScale_') === 0 || key.indexOf('memorialQr') === 0) {
-                    params.set(key, patch[key]);
-                }
-            });
-            params.set('previewLang', patch.previewLang);
-            frame.src = '/s/' + slug + '?' + params.toString();
+            frame.src = '/s/' + slug + '?' + buildPreviewSearchParams(readPreviewPatch()).toString();
         }
 
         var frame = document.getElementById('boardPreviewFrame');
@@ -828,27 +846,7 @@
                 fitBoardPreviewTv();
             });
 
-            var initial = readPreviewPatch();
-            var params = new URLSearchParams();
-            params.set('preview', '1');
-            params.set('titleRu', initial.titleRu);
-            params.set('titleEn', initial.titleEn);
-            params.set('titleHe', initial.titleHe);
-            params.set('primaryColor', initial.primaryColor);
-            params.set('textColor', initial.textColor);
-            params.set('accentColor', initial.accentColor);
-            params.set('tileColor', initial.tileColor);
-            params.set('tileOpacity', initial.tileOpacity);
-            if (initial.candlePalette) {
-                params.set('candlePalette', initial.candlePalette);
-            }
-            Object.keys(initial).forEach(function (key) {
-                if (key.indexOf('fontScale_') === 0 || key.indexOf('memorialQr') === 0) {
-                    params.set(key, initial[key]);
-                }
-            });
-            params.set('previewLang', initial.previewLang);
-            frame.src = '/s/' + slug + '?' + params.toString();
+            frame.src = '/s/' + slug + '?' + buildPreviewSearchParams(readPreviewPatch()).toString();
             fitBoardPreviewTv();
         }
 
@@ -929,24 +927,12 @@
         function readCurrentDesignPatch() {
             var patch = readPreviewPatch();
             var languageSelect = document.getElementById('language');
-            var payload = Object.assign({
+            var payload = Object.assign({}, patch, readBoardFeaturesPatch(), readFeatureSettingsPatch(), {
                 name: '',
-                titleRu: patch.titleRu,
-                titleEn: patch.titleEn,
-                titleHe: patch.titleHe,
-                primaryColor: patch.primaryColor,
-                textColor: patch.textColor,
-                accentColor: patch.accentColor,
-                tileColor: patch.tileColor,
-                tileOpacity: patch.tileOpacity,
-                candlePalette: patch.candlePalette,
                 language: languageSelect ? languageSelect.value : 'ru',
-            }, readBoardFeaturesPatch(), readFeatureSettingsPatch());
-            Object.keys(patch).forEach(function (key) {
-                if (key.indexOf('fontScale_') === 0 || key.indexOf('memorialQr') === 0) {
-                    payload[key] = patch[key];
-                }
             });
+            delete payload.type;
+            delete payload.previewLang;
             return payload;
         }
 
@@ -1059,6 +1045,7 @@
                         if (data.resetTypography) {
                             resetTypographySlidersToBaseline();
                         }
+                        reloadBoardPreviewFromServer();
                         window.alert('{{t 'saved_view_saved'}}');
                     }
                 }).catch(function () {
@@ -1107,6 +1094,7 @@
                         if (data.resetTypography) {
                             resetTypographySlidersToBaseline();
                         }
+                        reloadBoardPreviewFromServer();
                         window.alert('{{t 'update_current_view_saved'}}');
                     }
                 }).catch(function () {
@@ -1134,7 +1122,7 @@
                     }
                 },
                 onSnapshotApplied: function () {
-                    schedulePreview();
+                    reloadBoardPreviewFromServer();
                 },
             });
         }

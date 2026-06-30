@@ -1,5 +1,4 @@
-.css-candle {
-  --css-candle-unit: 1px;
+:root {
   --candle-wax-top: #a7a2a2;
   --candle-wax-bottom: #212121;
   --candle-wax-ring: #d1c3ac;
@@ -11,6 +10,10 @@
   --candle-thread-hot: #ff7800;
   --candle-base-outer: #121212;
   --candle-base-inner: #101010;
+}
+
+.css-candle {
+  --css-candle-unit: 1px;
   width: calc(120 * var(--css-candle-unit));
   height: calc(385 * var(--css-candle-unit));
   position: relative;
