@@ -739,6 +739,47 @@ body.admin-login-page {
   position: relative;
 }
 
+.admin-contact-family-chip-wrap {
+  margin: 0 0 0.45rem;
+}
+
+.admin-contact-family-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 100%;
+  padding: 0.28rem 0.65rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 999px;
+  background: var(--admin-surface-hover);
+  color: var(--admin-text);
+  font-size: 0.82rem;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.admin-contact-family-chip:hover,
+.admin-contact-family-chip:focus-visible {
+  background: var(--admin-surface-elevated);
+  border-color: var(--admin-accent, #cfaf1f);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.admin-contact-family-chip-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-contact-family-chip-icon {
+  width: 0.95rem;
+  height: 0.95rem;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
 .admin-contact-suggestions {
   position: absolute;
   z-index: 30;
