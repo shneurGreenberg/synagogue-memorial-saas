@@ -5,6 +5,10 @@ import { buildTileThemeVars } from '../lib/tile-theme-colors';
 import { resolveFontScales, resolveTileOpacity } from '../lib/theme-typography';
 import { buildCandlePaletteCssVars, resolveCandlePalette, normalizeCandlePalette } from '../lib/candle-palette';
 import { effectiveFontScaleCss, resolveFontScaleBaselines } from '../lib/typography-baseline';
+import {
+  resolveBoardBackgroundImage,
+  resolveTilesBackgroundImage,
+} from '../lib/board-backgrounds';
 
 function tileGlassNoise(transparency) {
   if (transparency <= 0.01) {
@@ -58,6 +62,8 @@ export function ThemeStyles() {
   const useBackdropBlur = tileTransparency > 0.01;
   const candlePalette = normalizeCandlePalette(theme.candlePalette);
   const candlePaletteCss = buildCandlePaletteCssVars(resolveCandlePalette(candlePalette));
+  const backgroundImage = resolveBoardBackgroundImage(theme);
+  const tilesBackground = resolveTilesBackgroundImage(theme);
 
   const css = `
     :root {
@@ -251,20 +257,21 @@ export function ThemeStyles() {
     .main-container .board-shabbat-block .shabbat-times .shabbat-time {
       font-size: calc(clamp(14px, 1.25vw, 18px) * var(--font-scale-shabbat)) !important;
     }
-    body,
-    .main-container {
+    body {
       color: var(--text-color) !important;
-      ${theme.backgroundImage ? `background-image: url('${assetUrl(`images/${theme.backgroundImage}`)}') !important;
+      background-color: #2a2118;
+      background-image: url('${assetUrl(`images/${backgroundImage}`)}') !important;
       background-size: cover;
       background-position: center;
-      background-attachment: fixed;` : ''}
+      background-attachment: fixed;
     }
     .main-container .left .wooden-panel,
     .main-container .middle .wooden-panel,
     .main-container .right .wooden-panel,
     .card-view.wooden-panel {
-      ${theme.tilesBackground ? `background-image: url('${assetUrl(`images/${theme.tilesBackground}`)}') !important;
-      background-size: cover;` : ''}
+      background-color: #3d3424;
+      background-image: url('${assetUrl(`images/${tilesBackground}`)}') !important;
+      background-size: cover;
     }
     ${GLASS_SELECTORS} {
       background-color: var(--tile-glass-legacy-base) !important;

@@ -104,7 +104,7 @@ $tileGlassNoise: repeating-linear-gradient(
 }
 
 body {
-  background: url('/images/brickwall.jpg');
+  background-color: #2a2118;
   margin: 0;
   color: $textColor;
   font-family: Georgia, 'Times New Roman', serif;
@@ -112,7 +112,7 @@ body {
 }
 
 .wooden-panel {
-  background: url('/images/wood2.png');
+  background-color: #3d3424;
   border: 7px solid $woodenPanelBorder;
   box-shadow:
     1px 1px 10px #000,

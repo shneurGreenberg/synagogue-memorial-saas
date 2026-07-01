@@ -5,6 +5,10 @@ const handlebars = require('express-handlebars');
 const { SafeString } = require('handlebars');
 const { buildTileThemeVars } = require('./lib/tile-theme-colors');
 const { BOARD_THEME_DEFAULTS } = require('./lib/board-defaults');
+const {
+  resolveBoardBackgroundImage,
+  resolveTilesBackgroundImage,
+} = require('./lib/board-backgrounds');
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
@@ -120,6 +124,12 @@ app.engine('handlebars', handlebars({
         (theme && theme.tileColor) || BOARD_THEME_DEFAULTS.tileColor,
         (theme && theme.primaryColor) || BOARD_THEME_DEFAULTS.primaryColor,
       );
+    },
+    boardBackgroundImage(theme) {
+      return resolveBoardBackgroundImage(theme);
+    },
+    boardTilesBackground(theme) {
+      return resolveTilesBackgroundImage(theme);
     },
     publicT(key, options) {
       const root = options.data && options.data.root;

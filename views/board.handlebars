@@ -9,7 +9,28 @@
     <meta http-equiv="Expires" content="0">
     <title>{{data.title}}</title>
     <link rel="icon" href="{{#if yahrzeitTodayCount}}{{faviconAlertUrl}}{{else}}{{faviconUrl}}{{/if}}" type="image/png">
+    <link rel="preload" as="image" href="/images/{{boardBackgroundImage data.theme}}">
+    <link rel="preload" as="image" href="/images/{{boardTilesBackground data.theme}}">
     <link rel="stylesheet" href="/board/assets/memorial.css?v={{boardVersion}}">
+    <style>
+        body {
+            background-color: #2a2118;
+            color: {{#if data.theme.textColor}}{{data.theme.textColor}}{{else}}#f0f0f0{{/if}};
+            background-image: url('/images/{{boardBackgroundImage data.theme}}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .main-container .left .wooden-panel,
+        .main-container .middle .wooden-panel,
+        .main-container .right .wooden-panel,
+        .card-view.wooden-panel {
+            background-color: #3d3424;
+            background-image: url('/images/{{boardTilesBackground data.theme}}');
+            background-size: cover;
+        }
+    </style>
 </head>
 
 <body>
