@@ -59,7 +59,7 @@ export default {
   memorial_submission_title: 'Add your loved one',
   memorial_submission_scan: 'Scan the QR code to register loved ones',
   memorial_submission_qr_alt: 'QR code for name submission',
-  donation_qr_title: 'Charity — charitable giving',
+  donation_qr_title: 'Charity — donation',
   donation_qr_scan: 'Scan the QR code to make a donation in memory of loved ones',
   donation_qr_alt: 'QR code for charity',
   play_prayer: 'Play prayer',

@@ -58,7 +58,7 @@ export default {
   memorial_submission_title: 'Добавить имя близкого',
   memorial_submission_scan: 'Сканируйте QR-код для регистрации близких',
   memorial_submission_qr_alt: 'QR-код для добавления имени',
-  donation_qr_title: 'Цдака — благотворительность',
+  donation_qr_title: 'Цдака — пожертвование',
   donation_qr_scan: 'Отсканируйте QR-код, чтобы сделать пожертвование в память о близких',
   donation_qr_alt: 'QR-код для цдаки',
   play_prayer: 'Воспроизвести молитву',

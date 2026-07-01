@@ -13,9 +13,9 @@
     transform: scale(1.04);
   }
 
+  &:focus,
   &:focus-visible {
-    outline: 3px solid var(--primary-color, #cfaf1f);
-    outline-offset: 4px;
+    outline: none;
   }
 
   .community-logo-flip {
