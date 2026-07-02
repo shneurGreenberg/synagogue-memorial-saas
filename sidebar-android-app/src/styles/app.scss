@@ -1,0 +1,397 @@
+$background-dark: #2a2118;
+$panel-dark: #3d3424;
+$golden-border: rgba(96, 81, 14, 0.5);
+$golden-text: var(--primary-color, #cfaf1f);
+$accent: var(--accent-color, #ffd54f);
+$text: var(--text-color, #f0f0f0);
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: $background-dark;
+  color: $text;
+  font-family: Georgia, 'Times New Roman', serif;
+  overflow: hidden;
+}
+
+.sidebar-app {
+  width: 100%;
+  height: 100%;
+  padding: 12px;
+  position: relative;
+}
+
+.sidebar-app.is-rtl {
+  direction: rtl;
+}
+
+.settings-fab {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 20;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid $golden-border;
+  background: rgba(0, 0, 0, 0.45);
+  color: $golden-text;
+  font-size: 20px;
+}
+
+.wooden-panel {
+  width: 100%;
+  height: 100%;
+  background-color: $panel-dark;
+  border: 7px solid #604f2f;
+  box-shadow:
+    1px 1px 10px #000,
+    inset -2px -2px 1px lighten(#604f2f, 5%),
+    inset 2px 2px 1px darken(#604f2f, 5%);
+  overflow: hidden;
+}
+
+.inner {
+  height: 100%;
+  padding: 14px 12px 0;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.board-right-header {
+  flex-shrink: 0;
+}
+
+.board-official-logo-wrap {
+  margin-bottom: 10px;
+}
+
+.board-official-logo-placeholder {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  font-size: 42px;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+}
+
+.board-clock-block {
+  padding-bottom: 10px;
+  border-bottom: 1px solid $golden-border;
+
+  h1,
+  h2,
+  h3 {
+    margin: 0.2em 0;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+  }
+
+  h1 {
+    font-size: clamp(42px, 12vw, 72px);
+    font-weight: 700;
+  }
+
+  h2,
+  h3 {
+    font-size: clamp(18px, 4.5vw, 28px);
+    font-weight: 500;
+  }
+}
+
+.board-shabbat-block,
+.board-weather-block {
+  padding: 10px 0;
+  border-bottom: 1px solid $golden-border;
+}
+
+.shabbat-parsha-heading {
+  display: block;
+  font-size: 13px;
+  color: $accent;
+}
+
+.shabbat-parsha-name {
+  display: block;
+  font-size: clamp(18px, 4vw, 26px);
+  color: $accent;
+  margin-top: 4px;
+}
+
+.shabbat-times-row {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 10px;
+}
+
+.shabbat-label {
+  display: block;
+  font-size: 12px;
+  color: $accent;
+}
+
+.shabbat-time {
+  display: block;
+  font-size: 18px;
+  color: $accent;
+}
+
+.weather-today-card {
+  display: flex;
+  border-radius: 8px;
+  border: 1px solid rgba(207, 175, 31, 0.28);
+  background: rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+}
+
+.weather-today-left,
+.weather-today-right {
+  padding: 8px 10px;
+}
+
+.weather-today-left {
+  border-inline-end: 1px solid rgba(207, 175, 31, 0.22);
+}
+
+.weather-today-temp {
+  font-size: 34px;
+  font-weight: 700;
+  color: $accent;
+}
+
+.weather-today-label,
+.weather-sun-stack {
+  font-size: 12px;
+  color: $text;
+}
+
+.right-panel-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  width: 100%;
+  padding-top: 10px;
+}
+
+.nearest-dates {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+
+  h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+    color: $golden-text;
+  }
+}
+
+.nearest-dates--divider-top {
+  border-top: 1px solid $golden-border;
+  padding-top: 10px;
+}
+
+.nearest-dates-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.nearest-dates-track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nearest-dates-track.is-scrolling {
+  animation: nearest-dates-scroll linear infinite;
+}
+
+@keyframes nearest-dates-scroll {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
+.sidebar-holiday-item,
+.sidebar-chabad-item,
+.community-event-item {
+  margin-bottom: 10px;
+}
+
+.sidebar-holiday-link,
+.sidebar-chabad-link,
+.community-event-link {
+  display: block;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(207, 175, 31, 0.28);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.community-event-item .community-event-link {
+  background: linear-gradient(180deg, rgba(207, 175, 31, 0.16), rgba(0, 0, 0, 0.18));
+}
+
+.community-event-title,
+.sidebar-holiday-title,
+.sidebar-chabad-title {
+  display: block;
+  margin-top: 4px;
+  color: $golden-text;
+  font-weight: 600;
+}
+
+.community-event-text {
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+time {
+  display: block;
+  font-size: 13px;
+  opacity: 0.92;
+}
+
+.status-line {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.status-line-error {
+  color: #ffb4b4;
+}
+
+.settings-screen {
+  min-height: 100%;
+  padding: 16px;
+  background: $background-dark;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  h1 {
+    margin: 0;
+    font-size: 24px;
+    color: $golden-text;
+  }
+}
+
+.settings-form {
+  display: grid;
+  gap: 12px;
+
+  label {
+    display: grid;
+    gap: 6px;
+    text-align: start;
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid $golden-border;
+    background: rgba(0, 0, 0, 0.25);
+    color: $text;
+    font: inherit;
+  }
+}
+
+.checkbox-row {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-hint,
+.settings-actions {
+  margin-top: 8px;
+}
+
+.settings-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.primary-btn,
+.ghost-btn,
+.danger-btn,
+.icon-btn {
+  border-radius: 10px;
+  border: 1px solid $golden-border;
+  padding: 10px 14px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.primary-btn {
+  background: $golden-text;
+  color: #1a1a1a;
+}
+
+.ghost-btn,
+.icon-btn {
+  background: rgba(0, 0, 0, 0.25);
+  color: $text;
+}
+
+.danger-btn {
+  background: rgba(198, 40, 40, 0.2);
+  color: #ffcdd2;
+}
+
+.admin-events-list {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.admin-event-card {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid $golden-border;
+  background: rgba(0, 0, 0, 0.22);
+  text-align: start;
+
+  p {
+    margin: 8px 0;
+  }
+}
+
+.weather-icon {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 213, 79, 0.25);
+}
+
+.weather-unavailable {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.8;
+}
