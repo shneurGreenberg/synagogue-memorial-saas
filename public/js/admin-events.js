@@ -170,10 +170,39 @@
     updateEventsPreview();
   }
 
+  function icon(name, className) {
     if (window.AdminIcons && typeof window.AdminIcons.render === 'function') {
       return window.AdminIcons.render(name, className || 'btn-admin-inline-icon');
     }
     return '';
+  }
+
+  var statusTimer = null;
+
+  function showStatus(message, type) {
+    var banner = document.getElementById('eventsStatusBanner');
+    if (!banner) {
+      return;
+    }
+
+    banner.textContent = message;
+    banner.className = 'admin-alert events-status-banner events-status-banner--' + (type || 'success');
+    banner.hidden = false;
+
+    if (statusTimer) {
+      window.clearTimeout(statusTimer);
+    }
+
+    statusTimer = window.setTimeout(function () {
+      banner.hidden = true;
+    }, 5000);
+  }
+
+  function scrollToActiveEvents() {
+    var panel = document.getElementById('activeEventsPanel');
+    if (panel && typeof panel.scrollIntoView === 'function') {
+      panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   function renderEventCard(event, options) {
@@ -320,6 +349,13 @@
 
       if (form.id === 'addEventForm') {
         form.reset();
+        updateEventsPreview();
+        scrollToActiveEvents();
+        showStatus(labels.eventSaved || labels.saved || 'Saved', 'success');
+      } else if (form.classList && form.classList.contains('event-delete-form')) {
+        showStatus(labels.eventDeleted || labels.saved || 'Saved', 'success');
+      } else {
+        showStatus(labels.eventSaved || labels.saved || 'Saved', 'success');
       }
 
       if (form.id === 'editEventForm' && window.jQuery) {
@@ -330,10 +366,10 @@
         busyText.textContent = labels.saved || 'Saved';
       }
 
-      window.setTimeout(hideBusy, 600);
+      window.setTimeout(hideBusy, 400);
     } catch (err) {
       hideBusy();
-      window.alert(err.message || 'Save failed');
+      showStatus(err.message || labels.eventSaveFailed || 'Save failed', 'error');
     }
   }
 
@@ -385,7 +421,7 @@
         var titleEn = document.getElementById('eventTitleEn');
         var hasTitle = (titleRu && titleRu.value.trim()) || (titleEn && titleEn.value.trim());
         if (!hasTitle) {
-          window.alert(labels.eventTitleRequired || 'Enter a title in Russian or English.');
+          showStatus(labels.eventTitleRequired || 'Enter a title in Russian or English.', 'error');
           return;
         }
       }

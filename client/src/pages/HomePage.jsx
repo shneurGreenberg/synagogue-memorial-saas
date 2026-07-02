@@ -239,11 +239,13 @@ class HomePageBase extends React.Component {
   refreshCalendarState() {
     const appData = getAppData();
     const calendarState = buildCalendarState(appData);
+    const communityEvents = prepareCommunityEvents(appData.communityEvents, appData.language);
 
     this.setState((state) => {
       const next = {
         ...state,
         ...calendarState,
+        communityEvents,
       };
       applySearchToPaginationState(next, state.filterString);
       return next;
