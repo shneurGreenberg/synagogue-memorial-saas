@@ -1,5 +1,5 @@
-/** How many memorial names between each community announcement repeat in the sidebar. */
-export const SIDEBAR_EVENT_INTERVAL = 12;
+/** How many sidebar announcements between each community event repeat. */
+export const SIDEBAR_EVENT_INTERVAL = 3;
 
 /**
  * Build the scrolling sidebar list: people sorted by upcoming yahrzeit,

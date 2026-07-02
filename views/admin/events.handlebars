@@ -6,6 +6,8 @@
         </div>
     </header>
 
+    <div id="eventsStatusBanner" class="admin-alert events-status-banner events-status-banner--success" hidden aria-live="polite"></div>
+
     <section class="admin-panel">
         <div class="admin-panel-header">
             <h2>{{t 'add_community_event'}}</h2>
@@ -193,6 +195,9 @@
     window.eventsAdminLabels = {
         saving: '{{t 'saving'}}',
         saved: '{{t 'saved'}}',
+        eventSaved: '{{t 'event_saved'}}',
+        eventDeleted: '{{t 'event_deleted'}}',
+        eventSaveFailed: '{{t 'event_save_failed'}}',
         areYouSure: '{{t 'are_you_sure'}}',
         edit: '{{t 'edit'}}',
         delete: '{{t 'delete'}}',

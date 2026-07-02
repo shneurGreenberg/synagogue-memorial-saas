@@ -1,4 +1,5 @@
 const MIN_UPCOMING_DATES = 6;
+const COMMUNITY_EVENT_REPEAT_INTERVAL = 3;
 
 function parseIsoDate(dateStr) {
   if (!dateStr) {
@@ -82,6 +83,64 @@ function buildEventSidebarItems(communityEvents) {
   }));
 }
 
+function cloneAnnouncementItem(item, suffix) {
+  return {
+    ...item,
+    id: `${item.id}-rep-${suffix}`,
+  };
+}
+
+function repeatEventsForScroll(events, cycles = 6) {
+  const repeated = [];
+
+  for (let cycle = 0; cycle < cycles; cycle += 1) {
+    events.forEach((event, index) => {
+      repeated.push(cloneAnnouncementItem(event, `scroll-${cycle}-${index}`));
+    });
+  }
+
+  return repeated;
+}
+
+function interleaveCommunityEvents(announcements, events, interval = COMMUNITY_EVENT_REPEAT_INTERVAL) {
+  if (!events.length) {
+    return announcements;
+  }
+
+  if (!announcements.length) {
+    return repeatEventsForScroll(events);
+  }
+
+  const undatedEvents = events.filter((event) => event.isUndated);
+  const datedEvents = events.filter((event) => !event.isUndated);
+  const injectableEvents = datedEvents.length ? datedEvents : events;
+  const result = [...undatedEvents];
+  let cycle = 0;
+
+  announcements.forEach((item, index) => {
+    result.push(item);
+
+    if ((index + 1) % interval !== 0) {
+      return;
+    }
+
+    injectableEvents.forEach((event, eventIndex) => {
+      result.push(cloneAnnouncementItem(event, `${index}-${eventIndex}-${cycle}`));
+    });
+    cycle += 1;
+  });
+
+  const hasInjectedEvent = result.some(
+    (item) => item.listType === 'event' && String(item.id).includes('-rep-'),
+  );
+
+  if (!hasInjectedEvent) {
+    return [...events, ...announcements];
+  }
+
+  return result;
+}
+
 export function buildSidebarAnnouncements(communityEvents, holidays, chabadDates, boardFeatures = {}) {
   const events = boardFeatures.communityEvents !== false
     ? buildEventSidebarItems(communityEvents)
@@ -95,7 +154,7 @@ export function buildSidebarAnnouncements(communityEvents, holidays, chabadDates
     ? buildChabadSidebarItems(chabadDates)
     : [];
 
-  const merged = [...holidayItems, ...chabadItems, ...events];
+  const announcements = selectNearestUpcoming([...holidayItems, ...chabadItems]);
 
-  return selectNearestUpcoming(merged);
+  return interleaveCommunityEvents(announcements, events);
 }

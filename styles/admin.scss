@@ -1210,6 +1210,31 @@ body.admin-login-page {
   margin-bottom: 1.25rem;
 }
 
+.events-status-banner {
+  padding: 0.9rem 1.1rem;
+  font-weight: 600;
+}
+
+.events-status-banner--success {
+  background: rgba(46, 125, 50, 0.14);
+  color: #1b5e20;
+}
+
+.events-status-banner--error {
+  background: rgba(198, 40, 40, 0.12);
+  color: #b71c1c;
+}
+
+.admin-theme-dark .events-status-banner--success {
+  background: rgba(76, 175, 80, 0.18);
+  color: #c8e6c9;
+}
+
+.admin-theme-dark .events-status-banner--error {
+  background: rgba(244, 67, 54, 0.16);
+  color: #ffcdd2;
+}
+
 .admin-panel {
   background: var(--admin-surface);
   border: 1px solid var(--admin-border);
