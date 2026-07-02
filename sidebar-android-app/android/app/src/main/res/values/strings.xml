@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Kaddish Sidebar</string>
+    <string name="title_activity_main">Kaddish Sidebar</string>
+    <string name="package_name">com.synagogue.sidebar</string>
+    <string name="custom_url_scheme">com.synagogue.sidebar</string>
+</resources>

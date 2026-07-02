@@ -47,6 +47,24 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue
   .catch(err => console.error('MongoDB connection error:', err));
 
 app.use(compression());
+
+function allowMobileApiCors(req, res, next) {
+  if (!req.path.includes('/api/')) {
+    return next();
+  }
+
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Accept, Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+
+  return next();
+}
+
+app.use(allowMobileApiCors);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 const isProduction = process.env.NODE_ENV === 'production';
@@ -357,6 +375,25 @@ app.get('/s/:slug/api/jewish-content', async (req, res) => {
 
     res.setHeader('Cache-Control', 'no-store');
     return res.json(feed);
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/s/:slug/api/sidebar-app', async (req, res) => {
+  try {
+    const synagogue = await loadSynagogueBoard(req.params.slug);
+
+    if (!synagogue) {
+      return res.status(404).json({ error: 'Synagogue not found' });
+    }
+
+    const lang = ['ru', 'en', 'he'].includes(req.query.lang) ? req.query.lang : synagogue.language || 'ru';
+    const { buildSidebarAppPayload } = require('./lib/sidebar-app-payload');
+    const payload = await buildSidebarAppPayload(synagogue, lang);
+
+    res.setHeader('Cache-Control', 'no-store');
+    return res.json(payload);
   } catch (err) {
     return res.status(500).json({ error: err.message });
   }
