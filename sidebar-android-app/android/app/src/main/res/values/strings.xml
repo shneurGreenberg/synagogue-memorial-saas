@@ -4,4 +4,6 @@
     <string name="title_activity_main">Kaddish Sidebar</string>
     <string name="package_name">com.synagogue.sidebar</string>
     <string name="custom_url_scheme">com.synagogue.sidebar</string>
+    <string name="widget_name">Kaddish Sidebar</string>
+    <string name="widget_description">שעון, תאריכים, שבת, מזג אוויר והודעות מהלוח</string>
 </resources>

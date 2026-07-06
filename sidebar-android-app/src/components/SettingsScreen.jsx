@@ -94,6 +94,7 @@ export function SettingsScreen({
         </label>
 
         <p className="settings-hint">{t(lang, 'no_server_hint')}</p>
+        <p className="settings-hint">{t(lang, 'widget_help')}</p>
 
         <div className="settings-actions">
           <button type="submit" className="primary-btn">{t(lang, 'save')}</button>

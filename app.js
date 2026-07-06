@@ -224,6 +224,14 @@ app.use('/board', express.static(path.join(__dirname, 'public/board'), {
   },
 }));
 app.use('/js', express.static(path.join(__dirname, 'public/js')));
+app.use('/downloads', express.static(path.join(__dirname, 'public/downloads'), {
+  setHeaders(res, filePath) {
+    if (filePath.endsWith('.apk')) {
+      res.setHeader('Content-Type', 'application/vnd.android.package-archive');
+      res.setHeader('Content-Disposition', 'attachment; filename="kaddish-sidebar.apk"');
+    }
+  },
+}));
 
 function renderMemorialBoard(req, res, synagogue) {
   const { buildFaviconPath } = require('./lib/favicon');
