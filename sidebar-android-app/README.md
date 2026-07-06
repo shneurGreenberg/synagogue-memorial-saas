@@ -68,6 +68,22 @@ npm run android:build
 
 APK output: `android/app/build/outputs/apk/debug/app-debug.apk`
 
+## Download ready APK
+
+If your server is deployed with this repo, download:
+
+```
+https://YOUR-SERVER/downloads/kaddish-sidebar.apk
+```
+
+## Home screen widget (Android)
+
+1. Open the app once and save your settings (server + slug + location permission).
+2. Long-press the home screen → **Widgets** → **Kaddish Sidebar**.
+3. Place the widget on your home screen.
+
+The widget shows clock, dates, parsha, Shabbat times, weather, and the next announcement. It refreshes automatically and syncs when you open the app.
+
 ## Permissions
 
 The Android app requests:

@@ -36,6 +36,7 @@ export const STRINGS = {
     location_error: 'Не удалось определить местоположение',
     sync_error: 'Не удалось синхронизировать с сервером',
     no_server_hint: 'Без сервера используются только локальные объявления',
+    widget_help: 'Виджет: долгое нажатие на рабочий стол → Виджеты → Kaddish Sidebar',
   },
   en: {
     weekly_chapter: 'Weekly portion',
@@ -74,6 +75,7 @@ export const STRINGS = {
     location_error: 'Could not determine location',
     sync_error: 'Could not sync with server',
     no_server_hint: 'Without a server, only local announcements are used',
+    widget_help: 'Widget: long-press home screen → Widgets → Kaddish Sidebar',
   },
   he: {
     weekly_chapter: 'פרשת השבוע',
@@ -112,6 +114,7 @@ export const STRINGS = {
     location_error: 'לא ניתן לקבוע מיקום',
     sync_error: 'לא ניתן לסנכרן עם השרת',
     no_server_hint: 'ללא שרת משתמשים רק בהודעות מקומיות',
+    widget_help: 'וידג\'ט: לחיצה ארוכה על מסך הבית → וידג\'טים → Kaddish Sidebar',
   },
 };
 

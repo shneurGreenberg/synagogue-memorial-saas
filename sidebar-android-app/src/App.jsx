@@ -25,6 +25,7 @@ import {
   saveSettings,
 } from './lib/settings';
 import { t } from './lib/i18n';
+import { syncWidgetSnapshot } from './lib/widget-sync';
 
 const DEFAULT_COORDS = { lat: 54.9833, long: 82.8964 };
 const DEFAULT_TIMEZONE = 'Asia/Novosibirsk';
@@ -143,6 +144,21 @@ export default function App() {
     }),
     [remotePayload, communityEvents, boardFeatures],
   );
+
+  useEffect(() => {
+    const firstAnnouncement = announcementItems.find((item) => item.listType === 'event')
+      || announcementItems[0];
+
+    syncWidgetSnapshot({
+      serverUrl: normalizeServerUrl(settings.serverUrl),
+      slug: settings.slug,
+      language: lang,
+      lat: coords.lat,
+      lng: coords.long,
+      timezone,
+      announcement: firstAnnouncement?.title || '',
+    });
+  }, [settings, lang, coords, timezone, announcementItems]);
 
   const handleSaveSettings = async (nextSettings) => {
     await saveSettings(nextSettings);
