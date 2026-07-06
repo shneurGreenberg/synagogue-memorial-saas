@@ -67,7 +67,7 @@ class MemorialCardInner extends React.Component {
         onKeyDown={this.onKeyDown}
         aria-label={displayName}
       >
-        <CandleVideo active={this.state.showCandle} animated={Boolean(entry.passedToday || big)} />
+        <CandleVideo active={this.state.showCandle} />
         <div className={`inner ${getNameDensityClass(displayName)}`}>
           <h3>{displayName}</h3>
           <div className="card-dates">
