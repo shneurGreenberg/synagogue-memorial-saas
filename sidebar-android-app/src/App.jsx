@@ -15,12 +15,14 @@ import {
   buildAnnouncementItems,
   prepareCommunityEvents,
 } from './lib/announcements';
-import { fetchSidebarPayload } from './lib/sync';
+import { fetchSidebarPayload, loadCachedSidebarPayload } from './lib/sync';
 import {
   DEFAULT_SETTINGS,
   loadLocalEvents,
   loadSettings,
   normalizeServerUrl,
+  normalizeSettings,
+  parseServerSettings,
   saveLocalEvents,
   saveSettings,
 } from './lib/settings';
@@ -52,6 +54,7 @@ export default function App() {
   const [remotePayload, setRemotePayload] = useState(null);
   const [localEvents, setLocalEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
 
   const lang = settings.language || 'ru';
@@ -71,17 +74,27 @@ export default function App() {
     }
   }, []);
 
-  const refreshRemote = useCallback(async (nextSettings) => {
+  const refreshRemote = useCallback(async (nextSettings, { initial = false } = {}) => {
+    const normalized = normalizeSettings(nextSettings);
+    if (initial) {
+      const cached = await loadCachedSidebarPayload(normalized.language);
+      if (cached) {
+        setRemotePayload(cached);
+      }
+    }
+
     try {
-      const payload = await fetchSidebarPayload(nextSettings, nextSettings.language);
+      const payload = await fetchSidebarPayload(normalized, normalized.language);
       setRemotePayload(payload);
       if (payload) {
         setError('');
       }
     } catch {
-      setRemotePayload(null);
-      if (normalizeServerUrl(nextSettings.serverUrl) && nextSettings.slug) {
-        setError(t(nextSettings.language || 'ru', 'sync_error'));
+      if (!initial) {
+        setRemotePayload((current) => current);
+      }
+      if (normalizeServerUrl(normalized.serverUrl) && normalized.slug) {
+        setError(t(normalized.language || 'ru', 'sync_error'));
       }
     }
   }, []);
@@ -90,14 +103,14 @@ export default function App() {
     let cancelled = false;
 
     (async () => {
-      const loadedSettings = await loadSettings();
+      const loadedSettings = normalizeSettings(await loadSettings());
       const loadedEvents = await loadLocalEvents();
       if (cancelled) return;
 
       setSettings(loadedSettings);
       setLocalEvents(loadedEvents);
       await refreshLocation(loadedSettings);
-      await refreshRemote(loadedSettings);
+      await refreshRemote(loadedSettings, { initial: true });
       if (!cancelled) setLoading(false);
     })();
 
@@ -107,14 +120,22 @@ export default function App() {
   }, [refreshLocation, refreshRemote]);
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      refreshRemote(settings);
+    const timer = window.setInterval(async () => {
+      setRefreshing(true);
+      await refreshRemote(settings);
+      setRefreshing(false);
     }, 30000);
 
     return () => window.clearInterval(timer);
   }, [settings, refreshRemote]);
 
-  const { gregorianDate, hebrewDate } = getDatesInTimezone(timezone);
+  const synagogueLocation = remotePayload?.location;
+  const effectiveCoords = synagogueLocation?.lat != null && synagogueLocation?.long != null
+    ? { lat: Number(synagogueLocation.lat), long: Number(synagogueLocation.long) }
+    : coords;
+  const effectiveTimezone = synagogueLocation?.timezone || timezone;
+
+  const { gregorianDate, hebrewDate } = getDatesInTimezone(effectiveTimezone);
   const boardFeatures = remotePayload?.boardFeatures || {
     officialLogo: true,
     upcomingHolidays: true,
@@ -149,24 +170,27 @@ export default function App() {
     const firstAnnouncement = announcementItems.find((item) => item.listType === 'event')
       || announcementItems[0];
 
+    const parsed = parseServerSettings(settings.serverUrl, settings.slug);
+
     syncWidgetSnapshot({
-      serverUrl: normalizeServerUrl(settings.serverUrl),
-      slug: settings.slug,
+      serverUrl: parsed.serverUrl,
+      slug: parsed.slug,
       language: lang,
-      lat: coords.lat,
-      lng: coords.long,
-      timezone,
+      lat: effectiveCoords.lat,
+      lng: effectiveCoords.long,
+      timezone: effectiveTimezone,
       announcement: firstAnnouncement?.title || '',
     });
-  }, [settings, lang, coords, timezone, announcementItems]);
+  }, [settings, lang, effectiveCoords, effectiveTimezone, announcementItems]);
 
   const handleSaveSettings = async (nextSettings) => {
-    await saveSettings(nextSettings);
-    setSettings(nextSettings);
+    const normalized = normalizeSettings(nextSettings);
+    await saveSettings(normalized);
+    setSettings(normalized);
     setScreen('home');
     setLoading(true);
-    await refreshLocation(nextSettings);
-    await refreshRemote(nextSettings);
+    await refreshLocation(normalized);
+    await refreshRemote(normalized, { initial: true });
     setLoading(false);
   };
 
@@ -238,7 +262,7 @@ export default function App() {
 
             <div className="board-clock-block">
               <time>
-                <h1><LiveClock timezone={timezone} /></h1>
+                <h1><LiveClock timezone={effectiveTimezone} /></h1>
                 <h2>{formatHebrewDate(hebrewDate, lang)}</h2>
                 <h3>{formatGregorianDate(gregorianDate, lang)}</h3>
               </time>
@@ -246,17 +270,17 @@ export default function App() {
 
             {(remotePayload?.shabbatTimesEnabled !== false) && (
               <ShabbatBlock
-                lat={coords.lat}
-                long={coords.long}
-                timezone={timezone}
+                lat={effectiveCoords.lat}
+                long={effectiveCoords.long}
+                timezone={effectiveTimezone}
                 hebrewDate={hebrewDate}
                 lang={lang}
               />
             )}
 
             <WeatherBlock
-              lat={coords.lat}
-              long={coords.long}
+              lat={effectiveCoords.lat}
+              long={effectiveCoords.long}
               lang={lang}
               serverUrl={normalizeServerUrl(settings.serverUrl)}
               slug={settings.slug}
@@ -267,6 +291,7 @@ export default function App() {
 
           <div className="right-panel-scroll">
             {loading && <p className="status-line">{t(lang, 'loading')}</p>}
+            {!loading && refreshing && <p className="status-line">{t(lang, 'refreshing')}</p>}
             {error && <p className="status-line status-line-error">{error}</p>}
             <ScrollingAnnouncements
               items={announcementItems}

@@ -26,7 +26,7 @@ export function SettingsScreen({
             type="url"
             value={draft.serverUrl}
             onChange={(event) => setDraft({ ...draft, serverUrl: event.target.value })}
-            placeholder="https://example.com"
+            placeholder="https://synagogue-kadish-shneur.amvera.io"
           />
         </label>
 
@@ -39,6 +39,7 @@ export function SettingsScreen({
             placeholder="novosibirsk"
           />
         </label>
+        <p className="settings-hint">{t(lang, 'server_url_hint')}</p>
 
         <label>
           <span>{t(lang, 'language')}</span>

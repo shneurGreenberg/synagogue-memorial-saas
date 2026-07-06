@@ -65,9 +65,35 @@ export function normalizeServerUrl(url) {
   return String(url || '').trim().replace(/\/+$/, '');
 }
 
+export function parseServerSettings(serverUrl, slug = '') {
+  let base = normalizeServerUrl(serverUrl);
+  let parsedSlug = String(slug || '').trim();
+
+  const boardMatch = base.match(/^(https?:\/\/[^/]+)\/s\/([^/?#]+)/i);
+  if (boardMatch) {
+    base = boardMatch[1];
+    if (!parsedSlug) {
+      parsedSlug = boardMatch[2];
+    }
+  }
+
+  return {
+    serverUrl: base,
+    slug: parsedSlug,
+  };
+}
+
+export function normalizeSettings(settings) {
+  const parsed = parseServerSettings(settings.serverUrl, settings.slug);
+  return {
+    ...settings,
+    serverUrl: parsed.serverUrl,
+    slug: parsed.slug,
+  };
+}
+
 export function buildSidebarApiUrl(settings, lang) {
-  const base = normalizeServerUrl(settings.serverUrl);
-  const slug = String(settings.slug || '').trim();
+  const { serverUrl: base, slug } = parseServerSettings(settings.serverUrl, settings.slug);
   if (!base || !slug) {
     return null;
   }

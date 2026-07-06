@@ -3,6 +3,8 @@ package com.synagogue.sidebar.widget;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.Bundle;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import com.synagogue.sidebar.R;
@@ -17,8 +19,10 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
@@ -36,7 +40,8 @@ public final class WidgetDataLoader {
             ComponentName component = new ComponentName(context, SidebarWidgetProvider.class);
             int[] ids = manager.getAppWidgetIds(component);
             for (int id : ids) {
-                apply(context, manager, id, data);
+                Bundle options = manager.getAppWidgetOptions(id);
+                apply(context, manager, id, data, options);
             }
         });
     }
@@ -46,30 +51,29 @@ public final class WidgetDataLoader {
         SharedSnapshot snapshot = SharedSnapshot.read(context);
 
         try {
-            String timezone = snapshot.timezone;
-            if (timezone == null || timezone.isEmpty()) {
-                timezone = resolveTimezone(snapshot.lat, snapshot.lng);
-            }
+            LocationContext location = resolveLocation(snapshot);
 
-            Calendar now = Calendar.getInstance(TimeZone.getTimeZone(timezone), Locale.US);
+            Calendar now = Calendar.getInstance(TimeZone.getTimeZone(location.timezone), Locale.US);
             data.clock = formatClock(now);
             data.gregorianDate = formatGregorian(now, snapshot.language);
-            data.hebrewDate = fetchHebrewDate(now, timezone);
+            data.hebrewDate = fetchHebrewDate(now);
 
-            JSONObject shabbat = fetchShabbat(snapshot.lat, snapshot.lng, timezone, now);
+            JSONObject shabbat = fetchShabbat(location.lat, location.lng, location.timezone, now);
             if (shabbat != null) {
                 data.parsha = shabbat.optString("parsha", "");
                 data.shabbatEnter = shabbat.optString("enter", "");
                 data.shabbatExit = shabbat.optString("exit", "");
             }
 
-            JSONObject weather = fetchWeather(snapshot.lat, snapshot.lng, snapshot.serverUrl, snapshot.slug);
+            JSONObject weather = fetchWeather(location.lat, location.lng, snapshot.serverUrl, snapshot.slug);
             if (weather != null) {
                 data.weather = weather.optString("label", "");
             }
 
             String announcement = snapshot.announcement;
-            if ((announcement == null || announcement.isEmpty()) && snapshot.serverUrl != null && !snapshot.serverUrl.isEmpty() && snapshot.slug != null && !snapshot.slug.isEmpty()) {
+            if ((announcement == null || announcement.isEmpty())
+                && snapshot.serverUrl != null && !snapshot.serverUrl.isEmpty()
+                && snapshot.slug != null && !snapshot.slug.isEmpty()) {
                 announcement = fetchFirstAnnouncement(snapshot.serverUrl, snapshot.slug, snapshot.language);
             }
             data.announcement = announcement == null ? "" : announcement;
@@ -80,17 +84,56 @@ public final class WidgetDataLoader {
         return data;
     }
 
-    private static void apply(Context context, AppWidgetManager manager, int widgetId, WidgetData data) {
+    private static void apply(Context context, AppWidgetManager manager, int widgetId, WidgetData data, Bundle options) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_sidebar);
-        views.setTextViewText(R.id.widget_clock, data.clock);
-        views.setTextViewText(R.id.widget_hebrew_date, data.hebrewDate);
-        views.setTextViewText(R.id.widget_gregorian_date, data.gregorianDate);
-        views.setTextViewText(R.id.widget_parsha, data.parsha);
-        views.setTextViewText(R.id.widget_shabbat_enter, data.shabbatEnter);
-        views.setTextViewText(R.id.widget_shabbat_exit, data.shabbatExit);
-        views.setTextViewText(R.id.widget_weather, data.weather);
-        views.setTextViewText(R.id.widget_announcement, data.announcement);
+        views.setTextViewText(R.id.widget_clock, safeText(data.clock, "--:--"));
+        views.setTextViewText(R.id.widget_hebrew_date, safeText(data.hebrewDate, ""));
+        views.setTextViewText(R.id.widget_gregorian_date, safeText(data.gregorianDate, ""));
+        views.setTextViewText(R.id.widget_parsha, safeText(data.parsha, ""));
+        views.setTextViewText(R.id.widget_shabbat_enter, safeText(data.shabbatEnter, ""));
+        views.setTextViewText(R.id.widget_shabbat_exit, safeText(data.shabbatExit, ""));
+        views.setTextViewText(R.id.widget_weather, safeText(data.weather, ""));
+        views.setTextViewText(R.id.widget_announcement, safeText(data.announcement, ""));
+
+        boolean compact = isCompact(options);
+        setVisibility(views, R.id.widget_hebrew_date, compact ? View.GONE : visibilityFor(data.hebrewDate));
+        setVisibility(views, R.id.widget_gregorian_date, visibilityFor(data.gregorianDate));
+        setVisibility(views, R.id.widget_parsha, compact ? View.GONE : visibilityFor(data.parsha));
+        setVisibility(views, R.id.widget_shabbat_enter, compact ? View.GONE : visibilityFor(data.shabbatEnter));
+        setVisibility(views, R.id.widget_shabbat_exit, compact ? View.GONE : visibilityFor(data.shabbatExit));
+        setVisibility(views, R.id.widget_weather, compact ? View.GONE : visibilityFor(data.weather));
+        setVisibility(views, R.id.widget_announcement, compact ? View.GONE : visibilityFor(data.announcement));
+
+        if (!compact && data.announcement != null && !data.announcement.isEmpty()) {
+            views.setInt(R.id.widget_announcement, "setSelected", 1);
+        }
+
         manager.updateAppWidget(widgetId, views);
+    }
+
+    private static boolean isCompact(Bundle options) {
+        if (options == null) {
+            return false;
+        }
+
+        int minWidth = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 180);
+        int minHeight = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 180);
+        return minWidth < 150 || minHeight < 150;
+    }
+
+    private static int visibilityFor(String value) {
+        return value == null || value.trim().isEmpty() ? View.GONE : View.VISIBLE;
+    }
+
+    private static void setVisibility(RemoteViews views, int viewId, int visibility) {
+        views.setViewVisibility(viewId, visibility);
+    }
+
+    private static String safeText(String value, String fallback) {
+        if (value == null || value.trim().isEmpty()) {
+            return fallback;
+        }
+        return value;
     }
 
     private static String formatClock(Calendar now) {
@@ -106,7 +149,7 @@ public final class WidgetDataLoader {
         return formatter.format(now.getTime());
     }
 
-    private static String fetchHebrewDate(Calendar now, String timezone) throws Exception {
+    private static String fetchHebrewDate(Calendar now) throws Exception {
         int year = now.get(Calendar.YEAR);
         int month = now.get(Calendar.MONTH) + 1;
         int day = now.get(Calendar.DAY_OF_MONTH);
@@ -116,19 +159,19 @@ public final class WidgetDataLoader {
             return "";
         }
 
-        JSONObject hebrew = json.optJSONObject("hebrew");
-        if (hebrew == null) {
-            return json.optString("hebrew", "");
+        String hebrew = json.optString("hebrew", "");
+        if (!hebrew.isEmpty()) {
+            return hebrew;
         }
 
-        String monthName = hebrew.optString("hebrew", hebrew.optString("month", ""));
-        int hebrewDay = hebrew.optInt("hd", hebrew.optInt("day", 0));
-        int hebrewYear = hebrew.optInt("hy", hebrew.optInt("year", 0));
-        if (hebrewDay == 0 || hebrewYear == 0) {
-            return json.optString("hebrew", "");
+        int hebrewDay = json.optInt("hd", 0);
+        int hebrewYear = json.optInt("hy", 0);
+        String monthName = json.optString("hm", "");
+        if (hebrewDay > 0 && hebrewYear > 0 && !monthName.isEmpty()) {
+            return hebrewDay + " " + monthName + " " + hebrewYear;
         }
 
-        return hebrewDay + " " + monthName + " " + hebrewYear;
+        return "";
     }
 
     private static JSONObject fetchShabbat(double lat, double lng, String timezone, Calendar now) throws Exception {
@@ -139,7 +182,7 @@ public final class WidgetDataLoader {
             + "&latitude=" + lat
             + "&longitude=" + lng
             + "&tzid=" + URLEncoder.encode(timezone, "UTF-8")
-            + "&M=on&gy=" + year
+            + "&M=on&b=18&gy=" + year
             + "&gm=" + month
             + "&gd=" + day;
 
@@ -154,32 +197,61 @@ public final class WidgetDataLoader {
         }
 
         JSONObject result = new JSONObject();
-        Date nextEnter = null;
-        Date nextExit = null;
+        List<Date> candles = new ArrayList<>();
+        List<Date> havdalah = new ArrayList<>();
         long nowMs = System.currentTimeMillis();
 
         for (int i = 0; i < items.length(); i++) {
             JSONObject item = items.getJSONObject(i);
             String category = item.optString("category", "");
             if ("parashat".equals(category)) {
-                result.put("parsha", item.optString("title", item.optString("hebrew", "")));
+                result.put("parsha", item.optString("hebrew", item.optString("title", "")));
             }
             if ("candles".equals(category) && item.has("date")) {
                 Date enter = parseIsoDate(item.getString("date"));
-                if (enter != null && enter.getTime() >= nowMs - 48L * 60 * 60 * 1000) {
-                    if (nextEnter == null || enter.before(nextEnter)) {
-                        nextEnter = enter;
-                    }
+                if (enter != null) {
+                    candles.add(enter);
                 }
             }
             if ("havdalah".equals(category) && item.has("date")) {
                 Date exit = parseIsoDate(item.getString("date"));
-                if (exit != null && exit.getTime() > nowMs) {
-                    if (nextExit == null || exit.before(nextExit)) {
-                        nextExit = exit;
-                    }
+                if (exit != null) {
+                    havdalah.add(exit);
                 }
             }
+        }
+
+        Date nextEnter = null;
+        Date nextExit = null;
+
+        for (Date enter : candles) {
+            Date exit = null;
+            for (Date candidate : havdalah) {
+                if (candidate.after(enter)) {
+                    exit = candidate;
+                    break;
+                }
+            }
+            if (exit == null) {
+                continue;
+            }
+
+            if (enter.getTime() <= nowMs && nowMs < exit.getTime()) {
+                nextEnter = enter;
+                nextExit = exit;
+                break;
+            }
+
+            if (enter.getTime() > nowMs) {
+                nextEnter = enter;
+                nextExit = exit;
+                break;
+            }
+        }
+
+        if (nextEnter == null && !candles.isEmpty() && !havdalah.isEmpty()) {
+            nextEnter = candles.get(candles.size() - 1);
+            nextExit = havdalah.get(havdalah.size() - 1);
         }
 
         SimpleDateFormat clock = new SimpleDateFormat("HH:mm", Locale.UK);
@@ -196,15 +268,22 @@ public final class WidgetDataLoader {
     }
 
     private static JSONObject fetchWeather(double lat, double lng, String serverUrl, String slug) throws Exception {
-        String url;
+        JSONObject fromServer = null;
         if (serverUrl != null && !serverUrl.isEmpty() && slug != null && !slug.isEmpty()) {
-            url = serverUrl.replaceAll("/+$", "") + "/s/" + URLEncoder.encode(slug, "UTF-8") + "/api/weather";
-        } else {
-            url = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lng
-                + "&current=temperature_2m,weather_code&timezone=auto";
+            String url = serverUrl.replaceAll("/+$", "") + "/s/" + URLEncoder.encode(slug, "UTF-8") + "/api/weather";
+            fromServer = parseWeatherJson(fetchJson(url));
         }
 
-        JSONObject json = fetchJson(url);
+        if (fromServer != null) {
+            return fromServer;
+        }
+
+        String openMeteoUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lng
+            + "&current=temperature_2m,weather_code&timezone=auto";
+        return parseWeatherJson(fetchJson(openMeteoUrl));
+    }
+
+    private static JSONObject parseWeatherJson(JSONObject json) throws Exception {
         if (json == null || !json.has("current")) {
             return null;
         }
@@ -230,17 +309,56 @@ public final class WidgetDataLoader {
             return "";
         }
 
-        JSONArray events = json.optJSONArray("communityEvents");
-        if (events != null && events.length() > 0) {
-            return events.getJSONObject(0).optString("title", "");
-        }
-
         JSONArray holidays = json.optJSONArray("upcomingHolidays");
         if (holidays != null && holidays.length() > 0) {
             return holidays.getJSONObject(0).optString("title", "");
         }
 
+        JSONArray chabad = json.optJSONArray("chabadDates");
+        if (chabad != null && chabad.length() > 0) {
+            return chabad.getJSONObject(0).optString("title", "");
+        }
+
+        JSONArray events = json.optJSONArray("communityEvents");
+        if (events != null && events.length() > 0) {
+            return events.getJSONObject(0).optString("title", "");
+        }
+
         return "";
+    }
+
+    private static LocationContext resolveLocation(SharedSnapshot snapshot) throws Exception {
+        if (snapshot.serverUrl != null && !snapshot.serverUrl.isEmpty()
+            && snapshot.slug != null && !snapshot.slug.isEmpty()) {
+            JSONObject synagogue = fetchSynagogueLocation(snapshot.serverUrl, snapshot.slug);
+            if (synagogue != null) {
+                double lat = synagogue.optDouble("lat", snapshot.lat);
+                double lng = synagogue.optDouble("long", snapshot.lng);
+                String timezone = synagogue.optString("timezone", snapshot.timezone);
+                if (timezone == null || timezone.isEmpty()) {
+                    timezone = resolveTimezone(lat, lng);
+                }
+                return new LocationContext(lat, lng, timezone);
+            }
+        }
+
+        String timezone = snapshot.timezone;
+        if (timezone == null || timezone.isEmpty()) {
+            timezone = resolveTimezone(snapshot.lat, snapshot.lng);
+        }
+
+        return new LocationContext(snapshot.lat, snapshot.lng, timezone);
+    }
+
+    private static JSONObject fetchSynagogueLocation(String serverUrl, String slug) throws Exception {
+        String url = serverUrl.replaceAll("/+$", "") + "/s/" + URLEncoder.encode(slug, "UTF-8")
+            + "/api/sidebar-app";
+        JSONObject json = fetchJson(url);
+        if (json == null) {
+            return null;
+        }
+
+        return json.optJSONObject("location");
     }
 
     private static String resolveTimezone(double lat, double lng) throws Exception {
@@ -316,6 +434,18 @@ public final class WidgetDataLoader {
         return null;
     }
 
+    private static final class LocationContext {
+        final double lat;
+        final double lng;
+        final String timezone;
+
+        private LocationContext(double lat, double lng, String timezone) {
+            this.lat = lat;
+            this.lng = lng;
+            this.timezone = timezone;
+        }
+    }
+
     private static final class SharedSnapshot {
         final String serverUrl;
         final String slug;
@@ -337,15 +467,45 @@ public final class WidgetDataLoader {
 
         static SharedSnapshot read(Context context) {
             android.content.SharedPreferences prefs = WidgetPrefs.prefs(context);
+            String serverUrl = prefs.getString("server_url", "");
+            String slug = prefs.getString("slug", "");
+            ParsedServer parsed = parseServerSettings(serverUrl, slug);
             return new SharedSnapshot(
-                prefs.getString("server_url", ""),
-                prefs.getString("slug", ""),
+                parsed.serverUrl,
+                parsed.slug,
                 prefs.getString("language", "ru"),
                 prefs.getFloat("lat", 54.9833f),
                 prefs.getFloat("lng", 82.8964f),
                 prefs.getString("timezone", "Asia/Novosibirsk"),
                 prefs.getString("announcement", "")
             );
+        }
+
+        private static ParsedServer parseServerSettings(String serverUrl, String slug) {
+            String base = serverUrl == null ? "" : serverUrl.trim().replaceAll("/+$", "");
+            String parsedSlug = slug == null ? "" : slug.trim();
+
+            java.util.regex.Matcher matcher = java.util.regex.Pattern
+                .compile("^(https?://[^/]+)/s/([^/?#]+)", java.util.regex.Pattern.CASE_INSENSITIVE)
+                .matcher(base);
+            if (matcher.find()) {
+                base = matcher.group(1);
+                if (parsedSlug.isEmpty()) {
+                    parsedSlug = matcher.group(2);
+                }
+            }
+
+            return new ParsedServer(base, parsedSlug);
+        }
+
+        private static final class ParsedServer {
+            final String serverUrl;
+            final String slug;
+
+            private ParsedServer(String serverUrl, String slug) {
+                this.serverUrl = serverUrl;
+                this.slug = slug;
+            }
         }
     }
 }
