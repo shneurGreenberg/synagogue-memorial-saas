@@ -17,6 +17,47 @@ final class WidgetI18n {
         return "Выход из Шаббата";
     }
 
+    static String weeklyChapter(String lang) {
+        if ("he".equals(lang)) return "פרשת השבוע";
+        if ("en".equals(lang)) return "Weekly portion";
+        return "Недельная глава";
+    }
+
+    static String upcomingTitle(String lang) {
+        if ("he".equals(lang)) return "תאריכים והודעות קרובות";
+        if ("en".equals(lang)) return "Upcoming dates & announcements";
+        return "Ближайшие даты и объявления";
+    }
+
+    static String noAnnouncements(String lang) {
+        if ("he".equals(lang)) return "אין הודעות כרגע";
+        if ("en".equals(lang)) return "No announcements yet";
+        return "Пока нет объявлений";
+    }
+
+    static String sunriseLabel(String lang) {
+        if ("he".equals(lang)) return "זריחה";
+        if ("en".equals(lang)) return "Sunrise";
+        return "Восход";
+    }
+
+    static String sunsetLabel(String lang) {
+        if ("he".equals(lang)) return "שקיעה";
+        if ("en".equals(lang)) return "Sunset";
+        return "Закат";
+    }
+
+    static String weatherIcon(int code) {
+        if (code == 0) return "☀";
+        if (code <= 3) return "⛅";
+        if (code <= 48) return "≈";
+        if (code <= 67) return "☂";
+        if (code <= 77) return "❄";
+        if (code <= 82) return "☂";
+        if (code >= 95) return "⚡";
+        return "°";
+    }
+
     static String weatherLabel(String lang, int code) {
         if ("he".equals(lang)) return weatherLabelHe(code);
         if ("en".equals(lang)) return weatherLabelEn(code);
