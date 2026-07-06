@@ -12,6 +12,7 @@ import {
 import { getDeviceCoordinates, resolveTimezone } from './lib/location';
 import {
   buildAnnouncementItems,
+  buildWidgetAnnouncementsJson,
 } from './lib/announcements';
 import { fetchSidebarPayload, loadCachedSidebarPayload } from './lib/sync';
 import { fetchOfflineJewishFeed } from './lib/offline-feed';
@@ -184,9 +185,6 @@ export default function App() {
       return;
     }
 
-    const firstAnnouncement = announcementItems.find((item) => item.listType === 'event')
-      || announcementItems[0];
-
     const parsed = parseServerSettings(settings.serverUrl, settings.slug);
 
     syncWidgetSnapshot({
@@ -196,7 +194,7 @@ export default function App() {
       lat: effectiveCoords.lat,
       lng: effectiveCoords.long,
       timezone: effectiveTimezone,
-      announcement: firstAnnouncement?.title || '',
+      announcementsJson: buildWidgetAnnouncementsJson(announcementItems, lang),
     });
   }, [settings, lang, effectiveCoords, effectiveTimezone, announcementItems, loading, refreshing]);
 

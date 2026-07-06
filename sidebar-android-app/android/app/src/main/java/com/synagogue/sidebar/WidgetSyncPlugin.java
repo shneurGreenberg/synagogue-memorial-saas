@@ -19,9 +19,9 @@ public class WidgetSyncPlugin extends Plugin {
         double lat = call.getDouble("lat", 54.9833);
         double lng = call.getDouble("lng", 82.8964);
         String timezone = call.getString("timezone", "Asia/Novosibirsk");
-        String announcement = call.getString("announcement", "");
+        String announcementsJson = call.getString("announcementsJson", "[]");
 
-        WidgetPrefs.saveSnapshot(getContext(), serverUrl, slug, language, lat, lng, timezone, announcement);
+        WidgetPrefs.saveSnapshot(getContext(), serverUrl, slug, language, lat, lng, timezone, announcementsJson);
         WidgetDataLoader.updateAllWidgets(getContext());
 
         JSObject result = new JSObject();

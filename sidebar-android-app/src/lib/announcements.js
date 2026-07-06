@@ -146,6 +146,37 @@ export function buildAnnouncementItems({
   return interleaveCommunityEvents(announcements, eventItems);
 }
 
+export function buildWidgetAnnouncementsJson(items, lang = 'ru') {
+  const payload = (items || []).map((item) => {
+    if (item.listType === 'event') {
+      let date = '';
+      if (item.eventDate?.month && item.eventDate?.date) {
+        const year = item.eventDate.year || new Date().getFullYear();
+        const gregorian = new Date(year, item.eventDate.month - 1, item.eventDate.date);
+        date = gregorian.toLocaleDateString(
+          lang === 'he' ? 'he-IL' : lang === 'en' ? 'en-US' : 'ru-RU',
+          { day: 'numeric', month: 'long', year: 'numeric' },
+        );
+      }
+      return {
+        type: 'event',
+        title: item.title || '',
+        text: item.text || '',
+        date,
+      };
+    }
+
+    return {
+      type: item.listType || 'holiday',
+      title: item.title || '',
+      text: '',
+      date: item.date ? formatHolidayDate(item.date, lang) : '',
+    };
+  });
+
+  return JSON.stringify(payload);
+}
+
 export function formatHolidayDate(dateStr, lang = 'ru') {
   const [year, month, day] = dateStr.split('-').map(Number);
   const date = new Date(year, month - 1, day);
