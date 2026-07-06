@@ -48,6 +48,7 @@ public final class WidgetDataLoader {
         SharedSnapshot snapshot = SharedSnapshot.read(context);
         WidgetData data = WidgetPrefs.loadLastGood(context, snapshot.language);
         data.announcementsTitle = WidgetI18n.upcomingTitle(snapshot.language);
+        WidgetWeatherStore.applyTo(context, data);
 
         try {
             Calendar now = Calendar.getInstance(
@@ -83,6 +84,7 @@ public final class WidgetDataLoader {
         SharedSnapshot snapshot = SharedSnapshot.read(context);
         WidgetData data = WidgetPrefs.loadLastGood(context, snapshot.language);
         data.announcementsTitle = WidgetI18n.upcomingTitle(snapshot.language);
+        WidgetWeatherStore.applyTo(context, data);
 
         Calendar now;
         try {
@@ -235,10 +237,11 @@ public final class WidgetDataLoader {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_sidebar);
             String lang = SharedSnapshot.read(context).language;
 
-            views.setTextViewText(R.id.widget_clock, safeText(data.clock, "--:--"));
             views.setTextViewText(R.id.widget_hebrew_date, safeText(data.hebrewDate, ""));
             views.setTextViewText(R.id.widget_gregorian_date, safeText(data.gregorianDate, ""));
 
+            views.setTextViewText(R.id.widget_clock, safeText(data.clock, "--:--"));
+            views.setImageViewResource(R.id.widget_logo, R.drawable.kaddish_logo);
             views.setTextViewText(R.id.widget_parsha_heading, safeText(data.parshaHeading, WidgetI18n.weeklyChapter(lang)));
             views.setTextViewText(R.id.widget_parsha, safeText(data.parshaName, ""));
             views.setTextViewText(R.id.widget_shabbat_enter_label, safeText(data.shabbatEnterLabel, WidgetI18n.shabbatEnter(lang)));
@@ -264,9 +267,11 @@ public final class WidgetDataLoader {
             Intent serviceIntent = new Intent(context, SidebarWidgetService.class);
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
             serviceIntent.setData(android.net.Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)));
-            views.setRemoteAdapter(R.id.widget_announcements_list, serviceIntent);
-            views.setEmptyView(R.id.widget_announcements_list, R.id.widget_empty_view);
+            views.setRemoteAdapter(R.id.widget_announcements_flipper, serviceIntent);
+            views.setEmptyView(R.id.widget_announcements_flipper, R.id.widget_empty_view);
             views.setTextViewText(R.id.widget_empty_view, WidgetI18n.noAnnouncements(lang));
+            views.setInt(R.id.widget_announcements_flipper, "setFlipInterval", 5000);
+            views.setInt(R.id.widget_announcements_flipper, "startFlipping", 0);
 
             setVisibility(views, R.id.widget_hebrew_date, visibilityFor(data.hebrewDate));
             setVisibility(views, R.id.widget_gregorian_date, visibilityFor(data.gregorianDate));
@@ -282,7 +287,7 @@ public final class WidgetDataLoader {
             views.setOnClickPendingIntent(R.id.widget_root, pendingIntent);
 
             manager.updateAppWidget(widgetId, views);
-            manager.notifyAppWidgetViewDataChanged(widgetId, R.id.widget_announcements_list);
+            manager.notifyAppWidgetViewDataChanged(widgetId, R.id.widget_announcements_flipper);
         } catch (Exception ignored) {
             // Avoid crashing the widget host if a single update fails.
         }
@@ -480,16 +485,20 @@ public final class WidgetDataLoader {
         String lang
     ) throws Exception {
         JSONObject json = null;
-        if (serverUrl != null && !serverUrl.isEmpty() && slug != null && !slug.isEmpty()) {
+
+        String openMeteoUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lng
+            + "&current=temperature_2m,weather_code"
+            + "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,time"
+            + "&timezone=auto&forecast_days=4";
+        json = fetchJson(openMeteoUrl);
+
+        if ((json == null || !json.has("current")) && serverUrl != null && !serverUrl.isEmpty()
+            && slug != null && !slug.isEmpty()) {
             String url = serverUrl.replaceAll("/+$", "") + "/s/" + URLEncoder.encode(slug, "UTF-8") + "/api/weather";
             json = fetchJson(url);
         }
 
         if (json == null || !json.has("current")) {
-            String openMeteoUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lng
-                + "&current=temperature_2m,weather_code"
-                + "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,time"
-                + "&timezone=auto&forecast_days=4";
             json = fetchJson(openMeteoUrl);
         }
 

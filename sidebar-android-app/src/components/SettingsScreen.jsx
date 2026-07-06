@@ -2,9 +2,16 @@ import React, { useState } from 'react';
 import { t } from '../lib/i18n';
 
 export function SettingsScreen({
-  settings, onSave, onBack, lang,
+  settings, onSave, onBack, onPreview, lang,
 }) {
   const [draft, setDraft] = useState(settings);
+
+  const updateDraft = (nextDraft) => {
+    setDraft(nextDraft);
+    if (typeof onPreview === 'function') {
+      onPreview(nextDraft);
+    }
+  };
 
   return (
     <div className="settings-screen">
@@ -25,7 +32,7 @@ export function SettingsScreen({
           <input
             type="url"
             value={draft.serverUrl}
-            onChange={(event) => setDraft({ ...draft, serverUrl: event.target.value })}
+            onChange={(event) => updateDraft({ ...draft, serverUrl: event.target.value })}
             placeholder="https://synagogue-kadish-shneur.amvera.io"
           />
         </label>
@@ -35,7 +42,7 @@ export function SettingsScreen({
           <input
             type="text"
             value={draft.slug}
-            onChange={(event) => setDraft({ ...draft, slug: event.target.value })}
+            onChange={(event) => updateDraft({ ...draft, slug: event.target.value })}
             placeholder="novosibirsk"
           />
         </label>
@@ -45,7 +52,7 @@ export function SettingsScreen({
           <span>{t(lang, 'language')}</span>
           <select
             value={draft.language}
-            onChange={(event) => setDraft({ ...draft, language: event.target.value })}
+            onChange={(event) => updateDraft({ ...draft, language: event.target.value })}
           >
             <option value="ru">Русский</option>
             <option value="en">English</option>

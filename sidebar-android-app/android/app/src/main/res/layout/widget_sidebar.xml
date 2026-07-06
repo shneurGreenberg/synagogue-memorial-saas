@@ -21,7 +21,7 @@
             android:layout_marginBottom="6dp"
             android:contentDescription="@string/app_name"
             android:scaleType="fitCenter"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/kaddish_logo" />
 
         <TextView
             android:id="@+id/widget_clock"
@@ -342,13 +342,12 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <ListView
-            android:id="@+id/widget_announcements_list"
+        <AdapterViewFlipper
+            android:id="@+id/widget_announcements_flipper"
             android:layout_width="match_parent"
             android:layout_height="180dp"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0dp"
-            android:scrollbars="vertical" />
+            android:autoStart="true"
+            android:flipInterval="5000" />
 
         <TextView
             android:id="@+id/widget_empty_view"

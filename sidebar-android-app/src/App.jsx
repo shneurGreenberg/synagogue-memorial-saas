@@ -26,6 +26,7 @@ import {
 } from './lib/settings';
 import { t } from './lib/i18n';
 import { syncWidgetSnapshot } from './lib/widget-sync';
+import { buildWidgetWeatherJson } from './lib/weather';
 
 const DEFAULT_COORDS = { lat: 54.9833, long: 82.8964 };
 const DEFAULT_TIMEZONE = 'Asia/Novosibirsk';
@@ -39,8 +40,12 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
+  const [weatherForecast, setWeatherForecast] = useState(null);
 
   const lang = settings.language || 'ru';
+  const handleForecastChange = useCallback((forecast) => {
+    setWeatherForecast(forecast || null);
+  }, []);
 
   const refreshLocation = useCallback(async (nextSettings) => {
     try {
@@ -180,28 +185,40 @@ export default function App() {
     [remotePayload, communityEvents, boardFeatures],
   );
 
-  useEffect(() => {
-    if (loading || refreshing) {
-      return;
-    }
-
-    const parsed = parseServerSettings(settings.serverUrl, settings.slug);
+  const pushWidgetSnapshot = useCallback((nextSettings = settings, nextLang = lang) => {
+    const normalized = normalizeSettings(nextSettings);
+    const parsed = parseServerSettings(normalized.serverUrl, normalized.slug);
+    const location = remotePayload?.location;
+    const snapshotCoords = location?.lat != null && location?.long != null
+      ? { lat: Number(location.lat), long: Number(location.long) }
+      : coords;
+    const snapshotTimezone = location?.timezone || timezone;
 
     syncWidgetSnapshot({
       serverUrl: parsed.serverUrl,
       slug: parsed.slug,
-      language: lang,
-      lat: effectiveCoords.lat,
-      lng: effectiveCoords.long,
-      timezone: effectiveTimezone,
-      announcementsJson: buildWidgetAnnouncementsJson(announcementItems, lang),
+      language: nextLang,
+      lat: snapshotCoords.lat,
+      lng: snapshotCoords.long,
+      timezone: snapshotTimezone,
+      announcementsJson: buildWidgetAnnouncementsJson(announcementItems, nextLang),
+      weatherJson: buildWidgetWeatherJson(weatherForecast, nextLang),
     });
-  }, [settings, lang, effectiveCoords, effectiveTimezone, announcementItems, loading, refreshing]);
+  }, [settings, lang, remotePayload, coords, timezone, announcementItems, weatherForecast]);
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+
+    pushWidgetSnapshot();
+  }, [loading, pushWidgetSnapshot]);
 
   const handleSaveSettings = async (nextSettings) => {
     const normalized = normalizeSettings(nextSettings);
     await saveSettings(normalized);
     setSettings(normalized);
+    pushWidgetSnapshot(normalized, normalized.language || 'ru');
     setScreen('home');
     setLoading(true);
     await refreshLocation(normalized);
@@ -215,6 +232,7 @@ export default function App() {
         settings={settings}
         lang={lang}
         onSave={handleSaveSettings}
+        onPreview={(previewSettings) => pushWidgetSnapshot(previewSettings, previewSettings.language || 'ru')}
         onBack={() => setScreen('home')}
       />
     );
@@ -273,6 +291,7 @@ export default function App() {
               slug={settings.slug}
               showWeather={boardFeatures.weather !== false}
               showSunTimes={boardFeatures.sunriseSunset !== false}
+              onForecastChange={handleForecastChange}
             />
           </div>
 

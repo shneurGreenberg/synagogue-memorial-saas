@@ -5,6 +5,7 @@ import {
   getTodaySunTimes,
   weatherLabelKey,
 } from '../lib/weather';
+import { loadCachedWeather } from '../lib/weather-cache';
 import { t } from '../lib/i18n';
 
 function WeatherIcon({ code, className = '' }) {
@@ -34,35 +35,52 @@ function TodaySunStack({ lang, sunTimes, locale }) {
 }
 
 export function WeatherBlock({
-  lat, long, lang, serverUrl, slug, showWeather, showSunTimes,
+  lat, long, lang, serverUrl, slug, showWeather, showSunTimes, onForecastChange,
 }) {
-  const [forecast, setForecast] = useState(null);
+  const [forecast, setForecast] = useState(() => loadCachedWeather(lat, long));
   const [failed, setFailed] = useState(false);
   const locale = lang === 'he' ? 'he-IL' : lang === 'en' ? 'en-US' : 'ru-RU';
 
   useEffect(() => {
-    let cancelled = false;
+    if (typeof onForecastChange === 'function') {
+      onForecastChange(forecast);
+    }
+  }, [forecast, onForecastChange]);
 
-    const load = () => fetchWeatherForecast(lat, long, serverUrl, slug)
+  useEffect(() => {
+    let cancelled = false;
+    let retryTimer = null;
+
+    const load = (attempt = 0) => fetchWeatherForecast(lat, long, serverUrl, slug)
       .then((data) => {
-        if (!cancelled) {
-          setForecast((current) => data || current);
+        if (!cancelled && data) {
+          setForecast(data);
           setFailed(false);
         }
       })
       .catch(() => {
-        if (!cancelled) {
-          setFailed(true);
+        if (cancelled) return;
+        const cached = loadCachedWeather(lat, long);
+        if (cached) {
+          setForecast(cached);
+          setFailed(false);
+          return;
         }
+        if (attempt < 2) {
+          retryTimer = window.setTimeout(() => load(attempt + 1), 1500 * (attempt + 1));
+          return;
+        }
+        setFailed(true);
       });
 
     load();
 
-    const timer = window.setInterval(load, 60 * 60 * 1000);
+    const timer = window.setInterval(() => load(), 30 * 60 * 1000);
 
     return () => {
       cancelled = true;
       window.clearInterval(timer);
+      if (retryTimer) window.clearTimeout(retryTimer);
     };
   }, [lat, long, serverUrl, slug]);
 

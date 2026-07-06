@@ -1,3 +1,6 @@
+import { t } from './i18n';
+import { loadCachedWeather, saveCachedWeather } from './weather-cache';
+
 const WMO_LABELS = {
   0: 'clear',
   1: 'mainly_clear',
@@ -24,41 +27,64 @@ export function weatherLabelKey(code) {
   return WMO_LABELS[code] || 'unknown';
 }
 
-export async function fetchWeatherForecast(lat, long, serverUrl, slug) {
-  const urls = [];
+export function weatherIconEmoji(code) {
+  if (code === 0) return '☀';
+  if (code <= 3) return '⛅';
+  if (code <= 48) return '≈';
+  if (code <= 67) return '☂';
+  if (code <= 77) return '❄';
+  if (code <= 82) return '☂';
+  if (code >= 95) return '⚡';
+  return '°';
+}
 
-  if (serverUrl && slug) {
-    const base = serverUrl.replace(/\/+$/, '');
-    urls.push(`${base}/s/${encodeURIComponent(slug)}/api/weather`);
+async function fetchWeatherUrl(url) {
+  const response = await fetch(url, { cache: 'no-store' });
+  if (!response.ok) {
+    throw new Error(`Weather ${response.status}`);
   }
 
-  const params = new URLSearchParams({
+  const data = await response.json();
+  if (!data?.current || !data?.daily) {
+    throw new Error('Invalid weather payload');
+  }
+
+  return data;
+}
+
+export async function fetchWeatherForecast(lat, long, serverUrl, slug) {
+  const openMeteoParams = new URLSearchParams({
     latitude: String(lat),
     longitude: String(long),
     current: 'temperature_2m,weather_code',
-    daily: 'weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset',
+    daily: 'weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,time',
     timezone: 'auto',
     forecast_days: '4',
   });
-  urls.push(`https://api.open-meteo.com/v1/forecast?${params.toString()}`);
+  const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?${openMeteoParams.toString()}`;
+
+  const attempts = [];
+  attempts.push(fetchWeatherUrl(openMeteoUrl));
+
+  if (serverUrl && slug) {
+    const base = serverUrl.replace(/\/+$/, '');
+    attempts.push(fetchWeatherUrl(`${base}/s/${encodeURIComponent(slug)}/api/weather`));
+  }
 
   let lastError = null;
-  for (const url of urls) {
+  for (const attempt of attempts) {
     try {
-      const response = await fetch(url, { cache: 'no-store' });
-      if (!response.ok) {
-        throw new Error(`Weather ${response.status}`);
-      }
-
-      const data = await response.json();
-      if (!data?.current || !data?.daily) {
-        throw new Error('Invalid weather payload');
-      }
-
+      const data = await attempt;
+      saveCachedWeather(lat, long, data);
       return data;
     } catch (err) {
       lastError = err;
     }
+  }
+
+  const cached = loadCachedWeather(lat, long);
+  if (cached) {
+    return cached;
   }
 
   throw lastError || new Error('Weather unavailable');
@@ -90,4 +116,48 @@ export function formatLocalTime(value, locale = 'en-GB') {
     minute: '2-digit',
     hour12: false,
   });
+}
+
+function formatForecastDay(dateStr, lang) {
+  const locale = lang === 'he' ? 'he-IL' : lang === 'en' ? 'en-US' : 'ru-RU';
+  return new Date(`${dateStr}T12:00:00`).toLocaleDateString(locale, {
+    weekday: 'short',
+    day: 'numeric',
+  });
+}
+
+export function buildWidgetWeatherJson(forecast, lang = 'ru') {
+  if (!forecast?.current) {
+    return '';
+  }
+
+  const code = forecast.current.weather_code;
+  const temp = Math.round(forecast.current.temperature_2m);
+  const sunTimes = getTodaySunTimes(forecast);
+  const locale = lang === 'he' ? 'he-IL' : lang === 'en' ? 'en-US' : 'ru-RU';
+
+  const payload = {
+    weatherTemp: `${temp}°`,
+    weatherIcon: weatherIconEmoji(code),
+    weatherLabel: t(lang, `weather_${weatherLabelKey(code)}`),
+    sunriseText: sunTimes
+      ? `${t(lang, 'sunrise_label')}  ${formatLocalTime(sunTimes.sunrise, locale)}`
+      : '',
+    sunsetText: sunTimes
+      ? `${t(lang, 'sunset_label')}  ${formatLocalTime(sunTimes.sunset, locale)}`
+      : '',
+  };
+
+  const days = (forecast.daily?.time || []).slice(1, 4);
+  days.forEach((date, index) => {
+    const slot = index + 1;
+    const dayCode = forecast.daily.weather_code[index + 1];
+    const max = Math.round(forecast.daily.temperature_2m_max[index + 1]);
+    const min = Math.round(forecast.daily.temperature_2m_min[index + 1]);
+    payload[`forecast${slot}Date`] = formatForecastDay(date, lang);
+    payload[`forecast${slot}Icon`] = weatherIconEmoji(dayCode);
+    payload[`forecast${slot}Temps`] = `${max}°/${min}°`;
+  });
+
+  return JSON.stringify(payload);
 }

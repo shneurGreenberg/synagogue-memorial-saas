@@ -22,7 +22,8 @@ public final class WidgetPrefs {
         double lat,
         double lng,
         String timezone,
-        String announcementsJson
+        String announcementsJson,
+        String weatherJson
     ) {
         SharedPreferences store = prefs(context);
         String previousLanguage = store.getString("language", "ru");
@@ -36,6 +37,10 @@ public final class WidgetPrefs {
 
         if (announcementsJson != null && !announcementsJson.trim().isEmpty()) {
             WidgetAnnouncementsStore.save(context, announcementsJson);
+        }
+
+        if (weatherJson != null && !weatherJson.trim().isEmpty()) {
+            WidgetWeatherStore.save(context, weatherJson);
         }
 
         if (!previousLanguage.equals(language == null ? "ru" : language)) {
