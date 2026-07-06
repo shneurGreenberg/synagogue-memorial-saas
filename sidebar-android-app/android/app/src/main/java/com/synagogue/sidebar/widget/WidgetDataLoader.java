@@ -47,16 +47,16 @@ public final class WidgetDataLoader {
     }
 
     public static WidgetData load(Context context) {
-        WidgetData data = WidgetPrefs.loadLastGood(context);
         SharedSnapshot snapshot = SharedSnapshot.read(context);
+        WidgetData data = WidgetPrefs.loadLastGood(context, snapshot.language);
 
+        Calendar now;
         try {
             LocationContext location = resolveLocation(snapshot);
-
-            Calendar now = Calendar.getInstance(TimeZone.getTimeZone(location.timezone), Locale.US);
-            putIfPresent(data, "clock", formatClock(now));
+            now = Calendar.getInstance(TimeZone.getTimeZone(location.timezone), Locale.US);
+            data.clock = formatClock(now);
+            data.gregorianDate = formatGregorian(now, snapshot.language);
             putIfPresent(data, "hebrewDate", fetchHebrewDate(now, snapshot.language));
-            putIfPresent(data, "gregorianDate", formatGregorian(now, snapshot.language));
 
             JSONObject shabbat = fetchShabbat(location.lat, location.lng, location.timezone, now, snapshot.language);
             if (shabbat != null) {
@@ -70,21 +70,37 @@ public final class WidgetDataLoader {
                 putIfPresent(data, "weather", weather.optString("label", ""));
             }
 
-            String announcement = snapshot.announcement;
-            if ((announcement == null || announcement.isEmpty())
-                && snapshot.serverUrl != null && !snapshot.serverUrl.isEmpty()
-                && snapshot.slug != null && !snapshot.slug.isEmpty()) {
-                announcement = fetchFirstAnnouncement(snapshot.serverUrl, snapshot.slug, snapshot.language);
-            }
-            if (announcement != null && !announcement.isEmpty()) {
-                data.announcement = announcement;
-            }
+            String announcement = fetchAnnouncement(snapshot);
+            putIfPresent(data, "announcement", announcement);
         } catch (Exception ignored) {
-            // Keep last good data.
+            try {
+                now = Calendar.getInstance(TimeZone.getTimeZone(snapshot.timezone), Locale.US);
+                data.clock = formatClock(now);
+                data.gregorianDate = formatGregorian(now, snapshot.language);
+            } catch (Exception innerIgnored) {
+                // Keep cached values.
+            }
         }
 
-        WidgetPrefs.saveLastGood(context, data);
+        WidgetPrefs.saveLastGood(context, data, snapshot.language);
         return data;
+    }
+
+    private static String fetchAnnouncement(SharedSnapshot snapshot) {
+        if (snapshot.announcement != null && !snapshot.announcement.isEmpty()) {
+            return snapshot.announcement;
+        }
+
+        if (snapshot.serverUrl == null || snapshot.serverUrl.isEmpty()
+            || snapshot.slug == null || snapshot.slug.isEmpty()) {
+            return "";
+        }
+
+        try {
+            return fetchFirstAnnouncement(snapshot.serverUrl, snapshot.slug, snapshot.language);
+        } catch (Exception ignored) {
+            return "";
+        }
     }
 
     private static void putIfPresent(WidgetData data, String field, String value) {
@@ -194,24 +210,19 @@ public final class WidgetDataLoader {
         }
 
         String hebrew = json.optString("hebrew", "");
-        if (!hebrew.isEmpty()) {
+        if ("he".equals(lang) && !hebrew.isEmpty()) {
             return hebrew;
-        }
-
-        if (!"he".equals(lang)) {
-            int hebrewDay = json.optInt("hd", 0);
-            int hebrewYear = json.optInt("hy", 0);
-            String monthName = json.optString("hm", "");
-            if (hebrewDay > 0 && hebrewYear > 0 && !monthName.isEmpty()) {
-                return hebrewDay + " " + monthName + " " + hebrewYear;
-            }
         }
 
         int hebrewDay = json.optInt("hd", 0);
         int hebrewYear = json.optInt("hy", 0);
-        String monthName = json.optString("hm", "");
+        String monthName = WidgetI18n.hebrewMonth(lang, json.optString("hm", ""));
         if (hebrewDay > 0 && hebrewYear > 0 && !monthName.isEmpty()) {
             return hebrewDay + " " + monthName + " " + hebrewYear;
+        }
+
+        if (!hebrew.isEmpty()) {
+            return hebrew;
         }
 
         return "";
@@ -221,11 +232,13 @@ public final class WidgetDataLoader {
         int year = now.get(Calendar.YEAR);
         int month = now.get(Calendar.MONTH) + 1;
         int day = now.get(Calendar.DAY_OF_MONTH);
+        String hebcalLang = "he".equals(lang) ? "he" : ("ru".equals(lang) ? "ru" : "en");
         String url = "https://www.hebcal.com/shabbat?cfg=json&geo=pos"
             + "&latitude=" + lat
             + "&longitude=" + lng
             + "&tzid=" + URLEncoder.encode(timezone, "UTF-8")
-            + "&M=on&b=18&gy=" + year
+            + "&M=on&b=18&lg=" + hebcalLang
+            + "&gy=" + year
             + "&gm=" + month
             + "&gd=" + day;
 
@@ -251,7 +264,7 @@ public final class WidgetDataLoader {
                 String parsha = "he".equals(lang)
                     ? item.optString("hebrew", item.optString("title", ""))
                     : item.optString("title", item.optString("hebrew", ""));
-                result.put("parsha", parsha);
+                result.put("parsha", parsha.replace("Parashat ", "").replace("Глава ", ""));
             }
             if ("candles".equals(category) && item.has("date")) {
                 Date enter = parseIsoDate(item.getString("date"));

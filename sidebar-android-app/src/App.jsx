@@ -4,7 +4,6 @@ import { ShabbatBlock } from './components/ShabbatBlock';
 import { WeatherBlock } from './components/WeatherBlock';
 import { ScrollingAnnouncements } from './components/ScrollingAnnouncements';
 import { SettingsScreen } from './components/SettingsScreen';
-import { AdminEventsScreen } from './components/AdminEventsScreen';
 import {
   formatGregorianDate,
   formatHebrewDate,
@@ -13,18 +12,15 @@ import {
 import { getDeviceCoordinates, resolveTimezone } from './lib/location';
 import {
   buildAnnouncementItems,
-  prepareCommunityEvents,
 } from './lib/announcements';
 import { fetchSidebarPayload, loadCachedSidebarPayload } from './lib/sync';
 import { fetchOfflineJewishFeed } from './lib/offline-feed';
 import {
   DEFAULT_SETTINGS,
-  loadLocalEvents,
   loadSettings,
   normalizeServerUrl,
   normalizeSettings,
   parseServerSettings,
-  saveLocalEvents,
   saveSettings,
 } from './lib/settings';
 import { t } from './lib/i18n';
@@ -33,27 +29,12 @@ import { syncWidgetSnapshot } from './lib/widget-sync';
 const DEFAULT_COORDS = { lat: 54.9833, long: 82.8964 };
 const DEFAULT_TIMEZONE = 'Asia/Novosibirsk';
 
-function mergeLocalEvents(localEvents, lang) {
-  return prepareCommunityEvents(
-    localEvents.map((event) => ({
-      _id: event.id,
-      title: event.title,
-      text: event.text,
-      titles: { ru: event.title, en: event.title, he: event.title },
-      texts: { ru: event.text, en: event.text, he: event.text },
-      startAt: event.startAt || new Date().toISOString(),
-    })),
-    lang,
-  );
-}
-
 export default function App() {
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const [screen, setScreen] = useState('home');
   const [coords, setCoords] = useState(DEFAULT_COORDS);
   const [timezone, setTimezone] = useState(DEFAULT_TIMEZONE);
   const [remotePayload, setRemotePayload] = useState(null);
-  const [localEvents, setLocalEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState('');
@@ -105,19 +86,23 @@ export default function App() {
           chabadDates: fallback?.chabadDates?.length ? fallback.chabadDates : offline.chabadDates,
           communityEvents: fallback?.communityEvents || [],
           shabbatTimesEnabled: fallback?.shabbatTimesEnabled !== false,
-          location: fallback?.location,
+          location: fallback?.location || {
+            lat: DEFAULT_COORDS.lat,
+            long: DEFAULT_COORDS.long,
+            timezone: DEFAULT_TIMEZONE,
+          },
           boardFeatures: fallback?.boardFeatures,
           theme: fallback?.theme,
         };
         setRemotePayload(merged);
-        if (merged.upcomingHolidays?.length || merged.communityEvents?.length) {
+        if (merged.upcomingHolidays?.length || merged.chabadDates?.length || merged.communityEvents?.length) {
           setError('');
           return;
         }
       } catch {
         if (fallback) {
           setRemotePayload(fallback);
-          if (fallback.upcomingHolidays?.length || fallback.communityEvents?.length) {
+          if (fallback.upcomingHolidays?.length || fallback.chabadDates?.length || fallback.communityEvents?.length) {
             setError('');
             return;
           }
@@ -135,11 +120,9 @@ export default function App() {
 
     (async () => {
       const loadedSettings = normalizeSettings(await loadSettings());
-      const loadedEvents = await loadLocalEvents();
       if (cancelled) return;
 
       setSettings(loadedSettings);
-      setLocalEvents(loadedEvents);
       await refreshLocation(loadedSettings);
       await refreshRemote(loadedSettings, { initial: true });
       if (!cancelled) setLoading(false);
@@ -181,11 +164,10 @@ export default function App() {
     accentColor: '#ffd54f',
   };
 
-  const communityEvents = useMemo(() => {
-    const remoteEvents = remotePayload?.communityEvents || [];
-    const localPrepared = mergeLocalEvents(localEvents, lang);
-    return [...remoteEvents, ...localPrepared];
-  }, [remotePayload, localEvents, lang]);
+  const communityEvents = useMemo(
+    () => remotePayload?.communityEvents || [],
+    [remotePayload],
+  );
 
   const announcementItems = useMemo(
     () => buildAnnouncementItems({
@@ -198,6 +180,10 @@ export default function App() {
   );
 
   useEffect(() => {
+    if (loading || refreshing) {
+      return;
+    }
+
     const firstAnnouncement = announcementItems.find((item) => item.listType === 'event')
       || announcementItems[0];
 
@@ -212,7 +198,7 @@ export default function App() {
       timezone: effectiveTimezone,
       announcement: firstAnnouncement?.title || '',
     });
-  }, [settings, lang, effectiveCoords, effectiveTimezone, announcementItems]);
+  }, [settings, lang, effectiveCoords, effectiveTimezone, announcementItems, loading, refreshing]);
 
   const handleSaveSettings = async (nextSettings) => {
     const normalized = normalizeSettings(nextSettings);
@@ -225,26 +211,6 @@ export default function App() {
     setLoading(false);
   };
 
-  const handleAddLocalEvent = async ({ title, text }) => {
-    const next = [
-      {
-        id: `local-${Date.now()}`,
-        title,
-        text,
-        startAt: new Date().toISOString(),
-      },
-      ...localEvents,
-    ];
-    setLocalEvents(next);
-    await saveLocalEvents(next);
-  };
-
-  const handleDeleteLocalEvent = async (id) => {
-    const next = localEvents.filter((event) => event.id !== id);
-    setLocalEvents(next);
-    await saveLocalEvents(next);
-  };
-
   if (screen === 'settings') {
     return (
       <SettingsScreen
@@ -252,19 +218,6 @@ export default function App() {
         lang={lang}
         onSave={handleSaveSettings}
         onBack={() => setScreen('home')}
-        onOpenAdmin={() => setScreen('admin')}
-      />
-    );
-  }
-
-  if (screen === 'admin') {
-    return (
-      <AdminEventsScreen
-        events={localEvents}
-        lang={lang}
-        onAdd={handleAddLocalEvent}
-        onDelete={handleDeleteLocalEvent}
-        onBack={() => setScreen('settings')}
       />
     );
   }

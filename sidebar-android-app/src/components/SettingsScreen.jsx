@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { t } from '../lib/i18n';
 
 export function SettingsScreen({
-  settings, onSave, onBack, onOpenAdmin, lang,
+  settings, onSave, onBack, lang,
 }) {
   const [draft, setDraft] = useState(settings);
 
@@ -53,53 +53,11 @@ export function SettingsScreen({
           </select>
         </label>
 
-        <label className="checkbox-row">
-          <input
-            type="checkbox"
-            checked={draft.useDeviceLocation}
-            onChange={(event) => setDraft({ ...draft, useDeviceLocation: event.target.checked })}
-          />
-          <span>{t(lang, 'use_device_location')}</span>
-        </label>
-
-        {!draft.useDeviceLocation && (
-          <>
-            <label>
-              <span>{t(lang, 'manual_lat')}</span>
-              <input
-                type="number"
-                step="any"
-                value={draft.manualLat}
-                onChange={(event) => setDraft({ ...draft, manualLat: event.target.value })}
-              />
-            </label>
-            <label>
-              <span>{t(lang, 'manual_long')}</span>
-              <input
-                type="number"
-                step="any"
-                value={draft.manualLong}
-                onChange={(event) => setDraft({ ...draft, manualLong: event.target.value })}
-              />
-            </label>
-          </>
-        )}
-
-        <label>
-          <span>{t(lang, 'admin_pin')}</span>
-          <input
-            type="password"
-            value={draft.adminPin}
-            onChange={(event) => setDraft({ ...draft, adminPin: event.target.value })}
-          />
-        </label>
-
         <p className="settings-hint">{t(lang, 'no_server_hint')}</p>
         <p className="settings-hint">{t(lang, 'widget_help')}</p>
 
         <div className="settings-actions">
           <button type="submit" className="primary-btn">{t(lang, 'save')}</button>
-          <button type="button" className="ghost-btn" onClick={onOpenAdmin}>{t(lang, 'admin_events')}</button>
         </div>
       </form>
     </div>

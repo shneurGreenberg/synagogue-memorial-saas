@@ -1,31 +1,38 @@
 import { buildSidebarApiUrl } from './settings';
 import { prepareCommunityEvents } from './announcements';
 
-const CACHE_KEY = 'sidebar-app-cached-payload';
+const CACHE_PREFIX = 'sidebar-app-cached-payload';
 
-async function readCache() {
+function cacheKey(lang) {
+  return `${CACHE_PREFIX}:${lang || 'ru'}`;
+}
+
+async function readCache(lang) {
+  const key = cacheKey(lang);
   try {
     const { Preferences } = await import('@capacitor/preferences');
-    const { value } = await Preferences.get({ key: CACHE_KEY });
+    const { value } = await Preferences.get({ key });
     return value ? JSON.parse(value) : null;
   } catch {
-    const raw = localStorage.getItem(CACHE_KEY);
+    const raw = localStorage.getItem(key);
     return raw ? JSON.parse(raw) : null;
   }
 }
 
-async function writeCache(payload) {
+async function writeCache(payload, lang) {
   const serialized = JSON.stringify(payload);
+  const key = cacheKey(lang);
+
   try {
     const { Preferences } = await import('@capacitor/preferences');
-    await Preferences.set({ key: CACHE_KEY, value: serialized });
+    await Preferences.set({ key, value: serialized });
   } catch {
-    localStorage.setItem(CACHE_KEY, serialized);
+    localStorage.setItem(key, serialized);
   }
 }
 
 export async function loadCachedSidebarPayload(lang) {
-  const cached = await readCache();
+  const cached = await readCache(lang);
   if (!cached) {
     return null;
   }
@@ -57,6 +64,6 @@ export async function fetchSidebarPayload(settings, lang) {
     communityEvents: prepareCommunityEvents(payload.communityEvents, lang),
   };
 
-  await writeCache(prepared);
+  await writeCache(prepared, lang);
   return prepared;
 }

@@ -1,11 +1,10 @@
 export const DEFAULT_SETTINGS = {
-  serverUrl: '',
-  slug: '',
+  serverUrl: 'https://synagogue-kadish-shneur.amvera.io',
+  slug: 'novosibirsk',
   language: 'ru',
-  useDeviceLocation: true,
-  manualLat: '',
-  manualLong: '',
-  adminPin: '1234',
+  useDeviceLocation: false,
+  manualLat: '54.9833',
+  manualLong: '82.8964',
 };
 
 const STORAGE_KEY = 'sidebar-app-settings';

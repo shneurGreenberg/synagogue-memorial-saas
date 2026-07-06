@@ -10,7 +10,7 @@ export async function fetchOfflineJewishFeed(lang = 'ru') {
   const end = new Date(start);
   end.setDate(end.getDate() + 365);
 
-  const hebcalLang = lang === 'he' ? 'he' : 'en';
+  const hebcalLang = lang === 'he' ? 'he' : lang === 'ru' ? 'ru' : 'en';
   const params = new URLSearchParams({
     cfg: 'json',
     v: '1',

@@ -29,6 +29,37 @@ final class WidgetI18n {
         return new Locale("ru", "RU");
     }
 
+    static String hebrewMonth(String lang, String englishMonth) {
+        if (englishMonth == null) {
+            return "";
+        }
+
+        if ("he".equals(lang)) {
+            return englishMonth;
+        }
+
+        if ("ru".equals(lang)) {
+            switch (englishMonth) {
+                case "Nisan": return "Нисана";
+                case "Iyyar": return "Ияра";
+                case "Sivan": return "Сивана";
+                case "Tamuz": return "Тамуза";
+                case "Av": return "Ава";
+                case "Elul": return "Элула";
+                case "Tishrei": return "Тишрея";
+                case "Cheshvan": return "Хешвана";
+                case "Kislev": return "Кислева";
+                case "Tevet": return "Тевета";
+                case "Sh'vat": return "Швата";
+                case "Adar": return "Адара";
+                case "Adar II": return "Адара II";
+                default: return englishMonth;
+            }
+        }
+
+        return englishMonth;
+    }
+
     private static String weatherLabelHe(int code) {
         if (code == 0) return "בהיר";
         if (code <= 3) return "מעונן";
