@@ -47,27 +47,27 @@ public final class WidgetDataLoader {
     }
 
     public static WidgetData load(Context context) {
-        WidgetData data = new WidgetData();
+        WidgetData data = WidgetPrefs.loadLastGood(context);
         SharedSnapshot snapshot = SharedSnapshot.read(context);
 
         try {
             LocationContext location = resolveLocation(snapshot);
 
             Calendar now = Calendar.getInstance(TimeZone.getTimeZone(location.timezone), Locale.US);
-            data.clock = formatClock(now);
-            data.gregorianDate = formatGregorian(now, snapshot.language);
-            data.hebrewDate = fetchHebrewDate(now);
+            putIfPresent(data, "clock", formatClock(now));
+            putIfPresent(data, "hebrewDate", fetchHebrewDate(now, snapshot.language));
+            putIfPresent(data, "gregorianDate", formatGregorian(now, snapshot.language));
 
-            JSONObject shabbat = fetchShabbat(location.lat, location.lng, location.timezone, now);
+            JSONObject shabbat = fetchShabbat(location.lat, location.lng, location.timezone, now, snapshot.language);
             if (shabbat != null) {
-                data.parsha = shabbat.optString("parsha", "");
-                data.shabbatEnter = shabbat.optString("enter", "");
-                data.shabbatExit = shabbat.optString("exit", "");
+                putIfPresent(data, "parsha", shabbat.optString("parsha", ""));
+                putIfPresent(data, "shabbatEnter", shabbat.optString("enter", ""));
+                putIfPresent(data, "shabbatExit", shabbat.optString("exit", ""));
             }
 
-            JSONObject weather = fetchWeather(location.lat, location.lng, snapshot.serverUrl, snapshot.slug);
+            JSONObject weather = fetchWeather(location.lat, location.lng, snapshot.serverUrl, snapshot.slug, snapshot.language);
             if (weather != null) {
-                data.weather = weather.optString("label", "");
+                putIfPresent(data, "weather", weather.optString("label", ""));
             }
 
             String announcement = snapshot.announcement;
@@ -76,12 +76,47 @@ public final class WidgetDataLoader {
                 && snapshot.slug != null && !snapshot.slug.isEmpty()) {
                 announcement = fetchFirstAnnouncement(snapshot.serverUrl, snapshot.slug, snapshot.language);
             }
-            data.announcement = announcement == null ? "" : announcement;
+            if (announcement != null && !announcement.isEmpty()) {
+                data.announcement = announcement;
+            }
         } catch (Exception ignored) {
-            // Keep partial data.
+            // Keep last good data.
         }
 
+        WidgetPrefs.saveLastGood(context, data);
         return data;
+    }
+
+    private static void putIfPresent(WidgetData data, String field, String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return;
+        }
+
+        switch (field) {
+            case "clock":
+                data.clock = value;
+                break;
+            case "hebrewDate":
+                data.hebrewDate = value;
+                break;
+            case "gregorianDate":
+                data.gregorianDate = value;
+                break;
+            case "parsha":
+                data.parsha = value;
+                break;
+            case "shabbatEnter":
+                data.shabbatEnter = value;
+                break;
+            case "shabbatExit":
+                data.shabbatExit = value;
+                break;
+            case "weather":
+                data.weather = value;
+                break;
+            default:
+                break;
+        }
     }
 
     private static void apply(Context context, AppWidgetManager manager, int widgetId, WidgetData data, Bundle options) {
@@ -143,13 +178,12 @@ public final class WidgetDataLoader {
     }
 
     private static String formatGregorian(Calendar now, String lang) {
-        Locale locale = "he".equals(lang) ? new Locale("he", "IL") : ("en".equals(lang) ? Locale.US : new Locale("ru", "RU"));
-        SimpleDateFormat formatter = new SimpleDateFormat("d MMMM yyyy", locale);
+        SimpleDateFormat formatter = new SimpleDateFormat("d MMMM yyyy", WidgetI18n.gregorianLocale(lang));
         formatter.setTimeZone(now.getTimeZone());
         return formatter.format(now.getTime());
     }
 
-    private static String fetchHebrewDate(Calendar now) throws Exception {
+    private static String fetchHebrewDate(Calendar now, String lang) throws Exception {
         int year = now.get(Calendar.YEAR);
         int month = now.get(Calendar.MONTH) + 1;
         int day = now.get(Calendar.DAY_OF_MONTH);
@@ -164,6 +198,15 @@ public final class WidgetDataLoader {
             return hebrew;
         }
 
+        if (!"he".equals(lang)) {
+            int hebrewDay = json.optInt("hd", 0);
+            int hebrewYear = json.optInt("hy", 0);
+            String monthName = json.optString("hm", "");
+            if (hebrewDay > 0 && hebrewYear > 0 && !monthName.isEmpty()) {
+                return hebrewDay + " " + monthName + " " + hebrewYear;
+            }
+        }
+
         int hebrewDay = json.optInt("hd", 0);
         int hebrewYear = json.optInt("hy", 0);
         String monthName = json.optString("hm", "");
@@ -174,7 +217,7 @@ public final class WidgetDataLoader {
         return "";
     }
 
-    private static JSONObject fetchShabbat(double lat, double lng, String timezone, Calendar now) throws Exception {
+    private static JSONObject fetchShabbat(double lat, double lng, String timezone, Calendar now, String lang) throws Exception {
         int year = now.get(Calendar.YEAR);
         int month = now.get(Calendar.MONTH) + 1;
         int day = now.get(Calendar.DAY_OF_MONTH);
@@ -205,7 +248,10 @@ public final class WidgetDataLoader {
             JSONObject item = items.getJSONObject(i);
             String category = item.optString("category", "");
             if ("parashat".equals(category)) {
-                result.put("parsha", item.optString("hebrew", item.optString("title", "")));
+                String parsha = "he".equals(lang)
+                    ? item.optString("hebrew", item.optString("title", ""))
+                    : item.optString("title", item.optString("hebrew", ""));
+                result.put("parsha", parsha);
             }
             if ("candles".equals(category) && item.has("date")) {
                 Date enter = parseIsoDate(item.getString("date"));
@@ -258,32 +304,34 @@ public final class WidgetDataLoader {
         clock.setTimeZone(TimeZone.getTimeZone(timezone));
 
         if (nextEnter != null) {
-            result.put("enter", "כניסה " + clock.format(nextEnter));
+            result.put("enter", WidgetI18n.shabbatEnter(lang) + " " + clock.format(nextEnter));
         }
         if (nextExit != null) {
-            result.put("exit", "יציאה " + clock.format(nextExit));
+            result.put("exit", WidgetI18n.shabbatExit(lang) + " " + clock.format(nextExit));
         }
 
         return result;
     }
 
-    private static JSONObject fetchWeather(double lat, double lng, String serverUrl, String slug) throws Exception {
-        JSONObject fromServer = null;
+    private static JSONObject fetchWeather(double lat, double lng, String serverUrl, String slug, String lang) throws Exception {
+        JSONObject json = null;
         if (serverUrl != null && !serverUrl.isEmpty() && slug != null && !slug.isEmpty()) {
             String url = serverUrl.replaceAll("/+$", "") + "/s/" + URLEncoder.encode(slug, "UTF-8") + "/api/weather";
-            fromServer = parseWeatherJson(fetchJson(url));
+            json = fetchJson(url);
         }
 
-        if (fromServer != null) {
-            return fromServer;
+        if (json == null || !json.has("current")) {
+            String openMeteoUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lng
+                + "&current=temperature_2m,weather_code"
+                + "&daily=weather_code,temperature_2m_max,temperature_2m_min"
+                + "&timezone=auto&forecast_days=4";
+            json = fetchJson(openMeteoUrl);
         }
 
-        String openMeteoUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + lat + "&longitude=" + lng
-            + "&current=temperature_2m,weather_code&timezone=auto";
-        return parseWeatherJson(fetchJson(openMeteoUrl));
+        return parseWeatherJson(json, lang);
     }
 
-    private static JSONObject parseWeatherJson(JSONObject json) throws Exception {
+    private static JSONObject parseWeatherJson(JSONObject json, String lang) throws Exception {
         if (json == null || !json.has("current")) {
             return null;
         }
@@ -291,9 +339,32 @@ public final class WidgetDataLoader {
         JSONObject current = json.getJSONObject("current");
         int code = current.optInt("weather_code", -1);
         double temp = current.optDouble("temperature_2m", Double.NaN);
-        String label = weatherLabel(code);
+        String label = WidgetI18n.weatherLabel(lang, code);
         if (!Double.isNaN(temp)) {
             label = Math.round(temp) + "°  " + label;
+        }
+
+        JSONArray dailyTime = null;
+        JSONObject daily = json.optJSONObject("daily");
+        if (daily != null) {
+            dailyTime = daily.optJSONArray("time");
+        }
+
+        if (daily != null && dailyTime != null && dailyTime.length() > 1) {
+            StringBuilder forecast = new StringBuilder(label);
+            JSONArray maxTemps = daily.optJSONArray("temperature_2m_max");
+            JSONArray minTemps = daily.optJSONArray("temperature_2m_min");
+            int days = Math.min(3, dailyTime.length() - 1);
+            for (int i = 1; i <= days; i += 1) {
+                if (maxTemps != null && minTemps != null) {
+                    forecast.append(" · ")
+                        .append(Math.round(maxTemps.optDouble(i, 0)))
+                        .append("°/")
+                        .append(Math.round(minTemps.optDouble(i, 0)))
+                        .append("°");
+                }
+            }
+            label = forecast.toString();
         }
 
         JSONObject result = new JSONObject();
@@ -368,17 +439,6 @@ public final class WidgetDataLoader {
             return json.getString("timezone");
         }
         return "UTC";
-    }
-
-    private static String weatherLabel(int code) {
-        if (code == 0) return "בהיר";
-        if (code <= 3) return "מעונן";
-        if (code <= 48) return "ערפל";
-        if (code <= 67) return "גשם";
-        if (code <= 77) return "שלג";
-        if (code <= 82) return "ממטרים";
-        if (code >= 95) return "סופה";
-        return "מזג אוויר";
     }
 
     private static JSONObject fetchJson(String urlString) throws Exception {

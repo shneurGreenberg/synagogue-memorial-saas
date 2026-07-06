@@ -10,21 +10,17 @@ export function ShabbatBlock({ lat, long, timezone, hebrewDate, lang }) {
   useEffect(() => {
     let cancelled = false;
 
-    fetchShabbatTimes(lat, long, timezone)
+    const load = () => fetchShabbatTimes(lat, long, timezone)
       .then((next) => {
-        if (!cancelled) setTimes(next);
+        if (!cancelled && next) {
+          setTimes(next);
+        }
       })
-      .catch(() => {
-        if (!cancelled) setTimes(null);
-      });
+      .catch(() => {});
 
-    const timer = window.setInterval(() => {
-      fetchShabbatTimes(lat, long, timezone)
-        .then((next) => {
-          if (!cancelled) setTimes(next);
-        })
-        .catch(() => {});
-    }, 60 * 60 * 1000);
+    load();
+
+    const timer = window.setInterval(load, 60 * 60 * 1000);
 
     return () => {
       cancelled = true;

@@ -1,8 +1,8 @@
 export const STRINGS = {
   ru: {
     weekly_chapter: 'Недельная глава',
-    shabbat_enter: 'Вход',
-    shabbat_exit: 'Выход',
+    shabbat_enter: 'Вход в Шаббат',
+    shabbat_exit: 'Выход из Шаббата',
     sidebar_upcoming_title: 'Ближайшие даты и объявления',
     weather_unknown: 'Погода',
     weather_clear: 'Ясно',
@@ -42,8 +42,8 @@ export const STRINGS = {
   },
   en: {
     weekly_chapter: 'Weekly portion',
-    shabbat_enter: 'Enter',
-    shabbat_exit: 'Exit',
+    shabbat_enter: 'Shabbat enters',
+    shabbat_exit: 'Shabbat ends',
     sidebar_upcoming_title: 'Upcoming dates & announcements',
     weather_unknown: 'Weather',
     weather_clear: 'Clear',
@@ -83,8 +83,8 @@ export const STRINGS = {
   },
   he: {
     weekly_chapter: 'פרשת השבוע',
-    shabbat_enter: 'כניסה',
-    shabbat_exit: 'יציאה',
+    shabbat_enter: 'כניסת שבת',
+    shabbat_exit: 'יציאת שבת',
     sidebar_upcoming_title: 'תאריכים והודעות קרובות',
     weather_unknown: 'מזג אוויר',
     weather_clear: 'בהיר',

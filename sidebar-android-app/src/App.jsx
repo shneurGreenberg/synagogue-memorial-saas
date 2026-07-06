@@ -16,6 +16,7 @@ import {
   prepareCommunityEvents,
 } from './lib/announcements';
 import { fetchSidebarPayload, loadCachedSidebarPayload } from './lib/sync';
+import { fetchOfflineJewishFeed } from './lib/offline-feed';
 import {
   DEFAULT_SETTINGS,
   loadLocalEvents,
@@ -76,8 +77,9 @@ export default function App() {
 
   const refreshRemote = useCallback(async (nextSettings, { initial = false } = {}) => {
     const normalized = normalizeSettings(nextSettings);
+    let cached = null;
     if (initial) {
-      const cached = await loadCachedSidebarPayload(normalized.language);
+      cached = await loadCachedSidebarPayload(normalized.language);
       if (cached) {
         setRemotePayload(cached);
       }
@@ -86,13 +88,42 @@ export default function App() {
     try {
       const payload = await fetchSidebarPayload(normalized, normalized.language);
       setRemotePayload(payload);
-      if (payload) {
-        setError('');
-      }
+      setError('');
     } catch {
-      if (!initial) {
-        setRemotePayload((current) => current);
+      let fallback = cached;
+      if (!fallback) {
+        fallback = await loadCachedSidebarPayload(normalized.language);
       }
+
+      try {
+        const offline = await fetchOfflineJewishFeed(normalized.language);
+        const merged = {
+          ...(fallback || {}),
+          upcomingHolidays: fallback?.upcomingHolidays?.length
+            ? fallback.upcomingHolidays
+            : offline.upcomingHolidays,
+          chabadDates: fallback?.chabadDates?.length ? fallback.chabadDates : offline.chabadDates,
+          communityEvents: fallback?.communityEvents || [],
+          shabbatTimesEnabled: fallback?.shabbatTimesEnabled !== false,
+          location: fallback?.location,
+          boardFeatures: fallback?.boardFeatures,
+          theme: fallback?.theme,
+        };
+        setRemotePayload(merged);
+        if (merged.upcomingHolidays?.length || merged.communityEvents?.length) {
+          setError('');
+          return;
+        }
+      } catch {
+        if (fallback) {
+          setRemotePayload(fallback);
+          if (fallback.upcomingHolidays?.length || fallback.communityEvents?.length) {
+            setError('');
+            return;
+          }
+        }
+      }
+
       if (normalizeServerUrl(normalized.serverUrl) && normalized.slug) {
         setError(t(normalized.language || 'ru', 'sync_error'));
       }
@@ -256,7 +287,12 @@ export default function App() {
           <div className="board-right-header">
             {boardFeatures.officialLogo && (
               <div className="board-official-logo-wrap">
-                <div className="board-official-logo-placeholder" aria-hidden="true">☪</div>
+                <img
+                  className="board-official-logo"
+                  src="/kaddish-official-logo.svg"
+                  alt=""
+                  aria-hidden="true"
+                />
               </div>
             )}
 
