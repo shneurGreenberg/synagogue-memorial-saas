@@ -37,15 +37,46 @@ public final class WidgetDataLoader {
     private WidgetDataLoader() {}
 
     public static void updateAllWidgets(Context context) {
-        EXECUTOR.execute(() -> {
-            WidgetData data = load(context);
-            AppWidgetManager manager = AppWidgetManager.getInstance(context);
-            ComponentName component = new ComponentName(context, SidebarWidgetProvider.class);
-            int[] ids = manager.getAppWidgetIds(component);
-            for (int id : ids) {
-                apply(context, manager, id, data);
+        EXECUTOR.execute(() -> refreshWidgets(context));
+    }
+
+    public static void applyCachedWidgets(Context context, AppWidgetManager manager, int[] appWidgetIds) {
+        if (appWidgetIds == null || appWidgetIds.length == 0) {
+            return;
+        }
+
+        SharedSnapshot snapshot = SharedSnapshot.read(context);
+        WidgetData data = WidgetPrefs.loadLastGood(context, snapshot.language);
+        data.announcementsTitle = WidgetI18n.upcomingTitle(snapshot.language);
+
+        try {
+            Calendar now = Calendar.getInstance(
+                TimeZone.getTimeZone(snapshot.timezone == null || snapshot.timezone.isEmpty() ? "UTC" : snapshot.timezone),
+                Locale.US
+            );
+            if (!hasText(data.clock) || "--:--".equals(data.clock)) {
+                data.clock = formatClock(now);
             }
-        });
+            if (!hasText(data.gregorianDate)) {
+                data.gregorianDate = formatGregorian(now, snapshot.language);
+            }
+        } catch (Exception ignored) {
+            // Keep cached values.
+        }
+
+        for (int id : appWidgetIds) {
+            apply(context, manager, id, data);
+        }
+    }
+
+    private static void refreshWidgets(Context context) {
+        WidgetData data = load(context);
+        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+        ComponentName component = new ComponentName(context, SidebarWidgetProvider.class);
+        int[] ids = manager.getAppWidgetIds(component);
+        for (int id : ids) {
+            apply(context, manager, id, data);
+        }
     }
 
     public static WidgetData load(Context context) {
@@ -200,57 +231,61 @@ public final class WidgetDataLoader {
     }
 
     private static void apply(Context context, AppWidgetManager manager, int widgetId, WidgetData data) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_sidebar);
-        String lang = SharedSnapshot.read(context).language;
+        try {
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_sidebar);
+            String lang = SharedSnapshot.read(context).language;
 
-        views.setTextViewText(R.id.widget_clock, safeText(data.clock, "--:--"));
-        views.setTextViewText(R.id.widget_hebrew_date, safeText(data.hebrewDate, ""));
-        views.setTextViewText(R.id.widget_gregorian_date, safeText(data.gregorianDate, ""));
+            views.setTextViewText(R.id.widget_clock, safeText(data.clock, "--:--"));
+            views.setTextViewText(R.id.widget_hebrew_date, safeText(data.hebrewDate, ""));
+            views.setTextViewText(R.id.widget_gregorian_date, safeText(data.gregorianDate, ""));
 
-        views.setTextViewText(R.id.widget_parsha_heading, safeText(data.parshaHeading, WidgetI18n.weeklyChapter(lang)));
-        views.setTextViewText(R.id.widget_parsha, safeText(data.parshaName, ""));
-        views.setTextViewText(R.id.widget_shabbat_enter_label, safeText(data.shabbatEnterLabel, WidgetI18n.shabbatEnter(lang)));
-        views.setTextViewText(R.id.widget_shabbat_enter_time, safeText(data.shabbatEnterTime, ""));
-        views.setTextViewText(R.id.widget_shabbat_exit_label, safeText(data.shabbatExitLabel, WidgetI18n.shabbatExit(lang)));
-        views.setTextViewText(R.id.widget_shabbat_exit_time, safeText(data.shabbatExitTime, ""));
+            views.setTextViewText(R.id.widget_parsha_heading, safeText(data.parshaHeading, WidgetI18n.weeklyChapter(lang)));
+            views.setTextViewText(R.id.widget_parsha, safeText(data.parshaName, ""));
+            views.setTextViewText(R.id.widget_shabbat_enter_label, safeText(data.shabbatEnterLabel, WidgetI18n.shabbatEnter(lang)));
+            views.setTextViewText(R.id.widget_shabbat_enter_time, safeText(data.shabbatEnterTime, ""));
+            views.setTextViewText(R.id.widget_shabbat_exit_label, safeText(data.shabbatExitLabel, WidgetI18n.shabbatExit(lang)));
+            views.setTextViewText(R.id.widget_shabbat_exit_time, safeText(data.shabbatExitTime, ""));
 
-        views.setTextViewText(R.id.widget_weather_icon, safeText(data.weatherIcon, ""));
-        views.setTextViewText(R.id.widget_weather_temp, safeText(data.weatherTemp, ""));
-        views.setTextViewText(R.id.widget_weather_label, safeText(data.weatherLabel, ""));
-        views.setTextViewText(R.id.widget_sunrise, safeText(data.sunriseText, ""));
-        views.setTextViewText(R.id.widget_sunset, safeText(data.sunsetText, ""));
+            views.setTextViewText(R.id.widget_weather_icon, safeText(data.weatherIcon, ""));
+            views.setTextViewText(R.id.widget_weather_temp, safeText(data.weatherTemp, ""));
+            views.setTextViewText(R.id.widget_weather_label, safeText(data.weatherLabel, ""));
+            views.setTextViewText(R.id.widget_sunrise, safeText(data.sunriseText, ""));
+            views.setTextViewText(R.id.widget_sunset, safeText(data.sunsetText, ""));
 
-        bindForecastSlot(views, R.id.widget_forecast_1, R.id.widget_forecast_1_date, R.id.widget_forecast_1_icon,
-            R.id.widget_forecast_1_temps, data.forecast1Date, data.forecast1Icon, data.forecast1Temps);
-        bindForecastSlot(views, R.id.widget_forecast_2, R.id.widget_forecast_2_date, R.id.widget_forecast_2_icon,
-            R.id.widget_forecast_2_temps, data.forecast2Date, data.forecast2Icon, data.forecast2Temps);
-        bindForecastSlot(views, R.id.widget_forecast_3, R.id.widget_forecast_3_date, R.id.widget_forecast_3_icon,
-            R.id.widget_forecast_3_temps, data.forecast3Date, data.forecast3Icon, data.forecast3Temps);
+            bindForecastSlot(views, R.id.widget_forecast_1, R.id.widget_forecast_1_date, R.id.widget_forecast_1_icon,
+                R.id.widget_forecast_1_temps, data.forecast1Date, data.forecast1Icon, data.forecast1Temps);
+            bindForecastSlot(views, R.id.widget_forecast_2, R.id.widget_forecast_2_date, R.id.widget_forecast_2_icon,
+                R.id.widget_forecast_2_temps, data.forecast2Date, data.forecast2Icon, data.forecast2Temps);
+            bindForecastSlot(views, R.id.widget_forecast_3, R.id.widget_forecast_3_date, R.id.widget_forecast_3_icon,
+                R.id.widget_forecast_3_temps, data.forecast3Date, data.forecast3Icon, data.forecast3Temps);
 
-        views.setTextViewText(R.id.widget_announcements_title, safeText(data.announcementsTitle, WidgetI18n.upcomingTitle(lang)));
+            views.setTextViewText(R.id.widget_announcements_title, safeText(data.announcementsTitle, WidgetI18n.upcomingTitle(lang)));
 
-        Intent serviceIntent = new Intent(context, SidebarWidgetService.class);
-        serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-        serviceIntent.setData(android.net.Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)));
-        views.setRemoteAdapter(R.id.widget_announcements_list, serviceIntent);
-        views.setEmptyView(R.id.widget_announcements_list, R.id.widget_empty_view);
-        views.setTextViewText(R.id.widget_empty_view, WidgetI18n.noAnnouncements(lang));
+            Intent serviceIntent = new Intent(context, SidebarWidgetService.class);
+            serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+            serviceIntent.setData(android.net.Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)));
+            views.setRemoteAdapter(R.id.widget_announcements_list, serviceIntent);
+            views.setEmptyView(R.id.widget_announcements_list, R.id.widget_empty_view);
+            views.setTextViewText(R.id.widget_empty_view, WidgetI18n.noAnnouncements(lang));
 
-        setVisibility(views, R.id.widget_hebrew_date, visibilityFor(data.hebrewDate));
-        setVisibility(views, R.id.widget_gregorian_date, visibilityFor(data.gregorianDate));
-        setVisibility(views, R.id.widget_parsha_heading, visibilityFor(data.parshaName));
-        setVisibility(views, R.id.widget_parsha, visibilityFor(data.parshaName));
-        setVisibility(views, R.id.widget_shabbat_block, visibilityFor(data.shabbatEnterTime, data.shabbatExitTime, data.parshaName));
-        setVisibility(views, R.id.widget_weather_block, visibilityFor(data.weatherTemp, data.weatherLabel, data.sunriseText));
+            setVisibility(views, R.id.widget_hebrew_date, visibilityFor(data.hebrewDate));
+            setVisibility(views, R.id.widget_gregorian_date, visibilityFor(data.gregorianDate));
+            setVisibility(views, R.id.widget_parsha_heading, visibilityFor(data.parshaName));
+            setVisibility(views, R.id.widget_parsha, visibilityFor(data.parshaName));
+            setVisibility(views, R.id.widget_shabbat_block, visibilityFor(data.shabbatEnterTime, data.shabbatExitTime, data.parshaName));
+            setVisibility(views, R.id.widget_weather_block, visibilityFor(data.weatherTemp, data.weatherLabel, data.sunriseText));
 
-        Intent launchIntent = new Intent(context, MainActivity.class);
-        launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(
-            context, widgetId, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        views.setOnClickPendingIntent(R.id.widget_root, pendingIntent);
+            Intent launchIntent = new Intent(context, MainActivity.class);
+            launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            PendingIntent pendingIntent = PendingIntent.getActivity(
+                context, widgetId, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            views.setOnClickPendingIntent(R.id.widget_root, pendingIntent);
 
-        manager.updateAppWidget(widgetId, views);
-        manager.notifyAppWidgetViewDataChanged(widgetId, R.id.widget_announcements_list);
+            manager.updateAppWidget(widgetId, views);
+            manager.notifyAppWidgetViewDataChanged(widgetId, R.id.widget_announcements_list);
+        } catch (Exception ignored) {
+            // Avoid crashing the widget host if a single update fails.
+        }
     }
 
     private static void bindForecastSlot(
