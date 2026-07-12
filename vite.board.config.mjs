@@ -28,6 +28,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.join(rootDir, 'client/src'),
+      // hebcal depends on Node's EventEmitter; bundle the browser-compatible polyfill
+      // instead of letting Vite externalize the built-in `events` module.
+      events: path.join(rootDir, 'node_modules/events/events.js'),
     },
   },
 });
