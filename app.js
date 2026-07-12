@@ -61,6 +61,7 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,
   crossOriginResourcePolicy: { policy: 'cross-origin' },
   hsts: isProduction ? undefined : false,
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
 }));
 
 function allowMobileApiCors(req, res, next) {
@@ -79,31 +80,61 @@ function allowMobileApiCors(req, res, next) {
   return next();
 }
 
+function getRequestHost(req) {
+  const forwarded = String(req.get('X-Forwarded-Host') || '')
+    .split(',')[0]
+    .trim();
+  return forwarded || String(req.get('Host') || '').trim();
+}
+
+function hostnameFromHostHeader(hostHeader) {
+  if (!hostHeader) {
+    return '';
+  }
+
+  try {
+    return new URL(`http://${hostHeader}`).hostname.toLowerCase();
+  } catch {
+    return String(hostHeader).split(':')[0].toLowerCase();
+  }
+}
+
 function requireSameOrigin(req, res, next) {
   if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
     return next();
   }
 
+  // Dev/test clients (curl) and same-site cookies already reduce CSRF risk.
+  // Enforce Origin/Referer matching only in production.
+  if (!isProduction) {
+    return next();
+  }
+
+  const hostHeader = getRequestHost(req);
+  const expectedHost = hostnameFromHostHeader(hostHeader);
+  if (!expectedHost) {
+    return next();
+  }
+
   const origin = req.get('Origin');
   const referer = req.get('Referer');
-  const host = req.get('Host');
+  let sourceHost = '';
 
-  if (!host) {
-    return next();
-  }
-
-  const allowed = [`http://${host}`, `https://${host}`];
-  const source = origin || (referer ? new URL(referer).origin : '');
-
-  // Allow non-browser clients (curl/scripts) with no Origin/Referer in development.
-  if (!source) {
-    if (process.env.NODE_ENV === 'production') {
-      return res.status(403).send('Forbidden');
+  try {
+    if (origin) {
+      sourceHost = new URL(origin).hostname.toLowerCase();
+    } else if (referer) {
+      sourceHost = new URL(referer).hostname.toLowerCase();
     }
-    return next();
+  } catch {
+    return res.status(403).send('Forbidden');
   }
 
-  if (allowed.includes(source)) {
+  if (!sourceHost) {
+    return res.status(403).send('Forbidden');
+  }
+
+  if (sourceHost === expectedHost) {
     return next();
   }
 
