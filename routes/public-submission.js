@@ -18,9 +18,14 @@ const {
 const { optimizeUploadedImage } = require('../lib/image-optimize');
 const { invalidateBoardCache } = require('../lib/board-cache');
 const { parsePhotoCropFromBody } = require('../lib/photo-crop');
+const {
+  createPublicSubmissionRateLimiter,
+  isAllowedImageUpload,
+} = require('../lib/http-security');
 
 const router = express.Router();
 const OFFICIAL_LOGO_FILENAME = 'kaddish-official-logo.svg';
+const publicSubmissionRateLimiter = createPublicSubmissionRateLimiter();
 
 const MIME_EXT = {
   'image/jpeg': '.jpg',
@@ -51,7 +56,7 @@ const upload = multer({
   }),
   limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter(req, file, cb) {
-    if (!file.mimetype || !file.mimetype.startsWith('image/')) {
+    if (!isAllowedImageUpload(file)) {
       return cb(new Error('image_only'));
     }
     cb(null, true);
@@ -176,7 +181,7 @@ router.get('/:slug/add-name', async (req, res) => {
   }
 });
 
-router.post('/:slug/add-name', handlePublicPhotoUpload, async (req, res) => {
+router.post('/:slug/add-name', publicSubmissionRateLimiter, handlePublicPhotoUpload, async (req, res) => {
   try {
     const synagogue = await Synagogue.findOne({ slug: req.params.slug });
     if (!synagogue) {
