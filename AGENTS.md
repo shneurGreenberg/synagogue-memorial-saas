@@ -37,11 +37,12 @@ Run `node scripts/seed.js` to seed the Novosibirsk synagogue (skips if already e
 - **Install deps:** `npm install`
 - **Build board SPA:** `npm run build:board`
 - **Prebuild CSS:** `npm run build:css`
+- **Tests:** `npm test` (unit + HTTP smoke; needs MongoDB and seeded `novosibirsk`)
 
 ### Gotchas
 
 - MongoDB must be running before starting the app; it will fail to connect otherwise.
-- There is no linter or test framework configured in `package.json`.
+- There is no separate linter. Smoke tests use Node's built-in test runner (`node --test`).
 - The public memorial board is a Vite-built React SPA in `public/board/` (source: `client/`). Rebuild with `npm run build:board` after client changes.
 - Admin/master UIs are Handlebars + vanilla JS in `views/` and `public/js/`.
 - Uploaded photos go to `photos/` and images to `images/` on the local filesystem (or `/data` when persistent storage is configured).
