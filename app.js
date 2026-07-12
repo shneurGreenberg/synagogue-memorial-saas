@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const compression = require('compression');
+const helmet = require('helmet');
 const handlebars = require('express-handlebars');
 const { SafeString } = require('handlebars');
 const { buildTileThemeVars } = require('./lib/tile-theme-colors');
@@ -15,7 +16,7 @@ const mongoose = require('mongoose');
 const Synagogue = require('./models/Synagogue');
 const { loadSynagogueBoard } = require('./lib/load-synagogue-board');
 const { computeBoardVersion, slimBoardPayload } = require('./lib/board-payload');
-const { normalizeBoardFeatures } = require('./lib/board-features');
+const { toPublicBoardPayload, toPublicPersonPayload } = require('./lib/public-board');
 const { getJewishFeed } = require('./lib/jewish-feed');
 const { fetchWeatherForecast } = require('./lib/weather-api');
 const { applyBoardPreviewOverrides } = require('./lib/board-preview');
@@ -24,6 +25,11 @@ const { photoCropToInlineStyle } = require('./lib/photo-crop');
 const { buildPhotoThumbUrl } = require('./lib/photo-url');
 const { getTranslator, humanizeLabel } = require('./lib/admin-translations');
 const { renderAdminIcon } = require('./lib/admin-icons');
+const {
+  assertProductionSecrets,
+  createApiRateLimiter,
+  publicErrorMessage,
+} = require('./lib/http-security');
 const adminRoutes = require('./routes/admin');
 const masterRoutes = require('./routes/master');
 const publicSubmissionRoutes = require('./routes/public-submission');
@@ -31,9 +37,12 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 
-const app = express();
+assertProductionSecrets();
 
-if (process.env.NODE_ENV === 'production' || process.env.TRUST_PROXY === '1') {
+const app = express();
+const isProduction = process.env.NODE_ENV === 'production';
+
+if (isProduction || process.env.TRUST_PROXY === '1') {
   app.set('trust proxy', 1);
 }
 
@@ -47,6 +56,13 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue
   .catch(err => console.error('MongoDB connection error:', err));
 
 app.use(compression());
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  hsts: isProduction ? undefined : false,
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+}));
 
 function allowMobileApiCors(req, res, next) {
   if (!req.path.includes('/api/')) {
@@ -64,18 +80,86 @@ function allowMobileApiCors(req, res, next) {
   return next();
 }
 
+function getRequestHost(req) {
+  const forwarded = String(req.get('X-Forwarded-Host') || '')
+    .split(',')[0]
+    .trim();
+  return forwarded || String(req.get('Host') || '').trim();
+}
+
+function hostnameFromHostHeader(hostHeader) {
+  if (!hostHeader) {
+    return '';
+  }
+
+  try {
+    return new URL(`http://${hostHeader}`).hostname.toLowerCase();
+  } catch {
+    return String(hostHeader).split(':')[0].toLowerCase();
+  }
+}
+
+function requireSameOrigin(req, res, next) {
+  if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
+    return next();
+  }
+
+  // Dev/test clients (curl) and same-site cookies already reduce CSRF risk.
+  // Enforce Origin/Referer matching only in production.
+  if (!isProduction) {
+    return next();
+  }
+
+  const hostHeader = getRequestHost(req);
+  const expectedHost = hostnameFromHostHeader(hostHeader);
+  if (!expectedHost) {
+    return next();
+  }
+
+  const origin = req.get('Origin');
+  const referer = req.get('Referer');
+  let sourceHost = '';
+
+  try {
+    if (origin) {
+      sourceHost = new URL(origin).hostname.toLowerCase();
+    } else if (referer) {
+      sourceHost = new URL(referer).hostname.toLowerCase();
+    }
+  } catch {
+    return res.status(403).send('Forbidden');
+  }
+
+  if (!sourceHost) {
+    return res.status(403).send('Forbidden');
+  }
+
+  if (sourceHost === expectedHost) {
+    return next();
+  }
+
+  return res.status(403).send('Forbidden');
+}
+
 app.use(allowMobileApiCors);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-const isProduction = process.env.NODE_ENV === 'production';
+
+const sessionSecret = process.env.SESSION_SECRET || (isProduction ? null : 'secret');
+if (!sessionSecret) {
+  throw new Error('SESSION_SECRET is required');
+}
 
 const sessionMiddleware = session({
-  secret: process.env.SESSION_SECRET || 'secret',
+  secret: sessionSecret,
   resave: false,
   saveUninitialized: false,
+  name: 'kaddish.sid',
   cookie: {
+    httpOnly: true,
     secure: isProduction,
     sameSite: 'lax',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
   },
   store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue' }),
 });
@@ -89,9 +173,9 @@ app.use('/css', express.static(cssDirectory, {
   maxAge: isProduction ? '1h' : 0,
 }));
 
-app.use('/admin', sessionMiddleware, adminRoutes);
-app.use('/master', sessionMiddleware, masterRoutes);
-app.use('/s', publicSubmissionRoutes);
+app.use('/admin', sessionMiddleware, requireSameOrigin, adminRoutes);
+app.use('/master', sessionMiddleware, requireSameOrigin, masterRoutes);
+app.use('/s', requireSameOrigin, publicSubmissionRoutes);
 
 function getInitials(name) {
   if (!name) {
@@ -177,9 +261,20 @@ if (isPersistent) {
 }
 
 const staticAssetMaxAge = isProduction ? '7d' : 0;
+const provisioningDir = path.join(__dirname, 'provisioning');
+if (!fs.existsSync(provisioningDir)) {
+  fs.mkdirSync(provisioningDir, { recursive: true });
+}
 
 app.use('/images', express.static(IMAGES_DIR, { maxAge: staticAssetMaxAge }));
 app.use('/images', express.static(BUNDLED_IMAGES_DIR, { maxAge: staticAssetMaxAge }));
+app.use('/images/provisioning', express.static(provisioningDir, {
+  maxAge: staticAssetMaxAge,
+  fallthrough: true,
+  setHeaders(res) {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+  },
+}));
 
 app.get('/photos/:filename', async (req, res, next) => {
   const width = Number(req.query.w);
@@ -214,8 +309,6 @@ app.get('/photos/:filename', async (req, res, next) => {
 app.use('/photos', express.static(PHOTOS_DIR, { maxAge: staticAssetMaxAge }));
 app.use('/photos', express.static(BUNDLED_PHOTOS_DIR, { maxAge: staticAssetMaxAge }));
 
-app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
-
 app.use('/board', express.static(path.join(__dirname, 'public/board'), {
   setHeaders(res, filePath) {
     if (filePath.endsWith('memorial.js') || filePath.endsWith('memorial.css')) {
@@ -233,14 +326,17 @@ app.use('/downloads', express.static(path.join(__dirname, 'public/downloads'), {
   },
 }));
 
+const apiRateLimiter = createApiRateLimiter();
+
 function renderMemorialBoard(req, res, synagogue) {
   const { buildFaviconPath } = require('./lib/favicon');
   const { buildYahrzeitEntries } = require('./lib/yahrzeit');
   const yahrzeitTodayCount = buildYahrzeitEntries(synagogue).length;
+  const publicData = toPublicBoardPayload(synagogue, { includeText: false });
 
   res.render('board', {
     layout: false,
-    data: synagogue,
+    data: publicData,
     boardVersion: BOARD_VERSION,
     faviconUrl: buildFaviconPath(synagogue.slug, { badge: false }),
     faviconAlertUrl: buildFaviconPath(synagogue.slug, { badge: true }),
@@ -253,7 +349,8 @@ app.get('/', async (req, res) => {
     const synagogues = await Synagogue.find({}, 'slug name');
     res.render('landing', { synagogues, layout: 'landing' });
   } catch (err) {
-    res.status(500).send(err.message);
+    console.error('Landing page error:', err);
+    res.status(500).send(publicErrorMessage(err));
   }
 });
 
@@ -285,11 +382,12 @@ async function serveSynagogueFavicon(req, res, badge) {
     res.type('png');
     return res.send(buffer);
   } catch (err) {
-    return res.status(500).send(err.message);
+    console.error('Favicon error:', err);
+    return res.status(500).send(publicErrorMessage(err, 'Favicon unavailable'));
   }
 }
 
-app.get('/s/:slug/api/board/version', async (req, res) => {
+app.get('/s/:slug/api/board/version', apiRateLimiter, async (req, res) => {
   try {
     const synagogue = await loadSynagogueBoard(req.params.slug);
 
@@ -301,11 +399,12 @@ app.get('/s/:slug/api/board/version', async (req, res) => {
     res.setHeader('Cache-Control', 'no-store');
     return res.json({ version });
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    console.error('Board version error:', err);
+    return res.status(500).json({ error: publicErrorMessage(err) });
   }
 });
 
-app.get('/s/:slug/api/board/person/:personId', async (req, res) => {
+app.get('/s/:slug/api/board/person/:personId', apiRateLimiter, async (req, res) => {
   try {
     const synagogue = await loadSynagogueBoard(req.params.slug);
 
@@ -322,13 +421,14 @@ app.get('/s/:slug/api/board/person/:personId', async (req, res) => {
     }
 
     res.setHeader('Cache-Control', 'public, max-age=300');
-    return res.json({ person });
+    return res.json({ person: toPublicPersonPayload(person) });
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    console.error('Person payload error:', err);
+    return res.status(500).json({ error: publicErrorMessage(err) });
   }
 });
 
-app.get('/s/:slug/api/board', async (req, res) => {
+app.get('/s/:slug/api/board', apiRateLimiter, async (req, res) => {
   try {
     const synagogue = await loadSynagogueBoard(req.params.slug);
 
@@ -336,18 +436,21 @@ app.get('/s/:slug/api/board', async (req, res) => {
       return res.status(404).json({ error: 'Synagogue not found' });
     }
 
-    const slim = req.query.slim !== '0';
-    const payload = slim ? slimBoardPayload(synagogue) : synagogue;
+    const includeText = req.query.slim === '0';
+    const payload = includeText
+      ? toPublicBoardPayload(synagogue, { includeText: true })
+      : slimBoardPayload(synagogue);
     const version = computeBoardVersion(synagogue);
     res.setHeader('Cache-Control', 'no-store');
     res.setHeader('ETag', `"${version}"`);
     return res.json(payload);
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    console.error('Board payload error:', err);
+    return res.status(500).json({ error: publicErrorMessage(err) });
   }
 });
 
-app.get('/s/:slug/api/weather', async (req, res) => {
+app.get('/s/:slug/api/weather', apiRateLimiter, async (req, res) => {
   try {
     const synagogue = await loadSynagogueBoard(req.params.slug);
 
@@ -366,11 +469,12 @@ app.get('/s/:slug/api/weather', async (req, res) => {
     res.setHeader('Cache-Control', 'public, max-age=900');
     return res.json(forecast);
   } catch (err) {
-    return res.status(502).json({ error: err.message || 'Weather unavailable' });
+    console.error('Weather error:', err);
+    return res.status(502).json({ error: publicErrorMessage(err, 'Weather unavailable') });
   }
 });
 
-app.get('/s/:slug/api/jewish-content', async (req, res) => {
+app.get('/s/:slug/api/jewish-content', apiRateLimiter, async (req, res) => {
   try {
     const synagogue = await loadSynagogueBoard(req.params.slug);
 
@@ -384,11 +488,12 @@ app.get('/s/:slug/api/jewish-content', async (req, res) => {
     res.setHeader('Cache-Control', 'no-store');
     return res.json(feed);
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    console.error('Jewish content error:', err);
+    return res.status(500).json({ error: publicErrorMessage(err) });
   }
 });
 
-app.get('/s/:slug/api/sidebar-app', async (req, res) => {
+app.get('/s/:slug/api/sidebar-app', apiRateLimiter, async (req, res) => {
   try {
     const synagogue = await loadSynagogueBoard(req.params.slug);
 
@@ -403,7 +508,8 @@ app.get('/s/:slug/api/sidebar-app', async (req, res) => {
     res.setHeader('Cache-Control', 'no-store');
     return res.json(payload);
   } catch (err) {
-    return res.status(500).json({ error: err.message });
+    console.error('Sidebar app payload error:', err);
+    return res.status(500).json({ error: publicErrorMessage(err) });
   }
 });
 
@@ -417,7 +523,8 @@ app.get('/s/:slug/export/tile/:personId', async (req, res) => {
 
     return renderMemorialBoard(req, res, synagogue);
   } catch (err) {
-    return res.status(500).send(err.message);
+    console.error('Tile export error:', err);
+    return res.status(500).send(publicErrorMessage(err));
   }
 });
 
@@ -431,7 +538,8 @@ app.get('/s/:slug/card/:personId', async (req, res) => {
 
     return renderMemorialBoard(req, res, synagogue);
   } catch (err) {
-    return res.status(500).send(err.message);
+    console.error('Card page error:', err);
+    return res.status(500).send(publicErrorMessage(err));
   }
 });
 
@@ -447,7 +555,8 @@ app.get('/s/:slug', async (req, res) => {
 
     return renderMemorialBoard(req, res, synagogue);
   } catch (err) {
-    return res.status(500).send(err.message);
+    console.error('Board page error:', err);
+    return res.status(500).send(publicErrorMessage(err));
   }
 });
 

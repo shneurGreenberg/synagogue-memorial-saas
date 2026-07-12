@@ -10,7 +10,7 @@ If you need the previous full-page navigation version:
 ```bash
 git checkout backup/pre-spa-migration
 npm install
-npm run build:board   # optional; old version used browserify at runtime
+npm run build:board   # Vite SPA build into public/board/
 node app.js
 ```
 

@@ -12,6 +12,13 @@ const { getMasterTranslator } = require('../lib/master-translations');
 const { buildSynagoguePayloadFromWizard, WIZARD_STEPS } = require('../lib/master-provisioning');
 const { optimizeUploadedImage } = require('../lib/image-optimize');
 const { BOARD_FEATURE_DEFAULTS } = require('../lib/board-features');
+const { verifyMasterPassword } = require('../lib/master-auth');
+const {
+  createLoginRateLimiter,
+  regenerateSession,
+  isAllowedImageUpload,
+} = require('../lib/http-security');
+const loginRateLimiter = createLoginRateLimiter();
 
 const IMAGES_DIR = path.join(__dirname, '..', 'images');
 const UPLOAD_TMP_DIR = path.join(__dirname, '..', 'provisioning', '_tmp');
@@ -42,7 +49,7 @@ const masterUpload = multer({
     },
     fileFilter(req, file, cb) {
         if (file.fieldname === 'logo' || file.fieldname === 'donationQrImage') {
-            if (!file.mimetype || !file.mimetype.startsWith('image/')) {
+            if (!isAllowedImageUpload(file)) {
                 return cb(new Error('image_only'));
             }
         }
@@ -148,20 +155,25 @@ router.get('/login', (req, res) => {
     renderMaster(req, res, 'master/login', { showMasterNav: false, error: null });
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', loginRateLimiter, async (req, res) => {
     const { password } = req.body;
-    const masterPassword = process.env.MASTER_ADMIN_PASSWORD || 'master';
     const t = getMasterTranslator(getMasterLang(req));
 
-    if (password === masterPassword) {
-        req.session.isMasterAdmin = true;
-        if (!req.session.masterLanguage) {
-            req.session.masterLanguage = 'en';
+    try {
+        if (await verifyMasterPassword(password)) {
+            await regenerateSession(req);
+            req.session.isMasterAdmin = true;
+            if (!req.session.masterLanguage) {
+                req.session.masterLanguage = 'en';
+            }
+            return res.redirect('/master/dashboard');
         }
-        return res.redirect('/master/dashboard');
-    }
 
-    renderMaster(req, res, 'master/login', { showMasterNav: false, error: t('invalid_password') });
+        return renderMaster(req, res, 'master/login', { showMasterNav: false, error: t('invalid_password') });
+    } catch (err) {
+        console.error('Master login error:', err);
+        return renderMaster(req, res, 'master/login', { showMasterNav: false, error: t('invalid_password') });
+    }
 });
 
 router.post('/language', requireMaster, (req, res) => {

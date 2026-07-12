@@ -32,9 +32,16 @@ const {
 } = require('../lib/storage-paths');
 const { optimizeUploadedImage } = require('../lib/image-optimize');
 const {
+  createLoginRateLimiter,
+  regenerateSession,
+  isAllowedImageUpload,
+  publicErrorMessage,
+} = require('../lib/http-security');
+const {
   buildCommunityEventPayload,
   categorizeCommunityEvents,
 } = require('../lib/community-events');
+const loginRateLimiter = createLoginRateLimiter();
 const {
   parseSlugAndUsername,
   normalizeAdminUsername,
@@ -274,8 +281,8 @@ const upload = multer({
     storage,
     limits: { fileSize: 10 * 1024 * 1024 },
     fileFilter: function (req, file, cb) {
-        if (!file.mimetype || !file.mimetype.startsWith('image/')) {
-            return cb(new Error('Only image uploads are allowed'));
+        if (!isAllowedImageUpload(file)) {
+            return cb(new Error('Only JPEG, PNG, WebP, and GIF images are allowed'));
         }
         cb(null, true);
     },
@@ -388,7 +395,7 @@ router.get('/login', (req, res) => {
     res.render('admin/login', { layout: false });
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', loginRateLimiter, async (req, res) => {
     const { slug: slugInput, password } = req.body;
     const { slug, username } = parseSlugAndUsername(slugInput);
     try {
@@ -398,6 +405,8 @@ router.post('/login', async (req, res) => {
             if (hashed) {
                 await Synagogue.updateOne({ slug }, { $set: { adminPassword: hashed } });
             }
+
+            await regenerateSession(req);
 
             if (username) {
                 const adminUser = findAdminUser(synagogue, username);
@@ -416,7 +425,8 @@ router.post('/login', async (req, res) => {
         }
         res.render('admin/login', { error: 'Invalid credentials', layout: false });
     } catch (err) {
-        res.status(500).send(err.message);
+        console.error('Admin login error:', err);
+        res.status(500).send(publicErrorMessage(err));
     }
 });
 
