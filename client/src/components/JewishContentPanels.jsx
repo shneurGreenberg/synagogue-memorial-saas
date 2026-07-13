@@ -3,6 +3,7 @@ import { withTranslation } from 'react-i18next';
 import { isBoardPreviewMode } from '../lib/board-preview-mode';
 import { hasJewishContentPanels, resolveBoardFeatures } from '../lib/board-features';
 import { useBoardData } from '../context/BoardDataContext';
+import { fetchJewishFeed } from '../lib/jewish-feed-client';
 import { HayomYomScroller } from './HayomYomScroller';
 
 const REFRESH_MS = 15 * 60 * 1000;
@@ -22,7 +23,7 @@ function LearningTile({ label, item, sublabel }) {
 }
 
 function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
-  const appData = getBoardData();
+  const { data: appData } = useBoardData();
   const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
   const slug = appData.slug;
   const [feed, setFeed] = useState(null);
@@ -37,23 +38,8 @@ function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
 
     const load = async () => {
       try {
-        const response = await fetch(
-          `/s/${slug}/api/jewish-content?lang=${uiLang}&date=${encodeURIComponent(calendarDayKey || '')}`,
-          {
-            cache: 'no-store',
-            headers: {
-              Accept: 'application/json',
-              'Cache-Control': 'no-cache',
-            },
-          },
-        );
-
-        if (!response.ok || cancelled) {
-          return;
-        }
-
-        const next = await response.json();
-        if (!cancelled) {
+        const next = await fetchJewishFeed(slug, uiLang, calendarDayKey || '');
+        if (!cancelled && next) {
           setFeed(next);
         }
       } catch {

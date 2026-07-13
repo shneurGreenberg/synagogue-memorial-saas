@@ -4,6 +4,7 @@ import { getBoardData } from '../lib/board-data';
 import { isBoardPreviewMode } from '../lib/board-preview-mode';
 import { resolveBoardFeatures } from '../lib/board-features';
 import { buildSidebarAnnouncements } from '../lib/sidebar-announcements';
+import { fetchJewishFeed } from '../lib/jewish-feed-client';
 
 const REFRESH_MS = 60 * 60 * 1000;
 
@@ -193,17 +194,8 @@ function SidebarUpcomingPanelBase({
       }
 
       try {
-        const response = await fetch(`/s/${slug}/api/jewish-content?lang=${uiLang}`, {
-          cache: 'no-store',
-          headers: { Accept: 'application/json' },
-        });
-
-        if (!response.ok || cancelled) {
-          return;
-        }
-
-        const payload = await response.json();
-        if (!cancelled) {
+        const payload = await fetchJewishFeed(slug, uiLang);
+        if (!cancelled && payload) {
           setHolidays(Array.isArray(payload.upcomingHolidays) ? payload.upcomingHolidays : []);
           setChabadDates(Array.isArray(payload.chabadDates) ? payload.chabadDates : []);
         }

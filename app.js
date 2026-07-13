@@ -196,6 +196,7 @@ app.engine('handlebars', handlebars({
   partialsDir: path.join(__dirname, 'views/partials'),
   helpers: {
     json: value => JSON.stringify(value, false, '  '),
+    jsonCompact: value => JSON.stringify(value),
     eq: (a, b) => a === b,
     or: (...args) => args.slice(0, -1).some(Boolean),
     and: (...args) => args.slice(0, -1).every(Boolean),
@@ -312,11 +313,14 @@ app.use('/photos', express.static(BUNDLED_PHOTOS_DIR, { maxAge: staticAssetMaxAg
 app.use('/board', express.static(path.join(__dirname, 'public/board'), {
   setHeaders(res, filePath) {
     if (filePath.endsWith('memorial.js') || filePath.endsWith('memorial.css')) {
-      res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      // Version query (?v=) busts cache; allow longer browser caching between deploys.
+      res.setHeader('Cache-Control', 'public, max-age=86400, must-revalidate');
     }
   },
 }));
-app.use('/js', express.static(path.join(__dirname, 'public/js')));
+app.use('/js', express.static(path.join(__dirname, 'public/js'), {
+  maxAge: isProduction ? '7d' : 0,
+}));
 app.use('/downloads', express.static(path.join(__dirname, 'public/downloads'), {
   setHeaders(res, filePath) {
     if (filePath.endsWith('.apk')) {
@@ -333,10 +337,12 @@ function renderMemorialBoard(req, res, synagogue) {
   const { buildYahrzeitEntries } = require('./lib/yahrzeit');
   const yahrzeitTodayCount = buildYahrzeitEntries(synagogue).length;
   const publicData = toPublicBoardPayload(synagogue, { includeText: false });
+  const contentVersion = computeBoardVersion(synagogue);
 
   res.render('board', {
     layout: false,
     data: publicData,
+    contentVersion,
     boardVersion: BOARD_VERSION,
     faviconUrl: buildFaviconPath(synagogue.slug, { badge: false }),
     faviconAlertUrl: buildFaviconPath(synagogue.slug, { badge: true }),
@@ -436,13 +442,20 @@ app.get('/s/:slug/api/board', apiRateLimiter, async (req, res) => {
       return res.status(404).json({ error: 'Synagogue not found' });
     }
 
+    const version = computeBoardVersion(synagogue);
+    const etag = `"${version}"`;
+    if (req.headers['if-none-match'] === etag) {
+      res.setHeader('ETag', etag);
+      res.setHeader('Cache-Control', 'no-cache');
+      return res.status(304).end();
+    }
+
     const includeText = req.query.slim === '0';
     const payload = includeText
       ? toPublicBoardPayload(synagogue, { includeText: true })
       : slimBoardPayload(synagogue);
-    const version = computeBoardVersion(synagogue);
-    res.setHeader('Cache-Control', 'no-store');
-    res.setHeader('ETag', `"${version}"`);
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('ETag', etag);
     return res.json(payload);
   } catch (err) {
     console.error('Board payload error:', err);
@@ -485,7 +498,7 @@ app.get('/s/:slug/api/jewish-content', apiRateLimiter, async (req, res) => {
     const lang = ['ru', 'en', 'he'].includes(req.query.lang) ? req.query.lang : synagogue.language || 'ru';
     const feed = await getJewishFeed(lang, synagogue);
 
-    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('Cache-Control', 'public, max-age=3600');
     return res.json(feed);
   } catch (err) {
     console.error('Jewish content error:', err);
