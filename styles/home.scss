@@ -485,7 +485,9 @@
         letter-spacing: clamp(2px, 0.9vw, 10px);
         line-height: 1.15;
         overflow: hidden;
-        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
       }
     }
 
@@ -534,6 +536,8 @@
         border-radius: 12px;
         overflow: visible;
         contain: layout;
+        content-visibility: auto;
+        contain-intrinsic-size: 120px 140px;
         display: flex;
         flex-direction: column;
         padding: 0;
@@ -595,8 +599,8 @@
           .card-dates {
             display: flex;
             flex-direction: column;
-            gap: 0;
-            margin-top: 1px;
+            gap: 3px;
+            margin-top: 3px;
           }
 
           h3 {
@@ -636,15 +640,17 @@
             display: block;
             font-size: clamp(14px, 1.2vw, 19px);
             color: var(--tile-date-color, #f0f0f0);
-            line-height: 1.1;
+            line-height: 1.25;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
           }
 
           .title {
             margin: 5px 0 0;
-            color: $cardTitle;
+            color: var(--tile-date-color, #f0f0f0);
+            opacity: 0.95;
             font-size: clamp(12px, 1.05vw, 16px);
             overflow: hidden;
             display: -webkit-box;
@@ -748,7 +754,7 @@
         }
 
         &::placeholder {
-          color: rgba(240, 240, 240, 0.55);
+          color: rgba(240, 240, 240, 0.72);
         }
       }
 
@@ -768,7 +774,7 @@
         line-height: 1;
         z-index: 1;
         border-radius: 8px;
-        opacity: 0.85;
+        opacity: 0.95;
 
         &:hover,
         &:focus-visible {
@@ -1024,10 +1030,10 @@
         display: flex;
         flex-direction: column;
         gap: 2px;
-        font-size: calc(clamp(9px, 0.78vw, 11px) * var(--font-scale-weather, 1));
+        font-size: calc(clamp(10px, 0.85vw, 12px) * var(--font-scale-weather, 1));
         line-height: 1.2;
         color: var(--tile-date-color, #f0f0f0);
-        opacity: 0.88;
+        opacity: 1;
       }
 
       .weather-sun-stack-row {
@@ -1351,7 +1357,8 @@
           width: 100%;
           padding: 0 2px;
           line-height: 1.2;
-          opacity: 0.82;
+          opacity: 1;
+          text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
         }
 
         .nearest-dates-scroll {
@@ -1466,7 +1473,9 @@
                 }
 
                 .community-event-title {
-                  display: block;
+                  display: -webkit-box;
+                  -webkit-box-orient: vertical;
+                  overflow: hidden;
                   margin-top: 4px;
                   font-size: clamp(15px, 1.28vw, 19px);
                   font-weight: 700;
@@ -1477,7 +1486,9 @@
                 }
 
                 .community-event-text {
-                  display: block;
+                  display: -webkit-box;
+                  -webkit-box-orient: vertical;
+                  overflow: hidden;
                   margin-top: 3px;
                   font-size: clamp(12px, 1vw, 15px);
                   line-height: 1.35;
@@ -2160,15 +2171,20 @@
     }
 
     .middle .board-footer {
-      flex-direction: column;
-      align-items: stretch;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding-bottom: 12px;
     }
 
     .middle .search {
       max-width: none;
+      grid-column: 1;
+      justify-self: stretch;
     }
 
     .middle .pager {
+      grid-column: 1;
+      justify-self: center;
       justify-content: center;
     }
   }
@@ -2202,7 +2218,14 @@ body.board-lang-he {
   .card .inner time,
   .card .inner p,
   .board-clock-block,
-  .board-clock-block time {
+  .board-clock-block time,
+  .hayom-yom-text,
+  .daily-gates-grid,
+  .daily-gate-tile,
+  .memorial-prayers,
+  .memorial-submission-text,
+  .weather-today-right,
+  .weather-sun-stack {
     direction: rtl;
     unicode-bidi: plaintext;
   }

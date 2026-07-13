@@ -22,6 +22,12 @@
             background-attachment: fixed;
         }
 
+        @media (pointer: coarse), (max-width: 900px) {
+            body {
+                background-attachment: scroll;
+            }
+        }
+
         .main-container .left .wooden-panel,
         .main-container .middle .wooden-panel,
         .main-container .right .wooden-panel,
@@ -34,7 +40,10 @@
 </head>
 
 <body>
-    <script>window.data = {{{json data}}};</script>
+    <script>
+      window.boardContentVersion = {{#if contentVersion}}"{{contentVersion}}"{{else}}null{{/if}};
+      window.data = {{{jsonCompact data}}};
+    </script>
     <div id="root"></div>
     <script type="module" src="/board/assets/memorial.js?v={{boardVersion}}"></script>
 </body>

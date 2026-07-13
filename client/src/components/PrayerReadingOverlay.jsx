@@ -3,6 +3,9 @@ import { createPortal } from 'react-dom';
 import { withTranslation } from 'react-i18next';
 import { assetUrl } from '../lib/asset-url';
 import { CandleVideo } from './CandleVideo';
+import { shouldUseStaticCandleOnly } from '../lib/legacy-browser';
+
+const STATIC_CANDLES = shouldUseStaticCandleOnly();
 
 class PrayerOverlayTextScroller extends React.Component {
   constructor(props) {
@@ -208,7 +211,7 @@ class PrayerReadingOverlayBase extends React.Component {
           </button>
           <div className={`prayer-reading-layout ${extraClass || ''}`}>
             <div className="prayer-reading-candle-side" aria-hidden="true">
-              <CandleVideo className="prayer-reading-candle" />
+              <CandleVideo className="prayer-reading-candle" animated={!STATIC_CANDLES} />
             </div>
             <div className="prayer-reading-content">
               <PrayerOverlayTextScroller>

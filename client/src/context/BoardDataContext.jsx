@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { getDisplayLanguage } from '../lib/person-names';
-import { applyBoardLanguage, initBoardLanguage } from '../lib/board-language';
+import { applyBoardLanguage } from '../lib/board-language';
 import { getPreviewLanguage, isBoardPreviewMode } from '../lib/board-preview-mode';
 import {
   BOARD_PREVIEW_MESSAGE,
@@ -25,6 +25,7 @@ import { resolveBoardTimezone } from '../lib/timezone';
 import { mergeBoardPayload } from '../lib/board-payload';
 
 const POLL_MS = 8000;
+const HIDDEN_POLL_MS = 60000;
 
 const BoardDataContext = createContext(null);
 
@@ -39,12 +40,21 @@ function initialBoardData() {
   return mergePreviewPatch(base, patch);
 }
 
+function readEmbeddedContentVersion() {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  const value = window.boardContentVersion || (window.data && window.data.contentVersion);
+  return value ? String(value) : null;
+}
+
 export function BoardDataProvider({ slug, children }) {
   const previewMode = isBoardPreviewMode();
   const [data, setData] = useState(initialBoardData);
   const [revision, setRevision] = useState(0);
   const [calendarDayKey, setCalendarDayKey] = useState(() => getDayKeyInTimezone(getBoardTimezone()));
-  const boardVersionRef = useRef(null);
+  const boardVersionRef = useRef(readEmbeddedContentVersion());
   const [uiLang, setUiLangState] = useState(() => {
     if (previewMode) {
       const previewLang = getPreviewLanguage();
@@ -114,19 +124,33 @@ export function BoardDataProvider({ slug, children }) {
   }, [previewMode, applyPreviewPatch]);
 
   useEffect(() => {
-    if (!slug || previewMode) {
+    if (!slug || previewMode || isStaticSite()) {
       return undefined;
     }
 
     let cancelled = false;
+    let timer = null;
 
     const fetchBoard = async () => {
+      const headers = { Accept: 'application/json' };
+      if (boardVersionRef.current) {
+        headers['If-None-Match'] = `"${boardVersionRef.current}"`;
+      }
+
       const response = await fetch(`/s/${slug}/api/board?slim=1`, {
         cache: 'no-store',
-        headers: { Accept: 'application/json' },
+        headers,
       });
 
-      if (!response.ok || cancelled) {
+      if (cancelled) {
+        return null;
+      }
+
+      if (response.status === 304) {
+        return null;
+      }
+
+      if (!response.ok) {
         return null;
       }
 
@@ -134,14 +158,18 @@ export function BoardDataProvider({ slug, children }) {
       const next = await response.json();
       if (etag) {
         boardVersionRef.current = etag.replace(/"/g, '');
-      } else if (next && next.version) {
-        boardVersionRef.current = next.version;
+      } else if (next && next.contentVersion) {
+        boardVersionRef.current = String(next.contentVersion);
       }
 
       return next;
     };
 
     const poll = async () => {
+      if (typeof document !== 'undefined' && document.hidden) {
+        return;
+      }
+
       try {
         const versionResponse = await fetch(`/s/${slug}/api/board/version`, {
           cache: 'no-store',
@@ -159,6 +187,9 @@ export function BoardDataProvider({ slug, children }) {
 
         const next = await fetchBoard();
         if (!next || cancelled) {
+          if (version) {
+            boardVersionRef.current = version;
+          }
           return;
         }
 
@@ -169,34 +200,57 @@ export function BoardDataProvider({ slug, children }) {
       }
     };
 
-    fetchBoard().then(async (next) => {
-      if (!next || cancelled) {
-        return;
+    const schedule = () => {
+      if (timer) {
+        window.clearInterval(timer);
       }
+      const interval = (typeof document !== 'undefined' && document.hidden) ? HIDDEN_POLL_MS : POLL_MS;
+      timer = window.setInterval(poll, interval);
+    };
 
-      applyData(next);
-
-      try {
-        const versionResponse = await fetch(`/s/${slug}/api/board/version`, {
-          cache: 'no-store',
-          headers: { Accept: 'application/json' },
-        });
-        if (versionResponse.ok) {
-          const { version } = await versionResponse.json();
-          boardVersionRef.current = version;
+    // Initial HTML already embeds slim board data. Only re-fetch if we lack a content version.
+    if (!boardVersionRef.current) {
+      fetchBoard().then(async (next) => {
+        if (!next || cancelled) {
+          return;
         }
-      } catch {
-        /* ignore */
-      }
-    }).catch(() => {
-      /* ignore initial fetch errors */
-    });
 
-    const timer = window.setInterval(poll, POLL_MS);
+        applyData(next);
+
+        try {
+          const versionResponse = await fetch(`/s/${slug}/api/board/version`, {
+            cache: 'no-store',
+            headers: { Accept: 'application/json' },
+          });
+          if (versionResponse.ok) {
+            const { version } = await versionResponse.json();
+            boardVersionRef.current = version;
+          }
+        } catch {
+          /* ignore */
+        }
+      }).catch(() => {
+        /* ignore initial fetch errors */
+      });
+    }
+
+    schedule();
+
+    const onVisibility = () => {
+      schedule();
+      if (!document.hidden) {
+        poll();
+      }
+    };
+
+    document.addEventListener('visibilitychange', onVisibility);
 
     return () => {
       cancelled = true;
-      window.clearInterval(timer);
+      if (timer) {
+        window.clearInterval(timer);
+      }
+      document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [slug, applyData, previewMode]);
 

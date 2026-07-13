@@ -198,12 +198,15 @@ describe('http smoke', () => {
   it('embeds sanitized public window.data on the board page', async () => {
     const res = await request('GET', `/s/${SLUG}`);
     assert.equal(res.status, 200);
+    assert.match(res.body, /window\.boardContentVersion/);
     const match = res.body.match(/window\.data = (\{[\s\S]*?\});/);
     assert.ok(match, 'board page should embed window.data');
     const data = JSON.parse(match[1]);
     assert.equal(data.contactDirectory, undefined);
     assert.equal(data.adminUsers, undefined);
     assert.equal(data.yahrzeitReminders, undefined);
+    assert.equal(data.slideshow, undefined);
     assert.ok(Array.isArray(data.people));
+    assert.equal(res.body.includes('\n  \"slug\"'), false, 'window.data should be compact JSON');
   });
 });

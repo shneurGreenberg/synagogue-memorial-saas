@@ -5,8 +5,10 @@ import {
 } from '../lib/novosibirsk';
 import { getNameDensityClass } from '../lib/text-density';
 import { CandleVideo } from './CandleVideo';
+import { shouldUseStaticCandleOnly } from '../lib/legacy-browser';
 
 const CANDLE_CYCLE_MS = 4000;
+const STATIC_CANDLES = shouldUseStaticCandleOnly();
 
 function toDatetimeAttr(gregorianDateOfDeath) {
   if (!gregorianDateOfDeath || !gregorianDateOfDeath.year) {
@@ -67,7 +69,7 @@ class MemorialCardInner extends React.Component {
         onKeyDown={this.onKeyDown}
         aria-label={displayName}
       >
-        <CandleVideo active={this.state.showCandle} />
+        <CandleVideo active={this.state.showCandle} animated={!STATIC_CANDLES} />
         <div className={`inner ${getNameDensityClass(displayName)}`}>
           <h3>{displayName}</h3>
           <div className="card-dates">

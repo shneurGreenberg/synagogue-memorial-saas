@@ -34,7 +34,6 @@ describe('public board payload', () => {
     weeklyChapterEnabled: true,
     shabbatTimesEnabled: true,
     reloadTimeout: 1000,
-    slideshow: false,
     baseUrl: '/s/demo',
     contactDirectory: [{ id: 'c1', name: 'Dir', phone: '+1', email: 'dir@example.com' }],
     adminUsers: [{ username: 'helper', permissions: { people: true } }],
