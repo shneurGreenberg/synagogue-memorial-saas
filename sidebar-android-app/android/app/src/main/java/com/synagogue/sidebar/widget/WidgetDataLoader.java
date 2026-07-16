@@ -250,6 +250,7 @@ public final class WidgetDataLoader {
             views.setTextViewText(R.id.widget_shabbat_exit_time, safeText(data.shabbatExitTime, ""));
 
             views.setTextViewText(R.id.widget_weather_icon, safeText(data.weatherIcon, ""));
+            views.setTextColor(R.id.widget_weather_icon, WidgetI18n.weatherIconColor(data.weatherIcon));
             views.setTextViewText(R.id.widget_weather_temp, safeText(data.weatherTemp, ""));
             views.setTextViewText(R.id.widget_weather_label, safeText(data.weatherLabel, ""));
             views.setTextViewText(R.id.widget_sunrise, safeText(data.sunriseText, ""));
@@ -310,6 +311,7 @@ public final class WidgetDataLoader {
         }
         views.setTextViewText(dateId, safeText(date, ""));
         views.setTextViewText(iconId, safeText(icon, ""));
+        views.setTextColor(iconId, WidgetI18n.weatherIconColor(icon));
         views.setTextViewText(tempsId, safeText(temps, ""));
     }
 

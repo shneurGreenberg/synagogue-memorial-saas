@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Home widget mirroring the board right column: logo → clock/dates → Shabbat → weather → announcements -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
@@ -11,44 +12,68 @@
         android:layout_height="match_parent"
         android:background="@drawable/widget_wooden_panel"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:gravity="center_horizontal"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="10dp">
 
+        <!-- Official Kaddish community mark (.board-official-logo) -->
         <ImageView
             android:id="@+id/widget_logo"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
+            android:layout_width="88dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="6dp"
+            android:layout_marginBottom="10dp"
+            android:adjustViewBounds="true"
             android:contentDescription="@string/app_name"
             android:scaleType="fitCenter"
             android:src="@drawable/kaddish_logo" />
 
+        <!-- Clock + dates (.board-clock-block) -->
         <TextView
             android:id="@+id/widget_clock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:includeFontPadding="false"
+            android:shadowColor="#8C000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="3"
             android:text="12:00"
             android:textColor="#FFFFFF"
-            android:textSize="42sp"
+            android:textSize="36sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/widget_hebrew_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:gravity="center"
-            android:textColor="#F0F0F0"
-            android:textSize="16sp" />
+            android:includeFontPadding="false"
+            android:shadowColor="#66000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:textColor="#FFFFFF"
+            android:textSize="17sp" />
 
         <TextView
             android:id="@+id/widget_gregorian_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="10dp"
             android:gravity="center"
-            android:layout_marginBottom="8dp"
+            android:includeFontPadding="false"
+            android:shadowColor="#66000000"
+            android:shadowDx="0"
+            android:shadowDy="1"
+            android:shadowRadius="2"
             android:textColor="#F0F0F0"
-            android:textSize="16sp" />
+            android:textSize="13sp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -57,12 +82,13 @@
             android:importantForAccessibility="no"
             android:text="" />
 
+        <!-- Shabbat / parsha (.board-shabbat-block) -->
         <LinearLayout
             android:id="@+id/widget_shabbat_block"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -78,8 +104,8 @@
                 android:id="@+id/widget_parsha"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_marginTop="2dp"
+                android:gravity="center"
                 android:textColor="#FFD54F"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -146,12 +172,13 @@
             android:importantForAccessibility="no"
             android:text="" />
 
+        <!-- Weather (.board-weather-block / .weather-today-card) -->
         <LinearLayout
             android:id="@+id/widget_weather_block"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/widget_weather_card_bg"
             android:orientation="vertical"
             android:padding="8dp">
@@ -173,14 +200,15 @@
                         android:id="@+id/widget_weather_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="☁"
+                        android:text="☀"
                         android:textColor="#FFD54F"
-                        android:textSize="24sp" />
+                        android:textSize="28sp" />
 
                     <TextView
                         android:id="@+id/widget_weather_temp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
                         android:textColor="#FFD54F"
                         android:textSize="30sp"
                         android:textStyle="bold" />
@@ -331,6 +359,7 @@
             android:importantForAccessibility="no"
             android:text="" />
 
+        <!-- Upcoming (.nearest-dates) -->
         <TextView
             android:id="@+id/widget_announcements_title"
             android:layout_width="match_parent"
@@ -339,15 +368,17 @@
             android:layout_marginBottom="6dp"
             android:gravity="center"
             android:textColor="#CFAF1F"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:textStyle="bold" />
 
         <AdapterViewFlipper
             android:id="@+id/widget_announcements_flipper"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:autoStart="true"
-            android:flipInterval="5000" />
+            android:flipInterval="5000"
+            android:minHeight="120dp" />
 
         <TextView
             android:id="@+id/widget_empty_view"

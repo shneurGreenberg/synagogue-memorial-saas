@@ -1,5 +1,6 @@
 $background-dark: #2a2118;
 $panel-dark: #3d3424;
+$wooden-border: #604f2f;
 $golden-border: rgba(96, 81, 14, 0.5);
 $golden-text: var(--primary-color, #cfaf1f);
 $accent: var(--accent-color, #ffd54f);
@@ -53,33 +54,48 @@ body {
   width: 100%;
   height: 100%;
   background-color: $panel-dark;
-  border: 7px solid #604f2f;
+  border: 7px solid $wooden-border;
   box-shadow:
     1px 1px 10px #000,
-    inset -2px -2px 1px lighten(#604f2f, 5%),
-    inset 2px 2px 1px darken(#604f2f, 5%);
+    2px 2px 2px darken($wooden-border, 50%),
+    -2px -2px 2px lighten($wooden-border, 50%),
+    inset -2px -2px 1px lighten($wooden-border, 5%),
+    inset 2px 2px 1px darken($wooden-border, 5%);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .inner {
   height: 100%;
+  width: 100%;
   padding: 14px 12px 0;
   display: flex;
   flex-direction: column;
+  align-items: center;
   text-align: center;
+  box-sizing: border-box;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .board-right-header {
+  width: 100%;
   flex-shrink: 0;
 }
 
 .board-official-logo-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
   margin-bottom: 10px;
 }
 
 .board-official-logo {
-  width: 88px;
-  height: 88px;
+  width: clamp(72px, 28vw, 120px);
+  height: auto;
+  aspect-ratio: 88 / 100;
   margin: 0 auto;
   display: block;
   object-fit: contain;
@@ -87,8 +103,8 @@ body {
 }
 
 .board-official-logo-placeholder {
-  width: 88px;
-  height: 88px;
+  width: clamp(72px, 28vw, 120px);
+  height: clamp(72px, 28vw, 120px);
   margin: 0 auto;
   display: grid;
   place-items: center;
@@ -97,26 +113,43 @@ body {
 }
 
 .board-clock-block {
+  width: 100%;
   padding-bottom: 10px;
   border-bottom: 1px solid $golden-border;
+
+  time {
+    width: 100%;
+    display: block;
+  }
 
   h1,
   h2,
   h3 {
-    margin: 0.2em 0;
+    margin: 0;
     color: #fff;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
   }
 
   h1 {
-    font-size: clamp(42px, 12vw, 72px);
+    font-size: clamp(28px, 9vw, 40px);
     font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 4px;
+    white-space: nowrap;
   }
 
-  h2,
-  h3 {
-    font-size: clamp(18px, 4.5vw, 28px);
+  h2 {
+    font-size: clamp(16px, 4.5vw, 24px);
     font-weight: 500;
+    line-height: 1.22;
+    margin-bottom: 3px;
+  }
+
+  h3 {
+    font-size: clamp(13px, 3.5vw, 16px);
+    font-weight: 500;
+    line-height: 1.25;
+    color: $text;
   }
 }
 
@@ -242,34 +275,32 @@ body {
 
 .weather-icon {
   display: inline-block;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(255, 213, 79, 0.12);
   position: relative;
+  line-height: 1;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .weather-icon::before {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: 16px;
+  display: inline-block;
   line-height: 1;
+  font-size: 16px;
 }
 
 .weather-today-icon.weather-icon {
   width: 34px;
   height: 34px;
+  font-size: 28px;
 }
 
 .weather-today-icon.weather-icon::before {
-  font-size: 20px;
+  font-size: 28px;
 }
 
 .weather-cube-icon.weather-icon {
-  width: 24px;
-  height: 24px;
+  width: 1.2em;
+  height: 1.2em;
+  font-size: 14px;
 }
 
 .weather-cube-icon.weather-icon::before {
