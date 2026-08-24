@@ -76,3 +76,4 @@ See **[docs/FREE-RU-PROVIDER.md](docs/FREE-RU-PROVIDER.md)** (Russian guide) and
 - **Admin/master:** Handlebars + vanilla JS.
 - **Database:** MongoDB.
 - **Public API contract:** Board payloads are projected through `lib/public-board.js` so contacts, admin users, and reminder emails never reach TVs/browsers.
+- **People export for other websites:** `GET /s/:slug/api/people` returns names, photos, dates, and public biographies with absolute URLs. See [docs/PUBLIC-PEOPLE-API.md](docs/PUBLIC-PEOPLE-API.md).

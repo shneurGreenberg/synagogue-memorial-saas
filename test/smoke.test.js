@@ -143,6 +143,36 @@ describe('http smoke', () => {
     }
   });
 
+  it('returns a public people export for other websites', async () => {
+    const res = await request('GET', `/s/${SLUG}/api/people`, {
+      headers: { Origin: 'https://other-site.example' },
+    });
+    assert.equal(res.status, 200);
+    assert.equal(res.headers['access-control-allow-origin'], '*');
+    const payload = res.json();
+
+    assert.equal(payload.synagogue.slug, SLUG);
+    assert.ok(payload.count >= 1);
+    assert.equal(payload.people.length, payload.count);
+
+    const first = payload.people[0];
+    assert.ok(first.name);
+    assert.equal(typeof first.text, 'string');
+    assert.ok(first.photoUrl === '' || first.photoUrl.includes('/photos/'));
+    assert.ok(first.cardUrl.includes(`/s/${SLUG}/card/`));
+    assert.equal(first.contact, undefined);
+    assert.equal(first.contacts, undefined);
+
+    const one = await request('GET', `/s/${SLUG}/api/people/${first.id}`);
+    assert.equal(one.status, 200);
+    assert.equal(one.json().person.id, first.id);
+    assert.equal(one.json().person.contact, undefined);
+
+    const download = await request('GET', `/s/${SLUG}/api/people?download=1`);
+    assert.equal(download.status, 200);
+    assert.match(download.headers['content-disposition'] || '', /attachment/);
+  });
+
   it('returns person detail without contact fields', async () => {
     const board = await request('GET', `/s/${SLUG}/api/board`);
     const first = board.json().people[0];
