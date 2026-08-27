@@ -15,5 +15,8 @@ run:
   command: npm run start:prod
   containerPort: 3000
   persistenceMount: /data
-  # Set in Amvera dashboard: MONGODB_URI, SESSION_SECRET, NODE_ENV=production, TRUST_PROXY=1
+  # Set in Amvera dashboard: MONGODB_URI, SESSION_SECRET, MASTER_ADMIN_PASSWORD,
+  # NODE_ENV=production, TRUST_PROXY=1
+  # Optional: PUBLIC_ORIGIN=https://synagogue-kadish-shneur.amvera.io
+  # (absolute photo/card URLs for GET /s/:slug/api/people)
   # Push photos/ to GitHub before deploy: git add -f photos/ && git push

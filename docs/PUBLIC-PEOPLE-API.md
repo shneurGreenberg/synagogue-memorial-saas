@@ -22,6 +22,10 @@ http://localhost:3000/s/novosibirsk/api/people
 
 CORS פתוח ל־`GET` מכל אתר (`Access-Control-Allow-Origin: *`), כולל תמונות ב־`/photos/...`.
 
+**פרודקשן נובוסיבירסק:** `https://synagogue-kadish-shneur.amvera.io/s/novosibirsk/api/people`
+
+הלוח הציבורי (`/api/board`) מחזיר רשימה דקה בלי ביוגרפיה. כרטיסי בית הקברות באתר חב״ד צריכים את `/api/people` — שם כל אדם כולל `text`.
+
 ## שדות בכל נפטר
 
 ```json
@@ -107,3 +111,33 @@ console.log(data.people.map((person) => person.name));
 - עד 120 בקשות לדקה לכל כתובת (rate limit).
 - אם הנתונים כמעט לא משתנים, אפשר לשמור cache ל־5 דקות (`Cache-Control: max-age=300`).
 - לוח הזיכרון עצמו נשאר ב־`/s/SLUG`. ה־API הזה מיועד רק לקריאה מאתר אחר.
+
+## פריסה ל-Amvera (כדי שה-API יהיה חי)
+
+הפרויקט החי: `https://synagogue-kadish-shneur.amvera.io`  
+ענף הפריסה: **`main`**. הקובץ `amvera.yaml` מריץ `npm run build:board` ואז `npm run start:prod`.
+
+1. ממזגים את ה-PR ל-`main` ב-GitHub.
+2. אם Amvera מחובר ל-GitHub על ענף `main` — הבנייה מתחילה אוטומטית.
+3. אם אין auto-deploy: בלוח Amvera → הפרויקט `synagogue-kadish-shneur` → **Деплой** / Redeploy מ-`main`.
+4. אם הפריסה היא דרך git remote של Amvera:
+
+```bash
+git fetch origin main
+git push amvera origin/main:master
+```
+
+5. (מומלץ) ב-Amvera → Переменные окружения הוסיפו:
+
+| משתנה | ערך |
+|--------|-----|
+| `PUBLIC_ORIGIN` | `https://synagogue-kadish-shneur.amvera.io` |
+| `TRUST_PROXY` | `1` |
+
+6. אחרי שה-deploy ירוק, בדקו:
+
+```bash
+curl -sS https://synagogue-kadish-shneur.amvera.io/s/novosibirsk/api/people | python3 -c "import json,sys; d=json.load(sys.stdin); print(d['count'], 'people'); print('text' in d['people'][0], len(d['people'][0].get('text') or ''))"
+```
+
+צריך להתקבל **200** עם `people[].text` (HTML זיכרון ציבורי). לא אמורים להופיע `contact` / `contacts` / `adminUsers`.

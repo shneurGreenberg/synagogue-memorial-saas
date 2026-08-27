@@ -5,6 +5,7 @@ const {
   getPublicOrigin,
   toEmbedPerson,
   toEmbedPeoplePayload,
+  PUBLIC_PERSON_KEYS,
 } = require('../lib/public-people-api');
 
 describe('public people API payload', () => {
@@ -20,7 +21,7 @@ describe('public people API payload', () => {
     contacts: [{ phone: '+200', email: 'other@example.com' }],
   };
 
-  it('builds absolute photo and card URLs and strips contacts', () => {
+  it('keeps biography HTML and only public person keys', () => {
     const person = toEmbedPerson(samplePerson, {
       origin: 'https://board.example',
       slug: 'demo',
@@ -39,6 +40,9 @@ describe('public people API payload', () => {
     assert.equal(person.hebrewDateOfDeath.month, 10);
     assert.equal(person.hebrewDateOfDeath.year, 5710);
     assert.equal(person.gregorianDateOfDeath.year, 1950);
+    assert.deepEqual(Object.keys(person).sort(), [...PUBLIC_PERSON_KEYS].sort());
+    assert.equal(JSON.stringify(person).includes('secret@example.com'), false);
+    assert.equal(JSON.stringify(person).includes('+100'), false);
   });
 
   it('returns synagogue metadata and people list', () => {
@@ -69,6 +73,28 @@ describe('public people API payload', () => {
     });
 
     assert.equal(origin, 'https://kadish.example');
+  });
+
+  it('prefers PUBLIC_ORIGIN over forwarded headers', () => {
+    const previous = process.env.PUBLIC_ORIGIN;
+    process.env.PUBLIC_ORIGIN = 'https://synagogue-kadish-shneur.amvera.io/';
+
+    try {
+      const origin = getPublicOrigin({
+        protocol: 'http',
+        get(name) {
+          if (name === 'Host') return 'localhost:3000';
+          return '';
+        },
+      });
+      assert.equal(origin, 'https://synagogue-kadish-shneur.amvera.io');
+    } finally {
+      if (previous === undefined) {
+        delete process.env.PUBLIC_ORIGIN;
+      } else {
+        process.env.PUBLIC_ORIGIN = previous;
+      }
+    }
   });
 
   it('joins origin and path without duplicating slashes', () => {
