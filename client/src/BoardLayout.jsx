@@ -7,6 +7,7 @@ import { IdleReload } from './components/IdleReload';
 import { BoardVersionBadge } from './components/BoardVersionBadge';
 import { BaruchHashemBadge } from './components/BaruchHashemBadge';
 import HomePage from './pages/HomePage';
+import { PresentationImageOverlay } from './components/PresentationImageOverlay';
 import CardPage from './pages/CardPage';
 import TileExportPage from './pages/TileExportPage';
 
@@ -47,6 +48,7 @@ function BoardLayoutInner() {
       <BaruchHashemBadge />
       <div id="main-entry">
         <HomePage />
+        <PresentationImageOverlay />
         {personId ? <CardPage personId={personId} /> : null}
       </div>
     </BoardNavigationProvider>

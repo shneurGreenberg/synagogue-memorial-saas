@@ -300,6 +300,12 @@ const SynagogueSchema = new mongoose.Schema({
   language: { type: String, default: 'ru' },
   adminLanguage: { type: String, default: 'ru' }, // Separate language for admin panel
   reloadTimeout: { type: Number, default: 43200000 }, // 12 hours
+  presentationOverlay: {
+    enabled: { type: Boolean, default: false },
+    image: { type: String, default: '' },
+    intervalMs: { type: Number, default: 180000 }, // every 3 minutes
+    durationMs: { type: Number, default: 10000 }, // show 10 seconds
+  },
   provisioning: {
     photosDriveUrl: { type: String, default: '' },
     contactFiles: [{

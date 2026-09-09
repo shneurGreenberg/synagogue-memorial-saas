@@ -2407,3 +2407,30 @@ body.tile-export-mode {
     padding: 2rem;
   }
 }
+
+/* Full-screen timed presentation image (synagogue screen) */
+.presentation-image-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  animation: presentation-overlay-fade-in 0.35s ease-out;
+}
+
+.presentation-image-overlay__img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+@keyframes presentation-overlay-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
