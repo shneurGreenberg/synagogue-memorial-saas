@@ -54,6 +54,7 @@ const AdminUserSchema = new mongoose.Schema({
     people: { type: Boolean, default: true },
     peopleImport: { type: Boolean, default: false },
     contactDirectory: { type: Boolean, default: false },
+    slideshow: { type: Boolean, default: false },
     events: { type: Boolean, default: false },
     settings: { type: Boolean, default: false },
     settingsPreview: { type: Boolean, default: false },
@@ -300,6 +301,15 @@ const SynagogueSchema = new mongoose.Schema({
   language: { type: String, default: 'ru' },
   adminLanguage: { type: String, default: 'ru' }, // Separate language for admin panel
   reloadTimeout: { type: Number, default: 43200000 }, // 12 hours
+  slideshow: {
+    enabled: { type: Boolean, default: false },
+    interval: { type: Number, default: 10 }, // seconds for each slide
+    mainDuration: { type: Number, default: 30 }, // seconds for main view
+    images: [{
+      url: String,
+      text: String
+    }]
+  },
   presentationOverlay: {
     enabled: { type: Boolean, default: false },
     image: { type: String, default: '' },

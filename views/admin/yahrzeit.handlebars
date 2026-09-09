@@ -12,6 +12,15 @@
         </div>
     </header>
 
+{{#if upcomingHolidayNotice}}
+<section class="admin-alert admin-alert-info upcoming-holiday-notice" role="status">
+    <strong>{{t 'upcoming_holiday_notice_title'}}:</strong>
+    <span>{{upcomingHolidayNotice.title}}</span>
+    <span class="upcoming-holiday-notice-date">{{upcomingHolidayNotice.date}}</span>
+</section>
+{{/if}}
+
+
     <form method="POST" action="/admin/{{synagogue.slug}}/yahrzeit/settings" class="yahrzeit-settings-form board-features-grid">
         <div class="admin-theme-setting">
             <div class="admin-theme-setting-label">{{t 'yahrzeit_include_hebrew'}}</div>

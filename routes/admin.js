@@ -360,6 +360,23 @@ async function loadAdminContext(req, res, next) {
     }
 }
 
+async function fetchSlideshow(slug) {
+    const doc = await Synagogue.findOne({ slug }).lean();
+    return doc ? doc.slideshow : null;
+}
+
+async function getUpcomingHolidayNotice(synagogue) {
+    try {
+        const { getUpcomingHolidays } = require('../lib/jewish-feed');
+        const lang = (synagogue && (synagogue.adminLanguage || synagogue.language)) || 'ru';
+        const holidays = await getUpcomingHolidays(lang, 90, 5);
+        return holidays && holidays.length ? holidays[0] : null;
+    } catch (err) {
+        console.warn('upcoming holiday notice failed:', err.message);
+        return null;
+    }
+}
+
 function requirePermission(permission) {
     return (req, res, next) => {
         if (req.params.slug !== req.session.adminSlug) {
@@ -479,7 +496,7 @@ const ADMIN_PAGE_SCRIPTS = {
     'admin/dashboard': [],
     'admin/people': ['admin-people.js', 'admin-person-card.js', 'contact-platform-ui.js'],
     'admin/contacts': ['admin-contact-directory.js', 'contact-platform-ui.js'],
-    'admin/events': ['admin-events.js'],
+    'admin/events': ['admin-events.js', 'admin-slideshow.js'],
     'admin/users': ['admin-users.js'],
     'admin/yahrzeit': ['admin-yahrzeit.js', 'admin-tile-capture.js'],
 };
@@ -1028,6 +1045,9 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
             || weekEntries.some((entry) => entry.id === person.id)
         ));
 
+
+        const upcomingHolidayNotice = await getUpcomingHolidayNotice(enriched);
+
         renderAdmin(res, 'admin/yahrzeit', {
             synagogue: enriched,
             adminUser: req.adminUser,
@@ -1036,6 +1056,7 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
             weekEntries,
             yahrzeitPeople,
             todayLabel,
+            upcomingHolidayNotice,
             saved: req.query.saved === '1',
         });
     } catch (err) {
@@ -1493,6 +1514,90 @@ router.post('/:slug/people/delete', requireAdmin, requirePermission('people'), a
     }
 });
 
+
+// Slideshow management (embedded under Events tab)
+router.post('/:slug/slideshow/settings', requireAdmin, requireAnyPermission('events', 'slideshow'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { enabled, interval, mainDuration } = req.body;
+        await Synagogue.updateOne({ slug: req.params.slug }, {
+            $set: {
+                'slideshow.enabled': enabled === 'on' || enabled === 'true' || enabled === true || enabled === '1',
+                'slideshow.interval': parseInt(interval, 10) || 10,
+                'slideshow.mainDuration': parseInt(mainDuration, 10) || 30
+            }
+        });
+        invalidateBoardCache(req.params.slug);
+        return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.post('/:slug/slideshow/add', requireAdmin, requireAnyPermission('events', 'slideshow'), upload.single('image'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { text } = req.body;
+        if (!req.file) {
+            return res.status(400).json({ ok: false, error: 'Image is required' });
+        }
+        const optimizedFilename = await optimizeUploadedImage(req.file.path, 'slideshow');
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            {
+                $push: {
+                    'slideshow.images': {
+                        url: optimizedFilename,
+                        text: sanitizeRichText(text)
+                    }
+                }
+            }
+        );
+        invalidateBoardCache(req.params.slug);
+        return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.post('/:slug/slideshow/edit', requireAdmin, requireAnyPermission('events', 'slideshow'), upload.single('image'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { slideId, text } = req.body;
+        const updateFields = {
+            'slideshow.images.$.text': sanitizeRichText(text || ''),
+        };
+
+        if (req.file) {
+            updateFields['slideshow.images.$.url'] = await optimizeUploadedImage(req.file.path, 'slideshow');
+        }
+
+        await Synagogue.updateOne(
+            { slug: req.params.slug, 'slideshow.images._id': slideId },
+            { $set: updateFields },
+        );
+        invalidateBoardCache(req.params.slug);
+        return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.post('/:slug/slideshow/delete', requireAdmin, requireAnyPermission('events', 'slideshow'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { slideId } = req.body;
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            { $pull: { 'slideshow.images': { _id: slideId } } }
+        );
+        invalidateBoardCache(req.params.slug);
+        return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
 // Community events (special days & announcements)
 router.get('/:slug/events', requireAdmin, requirePermission('events'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
@@ -1500,11 +1605,13 @@ router.get('/:slug/events', requireAdmin, requirePermission('events'), async (re
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
         const events = synagogue.communityEvents || [];
         const categorized = categorizeCommunityEvents(events);
+        const upcomingHolidayNotice = await getUpcomingHolidayNotice(synagogue);
         renderAdmin(res, 'admin/events', {
             synagogue: enrichSynagogueForAdmin(synagogue),
             adminUser: req.adminUser,
             adminPermissions: req.adminPermissions,
             events: categorized,
+        upcomingHolidayNotice,
         });
     } catch (err) {
         res.status(500).send(err.message);

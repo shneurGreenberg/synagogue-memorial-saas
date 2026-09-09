@@ -1,34 +1,10 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { assetUrl } from '../lib/asset-url';
 import { useBoardData } from '../context/BoardDataContext';
 
 const DEFAULT_INTERVAL_MS = 3 * 60 * 1000;
 const DEFAULT_DURATION_MS = 10 * 1000;
-
-function resolveOverlayConfig(raw) {
-  if (!raw || typeof raw !== 'object') {
-    return null;
-  }
-
-  if (raw.enabled === false) {
-    return null;
-  }
-
-  const image = typeof raw.image === 'string' ? raw.image.trim() : '';
-  if (!image) {
-    return null;
-  }
-
-  const intervalMs = Number(raw.intervalMs);
-  const durationMs = Number(raw.durationMs);
-
-  return {
-    image,
-    intervalMs: Number.isFinite(intervalMs) && intervalMs >= 15000 ? intervalMs : DEFAULT_INTERVAL_MS,
-    durationMs: Number.isFinite(durationMs) && durationMs >= 2000 ? durationMs : DEFAULT_DURATION_MS,
-  };
-}
 
 function resolveImageSrc(image) {
   if (!image) return '';
@@ -44,66 +20,159 @@ function resolveImageSrc(image) {
   return assetUrl(`images/${image}`);
 }
 
+function resolvePresentationOverlay(raw) {
+  if (!raw || typeof raw !== 'object' || raw.enabled === false) {
+    return null;
+  }
+
+  const image = typeof raw.image === 'string' ? raw.image.trim() : '';
+  if (!image) {
+    return null;
+  }
+
+  const intervalMs = Number(raw.intervalMs);
+  const durationMs = Number(raw.durationMs);
+
+  return {
+    mode: 'single',
+    images: [{ url: image, text: '' }],
+    mainDurationMs: Number.isFinite(intervalMs) && intervalMs >= 15000 ? intervalMs : DEFAULT_INTERVAL_MS,
+    slideIntervalMs: Number.isFinite(durationMs) && durationMs >= 2000 ? durationMs : DEFAULT_DURATION_MS,
+  };
+}
+
+function resolveSlideshow(raw) {
+  if (!raw || typeof raw !== 'object' || !raw.enabled) {
+    return null;
+  }
+
+  const images = Array.isArray(raw.images)
+    ? raw.images.filter((slide) => slide && (slide.url || slide.image))
+    : [];
+  if (!images.length) {
+    return null;
+  }
+
+  const intervalSec = Number(raw.interval);
+  const mainSec = Number(raw.mainDuration);
+
+  return {
+    mode: 'slideshow',
+    images: images.map((slide) => ({
+      url: slide.url || slide.image,
+      text: slide.text || '',
+    })),
+    mainDurationMs: Number.isFinite(mainSec) && mainSec >= 5 ? mainSec * 1000 : 30 * 1000,
+    slideIntervalMs: Number.isFinite(intervalSec) && intervalSec >= 2 ? intervalSec * 1000 : 10 * 1000,
+  };
+}
+
 /**
- * Full-screen presentation image on the live board.
- * Shows for `durationMs` every `intervalMs` when community has presentationOverlay configured.
+ * Full-screen presentation / slideshow overlay on the live board.
+ * Prefer classic slideshow config; fall back to presentationOverlay; then Novosibirsk holiday default.
  */
 export function PresentationImageOverlay() {
   const { data: board } = useBoardData();
-  // Temporary holiday default until admin/Mongo slideshow is set (Sander Rosh Hashanah 5787).
+
   const holidayDefault = board?.slug === 'novosibirsk'
     ? { enabled: true, image: 'sander-kaddish-5787.jpg', intervalMs: 180000, durationMs: 10000 }
     : null;
-  const config = resolveOverlayConfig(board?.presentationOverlay) || resolveOverlayConfig(holidayDefault);
+
+  const config = useMemo(
+    () => resolveSlideshow(board?.slideshow)
+      || resolvePresentationOverlay(board?.presentationOverlay)
+      || resolvePresentationOverlay(holidayDefault),
+    [board?.slideshow, board?.presentationOverlay, board?.slug],
+  );
+
   const [visible, setVisible] = useState(false);
+  const [slideIndex, setSlideIndex] = useState(0);
 
   useEffect(() => {
     if (!config) {
       setVisible(false);
+      setSlideIndex(0);
       return undefined;
     }
 
-    let hideTimer = null;
     let cancelled = false;
+    let timer = null;
+    let index = 0;
 
-    const show = () => {
-      if (cancelled || document.hidden) {
-        return;
+    const clear = () => {
+      if (timer) {
+        window.clearTimeout(timer);
+        timer = null;
       }
-      setVisible(true);
-      if (hideTimer) {
-        window.clearTimeout(hideTimer);
-      }
-      hideTimer = window.setTimeout(() => {
-        if (!cancelled) {
-          setVisible(false);
-        }
-      }, config.durationMs);
     };
 
-    // First show after one full interval (don't interrupt initial board load).
-    const intervalId = window.setInterval(show, config.intervalMs);
+    const schedule = (fn, ms) => {
+      clear();
+      timer = window.setTimeout(fn, ms);
+    };
+
+    const showSlides = () => {
+      if (cancelled || document.hidden) {
+        schedule(showSlides, 1000);
+        return;
+      }
+
+      index = 0;
+      setSlideIndex(0);
+      setVisible(true);
+
+      const advance = () => {
+        if (cancelled) return;
+        const next = index + 1;
+        if (next >= config.images.length) {
+          setVisible(false);
+          schedule(showSlides, config.mainDurationMs);
+          return;
+        }
+        index = next;
+        setSlideIndex(next);
+        schedule(advance, config.slideIntervalMs);
+      };
+
+      schedule(advance, config.slideIntervalMs);
+    };
+
+    // First cycle: wait mainDuration on the board, then show slides.
+    schedule(showSlides, config.mainDurationMs);
 
     return () => {
       cancelled = true;
-      window.clearInterval(intervalId);
-      if (hideTimer) {
-        window.clearTimeout(hideTimer);
-      }
+      clear();
     };
-  }, [config?.image, config?.intervalMs, config?.durationMs]);
+  }, [config]);
 
   if (!config || !visible) {
     return null;
   }
 
-  const src = resolveImageSrc(config.image);
+  const slide = config.images[slideIndex] || config.images[0];
+  if (!slide) {
+    return null;
+  }
+
+  const src = resolveImageSrc(slide.url);
+  const isSlideshow = config.mode === 'slideshow';
 
   return createPortal(
-    <div className="presentation-image-overlay" role="presentation" aria-hidden="true">
-      <img className="presentation-image-overlay__img" src={src} alt="" />
+    <div
+      className={isSlideshow ? 'slideshow-overlay' : 'presentation-image-overlay'}
+      role="presentation"
+      aria-hidden="true"
+    >
+      <img
+        className={isSlideshow ? 'slideshow-image' : 'presentation-image-overlay__img'}
+        src={src}
+        alt=""
+      />
+      {isSlideshow && slide.text ? (
+        <div className="slideshow-caption">{slide.text}</div>
+      ) : null}
     </div>,
     document.body,
   );
 }
-
