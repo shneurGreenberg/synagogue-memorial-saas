@@ -1,8 +1,17 @@
 package com.synagogue.sidebar.widget;
 
+import android.graphics.Color;
+
 import java.util.Locale;
 
 final class WidgetI18n {
+    private static final int COLOR_ACCENT = Color.parseColor("#FFD54F");
+    private static final int COLOR_OVERCAST = Color.parseColor("#CFD8DC");
+    private static final int COLOR_FOG = Color.parseColor("#B0BEC5");
+    private static final int COLOR_RAIN = Color.parseColor("#81D4FA");
+    private static final int COLOR_SNOW = Color.parseColor("#E3F2FD");
+    private static final int COLOR_TEXT = Color.parseColor("#F0F0F0");
+
     private WidgetI18n() {}
 
     static String shabbatEnter(String lang) {
@@ -48,14 +57,49 @@ final class WidgetI18n {
     }
 
     static String weatherIcon(int code) {
-        if (code == 0) return "☀";
-        if (code <= 3) return "⛅";
+        if (code == 0 || code == 1) return "☀";
+        if (code == 2) return "⛅";
+        if (code == 3) return "☁";
         if (code <= 48) return "≈";
         if (code <= 67) return "☂";
         if (code <= 77) return "❄";
         if (code <= 82) return "☂";
         if (code >= 95) return "⚡";
         return "°";
+    }
+
+    /** Colors match board `.weather-icon-*` in styles/home.scss */
+    static int weatherIconColor(int code) {
+        if (code == 0 || code == 1 || code == 2) return COLOR_ACCENT;
+        if (code == 3) return COLOR_OVERCAST;
+        if (code <= 48) return COLOR_FOG;
+        if (code <= 67) return COLOR_RAIN;
+        if (code <= 77) return COLOR_SNOW;
+        if (code <= 82) return COLOR_RAIN;
+        if (code >= 95) return COLOR_ACCENT;
+        return COLOR_TEXT;
+    }
+
+    static int weatherIconColor(String glyph) {
+        if (glyph == null || glyph.isEmpty()) {
+            return COLOR_ACCENT;
+        }
+        if (glyph.contains("☀") || glyph.contains("⛅") || glyph.contains("⚡")) {
+            return COLOR_ACCENT;
+        }
+        if (glyph.contains("≈")) {
+            return COLOR_FOG;
+        }
+        if (glyph.contains("☁")) {
+            return COLOR_OVERCAST;
+        }
+        if (glyph.contains("☂")) {
+            return COLOR_RAIN;
+        }
+        if (glyph.contains("❄")) {
+            return COLOR_SNOW;
+        }
+        return COLOR_ACCENT;
     }
 
     static String weatherLabel(String lang, int code) {
