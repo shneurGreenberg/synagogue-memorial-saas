@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { assetUrl } from '../lib/asset-url';
 import { useBoardData } from '../context/BoardDataContext';
@@ -50,7 +50,11 @@ function resolveImageSrc(image) {
  */
 export function PresentationImageOverlay() {
   const { data: board } = useBoardData();
-  const config = resolveOverlayConfig(board?.presentationOverlay);
+  // Temporary holiday default until admin/Mongo slideshow is set (Sander Rosh Hashanah 5787).
+  const holidayDefault = board?.slug === 'novosibirsk'
+    ? { enabled: true, image: 'sander-kaddish-5787.jpg', intervalMs: 180000, durationMs: 10000 }
+    : null;
+  const config = resolveOverlayConfig(board?.presentationOverlay) || resolveOverlayConfig(holidayDefault);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -102,3 +106,4 @@ export function PresentationImageOverlay() {
     document.body,
   );
 }
+
