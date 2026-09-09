@@ -61,7 +61,7 @@ class MemorialCardInner extends React.Component {
           golden-panel
           ${big ? 'card-big' : ''}
           ${entry.passedToday ? 'passed-today' : ''}
-          ${entry.passedToday && !big ? 'card-outline' : ''}
+          ${entry.passedToday && !big ? 'card-outline yahrzeit-highlight' : ''}
         `}
         role="button"
         tabIndex={0}
@@ -71,6 +71,9 @@ class MemorialCardInner extends React.Component {
       >
         <CandleVideo active={this.state.showCandle} animated={!STATIC_CANDLES} />
         <div className={`inner ${getNameDensityClass(displayName)}`}>
+          {entry.passedToday && (
+            <div className="yahrzeit-today-badge" aria-hidden="true">★</div>
+          )}
           <h3>{displayName}</h3>
           <div className="card-dates">
             <time dateTime={toDatetimeAttr(entry.gregorianDateOfDeath)}>

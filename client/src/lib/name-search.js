@@ -106,14 +106,14 @@ export function searchPeopleByString(string, allPeople) {
 export function prioritizeYahrzeitForKadish(people) {
   const yahrzeitToday = people.filter((person) => person.passedToday);
 
-  if (yahrzeitToday.length !== 1 || people.length <= 1) {
+  if (yahrzeitToday.length < 1 || yahrzeitToday.length > 2 || people.length <= 1) {
     return people;
   }
 
-  const [centerPerson] = yahrzeitToday;
-  const others = people.filter((person) => person.id !== centerPerson.id);
+  const featuredIds = new Set(yahrzeitToday.map((person) => person.id));
+  const others = people.filter((person) => !featuredIds.has(person.id));
 
-  return [centerPerson, ...others];
+  return [...yahrzeitToday, ...others];
 }
 
 export function getPageShift(state) {
@@ -138,9 +138,10 @@ export function applySearchToPaginationState(state, string) {
   let people = searchPeopleByString(string, state.allPeople);
 
   const yahrzeitTodayCount = people.filter((person) => person.passedToday).length;
-  const hasKadishToday = people.length === 1 || yahrzeitTodayCount === 1;
+  const hasKadishToday = people.length === 1
+    || (yahrzeitTodayCount >= 1 && yahrzeitTodayCount <= 2);
 
-  if (hasKadishToday && yahrzeitTodayCount === 1 && people.length > 1) {
+  if (hasKadishToday && yahrzeitTodayCount >= 1 && yahrzeitTodayCount <= 2 && people.length > 1) {
     people = prioritizeYahrzeitForKadish(people);
   }
 

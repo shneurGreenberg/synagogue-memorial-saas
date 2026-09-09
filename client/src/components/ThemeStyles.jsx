@@ -208,7 +208,7 @@ export function ThemeStyles() {
       font-size: calc(1em * var(--font-scale-weather)) !important;
     }
     .main-container .weather-panel .weather-today-temp {
-      font-size: calc(clamp(24px, 2.2vw, 34px) * var(--font-scale-weather)) !important;
+      font-size: calc(clamp(24px, 2.2vw, 34px) * var(--font-scale-weather) * 0.9) !important;
     }
     .main-container .weather-panel .weather-today-label {
       font-size: calc(clamp(10px, 0.88vw, 13px) * var(--font-scale-weather)) !important;

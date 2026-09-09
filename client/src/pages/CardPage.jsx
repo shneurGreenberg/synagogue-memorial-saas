@@ -181,52 +181,60 @@ function useCardExportReady(person, biographyText, exportMode) {
   }, [person, biographyText, exportMode]);
 }
 
-function usePersonBiography(person, personId) {
+function usePersonBiography(person, personId, revision = 0) {
   const slug = getBoardSlug();
   const [biographyText, setBiographyText] = useState(() => person?.text || '');
 
   useEffect(() => {
-    if (person?.text) {
-      setBiographyText(person.text);
-      return undefined;
-    }
-
     if (!person || !slug || !personId) {
       setBiographyText('');
       return undefined;
     }
 
+    // Prefer freshly fetched text so admin edits show after board poll/refresh.
+    // Embedded slim payloads omit text; cached HTTP responses previously hid updates.
     let cancelled = false;
+    const cacheBust = encodeURIComponent(String(revision || Date.now()));
 
-    fetch(`/s/${slug}/api/board/person/${encodeURIComponent(personId)}`, {
+    fetch(`/s/${slug}/api/board/person/${encodeURIComponent(personId)}?v=${cacheBust}`, {
+      cache: 'no-store',
       headers: { Accept: 'application/json' },
     })
       .then((response) => (response.ok ? response.json() : null))
       .then((payload) => {
-        if (!cancelled && payload?.person?.text) {
-          setBiographyText(payload.person.text);
+        if (cancelled) {
+          return;
+        }
+        if (payload?.person && Object.prototype.hasOwnProperty.call(payload.person, 'text')) {
+          setBiographyText(payload.person.text || '');
+          return;
+        }
+        if (person?.text) {
+          setBiographyText(person.text);
         }
       })
       .catch(() => {
-        /* ignore biography fetch errors */
+        if (!cancelled && person?.text) {
+          setBiographyText(person.text);
+        }
       });
 
     return () => {
       cancelled = true;
     };
-  }, [person?.id, person?.text, personId, slug]);
+  }, [person?.id, person?.text, personId, slug, revision]);
 
   return biographyText;
 }
 
 export default function CardPage({ personId, exportMode = false }) {
   const { goToBoard } = useBoardNavigation();
-  const { data } = useBoardData();
+  const { data, revision } = useBoardData();
   const person = useMemo(
     () => (data.people || []).find((entry) => String(entry.id) === String(personId)),
     [data.people, personId],
   );
-  const biographyText = usePersonBiography(person, personId);
+  const biographyText = usePersonBiography(person, personId, revision);
 
   useCardOverlayLock(exportMode);
   useCardExportReady(person, biographyText, exportMode);

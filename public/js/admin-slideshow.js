@@ -57,7 +57,7 @@
     var html = '';
 
     images.forEach(function (slide) {
-      var id = String(slide._id);
+      var id = String((slide && (slide._id || slide.id)) || '');
       var caption = slide.text
         ? '<p class="slide-caption">' + escapeHtml(slide.text) + '</p>'
         : '<p class="slide-caption slide-caption-muted">' + escapeHtml(labels.captionOptional) + '</p>';

@@ -3,7 +3,6 @@ import { withTranslation } from 'react-i18next';
 import { getBoardData } from '../lib/board-data';
 import { useBoardData } from '../context/BoardDataContext';
 import { getBoardSlug } from '../lib/board-slug';
-import { isBoardPreviewMode } from '../lib/board-preview-mode';
 import {
   formatLocalTime,
   getTodaySunTimes,
@@ -62,7 +61,7 @@ function useBoardWeather(coords) {
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    if (!coords || isBoardPreviewMode()) {
+    if (!coords) {
       setForecast(null);
       setLoading(false);
       setFailed(false);

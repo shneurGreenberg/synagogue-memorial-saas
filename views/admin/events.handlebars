@@ -89,7 +89,7 @@
         <div class="slides-grid">
             {{#each synagogue.slideshow.images}}
             <article class="slide-card slide-card-clickable" role="button" tabindex="0"
-                data-slide-id="{{this._id}}">
+                data-slide-id="{{#if this._id}}{{this._id}}{{else}}{{this.id}}{{/if}}">
                 <div class="slide-card-image">
                     <img src="/images/{{this.url}}" alt="{{this.text}}">
                 </div>
@@ -103,7 +103,7 @@
                     <form method="POST" action="/admin/{{../synagogue.slug}}/slideshow/delete"
                         class="slide-delete-form"
                         onsubmit="return confirm('{{t 'are_you_sure'}}');">
-                        <input type="hidden" name="slideId" value="{{this._id}}">
+                        <input type="hidden" name="slideId" value="{{#if this._id}}{{this._id}}{{else}}{{this.id}}{{/if}}">
                         <button type="submit" class="btn-admin btn-admin-danger btn-admin-sm">{{t 'delete'}}</button>
                     </form>
                 </div>
@@ -263,6 +263,24 @@
                         placeholder="{{t 'event_description_placeholder'}}"></textarea>
                 </div>
                 <div class="form-field">
+                    <label for="eventTitleHe">{{t 'event_title'}} ({{t 'language_he'}})</label>
+                    <input type="text" name="titleHe" id="eventTitleHe" class="form-control admin-input-modern event-preview-input"
+                        placeholder="{{t 'event_title_placeholder'}}">
+                </div>
+                <div class="form-field">
+                    <label for="eventTextHe">{{t 'event_description_optional'}} ({{t 'language_he'}})</label>
+                    <textarea name="textHe" id="eventTextHe" class="form-control admin-input-modern event-preview-input" rows="2"
+                        placeholder="{{t 'event_description_placeholder'}}"></textarea>
+                </div>
+                <div class="event-form-actions event-translate-actions">
+                    <button type="button" class="btn-admin btn-admin-ghost btn-admin-with-icon auto-translate-btn"
+                        data-translate-scope="add">
+                        {{{adminIcon 'translate' class='btn-admin-inline-icon'}}}
+                        תרגום אוטומטי
+                    </button>
+                    <span class="field-hint auto-translate-status" data-translate-status="add" hidden></span>
+                </div>
+                <div class="form-field">
                     <label>{{t 'event_date_label'}} <span class="field-optional">({{t 'optional'}})</span></label>
                     <div class="date-inputs-row">
                         <div class="date-input-group">
@@ -385,6 +403,22 @@
                     <div class="form-field">
                         <label for="editEventTextEn">{{t 'event_description_optional'}} ({{t 'language_en'}})</label>
                         <textarea name="textEn" id="editEventTextEn" class="form-control admin-input-modern" rows="2"></textarea>
+                    </div>
+                    <div class="form-field">
+                        <label for="editEventTitleHe">{{t 'event_title'}} ({{t 'language_he'}})</label>
+                        <input type="text" name="titleHe" id="editEventTitleHe" class="form-control admin-input-modern">
+                    </div>
+                    <div class="form-field">
+                        <label for="editEventTextHe">{{t 'event_description_optional'}} ({{t 'language_he'}})</label>
+                        <textarea name="textHe" id="editEventTextHe" class="form-control admin-input-modern" rows="2"></textarea>
+                    </div>
+                    <div class="event-form-actions event-translate-actions">
+                        <button type="button" class="btn-admin btn-admin-ghost btn-admin-with-icon auto-translate-btn"
+                            data-translate-scope="edit">
+                            {{{adminIcon 'translate' class='btn-admin-inline-icon'}}}
+                            תרגום אוטומטי
+                        </button>
+                        <span class="field-hint auto-translate-status" data-translate-status="edit" hidden></span>
                     </div>
                     <div class="form-field">
                         <label>{{t 'event_date_label'}} <span class="field-optional">({{t 'optional'}})</span></label>

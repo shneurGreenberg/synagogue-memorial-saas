@@ -301,6 +301,8 @@ class HomePageBase extends React.Component {
   renderKadishGridContent(pageShift) {
     const { people } = this.state;
     const pick = (index) => people[pageShift + index];
+    const todayCount = (people || []).filter((person) => person && person.passedToday).length;
+    const enlargeToday = todayCount >= 1 && todayCount <= 2;
     const wrap = (className, entry, big) => (
       <div key={className} className={className}>
         <MemorialCard entry={entry} big={big} onOpen={this.props.onOpenCard} />
@@ -309,7 +311,7 @@ class HomePageBase extends React.Component {
 
     return (
       <>
-        {wrap('k-r1c1', pick(1))}
+        {wrap('k-r1c1', pick(1), enlargeToday && pick(1)?.passedToday)}
         {wrap('k-r1c2', pick(2))}
         {wrap('k-r1c3', pick(3))}
         {wrap('k-r1c4', pick(4))}

@@ -426,7 +426,7 @@ app.get('/s/:slug/api/board/person/:personId', apiRateLimiter, async (req, res) 
       return res.status(404).json({ error: 'Person not found' });
     }
 
-    res.setHeader('Cache-Control', 'public, max-age=300');
+    res.setHeader('Cache-Control', 'no-store');
     return res.json({ person: toPublicPersonPayload(person) });
   } catch (err) {
     console.error('Person payload error:', err);

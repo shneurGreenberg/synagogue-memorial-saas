@@ -582,6 +582,30 @@
           border-radius: 12px;
         }
 
+        &.passed-today {
+          box-shadow:
+            0 0 0 2px rgba(255, 213, 79, 0.85),
+            0 0 22px rgba(255, 193, 7, 0.55),
+            inset 0 0 18px rgba(255, 213, 79, 0.18);
+        }
+
+        &.yahrzeit-highlight {
+          border: 3px solid #ffd54f;
+          border-radius: 12px;
+          background: linear-gradient(180deg, rgba(255, 213, 79, 0.16), rgba(0, 0, 0, 0.08));
+        }
+
+        .yahrzeit-today-badge {
+          position: absolute;
+          top: 6px;
+          right: 8px;
+          z-index: 2;
+          color: #ffd54f;
+          font-size: clamp(16px, 1.4vw, 22px);
+          text-shadow: 0 0 8px rgba(255, 193, 7, 0.9);
+          line-height: 1;
+        }
+
         .inner {
           position: relative;
           z-index: 1;
@@ -1013,7 +1037,7 @@
       }
 
       .weather-today-temp {
-        font-size: calc(clamp(24px, 2.2vw, 34px) * var(--font-scale-weather, 1));
+        font-size: calc(clamp(24px, 2.2vw, 34px) * var(--font-scale-weather, 1) * 0.9);
         font-weight: 700;
         line-height: 1;
         color: var(--accent-color, #ffd54f);

@@ -384,8 +384,12 @@
     var texts = event.texts || {};
     document.getElementById('editEventTitleRu').value = titles.ru || event.title || '';
     document.getElementById('editEventTitleEn').value = titles.en || event.title || '';
+    var editTitleHe = document.getElementById('editEventTitleHe');
+    if (editTitleHe) editTitleHe.value = titles.he || '';
     document.getElementById('editEventTextRu').value = texts.ru || event.text || '';
     document.getElementById('editEventTextEn').value = texts.en || event.text || '';
+    var editTextHe = document.getElementById('editEventTextHe');
+    if (editTextHe) editTextHe.value = texts.he || '';
     document.getElementById('editEventMonth').value = event.eventDate && event.eventDate.month ? event.eventDate.month : '';
     document.getElementById('editEventDay').value = event.eventDate && event.eventDate.date ? event.eventDate.date : '';
     document.getElementById('editEventYear').value = event.eventDate && event.eventDate.year ? event.eventDate.year : '';
@@ -472,6 +476,116 @@
     if (editBtn) {
       openEditModal(editBtn.getAttribute('data-event-id'));
     }
+  });
+
+  async function translateText(text, target, source) {
+    var slug = window.location.pathname.split('/')[2];
+    var response = await fetch('/admin/' + slug + '/translate', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+      body: JSON.stringify({ text: text, target: target, source: source || 'auto' }),
+    });
+    var payload = await response.json().catch(function () { return null; });
+    if (!response.ok || !payload || !payload.ok || !payload.translated) {
+      throw new Error((payload && payload.error) || 'Translate failed');
+    }
+    return payload.translated;
+  }
+
+  function detectSourceLang(text) {
+    if (/[\u0590-\u05FF]/.test(text)) return 'he';
+    if (/[\u0400-\u04FF]/.test(text)) return 'ru';
+    return 'en';
+  }
+
+  async function autoTranslateScope(scope) {
+    var map = scope === 'edit'
+      ? {
+          title: { ru: 'editEventTitleRu', en: 'editEventTitleEn', he: 'editEventTitleHe' },
+          text: { ru: 'editEventTextRu', en: 'editEventTextEn', he: 'editEventTextHe' },
+        }
+      : {
+          title: { ru: 'eventTitleRu', en: 'eventTitleEn', he: 'eventTitleHe' },
+          text: { ru: 'eventTextRu', en: 'eventTextEn', he: 'eventTextHe' },
+        };
+    var status = document.querySelector('[data-translate-status="' + scope + '"]');
+    var button = document.querySelector('.auto-translate-btn[data-translate-scope="' + scope + '"]');
+
+    function setStatus(message, isError) {
+      if (!status) return;
+      status.hidden = !message;
+      status.textContent = message || '';
+      status.style.color = isError ? '#c62828' : '';
+    }
+
+    var langs = ['ru', 'en', 'he'];
+    var sourceLang = null;
+    var sourceTitle = '';
+    var sourceText = '';
+
+    langs.forEach(function (lang) {
+      var titleEl = document.getElementById(map.title[lang]);
+      var textEl = document.getElementById(map.text[lang]);
+      var titleVal = titleEl ? String(titleEl.value || '').trim() : '';
+      var textVal = textEl ? String(textEl.value || '').trim() : '';
+      if (!sourceTitle && titleVal) {
+        sourceTitle = titleVal;
+        sourceLang = lang;
+      }
+      if (!sourceText && textVal) {
+        sourceText = textVal;
+        if (!sourceLang) sourceLang = lang;
+      }
+    });
+
+    if (!sourceTitle && !sourceText) {
+      setStatus('אין טקסט לתרגום', true);
+      return;
+    }
+
+    if (!sourceLang) {
+      sourceLang = detectSourceLang(sourceTitle || sourceText);
+    }
+
+    if (button) button.disabled = true;
+    setStatus('מתרגם…', false);
+
+    try {
+      for (var i = 0; i < langs.length; i += 1) {
+        var target = langs[i];
+        if (target === sourceLang) continue;
+
+        var titleTarget = document.getElementById(map.title[target]);
+        var textTarget = document.getElementById(map.text[target]);
+
+        if (titleTarget && sourceTitle && !String(titleTarget.value || '').trim()) {
+          titleTarget.value = await translateText(sourceTitle, target, sourceLang);
+          titleTarget.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        if (textTarget && sourceText && !String(textTarget.value || '').trim()) {
+          textTarget.value = await translateText(sourceText, target, sourceLang);
+          textTarget.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      }
+      setStatus('התרגום הושלם', false);
+      window.setTimeout(function () { setStatus('', false); }, 2500);
+    } catch (err) {
+      setStatus(err.message || 'שגיאת תרגום / Translate failed', true);
+    } finally {
+      if (button) button.disabled = false;
+    }
+  }
+
+  document.addEventListener('click', function (event) {
+    var btn = event.target.closest('.auto-translate-btn');
+    if (!btn) return;
+    event.preventDefault();
+    autoTranslateScope(btn.getAttribute('data-translate-scope') || 'add');
   });
 
   try {

@@ -1572,10 +1572,26 @@ router.post('/:slug/slideshow/edit', requireAdmin, requireAnyPermission('events'
             updateFields['slideshow.images.$.url'] = await optimizeUploadedImage(req.file.path, 'slideshow');
         }
 
-        await Synagogue.updateOne(
-            { slug: req.params.slug, 'slideshow.images._id': slideId },
-            { $set: updateFields },
-        );
+        const slideIdStr = String(slideId || '').trim();
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        if (!synagogue) {
+            return res.status(404).json({ ok: false, error: 'Synagogue not found' });
+        }
+        const slide = ((synagogue.slideshow && synagogue.slideshow.images) || [])
+            .find((entry) => {
+                if (!entry) return false;
+                const candidates = [entry._id, entry.id].filter((value) => value != null && value !== '');
+                return candidates.some((value) => String(value) === slideIdStr);
+            });
+        if (!slide) {
+            return res.status(404).json({ ok: false, error: 'Slide not found' });
+        }
+        slide.text = updateFields['slideshow.images.$.text'];
+        if (updateFields['slideshow.images.$.url']) {
+            slide.url = updateFields['slideshow.images.$.url'];
+        }
+        synagogue.markModified('slideshow.images');
+        await synagogue.save();
         invalidateBoardCache(req.params.slug);
         return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
     } catch (err) {
@@ -1587,14 +1603,72 @@ router.post('/:slug/slideshow/delete', requireAdmin, requireAnyPermission('event
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { slideId } = req.body;
-        await Synagogue.updateOne(
-            { slug: req.params.slug },
-            { $pull: { 'slideshow.images': { _id: slideId } } }
-        );
+        const slideIdStr = String(slideId || '').trim();
+        if (!slideIdStr) {
+            return res.status(400).json({ ok: false, error: 'slideId is required' });
+        }
+
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        if (!synagogue) {
+            return res.status(404).json({ ok: false, error: 'Synagogue not found' });
+        }
+
+        const images = (synagogue.slideshow && synagogue.slideshow.images) || [];
+        const nextImages = images.filter((slide) => {
+            if (!slide) return true;
+            const candidates = [slide._id, slide.id].filter((value) => value != null && value !== '');
+            return !candidates.some((value) => String(value) === slideIdStr);
+        });
+        if (nextImages.length === images.length) {
+            return res.status(404).json({ ok: false, error: 'Slide not found' });
+        }
+
+        synagogue.slideshow.images = nextImages;
+        synagogue.markModified('slideshow.images');
+        await synagogue.save();
         invalidateBoardCache(req.params.slug);
         return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+// Free auto-translate proxy for announcements (no paid API key)
+router.post('/:slug/translate', requireAdmin, requireAnyPermission('events', 'slideshow'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const text = String((req.body && req.body.text) || '').trim();
+        const target = String((req.body && req.body.target) || '').trim().toLowerCase();
+        const source = String((req.body && req.body.source) || 'auto').trim().toLowerCase() || 'auto';
+        const allowed = new Set(['ru', 'en', 'he', 'auto']);
+        if (!text) {
+            return res.status(400).json({ ok: false, error: 'text is required' });
+        }
+        if (!allowed.has(target) || target === 'auto') {
+            return res.status(400).json({ ok: false, error: 'target must be ru, en, or he' });
+        }
+        if (!allowed.has(source)) {
+            return res.status(400).json({ ok: false, error: 'invalid source language' });
+        }
+
+        const url = 'https://translate.googleapis.com/translate_a/single'
+            + `?client=gtx&sl=${encodeURIComponent(source)}&tl=${encodeURIComponent(target)}&dt=t&q=${encodeURIComponent(text)}`;
+        const response = await fetch(url, {
+            headers: { Accept: 'application/json' },
+        });
+        if (!response.ok) {
+            return res.status(502).json({ ok: false, error: 'Translate service unavailable' });
+        }
+        const payload = await response.json();
+        const translated = Array.isArray(payload) && Array.isArray(payload[0])
+            ? payload[0].map((part) => (Array.isArray(part) ? String(part[0] || '') : '')).join('')
+            : '';
+        if (!translated) {
+            return res.status(502).json({ ok: false, error: 'Empty translation response' });
+        }
+        return res.json({ ok: true, translated, target, source });
+    } catch (err) {
+        return res.status(502).json({ ok: false, error: err.message || 'Translate failed' });
     }
 });
 
