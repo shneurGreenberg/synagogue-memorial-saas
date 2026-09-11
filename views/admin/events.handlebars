@@ -183,7 +183,10 @@
             var slidesDataEl = document.getElementById('slides-data');
             var parsed = JSON.parse(slidesDataEl && slidesDataEl.textContent || '[]');
             (parsed || []).forEach(function (slide) {
-                slidesById[String(slide._id)] = slide;
+                var key = slide && (slide._id || slide.id);
+                if (key != null && key !== '') {
+                    slidesById[String(key)] = slide;
+                }
             });
         } catch (e) { /* ignore */ }
 
@@ -224,8 +227,12 @@
         bindSlideCards();
         window.addEventListener('slideshow-grid-updated', function () {
             try {
+                slidesById = {};
                 JSON.parse(document.getElementById('slides-data').textContent).forEach(function (slide) {
-                    slidesById[String(slide._id)] = slide;
+                    var key = slide && (slide._id || slide.id);
+                    if (key != null && key !== '') {
+                        slidesById[String(key)] = slide;
+                    }
                 });
             } catch (e) { /* ignore */ }
             bindSlideCards();

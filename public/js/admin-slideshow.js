@@ -89,20 +89,36 @@
     return response.json();
   }
 
+  function buildRequestBody(form) {
+    var hasFile = !!form.querySelector('input[type="file"]');
+    // Settings/delete have no file input — prefer urlencoded, but server also accepts multipart.
+    if (!hasFile) {
+      return {
+        body: new URLSearchParams(new FormData(form)),
+        contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+      };
+    }
+    return { body: new FormData(form), contentType: null };
+  }
+
   async function submitAjax(form, message) {
     showBusy(message);
-    var formData = new FormData(form);
     var labels = window.slideshowAdminLabels || {};
     var isAddSlide = form.classList.contains('add-slide-form');
+    var request = buildRequestBody(form);
+    var headers = {
+      'X-Requested-With': 'XMLHttpRequest',
+      Accept: 'application/json',
+    };
+    if (request.contentType) {
+      headers['Content-Type'] = request.contentType;
+    }
 
     try {
       var response = await fetch(form.action, {
         method: 'POST',
-        body: formData,
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest',
-          Accept: 'application/json',
-        },
+        body: request.body,
+        headers: headers,
         credentials: 'same-origin',
       });
 

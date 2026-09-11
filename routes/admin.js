@@ -1516,13 +1516,15 @@ router.post('/:slug/people/delete', requireAdmin, requirePermission('people'), a
 
 
 // Slideshow management (embedded under Events tab)
-router.post('/:slug/slideshow/settings', requireAdmin, requireAnyPermission('events', 'slideshow'), async (req, res) => {
+router.post('/:slug/slideshow/settings', requireAdmin, requireAnyPermission('events', 'slideshow'), parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { enabled, interval, mainDuration } = req.body;
+        const { enabled, interval, mainDuration } = req.body || {};
+        // Unchecked checkbox is omitted from both multipart and urlencoded bodies → false
+        const isEnabled = enabled === 'on' || enabled === 'true' || enabled === true || enabled === '1';
         await Synagogue.updateOne({ slug: req.params.slug }, {
             $set: {
-                'slideshow.enabled': enabled === 'on' || enabled === 'true' || enabled === true || enabled === '1',
+                'slideshow.enabled': isEnabled,
                 'slideshow.interval': parseInt(interval, 10) || 10,
                 'slideshow.mainDuration': parseInt(mainDuration, 10) || 30
             }
@@ -1599,10 +1601,10 @@ router.post('/:slug/slideshow/edit', requireAdmin, requireAnyPermission('events'
     }
 });
 
-router.post('/:slug/slideshow/delete', requireAdmin, requireAnyPermission('events', 'slideshow'), async (req, res) => {
+router.post('/:slug/slideshow/delete', requireAdmin, requireAnyPermission('events', 'slideshow'), parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { slideId } = req.body;
+        const { slideId } = req.body || {};
         const slideIdStr = String(slideId || '').trim();
         if (!slideIdStr) {
             return res.status(400).json({ ok: false, error: 'slideId is required' });
