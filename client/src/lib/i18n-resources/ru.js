@@ -24,6 +24,8 @@ export default {
   shabbat_exit: 'Окончание Шаббата',
   shabbat_enter_short: 'Вход',
   shabbat_exit_short: 'Выход',
+  holiday_enter: 'Начало праздника',
+  holiday_exit: 'Окончание праздника',
   language: 'Язык',
   daily_gates_title: 'Лимуд на сегодня',
   daily_chumash: 'Хумаш',

@@ -7,7 +7,7 @@ import {
   getBoardTimezone,
   msUntilNextRefresh,
 } from '../lib/shabbat-times';
-import { createHebrewDate, getHolidayName, getWeeklyParshaName } from '../lib/weekly-parsha';
+import { createHebrewDate, getHolidayName, getWeeklyParshaName, translateHolidayFromEnglish } from '../lib/weekly-parsha';
 import { useBoardData } from '../context/BoardDataContext';
 
 function ShabbatTimesInner({ t }) {
@@ -15,7 +15,14 @@ function ShabbatTimesInner({ t }) {
   const { uiLang } = useBoardData();
   const hebrewDate = createHebrewDate();
   const parshaName = getWeeklyParshaName(hebrewDate, uiLang);
-  const holidayName = getHolidayName(hebrewDate, uiLang);
+  const currentDayHolidayName = getHolidayName(hebrewDate, uiLang);
+  
+  const upcomingHolidayName = times?.holidayName 
+    ? translateHolidayFromEnglish(times.holidayName, uiLang)
+    : null;
+  
+  const weeklyLabel = upcomingHolidayName || currentDayHolidayName || parshaName;
+  const showParshaHeading = Boolean(parshaName && !upcomingHolidayName && !currentDayHolidayName);
 
   useEffect(() => {
     let cancelled = false;
@@ -43,8 +50,9 @@ function ShabbatTimesInner({ t }) {
   }, []);
 
   const timezone = getBoardTimezone(getBoardData());
-  const weeklyLabel = holidayName || parshaName;
-  const showParshaHeading = Boolean(parshaName && !holidayName);
+  
+  const enterLabel = times?.isHoliday ? t('holiday_enter') : t('shabbat_enter');
+  const exitLabel = times?.isHoliday ? t('holiday_exit') : t('shabbat_exit');
 
   if (!weeklyLabel && !times) {
     return null;
@@ -63,11 +71,11 @@ function ShabbatTimesInner({ t }) {
       {times && (
         <div className="shabbat-times-row">
           <div className="shabbat-times-item shabbat-enter">
-            <span className="shabbat-label">{t('shabbat_enter')}</span>
+            <span className="shabbat-label">{enterLabel}</span>
             <span className="shabbat-time">{formatShabbatClockTime(times.enter, timezone)}</span>
           </div>
           <div className="shabbat-times-item shabbat-exit">
-            <span className="shabbat-label">{t('shabbat_exit')}</span>
+            <span className="shabbat-label">{exitLabel}</span>
             <span className="shabbat-time">{formatShabbatClockTime(times.exit, timezone)}</span>
           </div>
         </div>
