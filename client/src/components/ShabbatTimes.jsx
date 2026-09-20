@@ -7,7 +7,7 @@ import {
   getBoardTimezone,
   msUntilNextRefresh,
 } from '../lib/shabbat-times';
-import { createHebrewDate, getHolidayName, getWeeklyParshaName } from '../lib/weekly-parsha';
+import { createHebrewDate, getHolidayName, getWeeklyParshaName, translateHolidayFromEnglish } from '../lib/weekly-parsha';
 import { useBoardData } from '../context/BoardDataContext';
 
 function ShabbatTimesInner({ t }) {
@@ -15,7 +15,14 @@ function ShabbatTimesInner({ t }) {
   const { uiLang } = useBoardData();
   const hebrewDate = createHebrewDate();
   const parshaName = getWeeklyParshaName(hebrewDate, uiLang);
-  const holidayName = getHolidayName(hebrewDate, uiLang);
+  const currentDayHolidayName = getHolidayName(hebrewDate, uiLang);
+  
+  const upcomingHolidayName = times?.holidayName 
+    ? translateHolidayFromEnglish(times.holidayName, uiLang)
+    : null;
+  
+  const weeklyLabel = upcomingHolidayName || currentDayHolidayName || parshaName;
+  const showParshaHeading = Boolean(parshaName && !upcomingHolidayName && !currentDayHolidayName);
 
   useEffect(() => {
     let cancelled = false;
@@ -43,8 +50,6 @@ function ShabbatTimesInner({ t }) {
   }, []);
 
   const timezone = getBoardTimezone(getBoardData());
-  const weeklyLabel = holidayName || parshaName;
-  const showParshaHeading = Boolean(parshaName && !holidayName);
   
   const enterLabel = times?.isHoliday ? t('holiday_enter') : t('shabbat_enter');
   const exitLabel = times?.isHoliday ? t('holiday_exit') : t('shabbat_exit');

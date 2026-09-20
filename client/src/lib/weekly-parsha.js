@@ -159,6 +159,29 @@ export function getHolidayName(hebrewDate, lang = getDisplayLanguage()) {
   return resolveLabel(HOLIDAYS[raw], lang);
 }
 
+export function translateHolidayFromEnglish(englishName, lang = getDisplayLanguage()) {
+  if (!englishName) {
+    return null;
+  }
+
+  const direct = HOLIDAYS[englishName];
+  if (direct) {
+    return resolveLabel(direct, lang);
+  }
+
+  const normalized = englishName.replace(/\s+I$/, '').replace(/\s+II$/, '').trim();
+  const match = Object.keys(HOLIDAYS).find((key) => {
+    const keyNorm = key.replace(/\s+I$/, '').replace(/\s+II$/, '').trim();
+    return keyNorm === normalized || key === englishName;
+  });
+
+  if (match) {
+    return resolveLabel(HOLIDAYS[match], lang);
+  }
+
+  return englishName;
+}
+
 export function createHebrewDate() {
   return new Hebcal.HDate();
 }

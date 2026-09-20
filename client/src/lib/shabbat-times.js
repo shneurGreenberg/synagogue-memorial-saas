@@ -153,25 +153,53 @@ function buildHebcalUrl(location, now = new Date()) {
   return `${HEBCAL_API}&${params.toString()}`;
 }
 
-function isHolidayMemo(memo) {
+function extractHolidayNameFromMemo(memo) {
   if (!memo) {
-    return false;
+    return null;
   }
 
-  const holidayKeywords = [
-    'Rosh Hashana',
+  const holidayPatterns = [
     'Yom Kippur',
-    'Sukkot',
-    'Pesach',
-    'Shavuot',
+    'Rosh Hashana',
+    'Sukkot I',
+    'Sukkot II',
+    'Sukkot III',
+    'Sukkot IV',
+    'Sukkot V',
+    'Sukkot VI',
+    'Sukkot VII',
     'Shmini Atzeret',
     'Simchat Torah',
+    'Pesach',
+    'Shavuot',
     'Chanukah',
     'Purim',
-    'Shemini Atzeret',
   ];
 
-  return holidayKeywords.some((keyword) => memo.includes(keyword));
+  for (const pattern of holidayPatterns) {
+    if (memo.includes(pattern)) {
+      return pattern;
+    }
+  }
+
+  if (memo.includes('Erev Yom Kippur')) {
+    return 'Yom Kippur';
+  }
+  if (memo.includes('Erev Rosh Hashana')) {
+    return 'Rosh Hashana';
+  }
+  if (memo.includes('Erev Sukkot')) {
+    return 'Sukkot';
+  }
+  if (memo.includes('Erev Pesach')) {
+    return 'Pesach';
+  }
+
+  return null;
+}
+
+function isHolidayMemo(memo) {
+  return extractHolidayNameFromMemo(memo) !== null;
 }
 
 function parseHebcalItems(items, now = new Date()) {
@@ -216,6 +244,7 @@ function parseHebcalItems(items, now = new Date()) {
         exit: exitData.date,
         isHoliday: isHolidayMemo(enterData.memo) || isHolidayMemo(exitData.memo),
         memo: enterData.memo || exitData.memo,
+        holidayName: extractHolidayNameFromMemo(enterData.memo || exitData.memo),
       };
     }
 
@@ -225,6 +254,7 @@ function parseHebcalItems(items, now = new Date()) {
         exit: exitData.date,
         isHoliday: isHolidayMemo(enterData.memo) || isHolidayMemo(exitData.memo),
         memo: enterData.memo || exitData.memo,
+        holidayName: extractHolidayNameFromMemo(enterData.memo || exitData.memo),
       };
     }
   }
@@ -237,6 +267,7 @@ function parseHebcalItems(items, now = new Date()) {
       exit: lastExitData.date,
       isHoliday: isHolidayMemo(lastEnterData.memo) || isHolidayMemo(lastExitData.memo),
       memo: lastEnterData.memo || lastExitData.memo,
+      holidayName: extractHolidayNameFromMemo(lastEnterData.memo || lastExitData.memo),
     };
   }
 
