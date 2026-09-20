@@ -20,6 +20,8 @@ export default {
   shabbat_exit: 'יציאת שבת',
   shabbat_enter_short: 'כניסה',
   shabbat_exit_short: 'יציאה',
+  holiday_enter: 'כניסת חג',
+  holiday_exit: 'יציאת חג',
   language: 'שפה',
   daily_gates_title: 'לימוד יומי',
   daily_chumash: 'חומש',

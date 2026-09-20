@@ -153,47 +153,91 @@ function buildHebcalUrl(location, now = new Date()) {
   return `${HEBCAL_API}&${params.toString()}`;
 }
 
+function isHolidayMemo(memo) {
+  if (!memo) {
+    return false;
+  }
+
+  const holidayKeywords = [
+    'Rosh Hashana',
+    'Yom Kippur',
+    'Sukkot',
+    'Pesach',
+    'Shavuot',
+    'Shmini Atzeret',
+    'Simchat Torah',
+    'Chanukah',
+    'Purim',
+    'Shemini Atzeret',
+  ];
+
+  return holidayKeywords.some((keyword) => memo.includes(keyword));
+}
+
 function parseHebcalItems(items, now = new Date()) {
-  const candles = [];
-  const havdalah = [];
+  const candlesData = [];
+  const havdalahData = [];
 
   for (const item of items || []) {
     if (item.category === 'candles' && item.date) {
-      candles.push(new Date(item.date));
+      candlesData.push({
+        date: new Date(item.date),
+        memo: item.memo || '',
+        hebrew: item.hebrew || '',
+      });
     }
     if (item.category === 'havdalah' && item.date) {
-      havdalah.push(new Date(item.date));
+      havdalahData.push({
+        date: new Date(item.date),
+        memo: item.memo || '',
+        hebrew: item.hebrew || '',
+      });
     }
   }
 
-  candles.sort((a, b) => a - b);
-  havdalah.sort((a, b) => a - b);
+  candlesData.sort((a, b) => a.date - b.date);
+  havdalahData.sort((a, b) => a.date - b.date);
 
   const nowMs = now.getTime();
 
-  for (let i = 0; i < candles.length; i += 1) {
-    const enter = candles[i];
-    const exit = havdalah.find((candidate) => candidate > enter);
-    if (!exit) {
+  for (let i = 0; i < candlesData.length; i += 1) {
+    const enterData = candlesData[i];
+    const exitData = havdalahData.find((candidate) => candidate.date > enterData.date);
+    if (!exitData) {
       continue;
     }
 
-    const enterMs = enter.getTime();
-    const exitMs = exit.getTime();
+    const enterMs = enterData.date.getTime();
+    const exitMs = exitData.date.getTime();
 
     if (enterMs <= nowMs && nowMs < exitMs) {
-      return { enter, exit };
+      return {
+        enter: enterData.date,
+        exit: exitData.date,
+        isHoliday: isHolidayMemo(enterData.memo) || isHolidayMemo(exitData.memo),
+        memo: enterData.memo || exitData.memo,
+      };
     }
 
     if (enterMs > nowMs) {
-      return { enter, exit };
+      return {
+        enter: enterData.date,
+        exit: exitData.date,
+        isHoliday: isHolidayMemo(enterData.memo) || isHolidayMemo(exitData.memo),
+        memo: enterData.memo || exitData.memo,
+      };
     }
   }
 
-  const lastEnter = candles[candles.length - 1];
-  const lastExit = havdalah[havdalah.length - 1];
-  if (lastEnter && lastExit && lastExit > lastEnter) {
-    return { enter: lastEnter, exit: lastExit };
+  const lastEnterData = candlesData[candlesData.length - 1];
+  const lastExitData = havdalahData[havdalahData.length - 1];
+  if (lastEnterData && lastExitData && lastExitData.date > lastEnterData.date) {
+    return {
+      enter: lastEnterData.date,
+      exit: lastExitData.date,
+      isHoliday: isHolidayMemo(lastEnterData.memo) || isHolidayMemo(lastExitData.memo),
+      memo: lastEnterData.memo || lastExitData.memo,
+    };
   }
 
   return null;

@@ -25,6 +25,8 @@ export default {
   shabbat_exit: 'Shabbat ends',
   shabbat_enter_short: 'Enter',
   shabbat_exit_short: 'Exit',
+  holiday_enter: 'Holiday begins',
+  holiday_exit: 'Holiday ends',
   language: 'Language',
   daily_gates_title: 'Daily study',
   daily_chumash: 'Chumash',
