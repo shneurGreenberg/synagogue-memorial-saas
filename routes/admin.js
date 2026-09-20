@@ -362,7 +362,22 @@ async function loadAdminContext(req, res, next) {
 
 async function fetchSlideshow(slug) {
     const doc = await Synagogue.findOne({ slug }).lean();
-    return doc ? doc.slideshow : null;
+    if (!doc || !doc.slideshow) {
+        return null;
+    }
+    
+    // Ensure all slides have an _id for deletion to work
+    if (Array.isArray(doc.slideshow.images)) {
+        doc.slideshow.images = doc.slideshow.images.map((slide, index) => {
+            if (slide && !slide._id && !slide.id) {
+                // Use index as fallback identifier for slides without _id
+                return { ...slide, id: `slide-${index}` };
+            }
+            return slide;
+        });
+    }
+    
+    return doc.slideshow;
 }
 
 async function getUpcomingHolidayNotice(synagogue) {
@@ -1616,6 +1631,21 @@ router.post('/:slug/slideshow/delete', requireAdmin, requireAnyPermission('event
         }
 
         const images = (synagogue.slideshow && synagogue.slideshow.images) || [];
+        
+        // Handle index-based deletion for legacy slides (slide-0, slide-1, etc.)
+        if (slideIdStr.startsWith('slide-')) {
+            const index = parseInt(slideIdStr.substring(6), 10);
+            if (Number.isFinite(index) && index >= 0 && index < images.length) {
+                images.splice(index, 1);
+                synagogue.slideshow.images = images;
+                synagogue.markModified('slideshow.images');
+                await synagogue.save();
+                invalidateBoardCache(req.params.slug);
+                return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
+            }
+        }
+        
+        // Handle ID-based deletion for slides with _id
         const nextImages = images.filter((slide) => {
             if (!slide) return true;
             const candidates = [slide._id, slide.id].filter((value) => value != null && value !== '');
