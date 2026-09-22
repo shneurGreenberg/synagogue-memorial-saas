@@ -577,12 +577,6 @@
           }
         }
 
-        &.passed-today:not(.card-big) {
-          .candle,
-          .css-candle.candle {
-            transform: translateX(-50%) scale(0.12);
-          }
-        }
 
         &.card-outline {
           border: 3px outset $cardOutline;
