@@ -69,21 +69,23 @@ function resolveSlideshow(raw) {
 
 /**
  * Full-screen presentation / slideshow overlay on the live board.
- * Prefer classic slideshow config; fall back to presentationOverlay; then Novosibirsk holiday default.
+ * Prefer classic slideshow config; fall back to presentationOverlay only if slideshow was never configured.
  */
 export function PresentationImageOverlay() {
   const { data: board } = useBoardData();
 
-  const holidayDefault = board?.slug === 'novosibirsk'
-    ? { enabled: true, image: 'sander-kaddish-5787.jpg', intervalMs: 180000, durationMs: 10000 }
-    : null;
+  const config = useMemo(() => {
+    const slideshowConfig = resolveSlideshow(board?.slideshow);
+    if (slideshowConfig) {
+      return slideshowConfig;
+    }
 
-  const config = useMemo(
-    () => resolveSlideshow(board?.slideshow)
-      || resolvePresentationOverlay(board?.presentationOverlay)
-      || resolvePresentationOverlay(holidayDefault),
-    [board?.slideshow, board?.presentationOverlay, board?.slug],
-  );
+    if (board?.slideshow && typeof board.slideshow === 'object') {
+      return null;
+    }
+
+    return resolvePresentationOverlay(board?.presentationOverlay);
+  }, [board?.slideshow, board?.presentationOverlay]);
 
   const [visible, setVisible] = useState(false);
   const [slideIndex, setSlideIndex] = useState(0);
