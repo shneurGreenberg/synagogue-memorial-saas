@@ -205,7 +205,7 @@ describe('http smoke', () => {
     assert.equal(data.contactDirectory, undefined);
     assert.equal(data.adminUsers, undefined);
     assert.equal(data.yahrzeitReminders, undefined);
-    assert.equal(data.slideshow, undefined);
+    assert.ok(data.slideshow !== undefined, 'slideshow config should be public');
     assert.ok(Array.isArray(data.people));
     assert.equal(res.body.includes('\n  \"slug\"'), false, 'window.data should be compact JSON');
   });
