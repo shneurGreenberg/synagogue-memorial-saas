@@ -92,12 +92,21 @@ function buildApp(session) {
 }
 
 describe('grave OCR parsing', () => {
-  it('defaults to OpenRouter DeepSeek V4.1 Flash', () => {
+  it('defaults to OpenRouter Gemini 3.8 Flash', () => {
     const config = graveOcr.resolveGraveOcrConfig({ OPENROUTER_API_KEY: 'test-key' });
     assert.equal(config.provider, 'openrouter');
     assert.equal(config.model, graveOcr.DEFAULT_OPENROUTER_MODEL);
-    assert.equal(config.model, 'deepseek/deepseek-v4.1-flash');
+    assert.equal(config.model, 'google/gemini-3.8-flash');
     assert.equal(config.apiKey, 'test-key');
+  });
+
+  it('uses SCAN_OCR_MODEL when set, including the optional DeepSeek id', () => {
+    const config = graveOcr.resolveGraveOcrConfig({
+      OPENROUTER_API_KEY: 'test-key',
+      SCAN_OCR_MODEL: graveOcr.OPTIONAL_DEEPSEEK_OPENROUTER_MODEL,
+    });
+    assert.equal(config.provider, 'openrouter');
+    assert.equal(config.model, 'deepseek/deepseek-v4.1-flash');
   });
 
   it('switches provider only from the env flag', () => {
@@ -105,7 +114,7 @@ describe('grave OCR parsing', () => {
       GRAVE_OCR_PROVIDER: 'deepseek',
       OPENROUTER_API_KEY: 'open-key',
       DEEPSEEK_API_KEY: 'deep-key',
-      GRAVE_OCR_MODEL: 'deepseek-vision-test',
+      SCAN_OCR_MODEL: 'deepseek-vision-test',
     });
     assert.equal(deepseek.provider, 'deepseek');
     assert.equal(deepseek.apiKey, 'deep-key');
@@ -122,7 +131,9 @@ describe('grave OCR parsing', () => {
 
   it('asks the model to read Cyrillic text under a portrait', () => {
     assert.match(graveOcr.GRAVE_OCR_PROMPT, /Cyrillic/);
+    assert.match(graveOcr.GRAVE_OCR_PROMPT, /curve/i);
     assert.match(graveOcr.GRAVE_OCR_PROMPT, /portrait/i);
+    assert.match(graveOcr.GRAVE_OCR_PROMPT, /patronymic/i);
     assert.match(graveOcr.GRAVE_OCR_PROMPT, /fatherNameOrPatronymic/);
   });
 
@@ -297,7 +308,6 @@ describe('grave scan http', () => {
         env: {
           GRAVE_OCR_PROVIDER: 'openrouter',
           OPENROUTER_API_KEY: 'test-key',
-          GRAVE_OCR_MODEL: 'deepseek/deepseek-v4.1-flash',
         },
         fetch: async (url, options) => {
           seen = { url, body: JSON.parse(options.body), authorization: options.headers.Authorization };
@@ -324,7 +334,7 @@ describe('grave scan http', () => {
     );
 
     assert.equal(seen.url, 'https://openrouter.ai/api/v1/chat/completions');
-    assert.equal(seen.body.model, 'deepseek/deepseek-v4.1-flash');
+    assert.equal(seen.body.model, 'google/gemini-3.8-flash');
     assert.equal(seen.authorization, 'Bearer test-key');
     assert.equal(seen.body.messages[0].content[1].type, 'image_url');
     assert.match(seen.body.messages[0].content[1].image_url.url, /^data:image\/jpeg;base64,/);

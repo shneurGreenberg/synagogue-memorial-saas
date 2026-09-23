@@ -67,14 +67,13 @@ Staff route: `GET /s/{slug}/scan`. Reading a photo is `POST /s/{slug}/api/scan-g
 Set these in `.env` (never commit keys):
 
 ```
-GRAVE_OCR_PROVIDER=openrouter
 OPENROUTER_API_KEY=
-GRAVE_OCR_MODEL=deepseek/deepseek-v4.1-flash
+SCAN_OCR_MODEL=google/gemini-3.8-flash
 ```
 
-`openrouter` is the default provider. `deepseek/deepseek-v4.1-flash` is the current DeepSeek model on OpenRouter with native image input. Do not point `GRAVE_OCR_MODEL` at the text-only alias `~deepseek/deepseek-v4-flash-latest`.
+`SCAN_OCR_MODEL` is optional. When it is unset, the scan uses `google/gemini-3.8-flash` on OpenRouter. That model read a curved cemetery inscription in about 7 seconds. Set `SCAN_OCR_MODEL=deepseek/deepseek-v4.1-flash` only if you want that model instead: on the same stone it was slower (about 12 seconds) and invented a year and a patronymic.
 
-To switch provider, set `GRAVE_OCR_PROVIDER` to `deepseek` or `gemini` and the matching key (`DEEPSEEK_API_KEY` or `GEMINI_API_KEY`). The app does not fall back to another provider when a call fails. Without a key, the scan page still opens a manual card so the photo can be saved.
+To call DeepSeek or Gemini directly, set `GRAVE_OCR_PROVIDER` to `deepseek` or `gemini` and the matching key (`DEEPSEEK_API_KEY` or `GEMINI_API_KEY`). The app does not fall back to another provider when a call fails. Without a key, the scan page still opens a manual card so the photo can be saved.
 
 ## Deployment
 
