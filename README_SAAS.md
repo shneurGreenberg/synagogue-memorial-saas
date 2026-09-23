@@ -56,6 +56,24 @@ This project has been transformed from a static single-tenant application into a
     - **Password:** `admin` (Default from seed script)
 - **Master Panel:** Go to `http://localhost:3000/master/login`
     - **Password:** value of `MASTER_ADMIN_PASSWORD`
+- **Gravestone scan (staff):** `http://localhost:3000/s/novosibirsk/scan`
+    - Sign in with the synagogue admin account. The page is Russian-first and meant for a phone at the cemetery.
+    - Photograph a stone, check the card, then save. The photo and person are stored with the same fields the memorial board already uses (`name`, `gregorianDateOfDeath`, `text`, `photo`).
+
+## Gravestone OCR
+
+Staff route: `GET /s/{slug}/scan`. Reading a photo is `POST /s/{slug}/api/scan-grave`. Confirming the card is `POST /s/{slug}/api/scan-grave/confirm`.
+
+Set these in `.env` (never commit keys):
+
+```
+OPENROUTER_API_KEY=
+SCAN_OCR_MODEL=google/gemini-3.8-flash
+```
+
+`SCAN_OCR_MODEL` is optional. When it is unset, the scan uses `google/gemini-3.8-flash` on OpenRouter. That model read a curved cemetery inscription in about 7 seconds. Set `SCAN_OCR_MODEL=deepseek/deepseek-v4.1-flash` only if you want that model instead: on the same stone it was slower (about 12 seconds) and invented a year and a patronymic.
+
+To call DeepSeek or Gemini directly, set `GRAVE_OCR_PROVIDER` to `deepseek` or `gemini` and the matching key (`DEEPSEEK_API_KEY` or `GEMINI_API_KEY`). The app does not fall back to another provider when a call fails. Without a key, the scan page still opens a manual card so the photo can be saved.
 
 ## Deployment
 

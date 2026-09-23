@@ -82,6 +82,7 @@ const { buildFaviconPath, resolveFaviconLogoFilename } = require('../lib/favicon
 const { OFFICIAL_LOGO_FILENAME } = require('../lib/board-defaults');
 const { CANDLE_PALETTE_KEYS, normalizeCandlePalette } = require('../lib/candle-palette');
 const { normalizeBoardFeatures } = require('../lib/board-features');
+const { scanPathForSlug, safeScanReturnPath } = require('../lib/grave-scan');
 
 const BOARD_FEATURE_TOGGLE_META = [
   { key: 'sidebarNames', labelKey: 'feature_sidebar_names', helpKey: 'feature_sidebar_names_help' },
@@ -424,12 +425,27 @@ function requireAnyPermission(...permissionKeys) {
 }
 
 router.get('/login', (req, res) => {
-    res.render('admin/login', { layout: false });
+    res.render('admin/login', {
+        layout: false,
+        next: safeScanReturnPath(req.query.next),
+    });
 });
+
+function redirectAfterAdminLogin(res, slug, permissions, nextUrl) {
+    const scanPath = scanPathForSlug(nextUrl, slug);
+    if (scanPath && permissionAllows(permissions, 'people')) {
+        return res.redirect(scanPath);
+    }
+    if (!permissions) {
+        return res.redirect(`/admin/${slug}/dashboard`);
+    }
+    return res.redirect(getDefaultLandingPath(slug, permissions));
+}
 
 router.post('/login', loginRateLimiter, async (req, res) => {
     const { slug: slugInput, password } = req.body;
     const { slug, username } = parseSlugAndUsername(slugInput);
+    const nextUrl = req.body.next;
     try {
         const synagogue = await Synagogue.findOne({ slug }).select('+adminPassword');
         if (synagogue && await verifyPassword(password, synagogue.adminPassword)) {
@@ -443,19 +459,27 @@ router.post('/login', loginRateLimiter, async (req, res) => {
             if (username) {
                 const adminUser = findAdminUser(synagogue, username);
                 if (!adminUser) {
-                    return res.render('admin/login', { error: 'Unknown user for this synagogue', layout: false });
+                    return res.render('admin/login', {
+                        error: 'Unknown user for this synagogue',
+                        layout: false,
+                        next: scanPathForSlug(nextUrl, slug),
+                    });
                 }
                 req.session.adminSlug = slug;
                 req.session.adminUsername = normalizeAdminUsername(username);
                 const permissions = resolveAdminPermissions(req.session, synagogue);
-                return res.redirect(getDefaultLandingPath(slug, permissions));
+                return redirectAfterAdminLogin(res, slug, permissions, nextUrl);
             }
 
             req.session.adminSlug = slug;
             req.session.adminUsername = null;
-            return res.redirect(`/admin/${slug}/dashboard`);
+            return redirectAfterAdminLogin(res, slug, FULL_ADMIN_PERMISSIONS, nextUrl);
         }
-        res.render('admin/login', { error: 'Invalid credentials', layout: false });
+        res.render('admin/login', {
+            error: 'Invalid credentials',
+            layout: false,
+            next: scanPathForSlug(nextUrl, slug),
+        });
     } catch (err) {
         console.error('Admin login error:', err);
         res.status(500).send(publicErrorMessage(err));

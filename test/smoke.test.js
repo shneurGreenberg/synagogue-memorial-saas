@@ -195,6 +195,40 @@ describe('http smoke', () => {
     assert.match(masterLogin.headers.location || '', /\/master\/dashboard/);
   });
 
+  it('requires staff login for the gravestone scan page', async () => {
+    const scan = await request('GET', `/s/${SLUG}/scan`);
+    assert.equal(scan.status, 302);
+    assert.match(scan.headers.location || '', /\/admin\/login\?next=%2Fs%2Fnovosibirsk%2Fscan/);
+
+    const denied = await request('POST', `/s/${SLUG}/api/scan-grave`, {
+      headers: { 'Content-Type': 'application/json', 'Content-Length': 2 },
+      body: '{}',
+    });
+    assert.equal(denied.status, 401);
+
+    const loginBody = 'slug=novosibirsk&password=admin&next=%2Fs%2Fnovosibirsk%2Fscan';
+    const login = await request('POST', '/admin/login', {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(loginBody),
+      },
+      body: loginBody,
+    });
+    assert.equal(login.status, 302);
+    assert.equal(login.headers.location, `/s/${SLUG}/scan`);
+
+    const cookie = []
+      .concat(login.headers['set-cookie'] || [])
+      .map((value) => String(value).split(';')[0])
+      .join('; ');
+    const page = await request('GET', `/s/${SLUG}/scan`, {
+      headers: { Cookie: cookie },
+    });
+    assert.equal(page.status, 200);
+    assert.match(page.body, /Сфотографировать/);
+    assert.match(page.body, /scan-grave\.js/);
+  });
+
   it('embeds sanitized public window.data on the board page', async () => {
     const res = await request('GET', `/s/${SLUG}`);
     assert.equal(res.status, 200);

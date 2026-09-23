@@ -23,6 +23,9 @@
             <div class="alert alert-danger mb-3">{{error}}</div>
             {{/if}}
             <form method="POST" action="/admin/login">
+                {{#if next}}
+                <input type="hidden" name="next" value="{{next}}">
+                {{/if}}
                 <div class="form-group">
                     <label for="slug">Synagogue / User</label>
                     <input type="text" name="slug" id="slug" class="form-control" required autocomplete="username"
