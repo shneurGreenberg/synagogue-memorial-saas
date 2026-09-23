@@ -20,7 +20,7 @@
     "build:pages": "node scripts/build-github-pages.js",
     "dev:board": "vite build --config vite.board.config.mjs --watch",
     "test": "node --test test/*.test.js",
-    "test:unit": "node --test test/public-board.test.js test/http-security.test.js",
+    "test:unit": "node --test test/public-board.test.js test/http-security.test.js test/public-people-api.test.js",
     "test:smoke": "node --test test/smoke.test.js"
   },
   "dependencies": {

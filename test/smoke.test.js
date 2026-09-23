@@ -8,6 +8,7 @@ const ROOT = path.join(__dirname, '..');
 const PORT = Number(process.env.SMOKE_PORT || 3456);
 const BASE = `http://127.0.0.1:${PORT}`;
 const SLUG = process.env.SMOKE_SLUG || 'novosibirsk';
+const { PUBLIC_PERSON_KEYS } = require('../lib/public-people-api');
 
 let serverProcess = null;
 
@@ -141,6 +142,51 @@ describe('http smoke', () => {
       assert.equal(person.contacts, undefined);
       assert.equal(person.text, undefined);
     }
+  });
+
+  it('returns a public people export for other websites', async () => {
+    const res = await request('GET', `/s/${SLUG}/api/people`, {
+      headers: { Origin: 'https://other-site.example' },
+    });
+    assert.equal(res.status, 200);
+    assert.equal(res.headers['access-control-allow-origin'], '*');
+    const payload = res.json();
+
+    assert.equal(payload.synagogue.slug, SLUG);
+    assert.ok(payload.count >= 1);
+    assert.equal(payload.people.length, payload.count);
+
+    const first = payload.people[0];
+    assert.ok(first.name);
+    assert.equal(typeof first.text, 'string');
+    assert.ok(
+      payload.people.some((person) => String(person.text || '').trim().length > 0),
+      'public people API must include memorial biographies',
+    );
+    assert.ok(first.photoUrl === '' || first.photoUrl.includes('/photos/'));
+    assert.ok(first.cardUrl.includes(`/s/${SLUG}/card/`));
+    assert.equal(first.contact, undefined);
+    assert.equal(first.contacts, undefined);
+
+    for (const person of payload.people) {
+      assert.equal(person.contact, undefined);
+      assert.equal(person.contacts, undefined);
+      assert.equal(typeof person.text, 'string');
+      for (const key of Object.keys(person)) {
+        assert.ok(PUBLIC_PERSON_KEYS.includes(key), `unexpected public person key: ${key}`);
+      }
+    }
+
+    const one = await request('GET', `/s/${SLUG}/api/people/${first.id}`);
+    assert.equal(one.status, 200);
+    assert.equal(one.json().person.id, first.id);
+    assert.equal(typeof one.json().person.text, 'string');
+    assert.equal(one.json().person.text, first.text);
+    assert.equal(one.json().person.contact, undefined);
+
+    const download = await request('GET', `/s/${SLUG}/api/people?download=1`);
+    assert.equal(download.status, 200);
+    assert.match(download.headers['content-disposition'] || '', /attachment/);
   });
 
   it('returns person detail without contact fields', async () => {

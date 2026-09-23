@@ -65,6 +65,7 @@ Cloudflare ו-Render לעיתים **חסומים** ברוסיה. Amvera (שרת�
 | `MASTER_ADMIN_PASSWORD` | סיסמת מאסטר חזקה (לא `master`) — חובה בפרודקשן |
 | `NODE_ENV` | `production` |
 | `TRUST_PROXY` | `1` |
+| `PUBLIC_ORIGIN` | `https://<שם>.amvera.io` — כתובות תמונה מלאות ב-`/api/people` |
 
 ### 3.3 Deploy
 
@@ -75,6 +76,7 @@ Cloudflare ו-Render לעיתים **חסומים** ברוסיה. Amvera (שרת�
 ### 3.4 בדיקה
 
 - `https://<שם>.amvera.io/s/novosibirsk` — לוח עם שמות ותמונות  
+- `https://<שם>.amvera.io/s/novosibirsk/api/people` — JSON ציבורי לאתרים אחרים (שמות, תמונות, ביוגרפיות)  
 - `https://<שם>.amvera.io/admin/login` — slug: `novosibirsk`, סיסמה: `admin`  
 - **שנו סיסמת אדמין מיד!**
 

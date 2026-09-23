@@ -17,6 +17,7 @@ const Synagogue = require('./models/Synagogue');
 const { loadSynagogueBoard } = require('./lib/load-synagogue-board');
 const { computeBoardVersion, slimBoardPayload } = require('./lib/board-payload');
 const { toPublicBoardPayload, toPublicPersonPayload } = require('./lib/public-board');
+const { getPublicOrigin, toEmbedPerson, toEmbedPeoplePayload } = require('./lib/public-people-api');
 const { getJewishFeed } = require('./lib/jewish-feed');
 const { fetchWeatherForecast } = require('./lib/weather-api');
 const { applyBoardPreviewOverrides } = require('./lib/board-preview');
@@ -65,7 +66,10 @@ app.use(helmet({
 }));
 
 function allowMobileApiCors(req, res, next) {
-  if (!req.path.includes('/api/')) {
+  const isPublicApi = req.path.includes('/api/');
+  const isPublicPhoto = req.path.startsWith('/photos/');
+
+  if (!isPublicApi && !isPublicPhoto) {
     return next();
   }
 
@@ -430,6 +434,64 @@ app.get('/s/:slug/api/board/person/:personId', apiRateLimiter, async (req, res) 
     return res.json({ person: toPublicPersonPayload(person) });
   } catch (err) {
     console.error('Person payload error:', err);
+    return res.status(500).json({ error: publicErrorMessage(err) });
+  }
+});
+
+app.get('/s/:slug/api/people/:personId', apiRateLimiter, async (req, res) => {
+  try {
+    const synagogue = await loadSynagogueBoard(req.params.slug);
+
+    if (!synagogue) {
+      return res.status(404).json({ error: 'Synagogue not found' });
+    }
+
+    const person = (synagogue.people || []).find(
+      (entry) => String(entry.id) === String(req.params.personId),
+    );
+
+    if (!person) {
+      return res.status(404).json({ error: 'Person not found' });
+    }
+
+    res.setHeader('Cache-Control', 'public, max-age=300');
+    return res.json({
+      synagogue: {
+        slug: synagogue.slug,
+        name: synagogue.name || '',
+      },
+      person: toEmbedPerson(person, {
+        origin: getPublicOrigin(req),
+        slug: synagogue.slug,
+      }),
+    });
+  } catch (err) {
+    console.error('Public people person error:', err);
+    return res.status(500).json({ error: publicErrorMessage(err) });
+  }
+});
+
+app.get('/s/:slug/api/people', apiRateLimiter, async (req, res) => {
+  try {
+    const synagogue = await loadSynagogueBoard(req.params.slug);
+
+    if (!synagogue) {
+      return res.status(404).json({ error: 'Synagogue not found' });
+    }
+
+    const payload = toEmbedPeoplePayload(synagogue, { origin: getPublicOrigin(req) });
+    res.setHeader('Cache-Control', 'public, max-age=300');
+
+    if (req.query.download === '1') {
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="${synagogue.slug}-people.json"`,
+      );
+    }
+
+    return res.json(payload);
+  } catch (err) {
+    console.error('Public people list error:', err);
     return res.status(500).json({ error: publicErrorMessage(err) });
   }
 });
