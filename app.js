@@ -33,6 +33,7 @@ const {
 const adminRoutes = require('./routes/admin');
 const masterRoutes = require('./routes/master');
 const publicSubmissionRoutes = require('./routes/public-submission');
+const graveScanRoutes = require('./routes/grave-scan');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
@@ -143,6 +144,14 @@ function requireSameOrigin(req, res, next) {
 
 app.use(allowMobileApiCors);
 app.use(bodyParser.urlencoded({ extended: true }));
+
+const scanJsonParser = bodyParser.json({ limit: '12mb' });
+app.use((req, res, next) => {
+  if (req.path.includes('/api/scan-grave') && req.is('json')) {
+    return scanJsonParser(req, res, next);
+  }
+  return next();
+});
 app.use(bodyParser.json());
 
 const sessionSecret = process.env.SESSION_SECRET || (isProduction ? null : 'secret');
@@ -175,6 +184,16 @@ app.use('/css', express.static(cssDirectory, {
 
 app.use('/admin', sessionMiddleware, requireSameOrigin, adminRoutes);
 app.use('/master', sessionMiddleware, requireSameOrigin, masterRoutes);
+
+function useSessionForGraveScan(req, res, next) {
+  const pathName = `${req.baseUrl || ''}${req.path || ''}`;
+  if (/\/scan\/?$/.test(pathName) || pathName.includes('/api/scan-grave')) {
+    return sessionMiddleware(req, res, next);
+  }
+  return next();
+}
+
+app.use('/s', useSessionForGraveScan, requireSameOrigin, graveScanRoutes);
 app.use('/s', requireSameOrigin, publicSubmissionRoutes);
 
 function getInitials(name) {

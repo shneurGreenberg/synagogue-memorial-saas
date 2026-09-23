@@ -1,0 +1,86 @@
+<main id="graveScan"
+    data-scan-url="{{scanUrl}}"
+    data-confirm-url="{{confirmUrl}}"
+    data-login-url="{{loginUrl}}">
+    <p class="scan-kicker">{{synagogue.name}}</p>
+    <h1>Надгробие</h1>
+    <p class="scan-lead">Сфотографируйте плиту. Имя и дата подставятся в карточку — проверьте их и сохраните.</p>
+
+    <img id="scanPreview" class="scan-preview" alt="Фото надгробия" hidden>
+
+    <section id="scanCapture" class="scan-actions">
+        <label class="scan-primary">
+            Сфотографировать
+            <input class="scan-file" type="file" accept="image/*" capture="environment" data-scan-input>
+        </label>
+        <label class="scan-secondary">
+            Из галереи
+            <input class="scan-file" type="file" accept="image/*" data-scan-input>
+        </label>
+        <p class="scan-foot">Для сотрудников общины</p>
+    </section>
+
+    <section id="scanLoading" class="scan-loading" hidden>
+        <div class="scan-spinner" aria-hidden="true"></div>
+        <p>Читаем надпись…</p>
+    </section>
+
+    <section id="scanReview" hidden>
+        <form id="scanForm" class="scan-form">
+            <p id="scanAlert" class="scan-alert" hidden></p>
+            <p id="scanConfidence" class="scan-confidence" hidden></p>
+
+            <label>
+                Имя
+                <input name="name" id="scanName" maxlength="120" required autocomplete="off" placeholder="Фамилия и имя">
+            </label>
+            <label>
+                Отчество или имя отца
+                <input name="fatherNameOrPatronymic" id="scanFather" maxlength="120" autocomplete="off">
+            </label>
+            <div class="scan-date">
+                <label>
+                    День
+                    <input name="date" id="scanDay" inputmode="numeric" min="1" max="31" required>
+                </label>
+                <label>
+                    Месяц
+                    <input name="month" id="scanMonth" inputmode="numeric" min="1" max="12" required>
+                </label>
+                <label>
+                    Год
+                    <input name="year" id="scanYear" inputmode="numeric" min="1800" max="2100" required>
+                </label>
+            </div>
+            <label>
+                Еврейская дата
+                <input name="hebrewDateText" id="scanHebrew" maxlength="200" autocomplete="off">
+            </label>
+            <label>
+                Эпитафия
+                <textarea name="epitaphOrBio" id="scanEpitaph" maxlength="2000"></textarea>
+            </label>
+
+            <div id="scanMatches" class="scan-matches" hidden></div>
+
+            <details id="scanRawWrap" hidden>
+                <summary>Текст с плиты</summary>
+                <pre id="scanRaw"></pre>
+            </details>
+
+            <button type="submit" class="scan-submit" id="scanSubmit">Сохранить на доску</button>
+            <button type="button" class="scan-text-button" id="scanRetake">Снять заново</button>
+        </form>
+    </section>
+
+    <section id="scanDone" class="scan-done" hidden>
+        <h2>Сохранено</h2>
+        <p id="scanDoneName"></p>
+        <button type="button" class="scan-primary" id="scanAgain">Сканировать ещё</button>
+        <a class="scan-link" href="{{peopleUrl}}">К списку людей</a>
+        <a class="scan-link" href="{{boardUrl}}">Открыть доску</a>
+    </section>
+</main>
+<noscript>
+    <p class="scan-note">Для сканирования нужен JavaScript.</p>
+</noscript>
