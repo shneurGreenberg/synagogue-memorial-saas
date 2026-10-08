@@ -17,8 +17,8 @@ import com.synagogue.sidebar.widget.WidgetPrefs;
 public class WidgetSyncPlugin extends Plugin {
     @PluginMethod
     public void sync(PluginCall call) {
-        String serverUrl = call.getString("serverUrl", "");
-        String slug = call.getString("slug", "");
+        String serverUrl = call.getString("serverUrl", "https://synagogue-kadish-shneur.amvera.io");
+        String slug = call.getString("slug", "novosibirsk");
         String language = call.getString("language", "ru");
         double lat = call.getDouble("lat", 54.9833);
         double lng = call.getDouble("lng", 82.8964);

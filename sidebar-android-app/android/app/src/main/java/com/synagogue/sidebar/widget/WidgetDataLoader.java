@@ -701,8 +701,8 @@ public final class WidgetDataLoader {
 
         static SharedSnapshot read(Context context) {
             android.content.SharedPreferences prefs = WidgetPrefs.prefs(context);
-            String serverUrl = prefs.getString("server_url", "");
-            String slug = prefs.getString("slug", "");
+            String serverUrl = prefs.getString("server_url", "https://synagogue-kadish-shneur.amvera.io");
+            String slug = prefs.getString("slug", "novosibirsk");
             ParsedServer parsed = parseServerSettings(serverUrl, slug);
             return new SharedSnapshot(
                 parsed.serverUrl,
