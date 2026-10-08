@@ -56,9 +56,9 @@ public class SidebarWidgetFactory implements RemoteViewsService.RemoteViewsFacto
         }
 
         if ("event".equals(item.type)) {
-            views.setInt(R.id.widget_item_title, "setTextColor", 0xFFFFD54F);
+            views.setTextColor(R.id.widget_item_title, 0xFFFFD54F);
         } else {
-            views.setInt(R.id.widget_item_title, "setTextColor", 0xFFCFAF1F);
+            views.setTextColor(R.id.widget_item_title, 0xFFCFAF1F);
         }
 
         return views;
