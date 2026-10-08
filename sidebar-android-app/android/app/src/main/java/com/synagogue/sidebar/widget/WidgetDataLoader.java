@@ -270,8 +270,6 @@ public final class WidgetDataLoader {
             views.setRemoteAdapter(R.id.widget_announcements_flipper, serviceIntent);
             views.setEmptyView(R.id.widget_announcements_flipper, R.id.widget_empty_view);
             views.setTextViewText(R.id.widget_empty_view, WidgetI18n.noAnnouncements(lang));
-            views.setInt(R.id.widget_announcements_flipper, "setFlipInterval", 5000);
-            views.setInt(R.id.widget_announcements_flipper, "startFlipping", 0);
 
             setVisibility(views, R.id.widget_hebrew_date, visibilityFor(data.hebrewDate));
             setVisibility(views, R.id.widget_gregorian_date, visibilityFor(data.gregorianDate));
