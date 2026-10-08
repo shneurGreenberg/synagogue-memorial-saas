@@ -30,6 +30,7 @@ const {
   createApiRateLimiter,
   publicErrorMessage,
 } = require('./lib/http-security');
+const { createFramePolicyMiddleware } = require('./lib/frame-policy');
 const adminRoutes = require('./routes/admin');
 const masterRoutes = require('./routes/master');
 const publicSubmissionRoutes = require('./routes/public-submission');
@@ -63,7 +64,11 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
   hsts: isProduction ? undefined : false,
   referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  // X-Frame-Options is handled per-route by createFramePolicyMiddleware:
+  // /s/* boards are embeddable by FRAME_ANCESTORS, everything else is SAMEORIGIN.
+  frameguard: false,
 }));
+app.use(createFramePolicyMiddleware());
 
 function allowMobileApiCors(req, res, next) {
   if (!req.path.includes('/api/')) {
