@@ -1,8 +1,14 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { assetUrl } from '../lib/asset-url';
 
 export function CommunityLogo({ src, alt, borderRadius = 100 }) {
   const [flipping, setFlipping] = useState(false);
+  const [imgSrc, setImgSrc] = useState(src);
   const logoRadius = useMemo(() => `${(Number(borderRadius) / 100) * 50}%`, [borderRadius]);
+
+  const handleImageError = useCallback(() => {
+    setImgSrc(assetUrl('images/kaddish-official-logo.svg'));
+  }, []);
 
   const goToAdmin = useCallback(() => {
     if (flipping) {
@@ -30,7 +36,12 @@ export function CommunityLogo({ src, alt, borderRadius = 100 }) {
       style={{ '--community-logo-radius': logoRadius }}
     >
       <span className="community-logo-flip">
-        <img className="banner community-logo-img" src={src} alt="" />
+        <img 
+          className="banner community-logo-img" 
+          src={imgSrc} 
+          alt="" 
+          onError={handleImageError}
+        />
       </span>
     </button>
   );

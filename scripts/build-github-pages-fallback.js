@@ -150,6 +150,13 @@ function main() {
   copyDir(path.join(ROOT, 'public/board'), path.join(SITE_DIR, 'board'));
   const imageCount = copyDir(path.join(ROOT, 'images'), path.join(SITE_DIR, 'images'));
   const photoCount = copyDir(path.join(ROOT, 'photos'), path.join(SITE_DIR, 'photos'));
+  
+  const staticAssetsDir = path.join(ROOT, 'static-assets');
+  let staticAssetCount = 0;
+  if (fs.existsSync(staticAssetsDir)) {
+    staticAssetCount = copyDir(staticAssetsDir, SITE_DIR);
+    console.log(`   Static assets: ${staticAssetCount}`);
+  }
 
   fixCssAssetPaths(path.join(SITE_DIR, 'board/assets/memorial.css'), BASE);
 

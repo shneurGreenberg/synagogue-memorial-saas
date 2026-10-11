@@ -48,7 +48,7 @@ export function StaticSiteBanner() {
         <div style={{
           position: 'fixed',
           top: '1rem',
-          left: '1rem',
+          right: '1rem',
           backgroundColor: 'rgba(0, 0, 0, 0.7)',
           color: '#ffd54f',
           padding: '0.5rem 1rem',

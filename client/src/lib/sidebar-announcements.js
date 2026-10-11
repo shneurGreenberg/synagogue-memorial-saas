@@ -75,12 +75,24 @@ function buildChabadSidebarItems(chabadDates) {
   });
 }
 
+function isPlaceholder(text) {
+  if (!text) return false;
+  const lower = String(text).toLowerCase();
+  return lower.includes('lorem') || 
+         lower.includes('ipsum') || 
+         lower.includes('placeholder') ||
+         lower === 'test' ||
+         lower === 'тест';
+}
+
 function buildEventSidebarItems(communityEvents) {
-  return (communityEvents || []).map((event) => ({
-    ...event,
-    listType: 'event',
-    sortDate: event.isUndated ? null : (event.gregorianDate ? event.gregorianDate.getTime() : null),
-  }));
+  return (communityEvents || [])
+    .filter((event) => !isPlaceholder(event.title) && !isPlaceholder(event.text))
+    .map((event) => ({
+      ...event,
+      listType: 'event',
+      sortDate: event.isUndated ? null : (event.gregorianDate ? event.gregorianDate.getTime() : null),
+    }));
 }
 
 function cloneAnnouncementItem(item, suffix) {
