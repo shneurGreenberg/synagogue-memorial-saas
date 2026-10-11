@@ -1,4 +1,4 @@
-<div class="admin-page people-page" data-synagogue-slug="{{synagogue.slug}}" data-contact-directory-count="{{synagogue.contactDirectoryCount}}" data-edit-label="{{t 'edit'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-delete-photo-confirm="{{t 'delete_photo_confirm'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-send-label="{{t 'yahrzeit_send_contact'}}" data-download-tile-label="{{t 'yahrzeit_download_tile'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}" data-contact-suggestion-label="{{t 'contact_pick_suggestion'}}" data-contact-paste-family-name="{{t 'contact_paste_family_name'}}">
+<div class="admin-page people-page" data-synagogue-slug="{{synagogue.slug}}" data-contact-directory-count="{{synagogue.contactDirectoryCount}}" data-edit-label="{{t 'edit'}}" data-date-label="{{t 'date_of_death'}}" data-no-date-label="{{t 'no_death_date'}}" data-undated-badge="{{t 'undated_badge'}}" data-date-incomplete="{{t 'death_date_incomplete'}}" data-undated-only="{{#if undatedOnly}}1{{else}}0{{/if}}" data-delete-confirm="{{t 'are_you_sure'}}" data-delete-photo-confirm="{{t 'delete_photo_confirm'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-send-label="{{t 'yahrzeit_send_contact'}}" data-download-tile-label="{{t 'yahrzeit_download_tile'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}" data-contact-suggestion-label="{{t 'contact_pick_suggestion'}}" data-contact-paste-family-name="{{t 'contact_paste_family_name'}}">
     <header class="admin-page-header">
         <div>
             <h1>{{t 'people'}}</h1>
@@ -33,10 +33,23 @@
         <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div>
     {{/if}}
+    {{#if dateError}}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{t 'death_date_incomplete'}}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+    {{/if}}
+
+    <div id="undatedPeopleBanner" class="alert admin-alert admin-alert-warning undated-people-banner" role="status" {{#unless undatedPeopleCount}}hidden{{/unless}}>
+        <span><strong id="undatedPeopleCount">{{undatedPeopleCount}}</strong> {{t 'undated_people_banner'}}</span>
+    </div>
 
     <div class="people-toolbar">
         <input type="search" id="peopleSearch" class="form-control admin-input" style="max-width: 300px; flex: 1;"
             placeholder="{{t 'search_people'}}" aria-label="{{t 'search_people'}}">
+        <button type="button" id="peopleUndatedFilter" class="btn-admin btn-admin-secondary" aria-pressed="{{#if undatedOnly}}true{{else}}false{{/if}}">
+            {{t 'undated_people_filter'}}
+        </button>
     </div>
 
     <div class="people-list" id="peopleList"></div>
@@ -125,10 +138,11 @@
                             <div class="form-field">
                                 <label>{{t 'date_gregorian'}}</label>
                                 <div class="date-row">
-                                    <input type="number" name="date" class="form-control" placeholder="{{t 'day'}}" required>
-                                    <input type="number" name="month" class="form-control" placeholder="{{t 'month'}}" required>
-                                    <input type="number" name="year" class="form-control" placeholder="{{t 'year'}}" required>
+                                    <input type="number" name="date" class="form-control" placeholder="{{t 'day'}}" min="1" max="31">
+                                    <input type="number" name="month" class="form-control" placeholder="{{t 'month'}}" min="1" max="12">
+                                    <input type="number" name="year" class="form-control" placeholder="{{t 'year'}}" min="1" max="9999">
                                 </div>
+                                <span class="field-hint">{{t 'date_optional_hint'}}</span>
                             </div>
                             <div class="form-field">
                                 <label for="addText">{{t 'biography'}}</label>
@@ -192,10 +206,11 @@
                             <div class="form-field">
                                 <label>{{t 'date_gregorian'}}</label>
                                 <div class="date-row">
-                                    <input type="number" name="date" id="editDate" class="form-control" placeholder="{{t 'day'}}" required>
-                                    <input type="number" name="month" id="editMonth" class="form-control" placeholder="{{t 'month'}}" required>
-                                    <input type="number" name="year" id="editYear" class="form-control" placeholder="{{t 'year'}}" required>
+                                    <input type="number" name="date" id="editDate" class="form-control" placeholder="{{t 'day'}}" min="1" max="31">
+                                    <input type="number" name="month" id="editMonth" class="form-control" placeholder="{{t 'month'}}" min="1" max="12">
+                                    <input type="number" name="year" id="editYear" class="form-control" placeholder="{{t 'year'}}" min="1" max="9999">
                                 </div>
+                                <span class="field-hint">{{t 'date_optional_hint'}}</span>
                             </div>
                             <div class="form-field">
                                 <label for="editText">{{t 'biography'}}</label>

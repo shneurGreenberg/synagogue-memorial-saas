@@ -20,6 +20,54 @@
     </div>
   {{/if}}
 
+  {{#if published}}
+    <div class="alert alert-success alert-dismissible fade show admin-alert" role="alert">
+        {{t 'publish_version_done'}}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    </div>
+  {{/if}}
+
+  {{#if undatedPeopleCount}}
+    <div class="alert admin-alert admin-alert-warning undated-people-banner" role="status">
+        <span><strong>{{undatedPeopleCount}}</strong> {{t 'undated_people_banner'}}</span>
+        <a class="btn-admin btn-admin-secondary btn-admin-sm" href="/admin/{{synagogue.slug}}/people?undated=1">{{t 'undated_people_filter'}}</a>
+    </div>
+  {{/if}}
+
+    <section class="admin-panel publish-version-panel">
+        <div class="admin-panel-header">
+            <h2 class="admin-panel-title">{{t 'publish_version_title'}}</h2>
+        </div>
+        <div class="admin-panel-body">
+            <p class="field-hint">{{t 'publish_version_help'}}</p>
+            <p class="publish-version-stats">
+                <span>{{t 'published_version_label'}}: <strong id="publishedVersionValue">{{boardPublish.publishedVersion}}</strong></span>
+                {{#if boardPublish.publishedAtLabel}}
+                <span>{{t 'published_at_label'}}: {{boardPublish.publishedAtLabel}}</span>
+                {{/if}}
+                <span><strong>{{boardPublish.onPublishedVersion}}</strong> {{t 'screens_on_version'}}</span>
+                <span><strong>{{boardPublish.pendingCount}}</strong> {{t 'screens_pending'}}</span>
+            </p>
+            {{#if boardPublish.screens.length}}
+            <ul class="publish-screen-list">
+                {{#each boardPublish.screens}}
+                <li>
+                    <span class="publish-screen-name">{{#if this.label}}{{this.label}}{{else}}{{this.screenId}}{{/if}}</span>
+                    <span class="publish-screen-client">{{this.clientLabel}}</span>
+                    <span class="publish-screen-version">v{{this.publishedVersion}}</span>
+                    <time datetime="{{this.lastSeenAt}}">{{this.lastSeenLabel}}</time>
+                </li>
+                {{/each}}
+            </ul>
+            {{else}}
+            <p class="field-hint">{{t 'no_screens_yet'}}</p>
+            {{/if}}
+            <form method="POST" action="/admin/{{synagogue.slug}}/publish-version" data-confirm="{{t 'publish_version_confirm'}}" onsubmit="return confirm(this.getAttribute('data-confirm'));">
+                <button type="submit" class="btn-admin btn-admin-primary">{{t 'publish_version'}}</button>
+            </form>
+        </div>
+    </section>
+
     <form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data" class="settings-form" id="settingsForm" data-save-label="{{t 'save'}}" data-slug="{{synagogue.slug}}">
         {{#if adminPermissions.settingsPreview}}
         <section class="admin-panel settings-preview-panel admin-panel-collapsible is-expanded">

@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 require('../models/Synagogue');
 const { loadSynagogueBoard } = require('../lib/load-synagogue-board');
 const { toPublicBoardPayload } = require('../lib/public-board');
+const { normalizePersonDeathDate } = require('../lib/death-date');
 const { getJewishFeed } = require('../lib/jewish-feed');
 const { buildSidebarAppPayload } = require('../lib/sidebar-app-payload');
 
@@ -84,6 +85,9 @@ async function findDatabaseWithSynagogues(uri, targetSlugs) {
       }
       
       const board = toPublicBoardPayload(s, { includeText: true });
+      if (Array.isArray(board.people)) {
+        board.people = board.people.map(normalizePersonDeathDate);
+      }
       const lang = s.language || 'ru';
       let jewish = null, sidebar = null;
       

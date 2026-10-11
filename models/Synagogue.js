@@ -23,9 +23,9 @@ const PersonSchema = new mongoose.Schema({
   id: Number,
   name: String,
   gregorianDateOfDeath: {
-    month: Number,
-    date: Number,
-    year: Number
+    month: { type: Number, default: undefined },
+    date: { type: Number, default: undefined },
+    year: { type: Number, default: undefined },
   },
   photo: String,
   photoCrop: {
@@ -301,6 +301,18 @@ const SynagogueSchema = new mongoose.Schema({
   language: { type: String, default: 'ru' },
   adminLanguage: { type: String, default: 'ru' }, // Separate language for admin panel
   reloadTimeout: { type: Number, default: 43200000 }, // 12 hours
+  publishedVersion: { type: Number, default: 1 },
+  publishedAt: { type: Date, default: null },
+  boardClients: {
+    type: [{
+      screenId: String,
+      client: String,
+      label: String,
+      publishedVersion: Number,
+      lastSeenAt: Date,
+    }],
+    default: [],
+  },
   slideshow: {
     enabled: { type: Boolean, default: false },
     interval: { type: Number, default: 10 }, // seconds for each slide

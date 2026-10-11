@@ -31,11 +31,19 @@ export function getDatesInTimezone(timezone, now = new Date()) {
 }
 
 export function formatHebrewDate(hebrewDate, lang = 'ru') {
+  if (!hebrewDate || typeof hebrewDate.getDate !== 'function') {
+    return '';
+  }
+
   const months = HEBREW_MONTHS[lang] || HEBREW_MONTHS.ru;
   return `${hebrewDate.getDate()} ${months[hebrewDate.getMonth()]} ${hebrewDate.getFullYear()}`;
 }
 
 export function formatGregorianDate(gregorianDate, lang = 'ru') {
+  if (!gregorianDate || typeof gregorianDate.getDate !== 'function') {
+    return '';
+  }
+
   const months = GREGORIAN_MONTHS[lang] || GREGORIAN_MONTHS.ru;
   return `${gregorianDate.getDate()} ${months[gregorianDate.getMonth()]} ${gregorianDate.getFullYear()}`;
 }

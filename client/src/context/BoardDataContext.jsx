@@ -23,6 +23,7 @@ import {
 } from '../lib/board-calendar';
 import { resolveBoardTimezone } from '../lib/timezone';
 import { mergeBoardPayload } from '../lib/board-payload';
+import { readPublishedBoardVersion, reportScreenPresence } from '../lib/screen-presence';
 
 const POLL_MS = 8000;
 const HIDDEN_POLL_MS = 60000;
@@ -55,6 +56,8 @@ export function BoardDataProvider({ slug, children }) {
   const [revision, setRevision] = useState(0);
   const [calendarDayKey, setCalendarDayKey] = useState(() => getDayKeyInTimezone(getBoardTimezone()));
   const boardVersionRef = useRef(readEmbeddedContentVersion());
+  const publishedVersionRef = useRef(readPublishedBoardVersion());
+  const lastPresenceAtRef = useRef(0);
   const [uiLang, setUiLangState] = useState(() => {
     if (previewMode) {
       const previewLang = getPreviewLanguage();
@@ -166,10 +169,6 @@ export function BoardDataProvider({ slug, children }) {
     };
 
     const poll = async () => {
-      if (typeof document !== 'undefined' && document.hidden) {
-        return;
-      }
-
       try {
         const versionResponse = await fetch(`/s/${slug}/api/board/version`, {
           cache: 'no-store',
@@ -180,7 +179,30 @@ export function BoardDataProvider({ slug, children }) {
           return;
         }
 
-        const { version } = await versionResponse.json();
+        const versionPayload = await versionResponse.json();
+        const { version } = versionPayload;
+        const publishedVersion = Number(versionPayload.publishedVersion);
+        if (
+          Number.isFinite(publishedVersion)
+          && publishedVersion >= 1
+          && publishedVersion !== publishedVersionRef.current
+        ) {
+          window.location.reload();
+          return;
+        }
+
+        const now = Date.now();
+        if (now - lastPresenceAtRef.current > 20000) {
+          lastPresenceAtRef.current = now;
+          reportScreenPresence(slug, publishedVersionRef.current).catch(() => {
+            /* presence is best-effort */
+          });
+        }
+
+        if (typeof document !== 'undefined' && document.hidden) {
+          return;
+        }
+
         if (boardVersionRef.current && boardVersionRef.current === version) {
           return;
         }
@@ -235,6 +257,7 @@ export function BoardDataProvider({ slug, children }) {
     }
 
     schedule();
+    poll();
 
     const onVisibility = () => {
       schedule();

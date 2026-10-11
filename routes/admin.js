@@ -14,6 +14,17 @@ const { parsePhotoCropFromBody } = require('../lib/photo-crop');
 const { parseBoardFeaturesFromBody } = require('../lib/board-features');
 const { invalidateBoardCache } = require('../lib/board-cache');
 const {
+    parseOptionalDeathDate,
+    parseDeathDateFields,
+    countPeopleWithoutDeathDate,
+} = require('../lib/death-date');
+const {
+    nextPublishedVersion,
+    summarizeBoardScreens,
+    resolvePublishedVersion,
+    formatPublishedAt,
+} = require('../lib/board-publish');
+const {
   normalizeSnapshot,
   saveViewThumbnail,
   deleteScreenshot,
@@ -558,6 +569,20 @@ function renderAdmin(res, view, options = {}) {
     );
     const locale = getAdminLocaleContext(displaySynagogue && displaySynagogue.adminLanguage);
     const yahrzeitTodayCount = buildYahrzeitEntries(displaySynagogue).length;
+    const publishedVersion = resolvePublishedVersion(displaySynagogue && displaySynagogue.publishedVersion);
+    const boardPublishSummary = summarizeBoardScreens(
+        displaySynagogue && displaySynagogue.boardClients,
+        publishedVersion,
+    );
+    const boardPublish = {
+        ...boardPublishSummary,
+        publishedAtLabel: formatPublishedAt(displaySynagogue && displaySynagogue.publishedAt, locale.adminLanguage),
+        screens: boardPublishSummary.screens.slice(0, 12).map((screen) => ({
+            ...screen,
+            clientLabel: getTranslator(locale.adminLanguage)(`screen_client_${screen.client}`),
+            lastSeenLabel: formatPublishedAt(screen.lastSeenAt, locale.adminLanguage),
+        })),
+    };
 
     res.render(view, {
         ...options,
@@ -568,6 +593,8 @@ function renderAdmin(res, view, options = {}) {
         adminDir: locale.adminDir,
         adminIsRtl: locale.adminIsRtl,
         yahrzeitTodayCount,
+        undatedPeopleCount: countPeopleWithoutDeathDate(displaySynagogue && displaySynagogue.people),
+        boardPublish,
         officialLogoUrl: `/images/${OFFICIAL_LOGO_FILENAME}`,
         faviconUrl: buildFaviconPath(displaySynagogue.slug, { badge: false }),
         faviconAlertUrl: buildFaviconPath(displaySynagogue.slug, { badge: true }),
@@ -1003,6 +1030,7 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             activeSavedViewName: activeSavedView ? activeSavedView.name : '',
             memorialQrPanel: enriched.memorialQrPanel,
             saved: req.query.saved === '1',
+            published: req.query.published === '1',
             error: req.query.error || null,
         });
     } catch (err) {
@@ -1019,18 +1047,13 @@ router.get('/:slug/preview-board', requireAdmin, requirePermission('settings'), 
 });
 
 function normalizeImportedPerson(raw, fallbackId) {
-    const death = raw.gregorianDateOfDeath || raw.dateOfDeath || {};
     const person = {
         id: fallbackId,
         name: String(raw.name || '').trim(),
         text: sanitizeRichText(raw.text || ''),
         title: raw.title ? String(raw.title) : '',
         photo: raw.photo ? String(raw.photo) : '',
-        gregorianDateOfDeath: {
-            month: parseInt(death.month, 10) || 1,
-            date: parseInt(death.date, 10) || 1,
-            year: parseInt(death.year, 10) || 1900,
-        },
+        gregorianDateOfDeath: parseOptionalDeathDate(raw.gregorianDateOfDeath || raw.dateOfDeath) || undefined,
         contact: normalizePersonContact(raw.contact || {
             name: raw.contactName,
             phone: raw.contactPhone,
@@ -1207,7 +1230,12 @@ router.get('/:slug/people/list', requireAdmin, requirePermission('people'), asyn
             ));
         }
 
-        return res.json({ ok: true, people, total: (synagogue.people || []).length });
+        return res.json({
+            ok: true,
+            people,
+            total: (synagogue.people || []).length,
+            undatedCount: countPeopleWithoutDeathDate(synagogue.people),
+        });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
     }
@@ -1225,6 +1253,8 @@ router.get('/:slug/people', requireAdmin, requirePermission('people'), async (re
             adminPermissions: req.adminPermissions,
             imported: req.query.imported === '1',
             importError: req.query.importError === '1',
+            dateError: req.query.dateError === '1',
+            undatedOnly: req.query.undated === '1',
         });
     } catch (err) {
         res.status(500).send(err.message);
@@ -1457,10 +1487,55 @@ router.post('/:slug/people/import', requireAdmin, requirePermission('people'), r
     }
 });
 
+function readDeathDateOrRespond(req, res) {
+    try {
+        return parseDeathDateFields(req.body.month, req.body.date, req.body.year);
+    } catch (err) {
+        if (err && err.code === 'incomplete_death_date') {
+            if (wantsJson(req)) {
+                res.status(400).json({ ok: false, error: 'incomplete_death_date' });
+            } else {
+                res.redirect(`/admin/${req.params.slug}/people?dateError=1`);
+            }
+            return undefined;
+        }
+        throw err;
+    }
+}
+
+router.post('/:slug/publish-version', requireAdmin, requirePermission('settings'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }, { publishedVersion: 1 }).lean();
+        if (!synagogue) {
+            return res.status(404).send('Not found');
+        }
+
+        const publishedVersion = nextPublishedVersion(synagogue.publishedVersion);
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            { $set: { publishedVersion, publishedAt: new Date() } },
+        );
+        invalidateBoardCache(req.params.slug);
+
+        if (wantsJson(req)) {
+            return res.json({ ok: true, publishedVersion });
+        }
+
+        return res.redirect(`/admin/${req.params.slug}/dashboard?published=1`);
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+});
+
 router.post('/:slug/people/add', requireAdmin, requirePermission('people'), upload.single('photo'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { name, text, month, date, year } = req.body;
+        const { name, text } = req.body;
+        const deathDate = readDeathDateOrRespond(req, res);
+        if (deathDate === undefined && res.headersSent) {
+            return undefined;
+        }
         const contacts = parsePersonContactsFromBody(req.body);
         const legacy = personContactsToLegacyFields(contacts);
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
@@ -1470,13 +1545,15 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
             id: maxId + 1,
             name,
             text: sanitizeRichText(text),
-            gregorianDateOfDeath: { month: parseInt(month), date: parseInt(date), year: parseInt(year) },
             photo: req.file ? await optimizeUploadedImage(req.file.path, 'photo') : '',
             photoCrop: req.file ? parsePhotoCropFromBody(req.body) : undefined,
             title: '',
             contact: legacy.contact,
             contacts: legacy.contacts,
         };
+        if (deathDate) {
+            newPerson.gregorianDateOfDeath = deathDate;
+        }
 
         await Synagogue.updateOne(
             { slug: req.params.slug },
@@ -1496,7 +1573,11 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
 router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upload.single('photo'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { id, name, text, month, date, year, deletePhoto } = req.body;
+        const { id, name, text, deletePhoto } = req.body;
+        const deathDate = readDeathDateOrRespond(req, res);
+        if (deathDate === undefined && res.headersSent) {
+            return undefined;
+        }
         const contacts = parsePersonContactsFromBody(req.body);
         const legacy = personContactsToLegacyFields(contacts);
         const personId = parseInt(id);
@@ -1504,10 +1585,15 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
         const updateFields = {
             'people.$.name': name,
             'people.$.text': sanitizeRichText(text),
-            'people.$.gregorianDateOfDeath': { month: parseInt(month), date: parseInt(date), year: parseInt(year) },
             'people.$.contact': legacy.contact,
             'people.$.contacts': legacy.contacts,
         };
+        const update = { $set: updateFields };
+        if (deathDate) {
+            updateFields['people.$.gregorianDateOfDeath'] = deathDate;
+        } else {
+            update.$unset = { 'people.$.gregorianDateOfDeath': '' };
+        }
 
         if (req.file) {
             updateFields['people.$.photo'] = await optimizeUploadedImage(req.file.path, 'photo');
@@ -1521,7 +1607,7 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
 
         await Synagogue.updateOne(
             { slug: req.params.slug, 'people.id': personId },
-            { $set: updateFields }
+            update
         );
 
         if (wantsJson(req)) {

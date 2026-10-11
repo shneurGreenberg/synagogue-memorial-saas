@@ -6,6 +6,7 @@ import {
 import { getNameDensityClass } from '../lib/text-density';
 import { CandleVideo } from './CandleVideo';
 import { shouldUseStaticCandleOnly } from '../lib/legacy-browser';
+import { entryShowsDeathDate } from '../../../lib/death-date';
 
 const CANDLE_CYCLE_MS = 4000;
 const STATIC_CANDLES = shouldUseStaticCandleOnly();
@@ -75,12 +76,14 @@ class MemorialCardInner extends React.Component {
             <div className="yahrzeit-today-badge" aria-hidden="true">★</div>
           )}
           <h3>{displayName}</h3>
-          <div className="card-dates">
-            <time dateTime={toDatetimeAttr(entry.gregorianDateOfDeath)}>
-              {formatGregorianDate(entry.gregorianDateOfDeath)}
-            </time>
-            <time>{formatHebrewDate(entry.hebrewDateOfDeath)}</time>
-          </div>
+          {entryShowsDeathDate(entry) && (
+            <div className="card-dates">
+              <time dateTime={toDatetimeAttr(entry.gregorianDateOfDeath)}>
+                {formatGregorianDate(entry.gregorianDateOfDeath)}
+              </time>
+              <time>{formatHebrewDate(entry.hebrewDateOfDeath)}</time>
+            </div>
+          )}
           {entry.title && big && <div className="title">{entry.title}</div>}
           <div className="placeholder" />
         </div>

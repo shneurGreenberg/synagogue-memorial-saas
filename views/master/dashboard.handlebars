@@ -9,6 +9,9 @@
     {{#if saved}}
     <div class="master-alert master-alert-success">{{t 'saved_success'}}</div>
     {{/if}}
+    {{#if published}}
+    <div class="master-alert master-alert-success">{{t 'publish_version_done'}}</div>
+    {{/if}}
     {{#if error}}
     <div class="master-alert master-alert-danger">
         {{#if (eq error 'slug_exists')}}{{t 'error_slug_exists'}}
@@ -49,6 +52,23 @@
                                 · {{#if this.location.timezone}}{{this.location.timezone}}{{else}}Asia/Novosibirsk{{/if}}
                                 · {{this.language}}/{{this.adminLanguage}}
                             </p>
+                            <p class="master-community-meta">
+                                {{t 'published_version_label'}}: <strong>{{this.publishSummary.publishedVersion}}</strong>
+                                · {{this.publishSummary.onPublishedVersion}} {{t 'screens_on_version'}}
+                                · {{this.publishSummary.pendingCount}} {{t 'screens_pending'}}
+                            </p>
+                            {{#if this.publishSummary.screens.length}}
+                            <ul class="master-screen-list">
+                                {{#each this.publishSummary.screens}}
+                                <li>
+                                    <span>{{#if this.label}}{{this.label}}{{else}}{{this.screenId}}{{/if}}</span>
+                                    <span>{{this.clientLabel}}</span>
+                                    <span>v{{this.publishedVersion}}</span>
+                                    <time datetime="{{this.lastSeenAt}}">{{this.lastSeenLabel}}</time>
+                                </li>
+                                {{/each}}
+                            </ul>
+                            {{/if}}
                             {{#if this.provisioning.photosDriveUrl}}
                             <p class="master-community-provision">
                                 <span>{{t 'wizard_review_photos_drive'}}:</span>
@@ -68,6 +88,10 @@
                                 <svg class="master-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4m0 2.18c2.53.77 4.5 2.53 5.82 4.82H6.18C7.5 5.71 9.47 3.95 12 3.18M12 7a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2m0 6.75c2.53 0 4.77.93 6.5 2.43V17c0 .55-.45 1-1 1H6.5c-.55 0-1-.45-1-1v-.82c1.73-1.5 3.97-2.43 6.5-2.43Z"/></svg>
                                 {{t 'admin'}}
                             </a>
+                            <form method="POST" action="/master/publish-version" class="master-publish-form" data-confirm="{{t 'publish_version_confirm'}}" onsubmit="return confirm(this.getAttribute('data-confirm'));">
+                                <input type="hidden" name="slug" value="{{this.slug}}">
+                                <button type="submit" class="btn master-btn master-btn-secondary btn-sm">{{t 'publish_version'}}</button>
+                            </form>
                             <button type="button" class="btn master-btn master-btn-secondary btn-sm master-toggle-edit" data-label-edit="{{t 'edit'}}" data-label-close="{{t 'close'}}" aria-expanded="false">
                                 <svg class="master-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25Z"/></svg>
                                 <span class="master-toggle-edit-label">{{t 'edit'}}</span>

@@ -468,6 +468,28 @@ select.master-input,
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
+  align-items: center;
+}
+
+.master-publish-form {
+  display: inline-flex;
+  margin: 0;
+}
+
+.master-screen-list {
+  list-style: none;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.3rem;
+
+  li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.75rem;
+    font-size: 0.82rem;
+    opacity: 0.9;
+  }
 }
 
 .master-community-edit {

@@ -105,3 +105,21 @@ export function buildSidebarApiUrl(settings, lang) {
   const query = params.toString();
   return `${base}/s/${encodeURIComponent(slug)}/api/sidebar-app${query ? `?${query}` : ''}`;
 }
+
+export function buildBoardVersionUrl(settings) {
+  const { serverUrl: base, slug } = parseServerSettings(settings.serverUrl, settings.slug);
+  if (!base || !slug) {
+    return null;
+  }
+
+  return `${base}/s/${encodeURIComponent(slug)}/api/board/version`;
+}
+
+export function buildBoardPresenceUrl(settings) {
+  const { serverUrl: base, slug } = parseServerSettings(settings.serverUrl, settings.slug);
+  if (!base || !slug) {
+    return null;
+  }
+
+  return `${base}/s/${encodeURIComponent(slug)}/api/board/presence`;
+}

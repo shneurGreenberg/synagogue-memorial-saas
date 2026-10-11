@@ -256,6 +256,10 @@ export function configureNovosibirsk() {
 }
 
 export function formatHebrewDate(hewbrewDate) {
+    if (!hewbrewDate || typeof hewbrewDate.getDate !== 'function') {
+      return '';
+    }
+
     const lang = getDisplayLanguage();
     let result = `${hewbrewDate.getDate()} `;
     const month = hewbrewDate.getMonth();
