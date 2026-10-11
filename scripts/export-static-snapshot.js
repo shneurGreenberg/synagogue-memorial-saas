@@ -1,76 +1,122 @@
 #!/usr/bin/env node
-/**
- * Export static snapshots from MongoDB for GitHub Pages fallback.
- * Reads MONGODB_URI from environment and exports public board data for specified tenants.
- * Output: ./static-snapshots/{slug}.json
- */
+// Full public snapshot export (board + design + jewish-content + sidebar-app) for GitHub Pages fallback.
+// Read-only. Requires MONGODB_URI. Never logs the URI.
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
+require('../models/Synagogue');
+const { loadSynagogueBoard } = require('../lib/load-synagogue-board');
 const { toPublicBoardPayload } = require('../lib/public-board');
+const { getJewishFeed } = require('../lib/jewish-feed');
+const { buildSidebarAppPayload } = require('../lib/sidebar-app-payload');
 
-const TENANTS = ['novosibirsk', 'tomsk'];
-const OUTPUT_DIR = path.join(__dirname, '..', 'static-snapshots');
+const TENANTS = (process.argv[2] || 'novosibirsk,tomsk').split(',');
+const OUT = path.join(__dirname, '..', 'static-snapshots');
 
-async function connectMongo() {
-  const uri = process.env.MONGODB_URI;
-  if (!uri) {
-    throw new Error('MONGODB_URI environment variable is not set');
-  }
-  await mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-}
-
-async function exportSnapshot(slug) {
+async function findDatabaseWithSynagogues(uri, targetSlugs) {
+  // First try the default database from URI
+  await mongoose.connect(uri);
+  
   const Synagogue = mongoose.model('Synagogue');
-  const board = await Synagogue.findOne({ slug }).lean();
+  let count = await Synagogue.countDocuments({});
   
-  if (!board) {
-    console.warn(`⚠️  Board "${slug}" not found in database, skipping`);
-    return null;
+  if (count > 0) {
+    const found = await Synagogue.countDocuments({ slug: { $in: targetSlugs } });
+    console.log(`✓ Using default database: ${count} synagogues, ${found} target slugs found`);
+    return;
   }
-
-  const publicPayload = toPublicBoardPayload(board, { includeText: true });
   
-  const snapshot = {
-    ...publicPayload,
-    contentVersion: Date.now(),
-    exportedAt: new Date().toISOString(),
-  };
-
-  const outputPath = path.join(OUTPUT_DIR, `${slug}.json`);
-  fs.writeFileSync(outputPath, JSON.stringify(snapshot, null, 2));
+  console.log('Default database has no synagogues, searching all databases...');
+  await mongoose.disconnect();
   
-  console.log(`✓ Exported ${slug}: ${snapshot.people?.length || 0} people`);
-  return snapshot;
-}
-
-async function main() {
-  console.log('📦 Exporting static snapshots from MongoDB...');
+  // List all databases and find one with synagogues
+  const adminUri = uri.replace(/\/[^/?]*(\?|$)/, '/$1'); // Connect to admin/default
+  await mongoose.connect(adminUri);
   
-  if (!fs.existsSync(OUTPUT_DIR)) {
-    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-  }
-
-  try {
-    await connectMongo();
-    console.log('✓ Connected to MongoDB');
-
-    const exports = [];
-    for (const slug of TENANTS) {
-      const snapshot = await exportSnapshot(slug);
-      if (snapshot) {
-        exports.push({ slug, people: snapshot.people?.length || 0 });
+  const admin = mongoose.connection.db.admin();
+  const { databases } = await admin.listDatabases();
+  
+  console.log(`Found ${databases.length} databases to check`);
+  
+  for (const dbInfo of databases) {
+    if (dbInfo.name === 'admin' || dbInfo.name === 'local' || dbInfo.name === 'config') {
+      continue;
+    }
+    
+    await mongoose.disconnect();
+    const dbUri = uri.replace(/\/[^/?]*(\?|$)/, `/${dbInfo.name}$1`);
+    await mongoose.connect(dbUri);
+    
+    const Synagogue = mongoose.model('Synagogue');
+    const count = await Synagogue.countDocuments({});
+    
+    if (count > 0) {
+      const found = await Synagogue.countDocuments({ slug: { $in: targetSlugs } });
+      console.log(`✓ Found database "${dbInfo.name}": ${count} synagogues, ${found} target slugs`);
+      if (found > 0) {
+        return;
       }
     }
+  }
+  
+  throw new Error('No database found with target synagogue slugs');
+}
 
+(async () => {
+  fs.mkdirSync(OUT, { recursive: true });
+  
+  if (!process.env.MONGODB_URI) {
+    console.log('\nℹ️  MONGODB_URI not available - this is expected in CI without secrets.');
+    console.log('   The workflow will use the last committed snapshots.');
+    process.exit(0);
+  }
+  
+  try {
+    await findDatabaseWithSynagogues(process.env.MONGODB_URI, TENANTS);
+    console.log('✓ Connected to MongoDB');
+    
+    const exports = [];
+    for (const slug of TENANTS) {
+      const s = await loadSynagogueBoard(slug);
+      if (!s) {
+        console.warn(`⚠️  Board "${slug}" not found in database, skipping`);
+        continue;
+      }
+      
+      const board = toPublicBoardPayload(s, { includeText: true });
+      const lang = s.language || 'ru';
+      let jewish = null, sidebar = null;
+      
+      try {
+        jewish = await getJewishFeed(lang, s);
+      } catch (e) {
+        console.warn(`${slug}: jewish-content failed: ${e.message}`);
+      }
+      
+      try {
+        sidebar = await buildSidebarAppPayload(s, lang);
+      } catch (e) {
+        console.warn(`${slug}: sidebar-app failed: ${e.message}`);
+      }
+      
+      const snap = {
+        ...board,
+        contentVersion: Date.now(),
+        exportedAt: new Date().toISOString(),
+        jewishContent: jewish,
+        sidebarApp: sidebar,
+      };
+      
+      fs.writeFileSync(path.join(OUT, `${slug}.json`), JSON.stringify(snap, null, 2));
+      exports.push({ slug, people: board.people?.length || 0 });
+      console.log(`✓ Exported ${slug}: ${board.people?.length || 0} people, ${Object.keys(board).length} board fields`);
+    }
+    
     await mongoose.disconnect();
     
     if (exports.length === 0) {
       console.warn('\n⚠️  No snapshots were exported - keeping existing snapshots');
-      process.exit(0); // Exit gracefully without overwriting
+      process.exit(0);
     }
     
     console.log('\n✅ Export complete:');
@@ -78,21 +124,8 @@ async function main() {
       console.log(`   ${slug}: ${people} people`);
     });
   } catch (error) {
-    console.error('\n❌ Export failed:', error.message);
-    
-    if (error.message.includes('MONGODB_URI')) {
-      console.log('\nℹ️  MONGODB_URI not available - this is expected in CI without secrets.');
-      console.log('   The workflow will use the last committed snapshots.');
-      process.exit(0); // Exit gracefully so CI doesn't fail
-    }
-    
+    console.error('\n❌ Export failed:', error.message.replace(/mongodb(\+srv)?:\/\/[^\s]+/gi, '[MONGODB_URI]'));
     console.log('\n⚠️  Keeping existing snapshots to avoid data loss');
-    process.exit(0); // Exit gracefully to keep existing data
+    process.exit(0);
   }
-}
-
-if (require.main === module) {
-  main();
-}
-
-module.exports = { exportSnapshot };
+})();
