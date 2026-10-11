@@ -1,39 +1,21 @@
 {
   "slug": "tomsk",
-  "name": "Tomsk Synagogue",
-  "title": "Мемориальная доска Томск",
+  "name": "Tomsk",
+  "title": "Проект памяти наших родных \"Кадиш\"",
   "titles": {
-    "ru": "Мемориальная доска Томск",
-    "en": "",
-    "he": ""
+    "ru": "Проект памяти наших родных \"Кадиш\"",
+    "en": "\"Kaddish\": A Project in Memory of Our Loved Ones",
+    "he": "פרויקט הזיכרון קדיש"
   },
   "language": "ru",
   "location": {
     "lat": 56.4977,
     "long": 84.9744,
-    "city": "Tomsk",
+    "city": "Томская область",
     "timezone": "Asia/Tomsk"
   },
   "theme": {
-    "primaryColor": "#d4af37",
-    "textColor": "#f0f0f0",
-    "accentColor": "#ffd54f",
-    "tileColor": "#b89a22",
-    "tileOpacity": 100,
     "fontScales": {
-      "tileTitle": 100,
-      "tileDate": 100,
-      "clock": 100,
-      "boardHeader": 100,
-      "sidebar": 100,
-      "prayers": 100,
-      "prayerOverlay": 100,
-      "torahNames": 100,
-      "weather": 100,
-      "shabbat": 100,
-      "candle": 75
-    },
-    "fontScaleBaselines": {
       "tileTitle": 100,
       "tileDate": 100,
       "clock": 100,
@@ -46,37 +28,6126 @@
       "shabbat": 100,
       "candle": 100
     },
-    "logoBorderRadius": 100,
-    "candlePalette": "classic"
+    "fontScaleBaselines": {
+      "tileTitle": 120,
+      "tileDate": 100,
+      "clock": 100,
+      "boardHeader": 100,
+      "sidebar": 100,
+      "prayers": 100,
+      "prayerOverlay": 161,
+      "torahNames": 100,
+      "weather": 115,
+      "shabbat": 100,
+      "candle": 126
+    },
+    "primaryColor": "#ecd779",
+    "textColor": "#ffffff",
+    "accentColor": "#ffd54f",
+    "tileColor": "#409664",
+    "tileOpacity": 99,
+    "logo": "1782449503623.webp",
+    "candlePalette": "warm",
+    "backgroundImage": "1782467771943-opt.jpg",
+    "tilesBackground": "1782467772463-opt.jpg",
+    "logoBorderRadius": 100
   },
-  "people": [],
+  "people": [
+    {
+      "id": 1,
+      "name": "Словак Феликс Хаимович",
+      "gregorianDateOfDeath": {
+        "date": 23,
+        "month": 10,
+        "year": 2014
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 29 тишрей 5775"
+    },
+    {
+      "id": 2,
+      "name": "Крымский Марк Евгеньевич",
+      "gregorianDateOfDeath": {
+        "date": 11,
+        "month": 10,
+        "year": 2008
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 тишрей 5769"
+    },
+    {
+      "id": 3,
+      "name": "Дынин Михаил Аркадьевич",
+      "gregorianDateOfDeath": {
+        "date": 13,
+        "month": 10,
+        "year": 1993
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 тишрей 5754"
+    },
+    {
+      "id": 4,
+      "name": "Струлева Елизавета Юрьевна",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 10,
+        "year": 1989
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 11 тишрей 5750"
+    },
+    {
+      "id": 5,
+      "name": "Елов Юрий Дмитриевич",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 9,
+        "year": 1983
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 тишрей 5744"
+    },
+    {
+      "id": 6,
+      "name": "Рапопорт Лев Моисеевич",
+      "gregorianDateOfDeath": {
+        "date": 23,
+        "month": 10,
+        "year": 1986
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 тишрей 5747"
+    },
+    {
+      "id": 7,
+      "name": "Эскина Юлия Исаевна",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 9,
+        "year": 2021
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 тишрей 5782"
+    },
+    {
+      "id": 8,
+      "name": "Данышев Александр Федорович",
+      "gregorianDateOfDeath": {
+        "date": 14,
+        "month": 9,
+        "year": 2015
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 тишрей 5782"
+    },
+    {
+      "id": 9,
+      "name": "Галанская Жанетта Германовна",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 9,
+        "year": 1979
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 тишрей 5740"
+    },
+    {
+      "id": 10,
+      "name": "Покрасс Семен Борисович",
+      "gregorianDateOfDeath": {
+        "date": 14,
+        "month": 10,
+        "year": 1986
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 11 тишрей 5747"
+    },
+    {
+      "id": 11,
+      "name": "Вильдерман Антонина Борисовна",
+      "gregorianDateOfDeath": {
+        "date": 29,
+        "month": 9,
+        "year": 1984
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 3 тишрей 5745"
+    },
+    {
+      "id": 12,
+      "name": "Крымская Шифра Абрамовна",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 10,
+        "year": 1989
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 9 тишрей 5750"
+    },
+    {
+      "id": 13,
+      "name": "Белинскис Паула Эзекильевна",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 10,
+        "year": 1984
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 23 тишрей 5745"
+    },
+    {
+      "id": 14,
+      "name": "Мирандопуло Мира Моисеевна",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 10,
+        "year": 1990
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 23 тишрей 5751"
+    },
+    {
+      "id": 15,
+      "name": "Глейхенгауз Раиса Семеновна",
+      "gregorianDateOfDeath": {
+        "date": 23,
+        "month": 10,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 22 тишрей 5739"
+    },
+    {
+      "id": 16,
+      "name": "Марандопуло Борис Георгиевич",
+      "gregorianDateOfDeath": {
+        "date": 24,
+        "month": 9,
+        "year": 2013
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 тишрей 5774"
+    },
+    {
+      "id": 17,
+      "name": "Марк-Перкальскене Белла Самуиловна",
+      "gregorianDateOfDeath": {
+        "date": 15,
+        "month": 10,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 тишрей 5739"
+    },
+    {
+      "id": 18,
+      "name": "Файзильбер Хана Исааковна",
+      "gregorianDateOfDeath": {
+        "date": 22,
+        "month": 9,
+        "year": 1980
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 тишрей 5741"
+    },
+    {
+      "id": 19,
+      "name": "Пельцман Евгений Самуилович",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 9,
+        "year": 1994
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 7 тишрей 5755"
+    },
+    {
+      "id": 20,
+      "name": "Лурье Юрий Моисеевич",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 10,
+        "year": 2011
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 тишрей 5772"
+    },
+    {
+      "id": 21,
+      "name": "Мардер Борис Израилевич",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 10,
+        "year": 1981
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 тишрей 5742"
+    },
+    {
+      "id": 22,
+      "name": "Эрбсман Александр Иосифович",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 10,
+        "year": 1993
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 тишрей 5754"
+    },
+    {
+      "id": 23,
+      "name": "Атаманова Надежда Андреевна.",
+      "gregorianDateOfDeath": {
+        "date": 24,
+        "month": 10,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 30 тишрей 5756"
+    },
+    {
+      "id": 24,
+      "name": "Раухвергер Ольга Давидовна",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 10,
+        "year": 2001
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 тишрей 5762"
+    },
+    {
+      "id": 25,
+      "name": "Гольдштейн Мария Срульевна",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 10,
+        "year": 1998
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 тишрей 5759"
+    },
+    {
+      "id": 26,
+      "name": "Лехтер Ефим Моисеевич",
+      "gregorianDateOfDeath": {
+        "date": 7,
+        "month": 10,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 тишрей 5756"
+    },
+    {
+      "id": 27,
+      "name": "Слепченко Песя Леонидовна",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 10,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 9 тишрей 5756"
+    },
+    {
+      "id": 28,
+      "name": "Рутман Софья Исааковна",
+      "gregorianDateOfDeath": {
+        "date": 30,
+        "month": 9,
+        "year": 2001
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 тишрей 5762"
+    },
+    {
+      "id": 29,
+      "name": "Попов Валерий Федорович",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 9,
+        "year": 2002
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 22 тишрей 5763"
+    },
+    {
+      "id": 30,
+      "name": "Мошкович Фейга Самойловна",
+      "gregorianDateOfDeath": {
+        "date": 26,
+        "month": 9,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 тишрей 5757"
+    },
+    {
+      "id": 31,
+      "name": "Мошкович Тэма Самойловна.",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 9,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 тишрей 5757"
+    },
+    {
+      "id": 32,
+      "name": "Старобинец Абрам Иосифович",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 9,
+        "year": 1998
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 8 тишрей 5759"
+    },
+    {
+      "id": 33,
+      "name": "Ермылова Роза Фроймовна",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 10,
+        "year": 2000
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 тишрей 5761"
+    },
+    {
+      "id": 34,
+      "name": "Генькин Борис Вениаминович",
+      "gregorianDateOfDeath": {
+        "date": 11,
+        "month": 10,
+        "year": 2016
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 9 тишрей 5777"
+    },
+    {
+      "id": 35,
+      "name": "Прощенко Анатолий Матвеевич",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 10,
+        "year": 2016
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 тишрей 5777"
+    },
+    {
+      "id": 36,
+      "name": "Дворецкий Михаил Иосифович",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 10,
+        "year": 2016
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 тишрей 5777"
+    },
+    {
+      "id": 37,
+      "name": "Гриншпон Самуил Яковлевич",
+      "gregorianDateOfDeath": {
+        "date": 16,
+        "month": 10,
+        "year": 2019
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 тишрей 5780"
+    },
+    {
+      "id": 38,
+      "name": "Раксин Яков Михайлович",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 10,
+        "year": 2012
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 тишрей 5773"
+    },
+    {
+      "id": 39,
+      "name": "Шварцман Зельма Ошевич",
+      "gregorianDateOfDeath": {
+        "date": 29,
+        "month": 9,
+        "year": 2015
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 тишрей 5776"
+    },
+    {
+      "id": 40,
+      "name": "Кижнер Давид Моисеевич",
+      "gregorianDateOfDeath": {
+        "date": 20,
+        "month": 10,
+        "year": 2022
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 25 тишрей 5783"
+    },
+    {
+      "id": 41,
+      "name": "Гусев Иосиф Филиппович",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 9,
+        "year": 2020
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 тишрей 5781"
+    },
+    {
+      "id": 42,
+      "name": "Толмачев Вениамин Иванович",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 9,
+        "year": 2023
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 тишрей 5784"
+    },
+    {
+      "id": 43,
+      "name": "Ноткина Софья Семеновна",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 11,
+        "year": 2009
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 хешван 5770"
+    },
+    {
+      "id": 44,
+      "name": "Беркович Михаил Абрамович",
+      "gregorianDateOfDeath": {
+        "date": 24,
+        "month": 10,
+        "year": 1993
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 9 хешван 5754"
+    },
+    {
+      "id": 45,
+      "name": "Элентух Малка Эльевна",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 11,
+        "year": 1989
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 3 хешван 5750"
+    },
+    {
+      "id": 46,
+      "name": "Мад Голда Шлеймовна",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 11,
+        "year": 1987
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 хешван 5748"
+    },
+    {
+      "id": 47,
+      "name": "Мошкович Борис Рафаилович",
+      "gregorianDateOfDeath": {
+        "date": 15,
+        "month": 10,
+        "year": 2010
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 7 хешван 5771"
+    },
+    {
+      "id": 48,
+      "name": "Израилева Фрада Иосифовна",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 11,
+        "year": 1981
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 хешван 5742"
+    },
+    {
+      "id": 49,
+      "name": "Рабинович Валентина Львовна",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 11,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 хешван 5739"
+    },
+    {
+      "id": 50,
+      "name": "Феллер Курт Адольфович",
+      "gregorianDateOfDeath": {
+        "date": 20,
+        "month": 11,
+        "year": 1979
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 30 хешван 5740"
+    },
+    {
+      "id": 51,
+      "name": "Фурманская Алиса Эрвиновна",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 10,
+        "year": 1991
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 хешван 5752"
+    },
+    {
+      "id": 52,
+      "name": "Мордухович Исай Веньяминович",
+      "gregorianDateOfDeath": {
+        "date": 17,
+        "month": 10,
+        "year": 1977
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 5 хешван 5738"
+    },
+    {
+      "id": 53,
+      "name": "Бруер Ефим Борисович",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 11,
+        "year": 2001
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 хешван 5762"
+    },
+    {
+      "id": 54,
+      "name": "Гольдкланг Давыд Нахманович",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 11,
+        "year": 1999
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 24 хешван 5760"
+    },
+    {
+      "id": 55,
+      "name": "Корейбо Клара Абрамовна",
+      "gregorianDateOfDeath": {
+        "date": 31,
+        "month": 10,
+        "year": 2021
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 25 хешван 5782"
+    },
+    {
+      "id": 56,
+      "name": "Хазанова Хана Геселевна",
+      "gregorianDateOfDeath": {
+        "date": 14,
+        "month": 11,
+        "year": 1968
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 23 хешван 5729"
+    },
+    {
+      "id": 57,
+      "name": "Бухгольц Берта Беньяминовна",
+      "gregorianDateOfDeath": {
+        "date": 14,
+        "month": 11,
+        "year": 1986
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 хешван 5747"
+    },
+    {
+      "id": 58,
+      "name": "Лейбович Сарра Матвеевна",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 11,
+        "year": 1981
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 15 хешван 5742"
+    },
+    {
+      "id": 59,
+      "name": "Коган Рахиль Самсоновна",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 11,
+        "year": 2008
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 хешван 5769"
+    },
+    {
+      "id": 60,
+      "name": "Литвинов Борис Рафаилович",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 11,
+        "year": 1989
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 хешван 5750"
+    },
+    {
+      "id": 61,
+      "name": "Таубин Зиська Иосифович",
+      "gregorianDateOfDeath": {
+        "date": 11,
+        "month": 11,
+        "year": 1974
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 хешван 5735"
+    },
+    {
+      "id": 62,
+      "name": "Майофич Исай Генохович",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 11,
+        "year": 1974
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 хешван 5735"
+    },
+    {
+      "id": 63,
+      "name": "Барзах Даниил Сергеевич",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 11,
+        "year": 1991
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 24 хешван 5752"
+    },
+    {
+      "id": 64,
+      "name": "Фельдблюм Иосиф Моисеевич",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 11,
+        "year": 1981
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 хешван 5742"
+    },
+    {
+      "id": 65,
+      "name": "Фельдблюм Иосиф Моисеевич",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 11,
+        "year": 1981
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 хешван 5742"
+    },
+    {
+      "id": 66,
+      "name": "Лозинский Михаил Лазаревич",
+      "gregorianDateOfDeath": {
+        "date": 27,
+        "month": 10,
+        "year": 1994
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 22 хешван 5755"
+    },
+    {
+      "id": 67,
+      "name": "Слосман Илья Аркадьевич",
+      "gregorianDateOfDeath": {
+        "date": 26,
+        "month": 10,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 хешван 5756"
+    },
+    {
+      "id": 68,
+      "name": "Гароузова Дора Ефимовна",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 11,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 хешван 5756"
+    },
+    {
+      "id": 69,
+      "name": "Соколовский Феликс Мордкович",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 11,
+        "year": 2005
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 хешван 5766"
+    },
+    {
+      "id": 70,
+      "name": "Демина Милания Павловна",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 11,
+        "year": 1997
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 хешван 5758"
+    },
+    {
+      "id": 71,
+      "name": "Школьник Илья Моисеевич",
+      "gregorianDateOfDeath": {
+        "date": 23,
+        "month": 10,
+        "year": 1998
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 3 хешван 5759"
+    },
+    {
+      "id": 72,
+      "name": "Левицкий Ефим Юрьевич",
+      "gregorianDateOfDeath": {
+        "date": 17,
+        "month": 10,
+        "year": 2015
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 хешван 5776"
+    },
+    {
+      "id": 73,
+      "name": "Цукублина Капитолина Николаевна",
+      "gregorianDateOfDeath": {
+        "date": 7,
+        "month": 11,
+        "year": 2014
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 хешван 5775"
+    },
+    {
+      "id": 74,
+      "name": "Поспелова Любовь Ошеровна",
+      "gregorianDateOfDeath": {
+        "date": 22,
+        "month": 11,
+        "year": 2011
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 25 хешван 5772"
+    },
+    {
+      "id": 75,
+      "name": "Маркман Софья Григорьевна",
+      "gregorianDateOfDeath": {
+        "date": 27,
+        "month": 10,
+        "year": 2006
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 5 хешван 5767"
+    },
+    {
+      "id": 76,
+      "name": "Бученко Святослав. Юрьевич",
+      "gregorianDateOfDeath": {
+        "date": 13,
+        "month": 11,
+        "year": 2001
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 27 хешван 5762"
+    },
+    {
+      "id": 77,
+      "name": "Гольдштейн Ефрем Иосифович",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 10,
+        "year": 2010
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 хешван 5771"
+    },
+    {
+      "id": 78,
+      "name": "Фолькович Наум Иосифовия",
+      "gregorianDateOfDeath": {
+        "date": 23,
+        "month": 10,
+        "year": 2021
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 хешван 5782"
+    },
+    {
+      "id": 79,
+      "name": "Добнер Григорий Абрамович",
+      "gregorianDateOfDeath": {
+        "date": 22,
+        "month": 10,
+        "year": 2018
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 хешван 5779"
+    },
+    {
+      "id": 80,
+      "name": "Глазов Геннадий Наумович",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 11,
+        "year": 2022
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 11 хешван 5783"
+    },
+    {
+      "id": 81,
+      "name": "Пеккер Семен Яковлевич",
+      "gregorianDateOfDeath": {
+        "date": 29,
+        "month": 10,
+        "year": 2020
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 11 хешван 5781"
+    },
+    {
+      "id": 82,
+      "name": "Боркина Беатриса Филипповна",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 11,
+        "year": 2020
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 хешван 5781"
+    },
+    {
+      "id": 83,
+      "name": "Бернштейн Аркадий Сергеевич",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 12,
+        "year": 1998
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 23 кислев 5759"
+    },
+    {
+      "id": 84,
+      "name": "Гусев Эдуард Валерьевич",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 11,
+        "year": 2011
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 кислев 5772"
+    },
+    {
+      "id": 85,
+      "name": "Шварц Самуил Моисеевич",
+      "gregorianDateOfDeath": {
+        "date": 27,
+        "month": 11,
+        "year": 1988
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 кислев 5749"
+    },
+    {
+      "id": 86,
+      "name": "Клейман Дина Исааковна",
+      "gregorianDateOfDeath": {
+        "date": 27,
+        "month": 11,
+        "year": 1988
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 кислев 5749"
+    },
+    {
+      "id": 87,
+      "name": "Гусева Адель Абельевна",
+      "gregorianDateOfDeath": {
+        "date": 27,
+        "month": 11,
+        "year": 2003
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 кислев 5764"
+    },
+    {
+      "id": 88,
+      "name": "Ниссенбаум Михаил Львович",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 12,
+        "year": 1987
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 кислев 5748"
+    },
+    {
+      "id": 89,
+      "name": "Гройсман Ефим Моисеевич",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 12,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 кислев 5739"
+    },
+    {
+      "id": 90,
+      "name": "Берман Голда Фишелевна",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 12,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 6 кислев 5739"
+    },
+    {
+      "id": 91,
+      "name": "Покрасс Эстер Янкелевна",
+      "gregorianDateOfDeath": {
+        "date": 29,
+        "month": 11,
+        "year": 1982
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 кислев 5743"
+    },
+    {
+      "id": 92,
+      "name": "Янковская Софья Абрамовна",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 12,
+        "year": 1983
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 30 кислев 5744"
+    },
+    {
+      "id": 93,
+      "name": "Лакс Юрий Леонтьевич",
+      "gregorianDateOfDeath": {
+        "date": 26,
+        "month": 12,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 кислев 5739"
+    },
+    {
+      "id": 94,
+      "name": "Берман Бенцион Замвельевич",
+      "gregorianDateOfDeath": {
+        "date": 26,
+        "month": 12,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 кислев 5739"
+    },
+    {
+      "id": 95,
+      "name": "Шрейбер Гита Давыдовна",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 12,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 8 кислев 5739"
+    },
+    {
+      "id": 96,
+      "name": "Рухман Иосиф Давыдович",
+      "gregorianDateOfDeath": {
+        "date": 26,
+        "month": 12,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 кислев 5739"
+    },
+    {
+      "id": 97,
+      "name": "Белиловский Юзеф Борисович",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 11,
+        "year": 1987
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 7 кислев 5748"
+    },
+    {
+      "id": 98,
+      "name": "Липкин Матвей Моисеевич",
+      "gregorianDateOfDeath": {
+        "date": 14,
+        "month": 12,
+        "year": 1962
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 кислев 5723"
+    },
+    {
+      "id": 99,
+      "name": "Бернштейн Хена Мовшевна",
+      "gregorianDateOfDeath": {
+        "date": 9,
+        "month": 12,
+        "year": 1993
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 25 кислев 5754"
+    },
+    {
+      "id": 100,
+      "name": "Грауэр Густав Германович",
+      "gregorianDateOfDeath": {
+        "date": 24,
+        "month": 11,
+        "year": 1975
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 кислев 5736"
+    },
+    {
+      "id": 101,
+      "name": "Матро Фаня Ефимовна",
+      "gregorianDateOfDeath": {
+        "date": 30,
+        "month": 11,
+        "year": 1975
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 кислев 5736"
+    },
+    {
+      "id": 102,
+      "name": "Силич Ольга Леонтьевна",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 11,
+        "year": 1977
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 кислев 5738"
+    },
+    {
+      "id": 103,
+      "name": "Ратнер Людмила Семеновна",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 12,
+        "year": 2022
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 кислев 5783"
+    },
+    {
+      "id": 104,
+      "name": "Рабинович Игорь Эммануилович",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 12,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 кислев 5756"
+    },
+    {
+      "id": 105,
+      "name": "Рахмилевич Михаил Яковлевич",
+      "gregorianDateOfDeath": {
+        "date": 17,
+        "month": 11,
+        "year": 2002
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 кислев 5763"
+    },
+    {
+      "id": 106,
+      "name": "Турецкая Сарра Бенедиктовна",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 11,
+        "year": 1994
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 7 кислев 5755"
+    },
+    {
+      "id": 107,
+      "name": "Вайнштейн Арон Срульевич",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 12,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 27 кислев 5757"
+    },
+    {
+      "id": 108,
+      "name": "Черняк Александр Меерович",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 12,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 19 кислев 5756"
+    },
+    {
+      "id": 109,
+      "name": "Гулина Софья Минеевна",
+      "gregorianDateOfDeath": {
+        "date": 27,
+        "month": 11,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 кислев 5757"
+    },
+    {
+      "id": 110,
+      "name": "Пирожок. Евгений Хаимович.",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 12,
+        "year": 2004
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 кислев 5765"
+    },
+    {
+      "id": 111,
+      "name": "Бриль Гершке Иосифович",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 12,
+        "year": 2002
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 30 кислев 5763"
+    },
+    {
+      "id": 112,
+      "name": "Кузнецова Наталья Викторовна",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 12,
+        "year": 2010
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 24 кислев 5771"
+    },
+    {
+      "id": 113,
+      "name": "Шифрин Рувим Исаакович",
+      "gregorianDateOfDeath": {
+        "date": 13,
+        "month": 11,
+        "year": 2007
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 3 кислев 5768"
+    },
+    {
+      "id": 114,
+      "name": "Беленькая Роза Григорьевна",
+      "gregorianDateOfDeath": {
+        "date": 16,
+        "month": 11,
+        "year": 2010
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 9 кислев 5771"
+    },
+    {
+      "id": 115,
+      "name": "Беленькая Галина Михайловна",
+      "gregorianDateOfDeath": {
+        "date": 29,
+        "month": 11,
+        "year": 2014
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 7 кислев 5775"
+    },
+    {
+      "id": 116,
+      "name": "Раксина Фаина Павловна",
+      "gregorianDateOfDeath": {
+        "date": 20,
+        "month": 11,
+        "year": 2018
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 кислев 5779"
+    },
+    {
+      "id": 117,
+      "name": "Миронер Владимир Михайлович",
+      "gregorianDateOfDeath": {
+        "date": 9,
+        "month": 11,
+        "year": 2021
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 5 кислев 5782"
+    },
+    {
+      "id": 118,
+      "name": "Журова Елизавета Семеновна",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 12,
+        "year": 2021
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 кислев 5782"
+    },
+    {
+      "id": 119,
+      "name": "Маркман Григорий Зямович",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 11,
+        "year": 2020
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 3 кислев 5781"
+    },
+    {
+      "id": 120,
+      "name": "Канунова (Мовшиц) Фаина Зиновьевна",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 1,
+        "year": 2009
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 8 тевет 5769"
+    },
+    {
+      "id": 121,
+      "name": "Гофман Ревекка Абрамовна",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 1,
+        "year": 1992
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 тевет 5752"
+    },
+    {
+      "id": 122,
+      "name": "Масамед Шнирман Фаня Абрамовна",
+      "gregorianDateOfDeath": {
+        "date": 29,
+        "month": 12,
+        "year": 1980
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 22 тевет 5741"
+    },
+    {
+      "id": 123,
+      "name": "Меерсон Сима Борисовна",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 1,
+        "year": 1983
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 тевет 5743"
+    },
+    {
+      "id": 124,
+      "name": "Вайнштейн Владимир Моисеевич",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 12,
+        "year": 1991
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 тевет 5752"
+    },
+    {
+      "id": 125,
+      "name": "Сегельман Роза Соломоновна",
+      "gregorianDateOfDeath": {
+        "date": 29,
+        "month": 12,
+        "year": 2000
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 3 тевет 5761"
+    },
+    {
+      "id": 126,
+      "name": "Фалькович Хася Марковна",
+      "gregorianDateOfDeath": {
+        "date": 23,
+        "month": 12,
+        "year": 1979
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 3 тевет 5740"
+    },
+    {
+      "id": 127,
+      "name": "Озур Лейба Гиршович",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 1,
+        "year": 1977
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 тевет 5737"
+    },
+    {
+      "id": 128,
+      "name": "Непомнящая Хьена Гильевна",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 1,
+        "year": 1977
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 тевет 5737"
+    },
+    {
+      "id": 129,
+      "name": "Карасик Исаак Зиновьевич",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 1,
+        "year": 1979
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 тевет 5739"
+    },
+    {
+      "id": 130,
+      "name": "Плоткина Двейра Давидовна",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 1,
+        "year": 1979
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 19 тевет 5739"
+    },
+    {
+      "id": 131,
+      "name": "Баранас Илья Насонович",
+      "gregorianDateOfDeath": {
+        "date": 26,
+        "month": 12,
+        "year": 1975
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 22 тевет 5736"
+    },
+    {
+      "id": 132,
+      "name": "Хайкель Броня Семеновна",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 1,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 25 тевет 5738"
+    },
+    {
+      "id": 133,
+      "name": "Флайшер Соломон Гершевич",
+      "gregorianDateOfDeath": {
+        "date": 7,
+        "month": 1,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 тевет 5738"
+    },
+    {
+      "id": 134,
+      "name": "Штернгерц Анна Ихилевна",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 1,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 27 тевет 5738"
+    },
+    {
+      "id": 135,
+      "name": "Гольдкланг Адэлаида Ивановна",
+      "gregorianDateOfDeath": {
+        "date": 17,
+        "month": 12,
+        "year": 2020
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 тевет 5781"
+    },
+    {
+      "id": 136,
+      "name": "Сегельман Геннадий Яковлевич",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 1,
+        "year": 2010
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 тевет 5770"
+    },
+    {
+      "id": 137,
+      "name": "Загорский Наум Яковлевич",
+      "gregorianDateOfDeath": {
+        "date": 15,
+        "month": 12,
+        "year": 1988
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 7 тевет 5749"
+    },
+    {
+      "id": 138,
+      "name": "Рабинович Владимир Кальманович",
+      "gregorianDateOfDeath": {
+        "date": 30,
+        "month": 12,
+        "year": 1993
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 тевет 5754"
+    },
+    {
+      "id": 139,
+      "name": "Шмидт Мария Яковлевну",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 1,
+        "year": 1975
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 29 тевет 5735"
+    },
+    {
+      "id": 140,
+      "name": "Грауэр Тамара Фроймовна",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 1,
+        "year": 1999
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 24 тевет 5759"
+    },
+    {
+      "id": 141,
+      "name": "Гиршевич Иссак Моисеевич",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 1,
+        "year": 2010
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 15 тевет 5770"
+    },
+    {
+      "id": 142,
+      "name": "Цой Роза Михайловна",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 1,
+        "year": 2019
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 тевет 5779"
+    },
+    {
+      "id": 143,
+      "name": "Саванжа Рахиль Соломоновна",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 1,
+        "year": 1982
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 тевет 5742"
+    },
+    {
+      "id": 144,
+      "name": "Горелик Маня Бенциановна",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 12,
+        "year": 1999
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 9 тевет 5760"
+    },
+    {
+      "id": 145,
+      "name": "Мет Фридрих Морицович",
+      "gregorianDateOfDeath": {
+        "date": 21,
+        "month": 1,
+        "year": 1974
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 27 тевет 5734"
+    },
+    {
+      "id": 146,
+      "name": "Бриль Хая Эммануиловна",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 1,
+        "year": 1974
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 тевет 5734"
+    },
+    {
+      "id": 147,
+      "name": "Моисеева Гинда Мордехелевна",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 1,
+        "year": 1974
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 9 тевет 5734"
+    },
+    {
+      "id": 148,
+      "name": "Тительман Григорий Феликсович",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 12,
+        "year": 1992
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 тевет 5753"
+    },
+    {
+      "id": 149,
+      "name": "Беленькая Татьяна Абрамовна",
+      "gregorianDateOfDeath": {
+        "date": 29,
+        "month": 12,
+        "year": 1994
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 тевет 5755"
+    },
+    {
+      "id": 150,
+      "name": "Вайсберг Полина Исаевна",
+      "gregorianDateOfDeath": {
+        "date": 11,
+        "month": 12,
+        "year": 1994
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 8 тевет 5755"
+    },
+    {
+      "id": 151,
+      "name": "Радиковская Дора Ефимовна",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 1,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 тевет 5756"
+    },
+    {
+      "id": 152,
+      "name": "Дынин Аркадий Абрамович",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 1,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 тевет 5756"
+    },
+    {
+      "id": 153,
+      "name": "Рутман Григорий Григорьевич",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 1,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 тевет 5756"
+    },
+    {
+      "id": 154,
+      "name": "Браславский Давыд Аронович",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 1,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 тевет 5756"
+    },
+    {
+      "id": 155,
+      "name": "Догаева Софья Михайловна",
+      "gregorianDateOfDeath": {
+        "date": 14,
+        "month": 12,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 тевет 5757"
+    },
+    {
+      "id": 156,
+      "name": "Школьник Михаил Ильич",
+      "gregorianDateOfDeath": {
+        "date": 22,
+        "month": 1,
+        "year": 2023
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 29 тевет 5783"
+    },
+    {
+      "id": 157,
+      "name": "Шевелевич Елизавета Григорьевна",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 1,
+        "year": 2002
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 24 тевет 5762"
+    },
+    {
+      "id": 158,
+      "name": "Видгоф Владимир Михайлович",
+      "gregorianDateOfDeath": {
+        "date": 16,
+        "month": 1,
+        "year": 2009
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 тевет 5769"
+    },
+    {
+      "id": 159,
+      "name": "Видгоф Жанна Михайловна",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 12,
+        "year": 2015
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 тевет 5776"
+    },
+    {
+      "id": 160,
+      "name": "Вульфсон Елена Арутюновна",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 1,
+        "year": 2009
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 5 тевет 5769"
+    },
+    {
+      "id": 161,
+      "name": "Куперман Мойше Шмулевич",
+      "gregorianDateOfDeath": {
+        "date": 13,
+        "month": 1,
+        "year": 2006
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 тевет 5766"
+    },
+    {
+      "id": 162,
+      "name": "Сергеева Надежда Николаевна",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 12,
+        "year": 2013
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 тевет 5774"
+    },
+    {
+      "id": 163,
+      "name": "Главатских Людмила Дмитриевна",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 1,
+        "year": 2012
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 9 тевет 5772"
+    },
+    {
+      "id": 164,
+      "name": "Теренина Дина Шнееровна",
+      "gregorianDateOfDeath": {
+        "date": 29,
+        "month": 12,
+        "year": 2008
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 тевет 5769"
+    },
+    {
+      "id": 165,
+      "name": "Этштейн Мэри Зольевна",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 1,
+        "year": 2017
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 тевет 5777"
+    },
+    {
+      "id": 166,
+      "name": "Селиванова Сарра Яковлевна",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 1,
+        "year": 2022
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 29 тевет 5782"
+    },
+    {
+      "id": 167,
+      "name": "Авдошин Александр Витальевич",
+      "gregorianDateOfDeath": {
+        "date": 16,
+        "month": 1,
+        "year": 2015
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 25 тевет 5775"
+    },
+    {
+      "id": 168,
+      "name": "Бернштейн Юрий Сергеевич",
+      "gregorianDateOfDeath": {
+        "date": 15,
+        "month": 1,
+        "year": 2021
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 шват 5781"
+    },
+    {
+      "id": 169,
+      "name": "Мандель Зинаида Исаевна",
+      "gregorianDateOfDeath": {
+        "date": 17,
+        "month": 2,
+        "year": 2017
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 шват 5777"
+    },
+    {
+      "id": 170,
+      "name": "Ханина Фаина Семёновна",
+      "gregorianDateOfDeath": {
+        "date": 26,
+        "month": 2,
+        "year": 1979
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 29 шват 5739"
+    },
+    {
+      "id": 171,
+      "name": "Гершевич Иосиф Абрамович",
+      "gregorianDateOfDeath": {
+        "date": 13,
+        "month": 2,
+        "year": 1987
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 шват 5747"
+    },
+    {
+      "id": 172,
+      "name": "Гит Мария Исаковна",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 1,
+        "year": 2001
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 шват 5761"
+    },
+    {
+      "id": 173,
+      "name": "Спектор Евгения Борисовна",
+      "gregorianDateOfDeath": {
+        "date": 9,
+        "month": 1,
+        "year": 1981
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 шват 5741"
+    },
+    {
+      "id": 174,
+      "name": "Глейхенгауз Илья Иосифович",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 1,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 шват 5755"
+    },
+    {
+      "id": 175,
+      "name": "Грайвер Абрам Самойлович",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 2,
+        "year": 1975
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 29 шват 5735"
+    },
+    {
+      "id": 176,
+      "name": "Ниренберг Х. Д.",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 1,
+        "year": 1976
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 шват 5736"
+    },
+    {
+      "id": 177,
+      "name": "Елизарова Анна Самуиловна",
+      "gregorianDateOfDeath": {
+        "date": 15,
+        "month": 1,
+        "year": 2021
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 шват 5781"
+    },
+    {
+      "id": 178,
+      "name": "Пельцман Самуил Семенович",
+      "gregorianDateOfDeath": {
+        "date": 27,
+        "month": 1,
+        "year": 2013
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 шват 5773"
+    },
+    {
+      "id": 179,
+      "name": "Кофман Зелда Залмоновна",
+      "gregorianDateOfDeath": {
+        "date": 21,
+        "month": 2,
+        "year": 1993
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 30 шват 5753"
+    },
+    {
+      "id": 180,
+      "name": "Брандт Эсфирь Мееровна",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 1,
+        "year": 1975
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 шват 5735"
+    },
+    {
+      "id": 181,
+      "name": "Вострикова Ядвига Абрамовна",
+      "gregorianDateOfDeath": {
+        "date": 31,
+        "month": 1,
+        "year": 2024
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 шват 5784"
+    },
+    {
+      "id": 182,
+      "name": "Баранова Анна Михайловна",
+      "gregorianDateOfDeath": {
+        "date": 17,
+        "month": 1,
+        "year": 2021
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 шват 5781"
+    },
+    {
+      "id": 183,
+      "name": "Раухвергер Дителм Шумелович",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 1,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 шват 5755"
+    },
+    {
+      "id": 184,
+      "name": "Рольбанд Фрума И.",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 1,
+        "year": 2003
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 шват 5763"
+    },
+    {
+      "id": 185,
+      "name": "Гоголев Анатолий Александрович",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 2,
+        "year": 1999
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 шват 5759"
+    },
+    {
+      "id": 186,
+      "name": "Штамов Матвей Иосифович",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 2,
+        "year": 1998
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 шват 5758"
+    },
+    {
+      "id": 187,
+      "name": "Грибнов Иван Семенович",
+      "gregorianDateOfDeath": {
+        "date": 24,
+        "month": 2,
+        "year": 2009
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 30 шват 5769"
+    },
+    {
+      "id": 188,
+      "name": "Вульфсон Виктор Вульфович",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 1,
+        "year": 2019
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 шват 5779"
+    },
+    {
+      "id": 189,
+      "name": "Абрамова Роза Моисеевна",
+      "gregorianDateOfDeath": {
+        "date": 31,
+        "month": 1,
+        "year": 2006
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 шват 5766"
+    },
+    {
+      "id": 190,
+      "name": "Шапошникова Илия Григорьевна",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 2,
+        "year": 2020
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 23 шват 5780"
+    },
+    {
+      "id": 191,
+      "name": "Борисевич Нина Соломоновна",
+      "gregorianDateOfDeath": {
+        "date": 29,
+        "month": 1,
+        "year": 1970
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 22 шват 5730"
+    },
+    {
+      "id": 192,
+      "name": "Роземблюм Абрам Шаевич",
+      "gregorianDateOfDeath": {
+        "date": 22,
+        "month": 1,
+        "year": 2014
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 шват 5774"
+    },
+    {
+      "id": 193,
+      "name": "Хазанов Михаил Иосифович",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 2,
+        "year": 2021
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 шват 5781"
+    },
+    {
+      "id": 194,
+      "name": "Абрамская Луиза Ивановна",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 2,
+        "year": 2003
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 адар I 5763"
+    },
+    {
+      "id": 195,
+      "name": "Басс Фида Исааковна",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 2,
+        "year": 2003
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 адар I 5763"
+    },
+    {
+      "id": 196,
+      "name": "Малисова Анна Вениаминовна",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 2,
+        "year": 2014
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 8 адар I 5774"
+    },
+    {
+      "id": 197,
+      "name": "Кругляков Лев Залманович",
+      "gregorianDateOfDeath": {
+        "date": 22,
+        "month": 3,
+        "year": 1984
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 адар II 5744"
+    },
+    {
+      "id": 198,
+      "name": "Сальник Абрам Исаевич",
+      "gregorianDateOfDeath": {
+        "date": 14,
+        "month": 3,
+        "year": 1989
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 7 адар II 5749"
+    },
+    {
+      "id": 199,
+      "name": "Бродская Мария Яковлевна",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 4,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 25 адар II 5738"
+    },
+    {
+      "id": 200,
+      "name": "Прегер Моисей Аронович",
+      "gregorianDateOfDeath": {
+        "date": 13,
+        "month": 3,
+        "year": 1976
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 11 адар II 5736"
+    },
+    {
+      "id": 201,
+      "name": "Розенвальд Петр Борисович",
+      "gregorianDateOfDeath": {
+        "date": 31,
+        "month": 3,
+        "year": 1976
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 29 адар II 5736"
+    },
+    {
+      "id": 202,
+      "name": "Пирожок Яков Хаимович",
+      "gregorianDateOfDeath": {
+        "date": 13,
+        "month": 3,
+        "year": 2000
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 6 адар II 5760"
+    },
+    {
+      "id": 203,
+      "name": "Лакс Татьяна Юрьевна",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 3,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 адар II 5755"
+    },
+    {
+      "id": 204,
+      "name": "Алексей Яковлевич",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 3,
+        "year": 1997
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 3 адар II 5757"
+    },
+    {
+      "id": 205,
+      "name": "Плоткин Биджан Ефимович",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 4,
+        "year": 1997
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 24 адар II 5757"
+    },
+    {
+      "id": 206,
+      "name": "Пузовская Рахиль Самуиловна",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 3,
+        "year": 1997
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 адар II 5757"
+    },
+    {
+      "id": 207,
+      "name": "Клоков Алексей Андреевич",
+      "gregorianDateOfDeath": {
+        "date": 30,
+        "month": 3,
+        "year": 1997
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 адар II 5757"
+    },
+    {
+      "id": 208,
+      "name": "Гитлиц Берта Моисеевна",
+      "gregorianDateOfDeath": {
+        "date": 23,
+        "month": 3,
+        "year": 1997
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 адар II 5757"
+    },
+    {
+      "id": 209,
+      "name": "Цесарский Давид Григорьевич",
+      "gregorianDateOfDeath": {
+        "date": 20,
+        "month": 3,
+        "year": 2008
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 адар II 5768"
+    },
+    {
+      "id": 210,
+      "name": "Крупник Александра Семёновна",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 3,
+        "year": 2014
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 адар II 5774"
+    },
+    {
+      "id": 211,
+      "name": "Либин Эдуард Ефимович",
+      "gregorianDateOfDeath": {
+        "date": 11,
+        "month": 3,
+        "year": 2024
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 адар II 5784"
+    },
+    {
+      "id": 212,
+      "name": "Страж Григорий Абрамович",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 4,
+        "year": 2024
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 25 адар II 5784"
+    },
+    {
+      "id": 213,
+      "name": "Елова Софья Исаевна",
+      "gregorianDateOfDeath": {
+        "date": 17,
+        "month": 3,
+        "year": 2004
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 24 адар 5764"
+    },
+    {
+      "id": 214,
+      "name": "Спокойная Раиса Менделеевна",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 3,
+        "year": 1994
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 29 адар 5754"
+    },
+    {
+      "id": 215,
+      "name": "Лейдерман Фаня Семеновна",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 2,
+        "year": 1984
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 7 адар 5744"
+    },
+    {
+      "id": 216,
+      "name": "Литвинова Сима Леонтьева",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 3,
+        "year": 1981
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 27 адар 5741"
+    },
+    {
+      "id": 217,
+      "name": "Глазов Наум Израилевич",
+      "gregorianDateOfDeath": {
+        "date": 17,
+        "month": 2,
+        "year": 1984
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 адар 5744"
+    },
+    {
+      "id": 218,
+      "name": "Пельман Броня Шмуликовна",
+      "gregorianDateOfDeath": {
+        "date": 23,
+        "month": 2,
+        "year": 1988
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 5 адар 5748"
+    },
+    {
+      "id": 219,
+      "name": "Барсук Эмма Львовна",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 2,
+        "year": 1980
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 8 адар 5740"
+    },
+    {
+      "id": 220,
+      "name": "Бродский Александр Яковлевич",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 2,
+        "year": 1988
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 адар 5748"
+    },
+    {
+      "id": 221,
+      "name": "Гольдесгейм Матвей Моисеевич",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 3,
+        "year": 1986
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 25 адар 5746"
+    },
+    {
+      "id": 222,
+      "name": "Перевозкина Эсфирь Наумовна",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 3,
+        "year": 1983
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 19 адар 5743"
+    },
+    {
+      "id": 223,
+      "name": "Плоцкер Мария Григорьевна",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 3,
+        "year": 1975
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 19 адар 5735"
+    },
+    {
+      "id": 224,
+      "name": "Липкина Паша Минаевна",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 3,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 27 адар 5738"
+    },
+    {
+      "id": 225,
+      "name": "Голдкланг Хана Хаимовна",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 3,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 адар 5738"
+    },
+    {
+      "id": 226,
+      "name": "Грайф Ева Карловна",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 3,
+        "year": 1999
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 адар 5759"
+    },
+    {
+      "id": 227,
+      "name": "Равве Яков Ионович",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 3,
+        "year": 1986
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 адар 5746"
+    },
+    {
+      "id": 228,
+      "name": "Берг Наум Савельевич",
+      "gregorianDateOfDeath": {
+        "date": 15,
+        "month": 3,
+        "year": 1980
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 27 адар 5740"
+    },
+    {
+      "id": 229,
+      "name": "Таубина Рина Ельевна",
+      "gregorianDateOfDeath": {
+        "date": 16,
+        "month": 2,
+        "year": 1989
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 11 адар 5749"
+    },
+    {
+      "id": 230,
+      "name": "Мовшиц Зиновий Борисович",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 3,
+        "year": 1974
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 8 адар 5734"
+    },
+    {
+      "id": 231,
+      "name": "Харлаб Эммануил Давидович",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 2,
+        "year": 1972
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 3 адар 5732"
+    },
+    {
+      "id": 232,
+      "name": "Нина Михайловна.",
+      "gregorianDateOfDeath": {
+        "date": 9,
+        "month": 3,
+        "year": 2006
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 9 адар 5766"
+    },
+    {
+      "id": 233,
+      "name": "Дондо Григорий Вениаминович",
+      "gregorianDateOfDeath": {
+        "date": 11,
+        "month": 3,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 адар 5756"
+    },
+    {
+      "id": 234,
+      "name": "Неленсон Зелик Аронович",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 3,
+        "year": 1999
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 адар 5759"
+    },
+    {
+      "id": 235,
+      "name": "Кабанова Ольга Абрамовна",
+      "gregorianDateOfDeath": {
+        "date": 24,
+        "month": 2,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 адар 5756"
+    },
+    {
+      "id": 236,
+      "name": "Гоголева Валентина Михайловна",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 3,
+        "year": 2006
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 8 адар 5766"
+    },
+    {
+      "id": 237,
+      "name": "Бек Евгений Владимирович",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 3,
+        "year": 2012
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 11 адар 5772"
+    },
+    {
+      "id": 238,
+      "name": "Минаева Раиса Самуиловна",
+      "gregorianDateOfDeath": {
+        "date": 15,
+        "month": 3,
+        "year": 2015
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 24 адар 5775"
+    },
+    {
+      "id": 239,
+      "name": "Неметов Эдуард Александрович",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 2,
+        "year": 2010
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 адар 5770"
+    },
+    {
+      "id": 240,
+      "name": "Лейбина Раиса Александровна",
+      "gregorianDateOfDeath": {
+        "date": 15,
+        "month": 3,
+        "year": 2023
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 22 адар 5783"
+    },
+    {
+      "id": 241,
+      "name": "Шахнович Валентин Семенович",
+      "gregorianDateOfDeath": {
+        "date": 17,
+        "month": 3,
+        "year": 2006
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 адар 5766"
+    },
+    {
+      "id": 242,
+      "name": "Брандт Леонид Вениаминович",
+      "gregorianDateOfDeath": {
+        "date": 21,
+        "month": 2,
+        "year": 2018
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 6 адар 5778"
+    },
+    {
+      "id": 243,
+      "name": "Словак Валентина Хаимовна",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 3,
+        "year": 2011
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 нисан 5771"
+    },
+    {
+      "id": 244,
+      "name": "Шейн Роза Ефремовна",
+      "gregorianDateOfDeath": {
+        "date": 26,
+        "month": 3,
+        "year": 1981
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 нисан 5741"
+    },
+    {
+      "id": 245,
+      "name": "Тридман Ольга Матвеевна",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 4,
+        "year": 1976
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 нисан 5736"
+    },
+    {
+      "id": 246,
+      "name": "Вингер Дора Иосифовна",
+      "gregorianDateOfDeath": {
+        "date": 24,
+        "month": 3,
+        "year": 1986
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 нисан 5746"
+    },
+    {
+      "id": 247,
+      "name": "Сегельман Хая Моисеевна",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 4,
+        "year": 1977
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 22 нисан 5737"
+    },
+    {
+      "id": 248,
+      "name": "Бриккер Рахиль Соломоновна",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 3,
+        "year": 2013
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 8 нисан 5773"
+    },
+    {
+      "id": 249,
+      "name": "Словак Фрида Моисеевна",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 3,
+        "year": 1980
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 8 нисан 5740"
+    },
+    {
+      "id": 250,
+      "name": "Бродский Моисей Александрович",
+      "gregorianDateOfDeath": {
+        "date": 30,
+        "month": 3,
+        "year": 1981
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 24 нисан 5741"
+    },
+    {
+      "id": 251,
+      "name": "Грайвер Эсфирь Самуиловна",
+      "gregorianDateOfDeath": {
+        "date": 24,
+        "month": 3,
+        "year": 1989
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 нисан 5749"
+    },
+    {
+      "id": 252,
+      "name": "Липкес Ревекка Эльяшева",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 4,
+        "year": 1975
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 22 нисан 5735"
+    },
+    {
+      "id": 253,
+      "name": "Грайф Макс Михайлович",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 4,
+        "year": 1981
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 нисан 5741"
+    },
+    {
+      "id": 254,
+      "name": "Конотопская Розалия Яковлевна",
+      "gregorianDateOfDeath": {
+        "date": 16,
+        "month": 4,
+        "year": 1999
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 30 нисан 5759"
+    },
+    {
+      "id": 255,
+      "name": "Габай Неха Боруховна",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 4,
+        "year": 1938
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 5 нисан 5698"
+    },
+    {
+      "id": 256,
+      "name": "Пятова Лея Исаковна",
+      "gregorianDateOfDeath": {
+        "date": 27,
+        "month": 3,
+        "year": 1975
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 15 нисан 5735"
+    },
+    {
+      "id": 257,
+      "name": "Фельдблюм Сура-Ривка Хаимовна",
+      "gregorianDateOfDeath": {
+        "date": 24,
+        "month": 3,
+        "year": 1975
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 нисан 5735"
+    },
+    {
+      "id": 258,
+      "name": "Яффе Виктор Яковлевив",
+      "gregorianDateOfDeath": {
+        "date": 7,
+        "month": 4,
+        "year": 1985
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 нисан 5745"
+    },
+    {
+      "id": 259,
+      "name": "Басс Иосиф Яковлевич",
+      "gregorianDateOfDeath": {
+        "date": 29,
+        "month": 4,
+        "year": 1986
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 нисан 5746"
+    },
+    {
+      "id": 260,
+      "name": "Шапиро Биннета Акибовна",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 4,
+        "year": 1982
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 11 нисан 5742"
+    },
+    {
+      "id": 261,
+      "name": "Шевцов Феликс Михайлович",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 4,
+        "year": 2007
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 нисан 5767"
+    },
+    {
+      "id": 262,
+      "name": "Любовь Георгиевна",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 4,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 6 нисан 5755"
+    },
+    {
+      "id": 263,
+      "name": "Кербель Сара Яковлевна",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 4,
+        "year": 1994
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 22 нисан 5754"
+    },
+    {
+      "id": 264,
+      "name": "Барская Лия Ефимовна",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 4,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 нисан 5755"
+    },
+    {
+      "id": 265,
+      "name": "Ларкина Екатерина Архиповна",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 4,
+        "year": 1998
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 нисан 5758"
+    },
+    {
+      "id": 266,
+      "name": "Неленсон Тамара Исааковна",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 3,
+        "year": 2018
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 9 нисан 5778"
+    },
+    {
+      "id": 267,
+      "name": "Фуксман Двера Мевшовна",
+      "gregorianDateOfDeath": {
+        "date": 16,
+        "month": 4,
+        "year": 2005
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 7 нисан 5765"
+    },
+    {
+      "id": 268,
+      "name": "Кучинская Серафима Абрамовна",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 4,
+        "year": 2005
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 нисан 5765"
+    },
+    {
+      "id": 269,
+      "name": "Брусина Сара-Гинда Ароновна",
+      "gregorianDateOfDeath": {
+        "date": 14,
+        "month": 4,
+        "year": 1997
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 7 нисан 5757"
+    },
+    {
+      "id": 270,
+      "name": "Ботев Аркадий Павлович",
+      "gregorianDateOfDeath": {
+        "date": 15,
+        "month": 4,
+        "year": 2015
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 нисан 5775"
+    },
+    {
+      "id": 271,
+      "name": "Друзь Мэри Матвеевна",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 4,
+        "year": 2010
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 нисан 5770"
+    },
+    {
+      "id": 272,
+      "name": "Бученко Евфалия Афанасьева",
+      "gregorianDateOfDeath": {
+        "date": 20,
+        "month": 3,
+        "year": 2007
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 нисан 5767"
+    },
+    {
+      "id": 273,
+      "name": "Муллер Владимир Константинович",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 4,
+        "year": 2002
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 нисан 5762"
+    },
+    {
+      "id": 274,
+      "name": "Альбицкая Тамара Васильевна",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 5,
+        "year": 2005
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 27 нисан 5765"
+    },
+    {
+      "id": 275,
+      "name": "Мордкова Анна Шлемовна",
+      "gregorianDateOfDeath": {
+        "date": 20,
+        "month": 3,
+        "year": 2007
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 нисан 5767"
+    },
+    {
+      "id": 276,
+      "name": "Добнер Рахиль Израилевна",
+      "gregorianDateOfDeath": {
+        "date": 7,
+        "month": 4,
+        "year": 2012
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 15 нисан 5772"
+    },
+    {
+      "id": 277,
+      "name": "Фрейдин Борис Лазаревич",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 5,
+        "year": 2019
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 нисан 5779"
+    },
+    {
+      "id": 278,
+      "name": "Бараховский Борис Георгиевич",
+      "gregorianDateOfDeath": {
+        "date": 22,
+        "month": 4,
+        "year": 2022
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 нисан 5782"
+    },
+    {
+      "id": 279,
+      "name": "Кофман Евгений Аронович",
+      "gregorianDateOfDeath": {
+        "date": 23,
+        "month": 4,
+        "year": 2014
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 23 нисан 5774"
+    },
+    {
+      "id": 280,
+      "name": "Лещенко Валентина Михайловна",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 4,
+        "year": 2023
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 19 нисан 5783"
+    },
+    {
+      "id": 281,
+      "name": "Брусиловский Юрий Анатольевич",
+      "gregorianDateOfDeath": {
+        "date": 23,
+        "month": 3,
+        "year": 2015
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 3 нисан 5775"
+    },
+    {
+      "id": 282,
+      "name": "Лехтер Александра Моисеевна",
+      "gregorianDateOfDeath": {
+        "date": 13,
+        "month": 4,
+        "year": 2024
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 5 нисан 5784"
+    },
+    {
+      "id": 283,
+      "name": "Андреенков Альберт Дмитриевич",
+      "gregorianDateOfDeath": {
+        "date": 20,
+        "month": 4,
+        "year": 2011
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 ияр 5771"
+    },
+    {
+      "id": 284,
+      "name": "Аринштейн Мери Матвеевна",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 5,
+        "year": 2016
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 ияр 5776"
+    },
+    {
+      "id": 285,
+      "name": "Бернштейн Эсфирь Соломоновна",
+      "gregorianDateOfDeath": {
+        "date": 24,
+        "month": 4,
+        "year": 1992
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 ияр 5752"
+    },
+    {
+      "id": 286,
+      "name": "Флайшер Блима Абрамовна",
+      "gregorianDateOfDeath": {
+        "date": 17,
+        "month": 4,
+        "year": 1992
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 ияр 5752"
+    },
+    {
+      "id": 287,
+      "name": "Майофис Лея Абрамовна",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 4,
+        "year": 1991
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 ияр 5751"
+    },
+    {
+      "id": 288,
+      "name": "Фрумкис Яков Леонидович",
+      "gregorianDateOfDeath": {
+        "date": 16,
+        "month": 5,
+        "year": 1987
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 ияр 5747"
+    },
+    {
+      "id": 289,
+      "name": "Кушлина Лея Лазаревна",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 5,
+        "year": 1991
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 ияр 5751"
+    },
+    {
+      "id": 290,
+      "name": "Коган Леонид Александрович",
+      "gregorianDateOfDeath": {
+        "date": 11,
+        "month": 4,
+        "year": 1984
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 9 ияр 5744"
+    },
+    {
+      "id": 291,
+      "name": "Глазова Софья Наумовна",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 5,
+        "year": 1994
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 ияр 5754"
+    },
+    {
+      "id": 292,
+      "name": "Голубчик Анна Павловна",
+      "gregorianDateOfDeath": {
+        "date": 16,
+        "month": 5,
+        "year": 1993
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 25 ияр 5753"
+    },
+    {
+      "id": 293,
+      "name": "Хенкина Гися Львовна",
+      "gregorianDateOfDeath": {
+        "date": 30,
+        "month": 4,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 23 ияр 5738"
+    },
+    {
+      "id": 294,
+      "name": "Пельман Семен Самоилович",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 4,
+        "year": 1981
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 ияр 5741"
+    },
+    {
+      "id": 295,
+      "name": "Козлова Надежда Исаковна",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 5,
+        "year": 1990
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 ияр 5750"
+    },
+    {
+      "id": 296,
+      "name": "Словак Анна Матвеевна",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 4,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 ияр 5738"
+    },
+    {
+      "id": 297,
+      "name": "Конотопская Елена Абрамовна",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 4,
+        "year": 1989
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 ияр 5749"
+    },
+    {
+      "id": 298,
+      "name": "Брандт Вера Сергеевна",
+      "gregorianDateOfDeath": {
+        "date": 11,
+        "month": 5,
+        "year": 2005
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 ияр 5765"
+    },
+    {
+      "id": 299,
+      "name": "Шахнович Самуил Михайлович",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 5,
+        "year": 1975
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 23 ияр 5735"
+    },
+    {
+      "id": 300,
+      "name": "Шмуловская Рахиль Лейзеровна",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 4,
+        "year": 1977
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 ияр 5737"
+    },
+    {
+      "id": 301,
+      "name": "Виленчик Сима Минеевна",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 4,
+        "year": 1979
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 ияр 5739"
+    },
+    {
+      "id": 302,
+      "name": "Туровский Лев Николаевич",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 5,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 ияр 5755"
+    },
+    {
+      "id": 303,
+      "name": "Лейкин Владимир Борисович",
+      "gregorianDateOfDeath": {
+        "date": 14,
+        "month": 5,
+        "year": 1974
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 22 ияр 5734"
+    },
+    {
+      "id": 304,
+      "name": "Розенвальд Нина Борисовна",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 5,
+        "year": 2004
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 ияр 5764"
+    },
+    {
+      "id": 305,
+      "name": "Розенвальд Лея Шмильевна",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 5,
+        "year": 1974
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 ияр 5734"
+    },
+    {
+      "id": 306,
+      "name": "Даенман Эмма Эммануиловна",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 4,
+        "year": 1980
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 ияр 5740"
+    },
+    {
+      "id": 307,
+      "name": "Столяр Нуся Евсеевна",
+      "gregorianDateOfDeath": {
+        "date": 27,
+        "month": 5,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 27 ияр 5755"
+    },
+    {
+      "id": 308,
+      "name": "Пасечник Ирина Борисовна",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 5,
+        "year": 2018
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 23 ияр 5778"
+    },
+    {
+      "id": 309,
+      "name": "Ханина Анна Абрамовна",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 6,
+        "year": 2000
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 ияр 5760"
+    },
+    {
+      "id": 310,
+      "name": "Шабалина Нехама Борисовна",
+      "gregorianDateOfDeath": {
+        "date": 15,
+        "month": 5,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 ияр 5756"
+    },
+    {
+      "id": 311,
+      "name": "Ромацкая Элла Михайловна",
+      "gregorianDateOfDeath": {
+        "date": 27,
+        "month": 4,
+        "year": 1998
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 ияр 5758"
+    },
+    {
+      "id": 312,
+      "name": "Окунь Соломон Борисович",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 5,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 29 ияр 5756"
+    },
+    {
+      "id": 313,
+      "name": "Ромацкая Мария Михайловна",
+      "gregorianDateOfDeath": {
+        "date": 26,
+        "month": 5,
+        "year": 2005
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 ияр 5765"
+    },
+    {
+      "id": 314,
+      "name": "Алексеенко Мериам Мердуховна",
+      "gregorianDateOfDeath": {
+        "date": 24,
+        "month": 5,
+        "year": 2016
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 ияр 5776"
+    },
+    {
+      "id": 315,
+      "name": "Скурлатова Маргарита Николаевна",
+      "gregorianDateOfDeath": {
+        "date": 22,
+        "month": 4,
+        "year": 2015
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 3 ияр 5775"
+    },
+    {
+      "id": 316,
+      "name": "Тухфатуллина Маргарита Ахатовна",
+      "gregorianDateOfDeath": {
+        "date": 13,
+        "month": 5,
+        "year": 2014
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 ияр 5774"
+    },
+    {
+      "id": 317,
+      "name": "Барзах Анна Даниловна",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 5,
+        "year": 2024
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 ияр 5784"
+    },
+    {
+      "id": 318,
+      "name": "Выгон Роза Юрьевна",
+      "gregorianDateOfDeath": {
+        "date": 11,
+        "month": 6,
+        "year": 1987
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 сиван 5747"
+    },
+    {
+      "id": 319,
+      "name": "Мазарская Анна Моисеевна",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 6,
+        "year": 1988
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 19 сиван 5748"
+    },
+    {
+      "id": 320,
+      "name": "Спектор Яков Лазаревич",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 6,
+        "year": 1979
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 24 сиван 5739"
+    },
+    {
+      "id": 321,
+      "name": "Глазов Алкон Наумович",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 5,
+        "year": 2019
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 сиван 5779"
+    },
+    {
+      "id": 322,
+      "name": "Фрумкис Наум Леонидович",
+      "gregorianDateOfDeath": {
+        "date": 13,
+        "month": 6,
+        "year": 1990
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 сиван 5750"
+    },
+    {
+      "id": 323,
+      "name": "Гельфанд Раиса Рафаиловна",
+      "gregorianDateOfDeath": {
+        "date": 15,
+        "month": 5,
+        "year": 1989
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 сиван 5749"
+    },
+    {
+      "id": 324,
+      "name": "Лейкина Берта Наумовна",
+      "gregorianDateOfDeath": {
+        "date": 9,
+        "month": 5,
+        "year": 1981
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 5 сиван 5741"
+    },
+    {
+      "id": 325,
+      "name": "Юфис Борис Генахович",
+      "gregorianDateOfDeath": {
+        "date": 17,
+        "month": 6,
+        "year": 2006
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 сиван 5766"
+    },
+    {
+      "id": 326,
+      "name": "Браницкий Лев Семенович",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 6,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 23 сиван 5738"
+    },
+    {
+      "id": 327,
+      "name": "Хазанов Ошер Зеликович",
+      "gregorianDateOfDeath": {
+        "date": 9,
+        "month": 6,
+        "year": 1982
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 сиван 5742"
+    },
+    {
+      "id": 328,
+      "name": "Загорская Доня Гдальевна",
+      "gregorianDateOfDeath": {
+        "date": 11,
+        "month": 6,
+        "year": 1989
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 8 сиван 5749"
+    },
+    {
+      "id": 329,
+      "name": "Сальник Лидия Матвеевна",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 6,
+        "year": 1979
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 11 сиван 5739"
+    },
+    {
+      "id": 330,
+      "name": "Яффе Зельма Луисовна",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 6,
+        "year": 1976
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 сиван 5736"
+    },
+    {
+      "id": 331,
+      "name": "Бухгольц Зигфрид Эдмундович",
+      "gregorianDateOfDeath": {
+        "date": 9,
+        "month": 6,
+        "year": 1979
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 сиван 5739"
+    },
+    {
+      "id": 332,
+      "name": "Прегер Елизавета Борисовна",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 6,
+        "year": 1974
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 29 сиван 5734"
+    },
+    {
+      "id": 333,
+      "name": "Горелик Ханна Сролевна",
+      "gregorianDateOfDeath": {
+        "date": 27,
+        "month": 5,
+        "year": 1977
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 сиван 5737"
+    },
+    {
+      "id": 334,
+      "name": "Лия Григорьевна",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 6,
+        "year": 1993
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 сиван 5753"
+    },
+    {
+      "id": 335,
+      "name": "Ковальская Энта Исаевна",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 6,
+        "year": 1986
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 5 сиван 5746"
+    },
+    {
+      "id": 336,
+      "name": "Браславская Раиса Ароновна",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 6,
+        "year": 1985
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 23 сиван 5745"
+    },
+    {
+      "id": 337,
+      "name": "Радашкевич Энглен Борисович",
+      "gregorianDateOfDeath": {
+        "date": 24,
+        "month": 5,
+        "year": 1994
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 сиван 5754"
+    },
+    {
+      "id": 338,
+      "name": "Пирожок Людмила Ароновна",
+      "gregorianDateOfDeath": {
+        "date": 20,
+        "month": 5,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 сиван 5756"
+    },
+    {
+      "id": 339,
+      "name": "Шварцман Тамара Исааковна",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 6,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 сиван 5756"
+    },
+    {
+      "id": 340,
+      "name": "Миневицкий Матвей Айссикович",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 6,
+        "year": 2009
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 сиван 5769"
+    },
+    {
+      "id": 341,
+      "name": "Ковган Анна Сергеевна",
+      "gregorianDateOfDeath": {
+        "date": 22,
+        "month": 6,
+        "year": 2006
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 сиван 5766"
+    },
+    {
+      "id": 342,
+      "name": "Копылов Сергей Анатольевич",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 6,
+        "year": 1997
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 23 сиван 5757"
+    },
+    {
+      "id": 343,
+      "name": "Ривкинд Леонард Липманович",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 6,
+        "year": 2006
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 5 сиван 5766"
+    },
+    {
+      "id": 344,
+      "name": "Соломатова Матильда Моисеевна",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 6,
+        "year": 2001
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 сиван 5761"
+    },
+    {
+      "id": 345,
+      "name": "Цукублина Сарра Исааковна",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 6,
+        "year": 1998
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 сиван 5758"
+    },
+    {
+      "id": 346,
+      "name": "Левицкая Рива Бенциановна",
+      "gregorianDateOfDeath": {
+        "date": 15,
+        "month": 6,
+        "year": 1998
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 сиван 5758"
+    },
+    {
+      "id": 347,
+      "name": "Мастов Шалом Рафахаевич",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 6,
+        "year": 2004
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 сиван 5764"
+    },
+    {
+      "id": 348,
+      "name": "Штамова Рахиль Матвеевна",
+      "gregorianDateOfDeath": {
+        "date": 11,
+        "month": 6,
+        "year": 1998
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 сиван 5758"
+    },
+    {
+      "id": 349,
+      "name": "Кульбацкая Циня Нисоновна",
+      "gregorianDateOfDeath": {
+        "date": 24,
+        "month": 6,
+        "year": 2000
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 сиван 5760"
+    },
+    {
+      "id": 350,
+      "name": "Цукублин Анатолий Борисович",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 6,
+        "year": 2023
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 15 сиван 5783"
+    },
+    {
+      "id": 351,
+      "name": "Цынгунова Анна Ошеровна",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 6,
+        "year": 2017
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 11 сиван 5777"
+    },
+    {
+      "id": 352,
+      "name": "Гольдштейн Нонна Викторовна",
+      "gregorianDateOfDeath": {
+        "date": 26,
+        "month": 5,
+        "year": 2013
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 сиван 5773"
+    },
+    {
+      "id": 353,
+      "name": "Шифрина Евгения Марковна",
+      "gregorianDateOfDeath": {
+        "date": 11,
+        "month": 5,
+        "year": 2008
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 6 сиван 5768"
+    },
+    {
+      "id": 354,
+      "name": "Островский Витольд Витольдович",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 6,
+        "year": 2018
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 сиван 5778"
+    },
+    {
+      "id": 355,
+      "name": "Давыдов Михаил Цвиевич",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 5,
+        "year": 2021
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 7 сиван 5781"
+    },
+    {
+      "id": 356,
+      "name": "Корнянская Лилия Михайловна",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 6,
+        "year": 2021
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 сиван 5781"
+    },
+    {
+      "id": 357,
+      "name": "Барзах Самуил Данилович",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 6,
+        "year": 2015
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 15 сиван 5775"
+    },
+    {
+      "id": 358,
+      "name": "Терпугова Анна Федоровна",
+      "gregorianDateOfDeath": {
+        "date": 15,
+        "month": 6,
+        "year": 2022
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 сиван 5782"
+    },
+    {
+      "id": 359,
+      "name": "Егорова Тамара Ароновна",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 6,
+        "year": 2016
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 19 тамуз 5776"
+    },
+    {
+      "id": 360,
+      "name": "Дынина ирина ивановна",
+      "gregorianDateOfDeath": {
+        "date": 30,
+        "month": 5,
+        "year": 2014
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 тамуз 5774"
+    },
+    {
+      "id": 361,
+      "name": "Берестовицкая Серафима Львовна",
+      "gregorianDateOfDeath": {
+        "date": 26,
+        "month": 7,
+        "year": 1987
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 29 тамуз 5747"
+    },
+    {
+      "id": 362,
+      "name": "Брендер Элла Исаковна",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 7,
+        "year": 1990
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 тамуз 5750"
+    },
+    {
+      "id": 363,
+      "name": "Коган Мария Александровна",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 7,
+        "year": 1990
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 тамуз 5750"
+    },
+    {
+      "id": 364,
+      "name": "Добрусин Ефим Юльевич",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 6,
+        "year": 1997
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 тамуз 5757"
+    },
+    {
+      "id": 365,
+      "name": "Перлович Сарра Хаимовна",
+      "gregorianDateOfDeath": {
+        "date": 29,
+        "month": 6,
+        "year": 1985
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 тамуз 5745"
+    },
+    {
+      "id": 366,
+      "name": "Сегельман Яков Геннадьевич",
+      "gregorianDateOfDeath": {
+        "date": 30,
+        "month": 6,
+        "year": 2006
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 тамуз 5766"
+    },
+    {
+      "id": 367,
+      "name": "Гершевич Мери Борисовна",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 6,
+        "year": 2013
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 тамуз 5773"
+    },
+    {
+      "id": 368,
+      "name": "Лебедева Ена Моисеевна",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 6,
+        "year": 1999
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 5 тамуз 5759"
+    },
+    {
+      "id": 369,
+      "name": "Зильберман Алла Яковлевна",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 7,
+        "year": 1990
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 25 тамуз 5750"
+    },
+    {
+      "id": 370,
+      "name": "Рабинович Ципра Зельмановна",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 7,
+        "year": 1989
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 тамуз 5749"
+    },
+    {
+      "id": 371,
+      "name": "Флайшер Доня Соломоновна",
+      "gregorianDateOfDeath": {
+        "date": 17,
+        "month": 7,
+        "year": 2004
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 тамуз 5764"
+    },
+    {
+      "id": 372,
+      "name": "Грайф Юлиус Максимович",
+      "gregorianDateOfDeath": {
+        "date": 29,
+        "month": 6,
+        "year": 1982
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 8 тамуз 5742"
+    },
+    {
+      "id": 373,
+      "name": "Кофман Арон Равинович",
+      "gregorianDateOfDeath": {
+        "date": 21,
+        "month": 6,
+        "year": 1975
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 тамуз 5735"
+    },
+    {
+      "id": 374,
+      "name": "Колтун Фрида Ефимовна",
+      "gregorianDateOfDeath": {
+        "date": 21,
+        "month": 6,
+        "year": 1977
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 5 тамуз 5737"
+    },
+    {
+      "id": 375,
+      "name": "Добнер Абрам Гершевич",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 7,
+        "year": 1974
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 15 тамуз 5734"
+    },
+    {
+      "id": 376,
+      "name": "Лейкин Борис Владимирович",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 7,
+        "year": 2004
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 тамуз 5764"
+    },
+    {
+      "id": 377,
+      "name": "Рапопорт Рахиля Ниселевна",
+      "gregorianDateOfDeath": {
+        "date": 4,
+        "month": 7,
+        "year": 1974
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 тамуз 5734"
+    },
+    {
+      "id": 378,
+      "name": "Эрбсман Итта Ароновна",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 7,
+        "year": 2009
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 11 тамуз 5769"
+    },
+    {
+      "id": 379,
+      "name": "Агроскин Давыд Моисеевич",
+      "gregorianDateOfDeath": {
+        "date": 21,
+        "month": 7,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 23 тамуз 5755"
+    },
+    {
+      "id": 380,
+      "name": "Филиппов Юрий Михайлович",
+      "gregorianDateOfDeath": {
+        "date": 15,
+        "month": 7,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 тамуз 5756"
+    },
+    {
+      "id": 381,
+      "name": "Неленсон Анна Зеликовна",
+      "gregorianDateOfDeath": {
+        "date": 14,
+        "month": 6,
+        "year": 2003
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 тамуз 5763"
+    },
+    {
+      "id": 382,
+      "name": "Старобинец Сара Исаевна",
+      "gregorianDateOfDeath": {
+        "date": 9,
+        "month": 7,
+        "year": 2000
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 6 тамуз 5760"
+    },
+    {
+      "id": 383,
+      "name": "Круглыхина Этта Леонидовна",
+      "gregorianDateOfDeath": {
+        "date": 23,
+        "month": 6,
+        "year": 2009
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 тамуз 5769"
+    },
+    {
+      "id": 384,
+      "name": "Новик Вульф Израилевич",
+      "gregorianDateOfDeath": {
+        "date": 22,
+        "month": 6,
+        "year": 1999
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 8 тамуз 5759"
+    },
+    {
+      "id": 385,
+      "name": "Зингер Семен Аронович",
+      "gregorianDateOfDeath": {
+        "date": 9,
+        "month": 7,
+        "year": 2006
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 тамуз 5766"
+    },
+    {
+      "id": 386,
+      "name": "Рыскина Алта Евсеевна",
+      "gregorianDateOfDeath": {
+        "date": 29,
+        "month": 6,
+        "year": 2009
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 7 тамуз 5769"
+    },
+    {
+      "id": 387,
+      "name": "Стародубцев Михаил Тимофеевич",
+      "gregorianDateOfDeath": {
+        "date": 26,
+        "month": 6,
+        "year": 2018
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 тамуз 5778"
+    },
+    {
+      "id": 388,
+      "name": "Данцис Анна Исааковна",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 6,
+        "year": 2013
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 11 тамуз 5773"
+    },
+    {
+      "id": 389,
+      "name": "Фрейдина Галина Борисовна",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 7,
+        "year": 2021
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 тамуз 5781"
+    },
+    {
+      "id": 390,
+      "name": "Гуревич Шломо (Олег) Велькович",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 7,
+        "year": 2024
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 тамуз 5784"
+    },
+    {
+      "id": 391,
+      "name": "Малисова Елена Вениаминовна",
+      "gregorianDateOfDeath": {
+        "date": 10,
+        "month": 7,
+        "year": 2022
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 11 тамуз 5782"
+    },
+    {
+      "id": 392,
+      "name": "Шмуклярская Хана Абрамасовна(Дочь Абрамаса)",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 7,
+        "year": 1992
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 11 ав 5752"
+    },
+    {
+      "id": 393,
+      "name": "Левшиц Мария Рафаиловна",
+      "gregorianDateOfDeath": {
+        "date": 16,
+        "month": 7,
+        "year": 1992
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 15 ав 5752"
+    },
+    {
+      "id": 394,
+      "name": "Выгон Соломон Львович",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 7,
+        "year": 2020
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 7 ав 5780"
+    },
+    {
+      "id": 395,
+      "name": "Бухгалтер Лия Юдолейбовна",
+      "gregorianDateOfDeath": {
+        "date": 9,
+        "month": 8,
+        "year": 1988
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 ав 5748"
+    },
+    {
+      "id": 396,
+      "name": "Баронас Яков Аркадьевич",
+      "gregorianDateOfDeath": {
+        "date": 22,
+        "month": 7,
+        "year": 2003
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 22 ав 5763"
+    },
+    {
+      "id": 397,
+      "name": "Шихмантер Мендель Хунович",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 8,
+        "year": 1985
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 15 ав 5745"
+    },
+    {
+      "id": 398,
+      "name": "Гольдбарт Зейлик Мейрович",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 8,
+        "year": 1979
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 ав 5739"
+    },
+    {
+      "id": 399,
+      "name": "Зорохович Ида Исаевна",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 8,
+        "year": 1982
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 ав 5742"
+    },
+    {
+      "id": 400,
+      "name": "Новик Цира Гильевна",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 7,
+        "year": 1986
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 ав 5746"
+    },
+    {
+      "id": 401,
+      "name": "Клячко Сарра Яковлевна",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 7,
+        "year": 1986
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 ав 5746"
+    },
+    {
+      "id": 402,
+      "name": "Шехтман Ида Моисеевна",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 8,
+        "year": 1987
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 ав 5747"
+    },
+    {
+      "id": 403,
+      "name": "Мандель Евсей Ильич",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 7,
+        "year": 1990
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 6 ав 5750"
+    },
+    {
+      "id": 404,
+      "name": "Голубчик Павел Григорьевич",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 8,
+        "year": 2021
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 25 ав 5781"
+    },
+    {
+      "id": 405,
+      "name": "Нефедова Мария Дмитриевна",
+      "gregorianDateOfDeath": {
+        "date": 30,
+        "month": 7,
+        "year": 1998
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 7 ав 5758"
+    },
+    {
+      "id": 406,
+      "name": "Бруер Рахиль Борисовна",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 8,
+        "year": 1977
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 24 ав 5737"
+    },
+    {
+      "id": 407,
+      "name": "Бабинский Зельман Иосифович",
+      "gregorianDateOfDeath": {
+        "date": 11,
+        "month": 7,
+        "year": 1992
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 ав 5752"
+    },
+    {
+      "id": 408,
+      "name": "Киперман Кадра Исааковна",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 7,
+        "year": 1981
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 ав 5741"
+    },
+    {
+      "id": 409,
+      "name": "Попова Роза Наумовна",
+      "gregorianDateOfDeath": {
+        "date": 2,
+        "month": 8,
+        "year": 2001
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 ав 5761"
+    },
+    {
+      "id": 410,
+      "name": "Зельцер Иосиф Ефимович",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 7,
+        "year": 1976
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 8 ав 5736"
+    },
+    {
+      "id": 411,
+      "name": "Бернштейн Исаак Кушелевич",
+      "gregorianDateOfDeath": {
+        "date": 30,
+        "month": 7,
+        "year": 1979
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 6 ав 5739"
+    },
+    {
+      "id": 412,
+      "name": "Бородавкин Абрам Маркович",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 8,
+        "year": 1974
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 ав 5734"
+    },
+    {
+      "id": 413,
+      "name": "Барзах Ева Самуиловна",
+      "gregorianDateOfDeath": {
+        "date": 23,
+        "month": 7,
+        "year": 1974
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 ав 5734"
+    },
+    {
+      "id": 414,
+      "name": "Янишевский Александр Станиславович",
+      "gregorianDateOfDeath": {
+        "date": 22,
+        "month": 7,
+        "year": 2001
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 2 ав 5761"
+    },
+    {
+      "id": 415,
+      "name": "Шахнович Эсфирь-Авручис Мееровна",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 8,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 22 ав 5755"
+    },
+    {
+      "id": 416,
+      "name": "Лозинская Анна Ефимовна",
+      "gregorianDateOfDeath": {
+        "date": 7,
+        "month": 8,
+        "year": 2003
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 9 ав 5763"
+    },
+    {
+      "id": 417,
+      "name": "Зайдман Елизавета Яковлевна",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 8,
+        "year": 1998
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 ав 5758"
+    },
+    {
+      "id": 418,
+      "name": "Рольбанд Рива Абрамовна",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 8,
+        "year": 2011
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 6 ав 5771"
+    },
+    {
+      "id": 419,
+      "name": "Еомолаев Михаил Васильевич",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 8,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 ав 5756"
+    },
+    {
+      "id": 420,
+      "name": "Шахнович Роман Васильевич",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 8,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 ав 5756"
+    },
+    {
+      "id": 421,
+      "name": "Андреева Маргарита Михайлова",
+      "gregorianDateOfDeath": {
+        "date": 26,
+        "month": 8,
+        "year": 2005
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 ав 5765"
+    },
+    {
+      "id": 422,
+      "name": "Ботева Инна . Борисовна",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 8,
+        "year": 2001
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 ав 5761"
+    },
+    {
+      "id": 423,
+      "name": "Окунь Геннадий Соломонович",
+      "gregorianDateOfDeath": {
+        "date": 29,
+        "month": 7,
+        "year": 2007
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 ав 5767"
+    },
+    {
+      "id": 424,
+      "name": "Круглыхин Николай Павлович",
+      "gregorianDateOfDeath": {
+        "date": 31,
+        "month": 7,
+        "year": 2009
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 ав 5769"
+    },
+    {
+      "id": 425,
+      "name": "Рутман Маргарита Николаевна",
+      "gregorianDateOfDeath": {
+        "date": 31,
+        "month": 7,
+        "year": 2009
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 10 ав 5769"
+    },
+    {
+      "id": 426,
+      "name": "Беликовский Борис Юзефович",
+      "gregorianDateOfDeath": {
+        "date": 28,
+        "month": 7,
+        "year": 2017
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 5 ав 5777"
+    },
+    {
+      "id": 427,
+      "name": "Фрейдлин Олег Михайлович",
+      "gregorianDateOfDeath": {
+        "date": 7,
+        "month": 8,
+        "year": 2021
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 29 ав 5781"
+    },
+    {
+      "id": 428,
+      "name": "Янковская Анна Ефимовна",
+      "gregorianDateOfDeath": {
+        "date": 17,
+        "month": 7,
+        "year": 2021
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 8 ав 5781"
+    },
+    {
+      "id": 429,
+      "name": "Ушнурцев Александр Валерьевич",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 8,
+        "year": 2010
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 ав 5770"
+    },
+    {
+      "id": 430,
+      "name": "Гуревич Блюма Исааковна",
+      "gregorianDateOfDeath": {
+        "date": 5,
+        "month": 8,
+        "year": 2012
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 ав 5772"
+    },
+    {
+      "id": 431,
+      "name": "Тухфатуллина Рая Марленовна",
+      "gregorianDateOfDeath": {
+        "date": 26,
+        "month": 8,
+        "year": 2014
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 30 ав 5774"
+    },
+    {
+      "id": 432,
+      "name": "Бараховская Антонина Елизаровна",
+      "gregorianDateOfDeath": {
+        "date": 13,
+        "month": 8,
+        "year": 2023
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 26 ав 5783"
+    },
+    {
+      "id": 433,
+      "name": "Виленчик Сара Вульфовна",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 8,
+        "year": 1992
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 19 элул 5752"
+    },
+    {
+      "id": 434,
+      "name": "Марткович Михаил Исаевив",
+      "gregorianDateOfDeath": {
+        "date": 14,
+        "month": 8,
+        "year": 1988
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 элул 5748"
+    },
+    {
+      "id": 435,
+      "name": "Шляфер Маня Яковлевна",
+      "gregorianDateOfDeath": {
+        "date": 12,
+        "month": 8,
+        "year": 2003
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 14 элул 5763"
+    },
+    {
+      "id": 436,
+      "name": "Пятигорская Хана Шевелевна",
+      "gregorianDateOfDeath": {
+        "date": 14,
+        "month": 8,
+        "year": 1984
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 16 элул 5744"
+    },
+    {
+      "id": 437,
+      "name": "Непомнящая Злата Зусевна",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 8,
+        "year": 1994
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 элул 5754"
+    },
+    {
+      "id": 438,
+      "name": "Сидерман Геня Борух-Бендитовна",
+      "gregorianDateOfDeath": {
+        "date": 18,
+        "month": 8,
+        "year": 1988
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 5 элул 5748"
+    },
+    {
+      "id": 439,
+      "name": "Ханин Авраам Исаакович",
+      "gregorianDateOfDeath": {
+        "date": 16,
+        "month": 8,
+        "year": 1984
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 элул 5744"
+    },
+    {
+      "id": 440,
+      "name": "Пилевская Сарра Михайловна",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 9,
+        "year": 1997
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 29 элул 5757"
+    },
+    {
+      "id": 441,
+      "name": "Бердичевская Роза Самуиловна",
+      "gregorianDateOfDeath": {
+        "date": 15,
+        "month": 8,
+        "year": 1997
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 элул 5757"
+    },
+    {
+      "id": 442,
+      "name": "Буркатовский Абрам Исаакович",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 9,
+        "year": 1984
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 9 элул 5744"
+    },
+    {
+      "id": 443,
+      "name": "Дынина Мария Сергеевна",
+      "gregorianDateOfDeath": {
+        "date": 9,
+        "month": 9,
+        "year": 1984
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 элул 5744"
+    },
+    {
+      "id": 444,
+      "name": "Гид Моисей Итскович",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 8,
+        "year": 1991
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 9 элул 5751"
+    },
+    {
+      "id": 445,
+      "name": "Феллер Регина Гершовна",
+      "gregorianDateOfDeath": {
+        "date": 3,
+        "month": 9,
+        "year": 1984
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 6 элул 5744"
+    },
+    {
+      "id": 446,
+      "name": "Литвинова Раиса Борисовна",
+      "gregorianDateOfDeath": {
+        "date": 22,
+        "month": 8,
+        "year": 1996
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 7 элул 5756"
+    },
+    {
+      "id": 447,
+      "name": "Шевцов Михаил Григорьевич",
+      "gregorianDateOfDeath": {
+        "date": 19,
+        "month": 8,
+        "year": 1992
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 элул 5752"
+    },
+    {
+      "id": 448,
+      "name": "Фрумкис Мария Захаровна",
+      "gregorianDateOfDeath": {
+        "date": 21,
+        "month": 9,
+        "year": 2019
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 элул 5779"
+    },
+    {
+      "id": 449,
+      "name": "Элентух Эльевна",
+      "gregorianDateOfDeath": {
+        "date": 23,
+        "month": 9,
+        "year": 1976
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 элул 5776"
+    },
+    {
+      "id": 450,
+      "name": "Гиршевич Любовь Исаевна",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 8,
+        "year": 1988
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 12 элул 5748"
+    },
+    {
+      "id": 451,
+      "name": "Рабинович Калман Эликович",
+      "gregorianDateOfDeath": {
+        "date": 7,
+        "month": 9,
+        "year": 1990
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 17 элул 5750"
+    },
+    {
+      "id": 452,
+      "name": "Даенман Берта Менделеевна",
+      "gregorianDateOfDeath": {
+        "date": 24,
+        "month": 8,
+        "year": 1990
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 3 элул 5750"
+    },
+    {
+      "id": 453,
+      "name": "Котес Бейла Симховна",
+      "gregorianDateOfDeath": {
+        "date": 15,
+        "month": 8,
+        "year": 1975
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 8 элул 5735"
+    },
+    {
+      "id": 454,
+      "name": "Матро Ефим Абрамович",
+      "gregorianDateOfDeath": {
+        "date": 27,
+        "month": 9,
+        "year": 2000
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 27 элул 5760"
+    },
+    {
+      "id": 455,
+      "name": "Иткина Нехана Абрамовна",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 9,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 4 элул 5738"
+    },
+    {
+      "id": 456,
+      "name": "Шпильберг Ида Гершковна",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 9,
+        "year": 1976
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 элул 5736"
+    },
+    {
+      "id": 457,
+      "name": "Красильщиков. Соломон Яковлевич",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 9,
+        "year": 1975
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 25 элул 5735"
+    },
+    {
+      "id": 458,
+      "name": "Колтун. Болла Ефимовна",
+      "gregorianDateOfDeath": {
+        "date": 11,
+        "month": 9,
+        "year": 1978
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 9 элул 5738"
+    },
+    {
+      "id": 459,
+      "name": "Гнездовская Лидия. Леонтьевна",
+      "gregorianDateOfDeath": {
+        "date": 13,
+        "month": 8,
+        "year": 1975
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 6 элул 5735"
+    },
+    {
+      "id": 460,
+      "name": "Страж-Вербович Рахиль Лазаревна",
+      "gregorianDateOfDeath": {
+        "date": 25,
+        "month": 8,
+        "year": 1980
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 13 элул 5740"
+    },
+    {
+      "id": 461,
+      "name": "Ратнер Моисей Герцевич",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 9,
+        "year": 1974
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 19 элул 5734"
+    },
+    {
+      "id": 462,
+      "name": "Лозифович-Голован Ида Яковлевна",
+      "gregorianDateOfDeath": {
+        "date": 24,
+        "month": 8,
+        "year": 1974
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 6 элул 5734"
+    },
+    {
+      "id": 463,
+      "name": "Бриккер Григорий Соломонович",
+      "gregorianDateOfDeath": {
+        "date": 31,
+        "month": 8,
+        "year": 1995
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 5 элул 5755"
+    },
+    {
+      "id": 464,
+      "name": "Фризен Зельма Яковлевна",
+      "gregorianDateOfDeath": {
+        "date": 23,
+        "month": 9,
+        "year": 2014
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 28 элул 5774"
+    },
+    {
+      "id": 465,
+      "name": "Кучер Элла Нисеевна",
+      "gregorianDateOfDeath": {
+        "date": 8,
+        "month": 9,
+        "year": 2012
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 21 элул 5772"
+    },
+    {
+      "id": 466,
+      "name": "Дунаевский Хаим Аврам-Иосифович",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 9,
+        "year": 2008
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 элул 5768"
+    },
+    {
+      "id": 467,
+      "name": "Беленький Абрам. Менделевич",
+      "gregorianDateOfDeath": {
+        "date": 22,
+        "month": 9,
+        "year": 2005
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 элул 5765"
+    },
+    {
+      "id": 468,
+      "name": "Миневицкая Пелагея Абелеевна",
+      "gregorianDateOfDeath": {
+        "date": 23,
+        "month": 8,
+        "year": 1998
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 1 элул 5758"
+    },
+    {
+      "id": 469,
+      "name": "Брагинская Юлия Борисовна",
+      "gregorianDateOfDeath": {
+        "date": 9,
+        "month": 9,
+        "year": 2000
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 9 элул 5760"
+    },
+    {
+      "id": 470,
+      "name": "Окунь София Иосифовна",
+      "gregorianDateOfDeath": {
+        "date": 20,
+        "month": 9,
+        "year": 2008
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 20 элул 5768"
+    },
+    {
+      "id": 471,
+      "name": "Михленко Виктор Дмитриевич",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 9,
+        "year": 2002
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 24 элул 5762"
+    },
+    {
+      "id": 472,
+      "name": "Боркин Владимир Иванович",
+      "gregorianDateOfDeath": {
+        "date": 6,
+        "month": 9,
+        "year": 2016
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 3 элул 5776"
+    },
+    {
+      "id": 473,
+      "name": "Гельфман Бенарий Шмилевич",
+      "gregorianDateOfDeath": {
+        "date": 11,
+        "month": 9,
+        "year": 2006
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 18 элул 5766"
+    },
+    {
+      "id": 474,
+      "name": "Коган Александр Аронович",
+      "gregorianDateOfDeath": {
+        "date": 14,
+        "month": 9,
+        "year": 2012
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 27 элул 5772"
+    },
+    {
+      "id": 475,
+      "name": "Тухфатуллин Ахат Асхатович",
+      "gregorianDateOfDeath": {
+        "date": 1,
+        "month": 9,
+        "year": 2021
+      },
+      "photo": "",
+      "title": "",
+      "text": "Йорцайт: 24 элул 5781"
+    }
+  ],
   "dailyCites": [],
-  "communityEvents": [],
+  "communityEvents": [
+    {
+      "title": "יב יג תמוז התוועדות קהילתית",
+      "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "startAt": "2026-06-26T06:36:57.835Z",
+      "_id": "6a3e1e099d7579be1d9c80ba",
+      "createdAt": "2026-06-26T06:36:57.839Z"
+    }
+  ],
   "boardFeatures": {
-    "sidebarNames": true,
+    "sidebarNames": false,
     "dailyChumash": true,
     "dailyTehillim": false,
-    "dailyTanya": true,
     "dailyRambam": true,
+    "dailyTanya": true,
     "hayomYom": false,
     "upcomingHolidays": true,
     "communityEvents": true,
     "kelMaleRachamim": true,
-    "izkor": true,
-    "weather": false,
-    "sunriseSunset": false,
+    "izkor": false,
+    "weather": true,
+    "sunriseSunset": true,
     "officialLogo": true
   },
   "publicSubmission": {
-    "enabled": false,
-    "donationUrl": "",
-    "donationQrImage": "",
+    "enabled": true,
+    "donationUrl": "https://jewtomsk.ru/donations",
+    "donationQrImage": "1782461400617-opt.png",
     "registrationQrImage": ""
   },
-  "weeklyChapterEnabled": true,
+  "memorialQrPanel": {
+    "titles": {
+      "ru": "Добавить имя близкого",
+      "en": "Add your loved one",
+      "he": "רוצים להוסיף את שם יקירכם?"
+    },
+    "texts": {
+      "ru": "Сканируйте QR-код для регистрации близких",
+      "en": "Scan the QR code to register loved ones",
+      "he": "סרקו את הברקוד לרישום יקירים"
+    },
+    "titleScale": 100,
+    "textScale": 100,
+    "qrScale": 100,
+    "titleScaleBaseline": 100,
+    "textScaleBaseline": 100,
+    "qrScaleBaseline": 100
+  },
+  "weeklyChapterEnabled": false,
   "shabbatTimesEnabled": true,
   "reloadTimeout": 43200000,
-  "contentVersion": 1,
-  "exportedAt": "2026-10-11T04:30:00.000Z",
-  "_fallbackMessage": "Резервная копия — данные временно недоступны"
+  "baseUrl": "/s/tomsk",
+  "contentVersion": 1791702739046,
+  "exportedAt": "2026-10-11T07:12:19.046Z",
+  "jewishContent": {
+    "date": "2026-10-11",
+    "timezone": "Asia/Tomsk",
+    "dailyLearning": {
+      "date": "2026-10-11",
+      "timezone": "Asia/Tomsk",
+      "chumash": {
+        "label": ""
+      },
+      "tehillim": {
+        "label": "Тегилим 145-150"
+      },
+      "tanya": {
+        "label": "30 Тишрей"
+      },
+      "rambam": {
+        "label": "Levirate Marriage and Release 7"
+      },
+      "rambam3": {
+        "label": "Robbery and Lost Property 4-6"
+      },
+      "hayomYom": {
+        "available": true,
+        "text": "В Hallel - повторяйте Hodu Lashem (стр. 243) после каждого из следующих трех стихов, Yomar Na и т. д., даже если вы выходите на улицу в одиночку (без миньяна). Стихи V'Avraham Zakein и т. д. и Zevadya Yish 'mreini и т. д. произносятся три раза.",
+        "hebrewMonth": 7,
+        "hebrewDay": 30,
+        "lessons5703": {
+          "chumash": {
+            "label": "Ноах, Шиши с Раши."
+          },
+          "tehillim": {
+            "label": "145-150"
+          },
+          "tanya": {
+            "label": "Теперь известно (с. 541) …без речи. (с. 543)."
+          }
+        }
+      }
+    },
+    "upcomingHolidays": [
+      {
+        "date": "2026-11-09",
+        "title": "Сигд",
+        "hebrew": "חג הסיגד",
+        "subcat": "modern",
+        "link": ""
+      },
+      {
+        "date": "2026-12-04",
+        "title": "Ханука, 1-я свеча",
+        "hebrew": "חנוכה: א׳ נר",
+        "subcat": "major",
+        "link": ""
+      },
+      {
+        "date": "2026-12-05",
+        "title": "Ханука, 2-я свеча",
+        "hebrew": "חנוכה: ב׳ נרות",
+        "subcat": "major",
+        "link": ""
+      },
+      {
+        "date": "2026-12-06",
+        "title": "Ханука, 3-я свеча",
+        "hebrew": "חנוכה: ג׳ נרות",
+        "subcat": "major",
+        "link": ""
+      },
+      {
+        "date": "2026-12-07",
+        "title": "Ханука, 4-я свеча",
+        "hebrew": "חנוכה: ד׳ נרות",
+        "subcat": "major",
+        "link": ""
+      },
+      {
+        "date": "2026-12-08",
+        "title": "Ханука, 5-я свеча",
+        "hebrew": "חנוכה: ה׳ נרות",
+        "subcat": "major",
+        "link": ""
+      },
+      {
+        "date": "2026-12-09",
+        "title": "Ханука, 6-я свеча",
+        "hebrew": "חנוכה: ו׳ נרות",
+        "subcat": "major",
+        "link": ""
+      },
+      {
+        "date": "2026-12-10",
+        "title": "Праздник дочерей",
+        "hebrew": "חג הבנות",
+        "subcat": "minor",
+        "link": ""
+      },
+      {
+        "date": "2026-12-10",
+        "title": "Ханука, 7-я свеча",
+        "hebrew": "חנוכה: ז׳ נרות",
+        "subcat": "major",
+        "link": ""
+      }
+    ],
+    "chabadDates": [
+      {
+        "date": "2026-11-29",
+        "title": "19 Кислев — праздник освобождения",
+        "hebrew": "י״ט כסלו – חג הגאולה",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-01-03",
+        "title": "24 Тевет — день исцеления Рабанит",
+        "hebrew": "כ״ד טבת – יום ההילולא של הרבנית",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-01-18",
+        "title": "10 Шват — день исцеления",
+        "hebrew": "י׳ שבט – יום ההילולא",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-01-30",
+        "title": "22 Шват — день рождения Рабанит",
+        "hebrew": "כ״ב שבט – יום הולדת הרבנית",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-04-18",
+        "title": "11 Нисан — день рождения Ребе",
+        "hebrew": "י״א ניסן – יום הולדת הרבי",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-05-05",
+        "title": "28 Нисан",
+        "hebrew": "כ״ח ניסן",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-05-25",
+        "title": "Лаг ба-Омер",
+        "hebrew": "ל״ג בעומר",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-07-08",
+        "title": "3 Таммуз — день исцеления",
+        "hebrew": "ג׳ תמוז – יום ההילולא",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-07-17",
+        "title": "12 Таммуз — день освобождения",
+        "hebrew": "י״ב תמוז – יום הגאולה",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-07-18",
+        "title": "13 Таммуз — день освобождения",
+        "hebrew": "י״ג תמוז – יום הגאולה",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-08-23",
+        "title": "20 Менахем Ав",
+        "hebrew": "כ׳ מנחם אב",
+        "category": "chabad"
+      }
+    ]
+  },
+  "sidebarApp": {
+    "slug": "tomsk",
+    "title": "Проект памяти наших родных \"Кадиш\"",
+    "language": "ru",
+    "location": {
+      "lat": 56.4977,
+      "long": 84.9744,
+      "city": "Томская область",
+      "timezone": "Asia/Tomsk"
+    },
+    "shabbatTimesEnabled": true,
+    "boardFeatures": {
+      "officialLogo": true,
+      "upcomingHolidays": true,
+      "communityEvents": true,
+      "weather": true,
+      "sunriseSunset": true
+    },
+    "theme": {
+      "primaryColor": "#ecd779",
+      "textColor": "#ffffff",
+      "accentColor": "#ffd54f"
+    },
+    "dailyCites": [],
+    "communityEvents": [
+      {
+        "title": "יב יג תמוז התוועדות קהילתית",
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        "startAt": "2026-06-26T06:36:57.835Z",
+        "_id": "6a3e1e099d7579be1d9c80ba",
+        "createdAt": "2026-06-26T06:36:57.839Z"
+      }
+    ],
+    "upcomingHolidays": [
+      {
+        "date": "2026-11-09",
+        "title": "Сигд",
+        "hebrew": "חג הסיגד",
+        "subcat": "modern",
+        "link": ""
+      },
+      {
+        "date": "2026-12-04",
+        "title": "Ханука, 1-я свеча",
+        "hebrew": "חנוכה: א׳ נר",
+        "subcat": "major",
+        "link": ""
+      },
+      {
+        "date": "2026-12-05",
+        "title": "Ханука, 2-я свеча",
+        "hebrew": "חנוכה: ב׳ נרות",
+        "subcat": "major",
+        "link": ""
+      },
+      {
+        "date": "2026-12-06",
+        "title": "Ханука, 3-я свеча",
+        "hebrew": "חנוכה: ג׳ נרות",
+        "subcat": "major",
+        "link": ""
+      },
+      {
+        "date": "2026-12-07",
+        "title": "Ханука, 4-я свеча",
+        "hebrew": "חנוכה: ד׳ נרות",
+        "subcat": "major",
+        "link": ""
+      },
+      {
+        "date": "2026-12-08",
+        "title": "Ханука, 5-я свеча",
+        "hebrew": "חנוכה: ה׳ נרות",
+        "subcat": "major",
+        "link": ""
+      },
+      {
+        "date": "2026-12-09",
+        "title": "Ханука, 6-я свеча",
+        "hebrew": "חנוכה: ו׳ נרות",
+        "subcat": "major",
+        "link": ""
+      },
+      {
+        "date": "2026-12-10",
+        "title": "Праздник дочерей",
+        "hebrew": "חג הבנות",
+        "subcat": "minor",
+        "link": ""
+      },
+      {
+        "date": "2026-12-10",
+        "title": "Ханука, 7-я свеча",
+        "hebrew": "חנוכה: ז׳ נרות",
+        "subcat": "major",
+        "link": ""
+      }
+    ],
+    "chabadDates": [
+      {
+        "date": "2026-11-29",
+        "title": "19 Кислев — праздник освобождения",
+        "hebrew": "י״ט כסלו – חג הגאולה",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-01-03",
+        "title": "24 Тевет — день исцеления Рабанит",
+        "hebrew": "כ״ד טבת – יום ההילולא של הרבנית",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-01-18",
+        "title": "10 Шват — день исцеления",
+        "hebrew": "י׳ שבט – יום ההילולא",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-01-30",
+        "title": "22 Шват — день рождения Рабанит",
+        "hebrew": "כ״ב שבט – יום הולדת הרבנית",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-04-18",
+        "title": "11 Нисан — день рождения Ребе",
+        "hebrew": "י״א ניסן – יום הולדת הרבי",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-05-05",
+        "title": "28 Нисан",
+        "hebrew": "כ״ח ניסן",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-05-25",
+        "title": "Лаг ба-Омер",
+        "hebrew": "ל״ג בעומר",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-07-08",
+        "title": "3 Таммуз — день исцеления",
+        "hebrew": "ג׳ תמוז – יום ההילולא",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-07-17",
+        "title": "12 Таммуз — день освобождения",
+        "hebrew": "י״ב תמוז – יום הגאולה",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-07-18",
+        "title": "13 Таммуз — день освобождения",
+        "hebrew": "י״ג תמוז – יום הגאולה",
+        "category": "chabad"
+      },
+      {
+        "date": "2027-08-23",
+        "title": "20 Менахем Ав",
+        "hebrew": "כ׳ מנחם אב",
+        "category": "chabad"
+      }
+    ],
+    "updatedAt": "2026-10-11T07:12:19.046Z"
+  }
 }
