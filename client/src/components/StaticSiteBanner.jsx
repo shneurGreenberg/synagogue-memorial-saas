@@ -9,6 +9,7 @@ export function StaticSiteBanner() {
   const data = window.data || {};
   const exportedAt = data.exportedAt ? new Date(data.exportedAt) : null;
   const fallbackMessage = data._fallbackMessage;
+  const peopleCount = Array.isArray(data.people) ? data.people.length : 0;
   
   const dateStr = exportedAt 
     ? exportedAt.toLocaleDateString('ru-RU', { 
@@ -18,9 +19,11 @@ export function StaticSiteBanner() {
       })
     : '';
 
+  const showFallback = fallbackMessage && peopleCount === 0;
+
   return (
     <>
-      {fallbackMessage && (
+      {showFallback && (
         <div style={{
           position: 'fixed',
           top: '50%',
@@ -41,11 +44,11 @@ export function StaticSiteBanner() {
           {fallbackMessage}
         </div>
       )}
-      {exportedAt && !fallbackMessage && (
+      {exportedAt && !showFallback && (
         <div style={{
           position: 'fixed',
           top: '1rem',
-          left: '1rem',
+          right: '1rem',
           backgroundColor: 'rgba(0, 0, 0, 0.7)',
           color: '#ffd54f',
           padding: '0.5rem 1rem',

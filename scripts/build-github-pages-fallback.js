@@ -48,6 +48,7 @@ function fixCssAssetPaths(cssPath, base) {
 }
 
 function loadSnapshots() {
+  const ALLOWED_TENANTS = ['novosibirsk', 'tomsk'];
   const snapshots = {};
   if (!fs.existsSync(SNAPSHOTS_DIR)) {
     throw new Error(`Snapshots directory not found: ${SNAPSHOTS_DIR}`);
@@ -60,9 +61,17 @@ function loadSnapshots() {
   
   for (const file of files) {
     const slug = path.basename(file, '.json');
+    if (!ALLOWED_TENANTS.includes(slug)) {
+      console.log(`  Skipped ${slug} (not in allowed tenants)`);
+      continue;
+    }
     const data = JSON.parse(fs.readFileSync(path.join(SNAPSHOTS_DIR, file), 'utf8'));
     snapshots[slug] = data;
     console.log(`  Loaded ${slug}: ${data.people?.length || 0} people`);
+  }
+  
+  if (Object.keys(snapshots).length === 0) {
+    throw new Error(`No allowed tenant snapshots found in ${SNAPSHOTS_DIR}`);
   }
   
   return snapshots;
@@ -141,6 +150,13 @@ function main() {
   copyDir(path.join(ROOT, 'public/board'), path.join(SITE_DIR, 'board'));
   const imageCount = copyDir(path.join(ROOT, 'images'), path.join(SITE_DIR, 'images'));
   const photoCount = copyDir(path.join(ROOT, 'photos'), path.join(SITE_DIR, 'photos'));
+  
+  const staticAssetsDir = path.join(ROOT, 'static-assets');
+  let staticAssetCount = 0;
+  if (fs.existsSync(staticAssetsDir)) {
+    staticAssetCount = copyDir(staticAssetsDir, SITE_DIR);
+    console.log(`   Static assets: ${staticAssetCount}`);
+  }
 
   fixCssAssetPaths(path.join(SITE_DIR, 'board/assets/memorial.css'), BASE);
 
