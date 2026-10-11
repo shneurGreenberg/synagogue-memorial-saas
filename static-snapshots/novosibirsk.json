@@ -1,0 +1,3090 @@
+{
+  "slug": "novosibirsk",
+  "name": "Novosibirsk Synagogue",
+  "title": "Проект памяти наших родных \"Кадиш\"",
+  "titles": {
+    "ru": "Проект памяти наших родных \"Кадиш\"",
+    "en": "",
+    "he": ""
+  },
+  "language": "ru",
+  "location": {
+    "lat": 54.9833,
+    "long": 82.8964,
+    "city": "Novosibirsk",
+    "timezone": "Asia/Novosibirsk"
+  },
+  "theme": {
+    "primaryColor": "#d4af37",
+    "textColor": "#f0f0f0",
+    "accentColor": "#ffd54f",
+    "tileColor": "#b89a22",
+    "tileOpacity": 100,
+    "fontScales": {
+      "tileTitle": 100,
+      "tileDate": 100,
+      "clock": 100,
+      "boardHeader": 100,
+      "sidebar": 100,
+      "prayers": 100,
+      "prayerOverlay": 100,
+      "torahNames": 100,
+      "weather": 100,
+      "shabbat": 100,
+      "candle": 75
+    },
+    "fontScaleBaselines": {
+      "tileTitle": 100,
+      "tileDate": 100,
+      "clock": 100,
+      "boardHeader": 100,
+      "sidebar": 100,
+      "prayers": 100,
+      "prayerOverlay": 100,
+      "torahNames": 100,
+      "weather": 100,
+      "shabbat": 100,
+      "candle": 100
+    },
+    "logoBorderRadius": 100,
+    "candlePalette": "classic"
+  },
+  "people": [
+    {
+      "id": 1,
+      "name": "Брусиловский Виктор сын Александра",
+      "gregorianDateOfDeath": {
+        "year": 2009,
+        "month": 8,
+        "date": 15
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 2,
+      "name": "Виленкин Евгений сын Самуила (Йосиф)",
+      "gregorianDateOfDeath": {
+        "year": 2019,
+        "month": 5,
+        "date": 11
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 3,
+      "name": "Дыхне Семен сын Мендела",
+      "gregorianDateOfDeath": {
+        "year": 2016,
+        "month": 5,
+        "date": 11
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 4,
+      "name": "Кац Арнольд сын Михаила",
+      "gregorianDateOfDeath": {
+        "year": 2007,
+        "month": 1,
+        "date": 22
+      },
+      "photo": "148.jpg",
+      "photoCrop": {
+        "x": 44.74025974025974,
+        "y": 29.226730499642926,
+        "zoom": 2
+      },
+      "title": ""
+    },
+    {
+      "id": 5,
+      "name": "Ошеров Семен сын Вольфа (Шимон)",
+      "gregorianDateOfDeath": {
+        "year": 2018,
+        "month": 12,
+        "date": 30
+      },
+      "photo": "5.jpg",
+      "photoCrop": {
+        "x": 66.42857142857143,
+        "y": 3.571428571428571,
+        "zoom": 1.45
+      },
+      "title": ""
+    },
+    {
+      "id": 6,
+      "name": "Пясковский Моник сын Герша",
+      "gregorianDateOfDeath": {
+        "year": 2016,
+        "month": 2,
+        "date": 20
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 7,
+      "name": "Фронштейн Исаак сын Якова (Исаак)",
+      "gregorianDateOfDeath": {
+        "year": 2009,
+        "month": 11,
+        "date": 24
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 132,
+      "name": "Фердман Хонон Аронович",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 9,
+      "name": "Шпикельман Гнесся дочь Якова",
+      "gregorianDateOfDeath": {
+        "year": 1990,
+        "month": 8,
+        "date": 17
+      },
+      "photo": "9.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 42.142857142857146,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 10,
+      "name": "Шпикельман Михаил сын Соломона (Михаэль)",
+      "gregorianDateOfDeath": {
+        "year": 1996,
+        "month": 5,
+        "date": 25
+      },
+      "photo": "10.jpg",
+      "photoCrop": {
+        "x": 54.54545454545455,
+        "y": 29.47374582918691,
+        "zoom": 1.1
+      },
+      "title": ""
+    },
+    {
+      "id": 11,
+      "name": "Шуриц Александр сын Давида (Исаак)",
+      "gregorianDateOfDeath": {
+        "year": 2017,
+        "month": 4,
+        "date": 27
+      },
+      "photo": "11.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 12,
+      "name": "Ханин Яков сын Ильи",
+      "gregorianDateOfDeath": {
+        "year": 2013,
+        "month": 1,
+        "date": 29
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 13,
+      "name": "Тодер Борис сын Павла",
+      "gregorianDateOfDeath": {
+        "year": 2015,
+        "month": 9,
+        "date": 5
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 14,
+      "name": "Ханин Кушелис сын Элияса",
+      "gregorianDateOfDeath": {
+        "year": 2015,
+        "month": 5,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 15,
+      "name": "Жеребцова (Рубанович) София дочь Александра",
+      "gregorianDateOfDeath": {
+        "year": 2016,
+        "month": 11,
+        "date": 20
+      },
+      "photo": "15-sofia.jpg",
+      "photoCrop": {
+        "x": 51.42857142857143,
+        "y": 34.090909090909086,
+        "zoom": 1.1
+      },
+      "title": ""
+    },
+    {
+      "id": 16,
+      "name": "Зильберштейн Григорий сын Абрама",
+      "gregorianDateOfDeath": {
+        "year": 1983,
+        "month": 7,
+        "date": 20
+      },
+      "photo": "16-greg.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 17,
+      "name": "Раппопорт Анна дочь Ильи",
+      "gregorianDateOfDeath": {
+        "year": 1977,
+        "month": 8,
+        "date": 6
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 18,
+      "name": "Каганицкая Елизавета",
+      "gregorianDateOfDeath": {
+        "year": 2018,
+        "month": 12,
+        "date": 31
+      },
+      "photo": "18-elz.jpg",
+      "photoCrop": {
+        "x": 82.14285714285714,
+        "y": 0.7142857142857143,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 19,
+      "name": "Аникштейн Хая дочь Иделя",
+      "gregorianDateOfDeath": {
+        "year": 2014,
+        "month": 1,
+        "date": 27
+      },
+      "photo": "19.jpg",
+      "photoCrop": {
+        "x": 42.142857142857146,
+        "y": 7.142857142857146,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 20,
+      "name": "Аникштейн Григорий Моисеевич",
+      "gregorianDateOfDeath": {
+        "year": 1992,
+        "month": 8,
+        "date": 17
+      },
+      "photo": "20.jpg",
+      "photoCrop": {
+        "x": 40,
+        "y": 25.486211901306238,
+        "zoom": 1.25
+      },
+      "title": ""
+    },
+    {
+      "id": 21,
+      "name": "Вайсбург Сарра Моисеевна ",
+      "gregorianDateOfDeath": {
+        "year": 2006,
+        "month": 11,
+        "date": 9
+      },
+      "photo": "21.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 22,
+      "name": "Вайсбург Борис сын Лазаря",
+      "gregorianDateOfDeath": {
+        "year": 2009,
+        "month": 9,
+        "date": 8
+      },
+      "photo": "22.jpg",
+      "photoCrop": {
+        "x": 41.42857142857142,
+        "y": 2.1428571428571406,
+        "zoom": 1.8
+      },
+      "title": ""
+    },
+    {
+      "id": 23,
+      "name": "Шейнин Моисей сын Самуила",
+      "gregorianDateOfDeath": {
+        "year": 1990,
+        "month": 6,
+        "date": 14
+      },
+      "photo": "23.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 24,
+      "name": "Шейнина Ольга дочь Ерухима",
+      "gregorianDateOfDeath": {
+        "year": 1998,
+        "month": 4,
+        "date": 10
+      },
+      "photo": "24.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 25,
+      "name": "Сирота Натан сын Абрама",
+      "gregorianDateOfDeath": {
+        "year": 2002,
+        "month": 1,
+        "date": 13
+      },
+      "photo": "25.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 27,
+      "name": "Сирота Абрам сын Соломона",
+      "gregorianDateOfDeath": {
+        "year": 1972,
+        "month": 8,
+        "date": 18
+      },
+      "photo": "27.jpg",
+      "photoCrop": {
+        "x": 70.71428571428572,
+        "y": 35,
+        "zoom": 1.9
+      },
+      "title": ""
+    },
+    {
+      "id": 28,
+      "name": "Сирота Мина дочь Лазаря",
+      "gregorianDateOfDeath": {
+        "year": 2007,
+        "month": 2,
+        "date": 2
+      },
+      "photo": "28.jpg",
+      "photoCrop": {
+        "x": 5.714285714285717,
+        "y": 10.714285714285715,
+        "zoom": 1.1
+      },
+      "title": ""
+    },
+    {
+      "id": 29,
+      "name": "Кесельман Фрида дочь Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1984,
+        "month": 12,
+        "date": 24
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 30,
+      "name": "Сирота Полина дочь Натана",
+      "gregorianDateOfDeath": {
+        "year": 2002,
+        "month": 7,
+        "date": 20
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 31,
+      "name": "Кракушанская Ента дочь Дувида",
+      "gregorianDateOfDeath": {
+        "year": 2005,
+        "month": 10,
+        "date": 3
+      },
+      "photo": "31.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 32,
+      "name": "Кракушанский Герш сын Лейба",
+      "gregorianDateOfDeath": {
+        "year": 1976,
+        "month": 12,
+        "date": 13
+      },
+      "photo": "32.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 33,
+      "name": "Бикман Цина дочь Мойше",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "33.jpg",
+      "photoCrop": {
+        "x": 55,
+        "y": 11.428571428571423,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 34,
+      "name": "Бикман Дувид сын Шмуля ",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 35,
+      "name": "Кракушанский Дудл сын Лейб",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 36,
+      "name": "Кракушанская Роза дочь Лейба ",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "36.jpg",
+      "photoCrop": {
+        "x": 54.285714285714285,
+        "y": 15.714285714285715,
+        "zoom": 1.85
+      },
+      "title": ""
+    },
+    {
+      "id": 37,
+      "name": "Кракушанский Копель сын Лейба",
+      "gregorianDateOfDeath": {
+        "year": 2000,
+        "month": 6,
+        "date": 25
+      },
+      "photo": "37.jpg",
+      "photoCrop": {
+        "x": 48.57142857142858,
+        "y": 23.809523809523807,
+        "zoom": 2.1
+      },
+      "title": ""
+    },
+    {
+      "id": 38,
+      "name": "Глузман Шейва - Айзекс дочь Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "38.jpg",
+      "photoCrop": {
+        "x": 46.42857142857143,
+        "y": 23.57142857142857,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 39,
+      "name": "Глузман Мойше сын Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "39.jpg",
+      "photoCrop": {
+        "x": 65.71428571428571,
+        "y": 14.285714285714285,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 40,
+      "name": "Бикман Шмуль сын Араама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 41,
+      "name": "Вильдер Тамара дочь Бориса",
+      "gregorianDateOfDeath": {
+        "year": 2010,
+        "month": 4,
+        "date": 10
+      },
+      "photo": "41.jpg",
+      "photoCrop": {
+        "x": 58.57142857142857,
+        "y": 19.92143658810326,
+        "zoom": 1.65
+      },
+      "title": ""
+    },
+    {
+      "id": 42,
+      "name": "Вильдер Леонид сын Озяса",
+      "gregorianDateOfDeath": {
+        "year": 1994,
+        "month": 5,
+        "date": 15
+      },
+      "photo": "42.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 43,
+      "name": "Коновалова Надежда дочь Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "43.jpg",
+      "photoCrop": {
+        "x": 45,
+        "y": 24.28571428571429,
+        "zoom": 2.55
+      },
+      "title": ""
+    },
+    {
+      "id": 44,
+      "name": "Коновалов Борис сын Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "44.jpg",
+      "photoCrop": {
+        "x": 42.14285714285714,
+        "y": 25.71428571428571,
+        "zoom": 2.1
+      },
+      "title": ""
+    },
+    {
+      "id": 45,
+      "name": "Вильдер Фрида дочь Араама ",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "45.jpg",
+      "photoCrop": {
+        "x": 85,
+        "y": 37.85714285714286,
+        "zoom": 1.6
+      },
+      "title": ""
+    },
+    {
+      "id": 46,
+      "name": "Вильдер Озяс сын Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "46.jpg",
+      "photoCrop": {
+        "x": 17.142857142857146,
+        "y": 15,
+        "zoom": 1.8
+      },
+      "title": ""
+    },
+    {
+      "id": 48,
+      "name": "Шуриц Давид сын Авраама ",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 49,
+      "name": "Дворкина Геня дочь Араама ",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 50,
+      "name": "Бочевер Иосиф сын Моисея",
+      "gregorianDateOfDeath": {
+        "year": 1987,
+        "month": 1,
+        "date": 20
+      },
+      "photo": "50.jpg",
+      "photoCrop": {
+        "x": 45.00000000000001,
+        "y": 18.571428571428573,
+        "zoom": 1.4
+      },
+      "title": ""
+    },
+    {
+      "id": 51,
+      "name": "Бочевер Израиль сын Моисея",
+      "gregorianDateOfDeath": {
+        "year": 1995,
+        "month": 12,
+        "date": 26
+      },
+      "photo": "51.jpg",
+      "photoCrop": {
+        "x": 7.142857142857142,
+        "y": 17.857142857142858,
+        "zoom": 1.25
+      },
+      "title": ""
+    },
+    {
+      "id": 52,
+      "name": "Бочевер Абрам сын Моисея",
+      "gregorianDateOfDeath": {
+        "year": 2018,
+        "month": 8,
+        "date": 9
+      },
+      "photo": "52.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 37.5,
+        "zoom": 1.15
+      },
+      "title": ""
+    },
+    {
+      "id": 53,
+      "name": "Бочевер Зиновий сын Моисея (Залман)",
+      "gregorianDateOfDeath": {
+        "year": 2006,
+        "month": 1,
+        "date": 3
+      },
+      "photo": "53.jpg",
+      "photoCrop": {
+        "x": 47.142857142857146,
+        "y": 27.142857142857146,
+        "zoom": 1.6
+      },
+      "title": ""
+    },
+    {
+      "id": 54,
+      "name": "Хая-Сарра дочь Араама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 55,
+      "name": "Моисей сын Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 56,
+      "name": "Айзман Идель сын Шульмана",
+      "gregorianDateOfDeath": {
+        "year": 2017,
+        "month": 1,
+        "date": 6
+      },
+      "photo": "56.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 32.91733455461416,
+        "zoom": 1.1
+      },
+      "title": ""
+    },
+    {
+      "id": 57,
+      "name": "Айзман (Вайнштейн) Хася дочь Цудика",
+      "gregorianDateOfDeath": {
+        "year": 1994,
+        "month": 11,
+        "date": 6
+      },
+      "photo": "57.jpg",
+      "photoCrop": {
+        "x": 59.28571428571428,
+        "y": 1.4285714285714286,
+        "zoom": 1.35
+      },
+      "title": ""
+    },
+    {
+      "id": 60,
+      "name": "Гинзбург Леонид сын Абрама",
+      "gregorianDateOfDeath": {
+        "year": 2017,
+        "month": 1,
+        "date": 24
+      },
+      "photo": "60.jpg",
+      "photoCrop": {
+        "x": 41.42857142857143,
+        "y": 5.714285714285715,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 61,
+      "name": "Гинзбург Анна дочь Самуила",
+      "gregorianDateOfDeath": {
+        "year": 2001,
+        "month": 1,
+        "date": 24
+      },
+      "photo": "61.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 62,
+      "name": "Гинзбург Абрам сын Льва",
+      "gregorianDateOfDeath": {
+        "year": 1963,
+        "month": 1,
+        "date": 6
+      },
+      "photo": "62.jpg",
+      "photoCrop": {
+        "x": 3.5714285714285694,
+        "y": 23.57142857142857,
+        "zoom": 1.25
+      },
+      "title": ""
+    },
+    {
+      "id": 63,
+      "name": "Гинзбург Этель дочь Сэма",
+      "gregorianDateOfDeath": {
+        "year": 1987,
+        "month": 1,
+        "date": 11
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 64,
+      "name": "Гинзбург Владимир сын Льва",
+      "gregorianDateOfDeath": {
+        "year": 1979,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "64.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 65,
+      "name": "Гинзбург Виктория дочь Сэма",
+      "gregorianDateOfDeath": {
+        "year": 1993,
+        "month": 12,
+        "date": 24
+      },
+      "photo": "65.jpg",
+      "photoCrop": {
+        "x": 46.42857142857143,
+        "y": 0.7142857142857172,
+        "zoom": 1.6
+      },
+      "title": ""
+    },
+    {
+      "id": 66,
+      "name": "Тоболовская Ида дочь Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1961,
+        "month": 12,
+        "date": 17
+      },
+      "photo": "66.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 67,
+      "name": "Тоболовский Сэм сын Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1933,
+        "month": 1,
+        "date": 8
+      },
+      "photo": "67.jpg",
+      "photoCrop": {
+        "x": 47.857142857142854,
+        "y": 7.142857142857146,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 68,
+      "name": "Шарогородский Самуил сын Бориса",
+      "gregorianDateOfDeath": {
+        "year": 1966,
+        "month": 1,
+        "date": 2
+      },
+      "photo": "68.jpg",
+      "photoCrop": {
+        "x": 1.4285714285714284,
+        "y": 3.5714285714285716,
+        "zoom": 1.35
+      },
+      "title": ""
+    },
+    {
+      "id": 69,
+      "name": "Шарогородская Бина дочь Моисея",
+      "gregorianDateOfDeath": {
+        "year": 1971,
+        "month": 7,
+        "date": 1
+      },
+      "photo": "69.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 36.63833805476865,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 70,
+      "name": "Гольдзилбер Эммануил сын Моисея",
+      "gregorianDateOfDeath": {
+        "year": 1964,
+        "month": 12,
+        "date": 15
+      },
+      "photo": "70.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 37.26273726273726,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 71,
+      "name": "Санько Таба дочь Моисея",
+      "gregorianDateOfDeath": {
+        "year": 1966,
+        "month": 12,
+        "date": 23
+      },
+      "photo": "71.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 39.28571428571429,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 72,
+      "name": "Тоболовский Арнольд сын Сэма",
+      "gregorianDateOfDeath": {
+        "year": 1975,
+        "month": 12,
+        "date": 14
+      },
+      "photo": "72.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 73,
+      "name": "Гольдзилбер Полина  дочь Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 74,
+      "name": "Гольдзилбер Моисей сын Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 75,
+      "name": "Илизаров Гавриил сын Абрама",
+      "gregorianDateOfDeath": {
+        "year": 1992,
+        "month": 7,
+        "date": 24
+      },
+      "photo": "75.jpg",
+      "photoCrop": {
+        "x": 53.57142857142858,
+        "y": 4.2857142857142865,
+        "zoom": 1.15
+      },
+      "title": ""
+    },
+    {
+      "id": 76,
+      "name": "Илизарова Мария дочь Абрама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 77,
+      "name": "Илизаров Исаак сын Абрама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 78,
+      "name": "Елизаров Давид сын Абрама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 79,
+      "name": "Елизаров Елисей сын Абрама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 80,
+      "name": "Ланцберг Зинаида дочь Абрама (Зылпа)",
+      "gregorianDateOfDeath": {
+        "year": 2010,
+        "month": 6,
+        "date": 20
+      },
+      "photo": "80.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 30,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 81,
+      "name": "Ланцберг Марк сын Самойла (Меер)",
+      "gregorianDateOfDeath": {
+        "year": 2009,
+        "month": 8,
+        "date": 30
+      },
+      "photo": "81.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 30,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 82,
+      "name": "Ланцберг Шмуль сын Эли",
+      "gregorianDateOfDeath": {
+        "year": 1972,
+        "month": 5,
+        "date": 18
+      },
+      "photo": "82.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 83,
+      "name": "Ланцберг Рухля дочь Боруха",
+      "gregorianDateOfDeath": {
+        "year": 1990,
+        "month": 11,
+        "date": 28
+      },
+      "photo": "83.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 84,
+      "name": "Верник (Полищук) Роза дочь Иосифа",
+      "gregorianDateOfDeath": {
+        "year": 1966,
+        "month": 7,
+        "date": 4
+      },
+      "photo": "84.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 56.42857142857143,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 85,
+      "name": "Верник Авраам сын Исаака",
+      "gregorianDateOfDeath": {
+        "year": 1976,
+        "month": 9,
+        "date": 29
+      },
+      "photo": "85.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 86,
+      "name": "Буртман Михаил сын Абрама",
+      "gregorianDateOfDeath": {
+        "year": 2007,
+        "month": 2,
+        "date": 1
+      },
+      "photo": "86.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 37.5,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 87,
+      "name": "Берольская (Верник) Маня дочь Аврама",
+      "gregorianDateOfDeath": {
+        "year": 2021,
+        "month": 3,
+        "date": 23
+      },
+      "photo": "87.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 34.423828125,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 88,
+      "name": "Берольский Соломон сын Марка",
+      "gregorianDateOfDeath": {
+        "year": 2010,
+        "month": 3,
+        "date": 24
+      },
+      "photo": "88.jpg",
+      "photoCrop": {
+        "x": 18.571428571428573,
+        "y": 53.57142857142857,
+        "zoom": 1.35
+      },
+      "title": ""
+    },
+    {
+      "id": 89,
+      "name": "Рабинович Иосиф сын Исаака",
+      "gregorianDateOfDeath": {
+        "year": 1991,
+        "month": 8,
+        "date": 15
+      },
+      "photo": "89.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 90,
+      "name": "Цифринович Илья сын Исроэля",
+      "gregorianDateOfDeath": {
+        "year": 2020,
+        "month": 5,
+        "date": 10
+      },
+      "photo": "90.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 91,
+      "name": "Цифринович Исроэль сын Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 92,
+      "name": "Рохлина Этя дочь Лейба",
+      "gregorianDateOfDeath": {
+        "year": 2020,
+        "month": 10,
+        "date": 29
+      },
+      "photo": "92.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 93,
+      "name": "Рохлин Лейб сын Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 94,
+      "name": "Бикман Шифра дочь Дувида",
+      "gregorianDateOfDeath": {
+        "year": 1942,
+        "month": 12,
+        "date": 18
+      },
+      "photo": "94.jpg",
+      "photoCrop": {
+        "x": 52.14285714285714,
+        "y": 7.142857142857138,
+        "zoom": 1.4
+      },
+      "title": ""
+    },
+    {
+      "id": 96,
+      "name": "Бикман Ошер сын Дувида",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 97,
+      "name": "Бикман Герш сын Дувида",
+      "gregorianDateOfDeath": {
+        "year": 1979,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "97.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 36.953125,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 98,
+      "name": "Мошкович Лия дочь Абрама",
+      "gregorianDateOfDeath": {
+        "year": 2000,
+        "month": 3,
+        "date": 2
+      },
+      "photo": "98.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 41.34993446920052,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 99,
+      "name": "Дворкин Павел сын Шмуиля",
+      "gregorianDateOfDeath": {
+        "year": 1995,
+        "month": 5,
+        "date": 16
+      },
+      "photo": "99.jpg",
+      "photoCrop": {
+        "x": 50.714285714285715,
+        "y": 25.714285714285715,
+        "zoom": 1.15
+      },
+      "title": ""
+    },
+    {
+      "id": 100,
+      "name": "Фрума дочь Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 101,
+      "name": "Годес ",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 102,
+      "name": "Кракушанский Лейб сын Копеля",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 104,
+      "name": "Кракушанская Гитель дочь Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 105,
+      "name": "Кац Евгения дочь Исаака",
+      "gregorianDateOfDeath": {
+        "year": 2020,
+        "month": 8,
+        "date": 11
+      },
+      "photo": "105.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 106,
+      "name": "Кац Давид сын Хаима",
+      "gregorianDateOfDeath": {
+        "year": 1992,
+        "month": 9,
+        "date": 26
+      },
+      "photo": "106.jpg",
+      "photoCrop": {
+        "x": 69.28571428571429,
+        "y": 17.142857142857146,
+        "zoom": 2.25
+      },
+      "title": ""
+    },
+    {
+      "id": 107,
+      "name": "Кац Хаим сын Давида",
+      "gregorianDateOfDeath": {
+        "year": 1976,
+        "month": 7,
+        "date": 24
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 108,
+      "name": "Кац Груня дочь Шимона",
+      "gregorianDateOfDeath": {
+        "year": 1989,
+        "month": 8,
+        "date": 16
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 109,
+      "name": "Леокумович Иосиф сын Давида",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "109.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 62.14285714285714,
+        "zoom": 1.1
+      },
+      "title": ""
+    },
+    {
+      "id": 110,
+      "name": "Леокумович Израиль сын Давида",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "110.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 111,
+      "name": "Леокумович Бася дочь Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 112,
+      "name": "Леокумович Давид сын Авраама",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 113,
+      "name": "Мирмильштейн Арон сын Шимона",
+      "gregorianDateOfDeath": {
+        "year": 1943,
+        "month": 8,
+        "date": 14
+      },
+      "photo": "113.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 39.95412844036697,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 114,
+      "name": "Мирмильштейн (Овецкая) Хая-Геня дочь Боруха",
+      "gregorianDateOfDeath": {
+        "year": 1982,
+        "month": 7,
+        "date": 2
+      },
+      "photo": "114.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 115,
+      "name": "Вайнер Семен сын Хаима (Шулем Хаймович)",
+      "gregorianDateOfDeath": {
+        "year": 1942,
+        "month": 9,
+        "date": 25
+      },
+      "photo": "115.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 116,
+      "name": "Вайнер (Шнайдер) Роза дочь Иосифа",
+      "gregorianDateOfDeath": {
+        "year": 1989,
+        "month": 5,
+        "date": 23
+      },
+      "photo": "116.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 42.85714285714286,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 137,
+      "name": "Шпикельман (Акимов) Валерий Михайлович",
+      "gregorianDateOfDeath": {
+        "year": 2002,
+        "month": 12,
+        "date": 19
+      },
+      "photo": "137.jpg",
+      "photoCrop": {
+        "x": 2.857142857142861,
+        "y": 58.57142857142857,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 117,
+      "name": "Вайнер Хаим сын Иосифа",
+      "gregorianDateOfDeath": {
+        "year": 1954,
+        "month": 1,
+        "date": 30
+      },
+      "photo": "117.jpg",
+      "photoCrop": {
+        "x": 50.714285714285715,
+        "y": 4.2857142857142865,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 118,
+      "name": "Мирмильштейн (Маркова) Раиса дочь Виктора",
+      "gregorianDateOfDeath": {
+        "year": 2019,
+        "month": 8,
+        "date": 20
+      },
+      "photo": "118.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 119,
+      "name": "Маркова (Ушац) Берта дочь Исаака (Белла)",
+      "gregorianDateOfDeath": {
+        "year": 2019,
+        "month": 8,
+        "date": 10
+      },
+      "photo": "119.jpg",
+      "photoCrop": {
+        "x": 41.66666666666667,
+        "y": 37.542887305357624,
+        "zoom": 1.2
+      },
+      "title": ""
+    },
+    {
+      "id": 120,
+      "name": "Шапинко Семен сын Иосифа (Шломо)",
+      "gregorianDateOfDeath": {
+        "year": 2004,
+        "month": 7,
+        "date": 8
+      },
+      "photo": "120.jpg",
+      "photoCrop": {
+        "x": 58.57142857142857,
+        "y": 25.569632001484987,
+        "zoom": 1.65
+      },
+      "title": ""
+    },
+    {
+      "id": 134,
+      "name": "Орень Белла Ефимовна",
+      "gregorianDateOfDeath": {
+        "year": 2012,
+        "month": 11,
+        "date": 17
+      },
+      "photo": "134.jpg",
+      "photoCrop": {
+        "x": 34.48275862068966,
+        "y": 19.533772439622886,
+        "zoom": 1.45
+      },
+      "title": ""
+    },
+    {
+      "id": 136,
+      "name": "Зак Владимир сын Лейба",
+      "gregorianDateOfDeath": {
+        "year": 2012,
+        "month": 3,
+        "date": 12
+      },
+      "photo": "136.jpg",
+      "photoCrop": {
+        "x": 32.857142857142854,
+        "y": 3.571428571428571,
+        "zoom": 1.2
+      },
+      "title": ""
+    },
+    {
+      "id": 139,
+      "name": "Зуншайн Михаил Ошерович",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "139.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 121,
+      "name": "Шапинко (Вайнер) Евгения Ефимовна",
+      "gregorianDateOfDeath": {
+        "year": 2007,
+        "month": 3,
+        "date": 3
+      },
+      "photo": "121.jpg",
+      "photoCrop": {
+        "x": 37.142857142857146,
+        "y": 10,
+        "zoom": 1.45
+      },
+      "title": ""
+    },
+    {
+      "id": 122,
+      "name": "Мельц Исаак сын Моисея",
+      "gregorianDateOfDeath": {
+        "year": 2009,
+        "month": 10,
+        "date": 4
+      },
+      "photo": "122.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 123,
+      "name": "Мельц (Лернер) Роза Михайловна",
+      "gregorianDateOfDeath": {
+        "year": 2007,
+        "month": 1,
+        "date": 16
+      },
+      "photo": "123.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 124,
+      "name": "Лернер София Михайловна",
+      "gregorianDateOfDeath": {
+        "year": 2007,
+        "month": 1,
+        "date": 5
+      },
+      "photo": "124.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 125,
+      "name": "Марко Раиса Яковлевна",
+      "gregorianDateOfDeath": {
+        "year": 2000,
+        "month": 5,
+        "date": 4
+      },
+      "photo": "125.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 141,
+      "name": "Бочевер Анна Борисовна",
+      "gregorianDateOfDeath": {
+        "year": 2016,
+        "month": 6,
+        "date": 25
+      },
+      "photo": "141.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 130,
+      "name": "Фердман Борис сын Ханона",
+      "gregorianDateOfDeath": {
+        "year": 2018,
+        "month": 9,
+        "date": 10
+      },
+      "photo": "130.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 126,
+      "name": "Марков Виктор сын Маркуса",
+      "gregorianDateOfDeath": {
+        "year": 2012,
+        "month": 2,
+        "date": 26
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 142,
+      "name": "Буторина Берта Григорьевна (Шапкайц)",
+      "gregorianDateOfDeath": {
+        "year": 1996,
+        "month": 6,
+        "date": 14
+      },
+      "photo": "142.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 143,
+      "name": "Буторин Борис Викторович",
+      "gregorianDateOfDeath": {
+        "year": 1990,
+        "month": 2,
+        "date": 23
+      },
+      "photo": "143.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 33.125599232981784,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 127,
+      "name": "Мельц Моисей Исаакович",
+      "gregorianDateOfDeath": {
+        "year": 1956,
+        "month": 10,
+        "date": 7
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 128,
+      "name": "Мельц (Марко) Нина",
+      "gregorianDateOfDeath": {
+        "year": 1977,
+        "month": 3,
+        "date": 24
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 129,
+      "name": "Добрынская (Мельц) Екатерина дочь Моисея",
+      "gregorianDateOfDeath": {
+        "year": 2001,
+        "month": 12,
+        "date": 1
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 131,
+      "name": "Фруман Вихна Ошеровна",
+      "gregorianDateOfDeath": {
+        "year": 2015,
+        "month": 1,
+        "date": 29
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 133,
+      "name": "Фруман Ошер сын Янкела",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 140,
+      "name": "Махензон Мария Рафаиловна",
+      "gregorianDateOfDeath": {
+        "year": 2020,
+        "month": 5,
+        "date": 27
+      },
+      "photo": "140.jpg",
+      "photoCrop": {
+        "x": 40,
+        "y": 2.142857142857144,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 144,
+      "name": "Воронина (Этингова) Мария Давидовна (Муся)",
+      "gregorianDateOfDeath": {
+        "year": 2019,
+        "month": 9,
+        "date": 4
+      },
+      "photo": "144.jpg",
+      "photoCrop": {
+        "x": 38.57142857142858,
+        "y": 36.42857142857143,
+        "zoom": 2.55
+      },
+      "title": ""
+    },
+    {
+      "id": 149,
+      "name": "Пекелис Рахиль Иосифовна",
+      "gregorianDateOfDeath": {
+        "year": 1987,
+        "month": 1,
+        "date": 27
+      },
+      "photo": "149.jpg",
+      "photoCrop": {
+        "x": 95,
+        "y": 6.428571428571428,
+        "zoom": 2.45
+      },
+      "title": ""
+    },
+    {
+      "id": 150,
+      "name": "Пекелис Натан сын Нусина",
+      "gregorianDateOfDeath": {
+        "year": 1977,
+        "month": 12,
+        "date": 25
+      },
+      "photo": "150.jpg",
+      "photoCrop": {
+        "x": 86.42857142857142,
+        "y": 5,
+        "zoom": 1.45
+      },
+      "title": ""
+    },
+    {
+      "id": 151,
+      "name": "Пекелис Сильвия Натановна",
+      "gregorianDateOfDeath": {
+        "year": 2020,
+        "month": 8,
+        "date": 1
+      },
+      "photo": "151.jpg",
+      "photoCrop": {
+        "x": 95,
+        "y": 12.142857142857144,
+        "zoom": 1.85
+      },
+      "title": ""
+    },
+    {
+      "id": 145,
+      "name": "Страбыкина Лилия Михайловна (Волчек Циля Менделевна)",
+      "gregorianDateOfDeath": {
+        "year": 2021,
+        "month": 6,
+        "date": 25
+      },
+      "photo": "145.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 146,
+      "name": "Кац Вера Исаковна",
+      "gregorianDateOfDeath": {
+        "year": 1977,
+        "month": 12,
+        "date": 25
+      },
+      "photo": "146.jpg",
+      "photoCrop": {
+        "x": 95.71428571428572,
+        "y": 4.285714285714286,
+        "zoom": 3
+      },
+      "title": ""
+    },
+    {
+      "id": 147,
+      "name": "Кац Михаил Генрихович",
+      "gregorianDateOfDeath": {
+        "year": 1981,
+        "month": 1,
+        "date": 4
+      },
+      "photo": "147.jpg",
+      "photoCrop": {
+        "x": 96.42857142857143,
+        "y": 6.428571428571424,
+        "zoom": 3
+      },
+      "title": ""
+    },
+    {
+      "id": 158,
+      "name": "Штейман Яков сын Арона",
+      "gregorianDateOfDeath": {
+        "year": 2013,
+        "month": 3,
+        "date": 25
+      },
+      "photo": "158.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 155,
+      "name": "Гитерман Хая-Сура дочь Хаима Идела",
+      "gregorianDateOfDeath": {
+        "year": 2008,
+        "month": 1,
+        "date": 1
+      },
+      "photo": "155.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 156,
+      "name": "Гитерман Хаим сын Абрам",
+      "gregorianDateOfDeath": {
+        "year": 1977,
+        "month": 8,
+        "date": 1
+      },
+      "photo": "156.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 157,
+      "name": "Крельштейн Меся дочь Липа",
+      "gregorianDateOfDeath": {
+        "year": 2017,
+        "month": 9,
+        "date": 30
+      },
+      "photo": "157.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 36.59476117103236,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 159,
+      "name": "Семья Дворкиных (Мошкович и Дворкин)",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "159.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 103,
+      "name": "Кракушанский Копель сын Лейба",
+      "gregorianDateOfDeath": {
+        "year": 1941,
+        "month": 1,
+        "date": 9
+      },
+      "photo": "37.jpg",
+      "photoCrop": {
+        "x": 47.857142857142854,
+        "y": 17.142857142857146,
+        "zoom": 2.15
+      },
+      "title": ""
+    },
+    {
+      "id": 161,
+      "name": "Шпикельман Яков сын Михаила",
+      "gregorianDateOfDeath": {
+        "year": 2022,
+        "month": 2,
+        "date": 20
+      },
+      "photo": "161.jpg",
+      "photoCrop": {
+        "x": 63.57142857142858,
+        "y": 5.714285714285714,
+        "zoom": 1.45
+      },
+      "title": ""
+    },
+    {
+      "id": 162,
+      "name": "Верба Вера дочь Израиля",
+      "gregorianDateOfDeath": {
+        "year": 2020,
+        "month": 6,
+        "date": 19
+      },
+      "photo": "162.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 163,
+      "name": "Брегман Софья дочь Рувима",
+      "gregorianDateOfDeath": {
+        "year": 2021,
+        "month": 12,
+        "date": 31
+      },
+      "photo": "163.jpg",
+      "photoCrop": {
+        "x": 28.571428571428573,
+        "y": 12.857142857142861,
+        "zoom": 1.4
+      },
+      "title": ""
+    },
+    {
+      "id": 166,
+      "name": "Рабичев Шуня сын Моисея",
+      "gregorianDateOfDeath": {
+        "year": 1989,
+        "month": 7,
+        "date": 3
+      },
+      "photo": "166.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 34.900373599003736,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 167,
+      "name": "Верба Иосиф сын Бориса",
+      "gregorianDateOfDeath": {
+        "year": 1999,
+        "month": 5,
+        "date": 28
+      },
+      "photo": "167.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 35.31810766721044,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 168,
+      "name": "Шерман Борис сын Тевеля",
+      "gregorianDateOfDeath": {
+        "year": 2008,
+        "month": 8,
+        "date": 15
+      },
+      "photo": "168.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 41.644562334217504,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 169,
+      "name": "Кац Семен сын Хаима",
+      "gregorianDateOfDeath": {
+        "year": 2022,
+        "month": 1,
+        "date": 15
+      },
+      "photo": "169.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 31.568123393316196,
+        "zoom": 1.25
+      },
+      "title": ""
+    },
+    {
+      "id": 165,
+      "name": "Таловский Раймонд сын Израиля",
+      "gregorianDateOfDeath": {
+        "year": 2020,
+        "month": 5,
+        "date": 26
+      },
+      "photo": "165.jpg",
+      "photoCrop": {
+        "x": 53.57142857142857,
+        "y": 7.142857142857146,
+        "zoom": 1.6
+      },
+      "title": ""
+    },
+    {
+      "id": 164,
+      "name": "Таловская Идея дочь Павла",
+      "gregorianDateOfDeath": {
+        "year": 2011,
+        "month": 7,
+        "date": 28
+      },
+      "photo": "164.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 170,
+      "name": "Клейман Владимир сын Давида",
+      "gregorianDateOfDeath": {
+        "year": 1991,
+        "month": 10,
+        "date": 15
+      },
+      "photo": "170.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 37.755102040816325,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 171,
+      "name": "Клейман Зелла дочь Моисея",
+      "gregorianDateOfDeath": {
+        "year": 2011,
+        "month": 9,
+        "date": 21
+      },
+      "photo": "171.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 40.78947368421053,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 172,
+      "name": "Буторина (Богач) Софья дочь Павла",
+      "gregorianDateOfDeath": {
+        "year": 2022,
+        "month": 11,
+        "date": 21
+      },
+      "photo": "172.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 37.5,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 173,
+      "name": "Канзбург Евгения дочь  Павла",
+      "gregorianDateOfDeath": {
+        "year": 2006,
+        "month": 4,
+        "date": 18
+      },
+      "photo": "173.jpg",
+      "photoCrop": {
+        "x": 61.42857142857143,
+        "y": 7.142857142857146,
+        "zoom": 1.6
+      },
+      "title": ""
+    },
+    {
+      "id": 175,
+      "name": "Загорская Эсфирь дочь Льва",
+      "gregorianDateOfDeath": {
+        "year": 2004,
+        "month": 6,
+        "date": 21
+      },
+      "photo": "175.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 33.333333333333336,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 174,
+      "name": "Дроздова (Штальвоссер) Фрида дочь Шлема",
+      "gregorianDateOfDeath": {
+        "year": 2016,
+        "month": 1,
+        "date": 26
+      },
+      "photo": "174.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 176,
+      "name": "Мазина Людмила дочь Матвея",
+      "gregorianDateOfDeath": {
+        "year": 2020,
+        "month": 10,
+        "date": 1
+      },
+      "photo": "176.jpeg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 177,
+      "name": "Фишман Янкель сын Самуила",
+      "gregorianDateOfDeath": {
+        "year": 2003,
+        "month": 6,
+        "date": 22
+      },
+      "photo": "177.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 178,
+      "name": "Стронгина Эстер дочь Гирша",
+      "gregorianDateOfDeath": {
+        "year": 1974,
+        "month": 5,
+        "date": 7
+      },
+      "photo": "178.jpg",
+      "photoCrop": {
+        "x": 4.285714285714283,
+        "y": 14.285714285714285,
+        "zoom": 2.05
+      },
+      "title": ""
+    },
+    {
+      "id": 179,
+      "name": "Немировский Абрам Исаакович сын Исаака",
+      "gregorianDateOfDeath": {
+        "year": 2013,
+        "month": 4,
+        "date": 7
+      },
+      "photo": "179.jpg",
+      "photoCrop": {
+        "x": 49.285714285714285,
+        "y": 19.285714285714285,
+        "zoom": 1.3
+      },
+      "title": ""
+    },
+    {
+      "id": 180,
+      "name": "Немировская Александра дочь Гирша",
+      "gregorianDateOfDeath": {
+        "year": 2021,
+        "month": 5,
+        "date": 16
+      },
+      "photo": "180.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 181,
+      "name": "Соскин Варлен сын Льва и Рахель",
+      "gregorianDateOfDeath": {
+        "year": 2021,
+        "month": 12,
+        "date": 3
+      },
+      "photo": "181.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 36.79050567595459,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 182,
+      "name": "Левит Михаил сын Иосифа и Ривы",
+      "gregorianDateOfDeath": {
+        "year": 2023,
+        "month": 1,
+        "date": 23
+      },
+      "photo": "182.jpg",
+      "photoCrop": {
+        "x": 61.42857142857143,
+        "y": 20.71428571428571,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 183,
+      "name": "Натанзон Дебора дочь Моисея и Хаи.",
+      "gregorianDateOfDeath": {
+        "year": 1999,
+        "month": 2,
+        "date": 22
+      },
+      "photo": "183.jpg",
+      "photoCrop": {
+        "x": 20.500993016849257,
+        "y": 50,
+        "zoom": 1.65
+      },
+      "title": ""
+    },
+    {
+      "id": 184,
+      "name": "Натанзон Михаил сын Лейба и Берты",
+      "gregorianDateOfDeath": {
+        "year": 2009,
+        "month": 9,
+        "date": 12
+      },
+      "photo": "184.jpg",
+      "photoCrop": {
+        "x": 42.85714285714286,
+        "y": 18.571428571428573,
+        "zoom": 1.45
+      },
+      "title": ""
+    },
+    {
+      "id": 185,
+      "name": "Анна Мирмильштейн дочь Хайма и Розы",
+      "gregorianDateOfDeath": {
+        "year": 2023,
+        "month": 12,
+        "date": 23
+      },
+      "photo": "185.jpg",
+      "photoCrop": {
+        "x": 44.285714285714285,
+        "y": 0.7142857142857135,
+        "zoom": 1.5
+      },
+      "title": ""
+    },
+    {
+      "id": 186,
+      "name": "Мирмильштейн Семен сын Арона и Хаи-Гени",
+      "gregorianDateOfDeath": {
+        "year": 2022,
+        "month": 12,
+        "date": 31
+      },
+      "photo": "186.jpg",
+      "photoCrop": {
+        "x": 28.57142857142857,
+        "y": 0.7142857142857143,
+        "zoom": 2.1
+      },
+      "title": ""
+    },
+    {
+      "id": 187,
+      "name": "Рывкина Генриетта дочь Боруха и Розалии",
+      "gregorianDateOfDeath": {
+        "year": 2022,
+        "month": 4,
+        "date": 21
+      },
+      "photo": "187.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 188,
+      "name": "Адонина Елена дочь Владимира и Эсфирь",
+      "gregorianDateOfDeath": {
+        "year": 2023,
+        "month": 4,
+        "date": 25
+      },
+      "photo": "188.jpg",
+      "photoCrop": {
+        "x": 45,
+        "y": 55.714285714285715,
+        "zoom": 2
+      },
+      "title": ""
+    },
+    {
+      "id": 189,
+      "name": "Фридман Мария дочь Энта и Соломона",
+      "gregorianDateOfDeath": {
+        "year": 2025,
+        "month": 4,
+        "date": 23
+      },
+      "photo": "189.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 190,
+      "name": "Дмитриева Эсфирь дочь Марии и Семена ",
+      "gregorianDateOfDeath": {
+        "year": 1983,
+        "month": 7,
+        "date": 16
+      },
+      "photo": "190.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 27.065527065527064,
+        "zoom": 1.3
+      },
+      "title": ""
+    },
+    {
+      "id": 191,
+      "name": "Лившиц Ошер сын Пинхаса и Малки ",
+      "gregorianDateOfDeath": {
+        "year": 1985,
+        "month": 11,
+        "date": 15
+      },
+      "photo": "191.jpg",
+      "photoCrop": {
+        "x": 63.57142857142857,
+        "y": 5,
+        "zoom": 1.5
+      },
+      "title": ""
+    },
+    {
+      "id": 192,
+      "name": "Левит Анатолий сын Иосифа и Ривы",
+      "gregorianDateOfDeath": {
+        "year": 1998,
+        "month": 5,
+        "date": 25
+      },
+      "photo": "192.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 23.356401384083046,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 193,
+      "name": "Левит Иосиф сын Арона и Рахиль",
+      "gregorianDateOfDeath": {
+        "year": 1943,
+        "month": 1,
+        "date": 30
+      },
+      "photo": "193.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 194,
+      "name": "Левит Рива дочь Хаима и Чарны",
+      "gregorianDateOfDeath": {
+        "year": 1978,
+        "month": 12,
+        "date": 12
+      },
+      "photo": "194.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 23.356401384083046,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 195,
+      "name": "Куцкин Израиль сын Вольфа и Сары",
+      "gregorianDateOfDeath": {
+        "year": 1998,
+        "month": 9,
+        "date": 12
+      },
+      "photo": "195.jpg",
+      "photoCrop": {
+        "x": 75,
+        "y": 17.857142857142854,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 196,
+      "name": "Зингель Ефим Хаим сын Меира и Цили",
+      "gregorianDateOfDeath": {
+        "year": 2024,
+        "month": 11,
+        "date": 28
+      },
+      "photo": "196.jpg",
+      "photoCrop": {
+        "x": 55,
+        "y": 29.13189869711609,
+        "zoom": 1.15
+      },
+      "title": ""
+    },
+    {
+      "id": 197,
+      "name": "Гершевич Аарон сын Гершона и Раисы",
+      "gregorianDateOfDeath": {
+        "year": 2026,
+        "month": 5,
+        "date": 30
+      },
+      "photo": "197.jpg",
+      "photoCrop": {
+        "x": 48.57142857142858,
+        "y": 38.46153846153846,
+        "zoom": 1.3
+      },
+      "title": ""
+    },
+    {
+      "id": 199,
+      "name": "Орлов Виктор сын Нисона",
+      "gregorianDateOfDeath": {
+        "year": 2026,
+        "month": 6,
+        "date": 10
+      },
+      "photo": "1782788201956-opt.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 200,
+      "name": "Гершевич Абрам Исаевич (Авраам сын Ишаягу)",
+      "gregorianDateOfDeath": {
+        "year": 1996,
+        "month": 8,
+        "date": 28
+      },
+      "photo": "1783226301687-opt.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 201,
+      "name": "Явнилович Михаил Аронович ",
+      "gregorianDateOfDeath": {
+        "year": 1964,
+        "month": 1,
+        "date": 1
+      },
+      "photo": "1783227410052-opt.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    },
+    {
+      "id": 202,
+      "name": "Явнилович Елизавета Михайловна",
+      "gregorianDateOfDeath": {
+        "year": 1989,
+        "month": 1,
+        "date": 1
+      },
+      "photo": "1783227471256-opt.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": ""
+    }
+  ],
+  "dailyCites": [],
+  "communityEvents": [],
+  "boardFeatures": {
+    "sidebarNames": true,
+    "dailyChumash": true,
+    "dailyTehillim": false,
+    "dailyTanya": true,
+    "dailyRambam": true,
+    "hayomYom": false,
+    "upcomingHolidays": true,
+    "communityEvents": true,
+    "kelMaleRachamim": true,
+    "izkor": true,
+    "weather": false,
+    "sunriseSunset": false,
+    "officialLogo": true
+  },
+  "publicSubmission": {
+    "enabled": false,
+    "donationUrl": "",
+    "donationQrImage": "",
+    "registrationQrImage": ""
+  },
+  "weeklyChapterEnabled": true,
+  "shabbatTimesEnabled": true,
+  "reloadTimeout": 43200000,
+  "contentVersion": 1791692732795,
+  "exportedAt": "2026-10-01T10:45:00Z"
+}
