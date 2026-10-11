@@ -1,76 +1,73 @@
 #!/usr/bin/env node
-/**
- * Export static snapshots from MongoDB for GitHub Pages fallback.
- * Reads MONGODB_URI from environment and exports public board data for specified tenants.
- * Output: ./static-snapshots/{slug}.json
- */
+// Full public snapshot export (board + design + jewish-content + sidebar-app) for GitHub Pages fallback.
+// Read-only. Requires MONGODB_URI. Never logs the URI.
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
+require('../models/Synagogue');
+const { loadSynagogueBoard } = require('../lib/load-synagogue-board');
 const { toPublicBoardPayload } = require('../lib/public-board');
+const { getJewishFeed } = require('../lib/jewish-feed');
+const { buildSidebarAppPayload } = require('../lib/sidebar-app-payload');
 
-const TENANTS = ['novosibirsk', 'tomsk'];
-const OUTPUT_DIR = path.join(__dirname, '..', 'static-snapshots');
+const TENANTS = (process.argv[2] || 'novosibirsk,tomsk').split(',');
+const OUT = path.join(__dirname, '..', 'static-snapshots');
 
-async function connectMongo() {
-  const uri = process.env.MONGODB_URI;
-  if (!uri) {
-    throw new Error('MONGODB_URI environment variable is not set');
+(async () => {
+  fs.mkdirSync(OUT, { recursive: true });
+  
+  if (!process.env.MONGODB_URI) {
+    console.log('\nℹ️  MONGODB_URI not available - this is expected in CI without secrets.');
+    console.log('   The workflow will use the last committed snapshots.');
+    process.exit(0);
   }
-  await mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-}
-
-async function exportSnapshot(slug) {
-  const Synagogue = mongoose.model('Synagogue');
-  const board = await Synagogue.findOne({ slug }).lean();
   
-  if (!board) {
-    console.warn(`⚠️  Board "${slug}" not found in database, skipping`);
-    return null;
-  }
-
-  const publicPayload = toPublicBoardPayload(board, { includeText: true });
-  
-  const snapshot = {
-    ...publicPayload,
-    contentVersion: Date.now(),
-    exportedAt: new Date().toISOString(),
-  };
-
-  const outputPath = path.join(OUTPUT_DIR, `${slug}.json`);
-  fs.writeFileSync(outputPath, JSON.stringify(snapshot, null, 2));
-  
-  console.log(`✓ Exported ${slug}: ${snapshot.people?.length || 0} people`);
-  return snapshot;
-}
-
-async function main() {
-  console.log('📦 Exporting static snapshots from MongoDB...');
-  
-  if (!fs.existsSync(OUTPUT_DIR)) {
-    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
-  }
-
   try {
-    await connectMongo();
+    await mongoose.connect(process.env.MONGODB_URI);
     console.log('✓ Connected to MongoDB');
-
+    
     const exports = [];
     for (const slug of TENANTS) {
-      const snapshot = await exportSnapshot(slug);
-      if (snapshot) {
-        exports.push({ slug, people: snapshot.people?.length || 0 });
+      const s = await loadSynagogueBoard(slug);
+      if (!s) {
+        console.warn(`⚠️  Board "${slug}" not found in database, skipping`);
+        continue;
       }
+      
+      const board = toPublicBoardPayload(s, { includeText: true });
+      const lang = s.language || 'ru';
+      let jewish = null, sidebar = null;
+      
+      try {
+        jewish = await getJewishFeed(lang, s);
+      } catch (e) {
+        console.warn(`${slug}: jewish-content failed: ${e.message}`);
+      }
+      
+      try {
+        sidebar = await buildSidebarAppPayload(s, lang);
+      } catch (e) {
+        console.warn(`${slug}: sidebar-app failed: ${e.message}`);
+      }
+      
+      const snap = {
+        ...board,
+        contentVersion: Date.now(),
+        exportedAt: new Date().toISOString(),
+        jewishContent: jewish,
+        sidebarApp: sidebar,
+      };
+      
+      fs.writeFileSync(path.join(OUT, `${slug}.json`), JSON.stringify(snap, null, 2));
+      exports.push({ slug, people: board.people?.length || 0 });
+      console.log(`✓ Exported ${slug}: ${board.people?.length || 0} people, ${Object.keys(board).length} board fields`);
     }
-
+    
     await mongoose.disconnect();
     
     if (exports.length === 0) {
       console.warn('\n⚠️  No snapshots were exported - keeping existing snapshots');
-      process.exit(0); // Exit gracefully without overwriting
+      process.exit(0);
     }
     
     console.log('\n✅ Export complete:');
@@ -78,21 +75,8 @@ async function main() {
       console.log(`   ${slug}: ${people} people`);
     });
   } catch (error) {
-    console.error('\n❌ Export failed:', error.message);
-    
-    if (error.message.includes('MONGODB_URI')) {
-      console.log('\nℹ️  MONGODB_URI not available - this is expected in CI without secrets.');
-      console.log('   The workflow will use the last committed snapshots.');
-      process.exit(0); // Exit gracefully so CI doesn't fail
-    }
-    
+    console.error('\n❌ Export failed:', error.message.replace(/mongodb(\+srv)?:\/\/\S+/g, '[uri]'));
     console.log('\n⚠️  Keeping existing snapshots to avoid data loss');
-    process.exit(0); // Exit gracefully to keep existing data
+    process.exit(0);
   }
-}
-
-if (require.main === module) {
-  main();
-}
-
-module.exports = { exportSnapshot };
+})();
