@@ -13,6 +13,55 @@ const { buildSidebarAppPayload } = require('../lib/sidebar-app-payload');
 const TENANTS = (process.argv[2] || 'novosibirsk,tomsk').split(',');
 const OUT = path.join(__dirname, '..', 'static-snapshots');
 
+async function findDatabaseWithSynagogues(uri, targetSlugs) {
+  // First try the default database from URI
+  await mongoose.connect(uri);
+  
+  const Synagogue = mongoose.model('Synagogue');
+  let count = await Synagogue.countDocuments({});
+  
+  if (count > 0) {
+    const found = await Synagogue.countDocuments({ slug: { $in: targetSlugs } });
+    console.log(`✓ Using default database: ${count} synagogues, ${found} target slugs found`);
+    return;
+  }
+  
+  console.log('Default database has no synagogues, searching all databases...');
+  await mongoose.disconnect();
+  
+  // List all databases and find one with synagogues
+  const adminUri = uri.replace(/\/[^/?]*(\?|$)/, '/$1'); // Connect to admin/default
+  await mongoose.connect(adminUri);
+  
+  const admin = mongoose.connection.db.admin();
+  const { databases } = await admin.listDatabases();
+  
+  console.log(`Found ${databases.length} databases to check`);
+  
+  for (const dbInfo of databases) {
+    if (dbInfo.name === 'admin' || dbInfo.name === 'local' || dbInfo.name === 'config') {
+      continue;
+    }
+    
+    await mongoose.disconnect();
+    const dbUri = uri.replace(/\/[^/?]*(\?|$)/, `/${dbInfo.name}$1`);
+    await mongoose.connect(dbUri);
+    
+    const Synagogue = mongoose.model('Synagogue');
+    const count = await Synagogue.countDocuments({});
+    
+    if (count > 0) {
+      const found = await Synagogue.countDocuments({ slug: { $in: targetSlugs } });
+      console.log(`✓ Found database "${dbInfo.name}": ${count} synagogues, ${found} target slugs`);
+      if (found > 0) {
+        return;
+      }
+    }
+  }
+  
+  throw new Error('No database found with target synagogue slugs');
+}
+
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });
   
@@ -23,7 +72,7 @@ const OUT = path.join(__dirname, '..', 'static-snapshots');
   }
   
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
+    await findDatabaseWithSynagogues(process.env.MONGODB_URI, TENANTS);
     console.log('✓ Connected to MongoDB');
     
     const exports = [];
@@ -75,7 +124,7 @@ const OUT = path.join(__dirname, '..', 'static-snapshots');
       console.log(`   ${slug}: ${people} people`);
     });
   } catch (error) {
-    console.error('\n❌ Export failed:', error.message.replace(/mongodb(\+srv)?:\/\/\S+/g, '[uri]'));
+    console.error('\n❌ Export failed:', error.message.replace(/mongodb(\+srv)?:\/\/[^\s]+/gi, '[MONGODB_URI]'));
     console.log('\n⚠️  Keeping existing snapshots to avoid data loss');
     process.exit(0);
   }
