@@ -1,3 +1,5 @@
+import { isStaticSite } from './asset-url';
+
 const inflight = new Map();
 const cache = new Map();
 const CLIENT_CACHE_MS = 10 * 60 * 1000;
@@ -8,6 +10,11 @@ function cacheKey(slug, lang, dateKey) {
 
 export async function fetchJewishFeed(slug, lang, dateKey = '') {
   if (!slug) {
+    return null;
+  }
+  
+  // Skip API call in static site mode
+  if (isStaticSite()) {
     return null;
   }
 
