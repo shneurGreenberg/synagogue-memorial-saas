@@ -6,6 +6,7 @@ import { ThemeStyles } from './components/ThemeStyles';
 import { IdleReload } from './components/IdleReload';
 import { BoardVersionBadge } from './components/BoardVersionBadge';
 import { BaruchHashemBadge } from './components/BaruchHashemBadge';
+import { StaticSiteBanner } from './components/StaticSiteBanner';
 import HomePage from './pages/HomePage';
 import { PresentationImageOverlay } from './components/PresentationImageOverlay';
 import CardPage from './pages/CardPage';
@@ -46,6 +47,7 @@ function BoardLayoutInner() {
       <IdleReload />
       <BoardVersionBadge />
       <BaruchHashemBadge />
+      <StaticSiteBanner />
       <div id="main-entry">
         <HomePage />
         <PresentationImageOverlay />

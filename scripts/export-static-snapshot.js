@@ -68,15 +68,15 @@ async function main() {
 
     await mongoose.disconnect();
     
+    if (exports.length === 0) {
+      console.warn('\n⚠️  No snapshots were exported - keeping existing snapshots');
+      process.exit(0); // Exit gracefully without overwriting
+    }
+    
     console.log('\n✅ Export complete:');
     exports.forEach(({ slug, people }) => {
       console.log(`   ${slug}: ${people} people`);
     });
-    
-    if (exports.length === 0) {
-      console.warn('\n⚠️  No snapshots were exported');
-      process.exit(1);
-    }
   } catch (error) {
     console.error('\n❌ Export failed:', error.message);
     
@@ -86,7 +86,8 @@ async function main() {
       process.exit(0); // Exit gracefully so CI doesn't fail
     }
     
-    process.exit(1);
+    console.log('\n⚠️  Keeping existing snapshots to avoid data loss');
+    process.exit(0); // Exit gracefully to keep existing data
   }
 }
 

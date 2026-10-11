@@ -49,19 +49,7 @@
     "logoBorderRadius": 100,
     "candlePalette": "classic"
   },
-  "people": [
-    {
-      "id": 1,
-      "name": "Placeholder - awaiting MongoDB export",
-      "gregorianDateOfDeath": {
-        "month": 1,
-        "date": 1,
-        "year": 2000
-      },
-      "title": "",
-      "text": "This is a placeholder snapshot. Real data will be exported from MongoDB."
-    }
-  ],
+  "people": [],
   "dailyCites": [],
   "communityEvents": [],
   "boardFeatures": {
@@ -89,5 +77,6 @@
   "shabbatTimesEnabled": true,
   "reloadTimeout": 43200000,
   "contentVersion": 1,
-  "exportedAt": "2026-10-11T03:00:00.000Z"
+  "exportedAt": "2026-10-11T04:30:00.000Z",
+  "_fallbackMessage": "Резервная копия — данные временно недоступны"
 }
