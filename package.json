@@ -18,6 +18,8 @@
     "prebuild:css": "node scripts/prebuild-css.js",
     "build:css": "node scripts/prebuild-css.js",
     "build:pages": "node scripts/build-github-pages.js",
+    "build:pages-fallback": "node scripts/build-github-pages-fallback.js",
+    "export:snapshots": "node scripts/export-static-snapshot.js",
     "dev:board": "vite build --config vite.board.config.mjs --watch",
     "test": "node --test test/*.test.js",
     "test:unit": "node --test test/public-board.test.js test/http-security.test.js",

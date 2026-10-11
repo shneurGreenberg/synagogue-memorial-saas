@@ -1,0 +1,93 @@
+{
+  "slug": "novosibirsk",
+  "name": "Novosibirsk Synagogue",
+  "title": "Проект памяти наших родных \"Кадиш\"",
+  "titles": {
+    "ru": "Проект памяти наших родных \"Кадиш\"",
+    "en": "",
+    "he": ""
+  },
+  "language": "ru",
+  "location": {
+    "lat": 54.9833,
+    "long": 82.8964,
+    "city": "Novosibirsk",
+    "timezone": "Asia/Novosibirsk"
+  },
+  "theme": {
+    "primaryColor": "#d4af37",
+    "textColor": "#f0f0f0",
+    "accentColor": "#ffd54f",
+    "tileColor": "#b89a22",
+    "tileOpacity": 100,
+    "fontScales": {
+      "tileTitle": 100,
+      "tileDate": 100,
+      "clock": 100,
+      "boardHeader": 100,
+      "sidebar": 100,
+      "prayers": 100,
+      "prayerOverlay": 100,
+      "torahNames": 100,
+      "weather": 100,
+      "shabbat": 100,
+      "candle": 75
+    },
+    "fontScaleBaselines": {
+      "tileTitle": 100,
+      "tileDate": 100,
+      "clock": 100,
+      "boardHeader": 100,
+      "sidebar": 100,
+      "prayers": 100,
+      "prayerOverlay": 100,
+      "torahNames": 100,
+      "weather": 100,
+      "shabbat": 100,
+      "candle": 100
+    },
+    "logoBorderRadius": 100,
+    "candlePalette": "classic"
+  },
+  "people": [
+    {
+      "id": 1,
+      "name": "Placeholder - awaiting MongoDB export",
+      "gregorianDateOfDeath": {
+        "month": 1,
+        "date": 1,
+        "year": 2000
+      },
+      "title": "",
+      "text": "This is a placeholder snapshot. Real data will be exported from MongoDB."
+    }
+  ],
+  "dailyCites": [],
+  "communityEvents": [],
+  "boardFeatures": {
+    "sidebarNames": true,
+    "dailyChumash": true,
+    "dailyTehillim": false,
+    "dailyTanya": true,
+    "dailyRambam": true,
+    "hayomYom": false,
+    "upcomingHolidays": true,
+    "communityEvents": true,
+    "kelMaleRachamim": true,
+    "izkor": true,
+    "weather": false,
+    "sunriseSunset": false,
+    "officialLogo": true
+  },
+  "publicSubmission": {
+    "enabled": false,
+    "donationUrl": "",
+    "donationQrImage": "",
+    "registrationQrImage": ""
+  },
+  "weeklyChapterEnabled": true,
+  "shabbatTimesEnabled": true,
+  "reloadTimeout": 43200000,
+  "contentVersion": 1,
+  "exportedAt": "2026-10-11T03:00:00.000Z"
+}

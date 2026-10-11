@@ -1,51 +1,80 @@
-# Deploy static memorial board to GitHub Pages
-# Enable: repo Settings → Pages → Source: GitHub Actions
-name: Deploy GitHub Pages
+name: Deploy GitHub Pages Fallback
 
 on:
+  push:
+    branches:
+      - main
+  schedule:
+    # Daily at 2 AM UTC
+    - cron: '0 2 * * *'
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
 concurrency:
-  group: github-pages-memorial
+  group: "pages"
   cancel-in-progress: false
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          node-version: '20'
-          cache: npm
-
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
       - name: Install dependencies
         run: npm ci
-
-      - name: Build static site
+      
+      - name: Export MongoDB snapshots
         env:
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_PAGES_BASE: /${{ github.event.repository.name }}/
-        run: npm run build:pages
-
-      - name: Upload Pages artifact
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: |
+          if [ -n "$MONGODB_URI" ]; then
+            echo "📦 Exporting fresh snapshots from MongoDB..."
+            node scripts/export-static-snapshot.js
+          else
+            echo "⚠️  MONGODB_URI not configured, using committed snapshots"
+            if [ ! -d "static-snapshots" ] || [ -z "$(ls -A static-snapshots/*.json 2>/dev/null)" ]; then
+              echo "❌ No committed snapshots found and MONGODB_URI not available"
+              exit 1
+            fi
+          fi
+      
+      - name: Commit updated snapshots
+        if: env.MONGODB_URI != ''
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add static-snapshots/*.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update static snapshots [skip ci]"
+            git push
+          fi
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      
+      - name: Build GitHub Pages site
+        run: node scripts/build-github-pages-fallback.js
+      
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: site
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
+          path: ./site
+      
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
