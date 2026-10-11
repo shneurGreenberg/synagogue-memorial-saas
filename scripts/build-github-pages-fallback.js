@@ -83,6 +83,7 @@ function writeIndexHtml(snapshots) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${safeTitle}</title>
+  <link rel="icon" type="image/x-icon" href="${prefix}favicon.ico">
   <link rel="stylesheet" href="${prefix}board/assets/memorial.css">
 </head>
 <body>
@@ -148,6 +149,12 @@ function main() {
   fs.writeFileSync(path.join(SITE_DIR, 'index.html'), html);
   fs.writeFileSync(path.join(SITE_DIR, '404.html'), html);
   fs.writeFileSync(path.join(SITE_DIR, '.nojekyll'), '');
+  
+  // Copy favicon if it exists
+  const faviconSrc = path.join(ROOT, 'public/favicon.ico');
+  if (fs.existsSync(faviconSrc)) {
+    fs.copyFileSync(faviconSrc, path.join(SITE_DIR, 'favicon.ico'));
+  }
   
   const totalPeople = Object.values(snapshots).reduce((sum, s) => sum + (s.people?.length || 0), 0);
   console.log(`\n✅ Done → ${SITE_DIR}`);
