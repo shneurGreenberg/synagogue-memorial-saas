@@ -17,6 +17,11 @@ export default defineConfig({
   build: {
     outDir: path.join(rootDir, 'public/board'),
     emptyOutDir: true,
+    // lib/death-date.js is CommonJS outside the client root; include it so
+    // named imports survive the production bundle.
+    commonjsOptions: {
+      include: [/node_modules/, /lib\/death-date\.js/],
+    },
     rollupOptions: {
       output: {
         entryFileNames: 'assets/memorial.js',

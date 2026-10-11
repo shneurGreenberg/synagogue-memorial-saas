@@ -21,6 +21,7 @@ const { getJewishFeed } = require('./lib/jewish-feed');
 const { fetchWeatherForecast } = require('./lib/weather-api');
 const { applyBoardPreviewOverrides } = require('./lib/board-preview');
 const { BOARD_VERSION } = require('./lib/board-version');
+const { resolvePublishedVersion, normalizeScreenReport, recordBoardScreen, summarizeBoardScreens } = require('./lib/board-publish');
 const { photoCropToInlineStyle } = require('./lib/photo-crop');
 const { buildPhotoThumbUrl } = require('./lib/photo-url');
 const { getTranslator, humanizeLabel } = require('./lib/admin-translations');
@@ -71,7 +72,7 @@ function allowMobileApiCors(req, res, next) {
   }
 
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Accept, Content-Type');
 
   if (req.method === 'OPTIONS') {
@@ -362,6 +363,7 @@ function renderMemorialBoard(req, res, synagogue) {
     layout: false,
     data: publicData,
     contentVersion,
+    publishedBoardVersion: resolvePublishedVersion(synagogue.publishedVersion),
     boardVersion: BOARD_VERSION,
     faviconUrl: buildFaviconPath(synagogue.slug, { badge: false }),
     faviconAlertUrl: buildFaviconPath(synagogue.slug, { badge: true }),
@@ -422,9 +424,49 @@ app.get('/s/:slug/api/board/version', apiRateLimiter, async (req, res) => {
 
     const version = computeBoardVersion(synagogue);
     res.setHeader('Cache-Control', 'no-store');
-    return res.json({ version });
+    return res.json({
+      version,
+      publishedVersion: resolvePublishedVersion(synagogue.publishedVersion),
+    });
   } catch (err) {
     console.error('Board version error:', err);
+    return res.status(500).json({ error: publicErrorMessage(err) });
+  }
+});
+
+app.post('/s/:slug/api/board/presence', apiRateLimiter, async (req, res) => {
+  try {
+    const report = normalizeScreenReport(req.body);
+    if (!report) {
+      return res.status(400).json({ error: 'Invalid screen' });
+    }
+
+    const synagogue = await Synagogue.findOne(
+      { slug: req.params.slug },
+      { boardClients: 1, publishedVersion: 1 },
+    ).lean();
+
+    if (!synagogue) {
+      return res.status(404).json({ error: 'Synagogue not found' });
+    }
+
+    const boardClients = recordBoardScreen(synagogue.boardClients, report);
+    await Synagogue.updateOne(
+      { slug: req.params.slug },
+      { $set: { boardClients } },
+    );
+
+    const summary = summarizeBoardScreens(boardClients, synagogue.publishedVersion);
+    res.setHeader('Cache-Control', 'no-store');
+    return res.json({
+      ok: true,
+      publishedVersion: summary.publishedVersion,
+      onPublishedVersion: summary.onPublishedVersion,
+      pendingCount: summary.pendingCount,
+      recentCount: summary.recentCount,
+    });
+  } catch (err) {
+    console.error('Board presence error:', err);
     return res.status(500).json({ error: publicErrorMessage(err) });
   }
 });

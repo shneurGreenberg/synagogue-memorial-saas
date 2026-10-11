@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LiveClock } from './components/LiveClock';
 import { ShabbatBlock } from './components/ShabbatBlock';
 import { WeatherBlock } from './components/WeatherBlock';
@@ -14,10 +14,11 @@ import {
   buildAnnouncementItems,
   buildWidgetAnnouncementsJson,
 } from './lib/announcements';
-import { fetchSidebarPayload, loadCachedSidebarPayload } from './lib/sync';
+import { fetchSidebarPayload, loadCachedSidebarPayload, reportSidebarPresence } from './lib/sync';
 import { fetchOfflineJewishFeed } from './lib/offline-feed';
 import {
   DEFAULT_SETTINGS,
+  buildBoardVersionUrl,
   loadSettings,
   normalizeServerUrl,
   normalizeSettings,
@@ -43,6 +44,7 @@ export default function App() {
   const [weatherForecast, setWeatherForecast] = useState(null);
 
   const lang = settings.language || 'ru';
+  const publishedVersionRef = useRef(null);
   const handleForecastChange = useCallback((forecast) => {
     setWeatherForecast(forecast || null);
   }, []);
@@ -148,6 +150,46 @@ export default function App() {
 
     return () => window.clearInterval(timer);
   }, [settings, refreshRemote]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const versionUrl = buildBoardVersionUrl(settings);
+    if (!versionUrl) {
+      return undefined;
+    }
+
+    const checkVersion = async () => {
+      try {
+        const response = await fetch(versionUrl, {
+          cache: 'no-store',
+          headers: { Accept: 'application/json' },
+        });
+        if (!response.ok || cancelled) {
+          return;
+        }
+
+        const payload = await response.json();
+        const publishedVersion = Number(payload.publishedVersion) || 1;
+        if (publishedVersionRef.current == null) {
+          publishedVersionRef.current = publishedVersion;
+        } else if (publishedVersion !== publishedVersionRef.current) {
+          window.location.reload();
+          return;
+        }
+
+        await reportSidebarPresence(settings, publishedVersionRef.current);
+      } catch {
+        /* ignore network errors between polls */
+      }
+    };
+
+    checkVersion();
+    const timer = window.setInterval(checkVersion, 8000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [settings]);
 
   const synagogueLocation = remotePayload?.location;
   const effectiveCoords = synagogueLocation?.lat != null && synagogueLocation?.long != null

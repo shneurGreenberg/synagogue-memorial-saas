@@ -161,6 +161,8 @@ describe('http smoke', () => {
     const version = await request('GET', `/s/${SLUG}/api/board/version`);
     assert.equal(version.status, 200);
     assert.ok(version.json().version);
+    assert.equal(typeof version.json().publishedVersion, 'number');
+    assert.ok(version.json().publishedVersion >= 1);
 
     const sidebar = await request('GET', `/s/${SLUG}/api/sidebar-app`);
     assert.equal(sidebar.status, 200);
@@ -233,6 +235,7 @@ describe('http smoke', () => {
     const res = await request('GET', `/s/${SLUG}`);
     assert.equal(res.status, 200);
     assert.match(res.body, /window\.boardContentVersion/);
+    assert.match(res.body, /window\.publishedBoardVersion = \d+/);
     const match = res.body.match(/window\.data = (\{[\s\S]*?\});/);
     assert.ok(match, 'board page should embed window.data');
     const data = JSON.parse(match[1]);

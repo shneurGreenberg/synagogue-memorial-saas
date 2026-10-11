@@ -31,12 +31,25 @@
       .toUpperCase();
   }
 
+  function hasDeathDate(person) {
+    const death = person && person.gregorianDateOfDeath;
+    const month = Number(death && death.month);
+    const date = Number(death && death.date);
+    const year = Number(death && death.year);
+    if (!Number.isInteger(month) || !Number.isInteger(date) || !Number.isInteger(year)) {
+      return false;
+    }
+    const probe = new Date(year, month - 1, date);
+    return probe.getFullYear() === year && probe.getMonth() === month - 1 && probe.getDate() === date;
+  }
+
   function formatDateLabel(person, dateLabel) {
-    const parts = person && person.gregorianDateOfDeath;
-    if (!parts) {
-      return '';
+    if (!hasDeathDate(person)) {
+      const page = document.querySelector('.people-page, .yahrzeit-page');
+      return (page && page.getAttribute('data-no-date-label')) || '';
     }
 
+    const parts = person.gregorianDateOfDeath;
     return dateLabel + ': ' + parts.date + '/' + parts.month + '/' + parts.year;
   }
 

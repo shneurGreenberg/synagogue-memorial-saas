@@ -13,6 +13,13 @@ const { buildSynagoguePayloadFromWizard, WIZARD_STEPS } = require('../lib/master
 const { optimizeUploadedImage } = require('../lib/image-optimize');
 const { BOARD_FEATURE_DEFAULTS } = require('../lib/board-features');
 const { verifyMasterPassword } = require('../lib/master-auth');
+const { invalidateBoardCache } = require('../lib/board-cache');
+const {
+    nextPublishedVersion,
+    summarizeBoardScreens,
+    resolvePublishedVersion,
+    formatPublishedAt,
+} = require('../lib/board-publish');
 const {
   createLoginRateLimiter,
   regenerateSession,
@@ -219,12 +226,32 @@ router.get('/api/reverse', requireMasterApi, async (req, res) => {
 
 router.get('/dashboard', requireMaster, async (req, res) => {
     try {
-        const synagogues = await Synagogue.find({}).sort({ name: 1 }).lean();
+        const lang = getMasterLang(req);
+        const t = getMasterTranslator(lang);
+        const synagogues = (await Synagogue.find({}).sort({ name: 1 }).lean()).map((synagogue) => {
+            const summary = summarizeBoardScreens(
+                synagogue.boardClients,
+                resolvePublishedVersion(synagogue.publishedVersion),
+            );
+            return {
+                ...synagogue,
+                publishSummary: {
+                    ...summary,
+                    publishedAtLabel: formatPublishedAt(synagogue.publishedAt, lang),
+                    screens: summary.screens.slice(0, 6).map((screen) => ({
+                        ...screen,
+                        clientLabel: t(`screen_client_${screen.client}`),
+                        lastSeenLabel: formatPublishedAt(screen.lastSeenAt, lang),
+                    })),
+                },
+            };
+        });
         renderMaster(req, res, 'master/dashboard', {
             synagogues,
             showMasterNav: true,
             showMasterMap: true,
             saved: req.query.saved === '1',
+            published: req.query.published === '1',
             error: req.query.error || null,
         });
     } catch (err) {
@@ -376,6 +403,26 @@ router.post('/delete', requireMaster, async (req, res) => {
         res.redirect('/master/dashboard?saved=1');
     } catch (err) {
         res.status(500).send(err.message);
+    }
+});
+
+router.post('/publish-version', requireMaster, async (req, res) => {
+    try {
+        const slug = normalizeSlug(req.body.slug || '');
+        const synagogue = await Synagogue.findOne({ slug }, { publishedVersion: 1 }).lean();
+        if (!synagogue) {
+            return res.status(404).send('Not found');
+        }
+
+        const publishedVersion = nextPublishedVersion(synagogue.publishedVersion);
+        await Synagogue.updateOne(
+            { slug },
+            { $set: { publishedVersion, publishedAt: new Date() } },
+        );
+        invalidateBoardCache(slug);
+        return res.redirect('/master/dashboard?published=1');
+    } catch (err) {
+        return res.status(500).send(err.message);
     }
 });
 

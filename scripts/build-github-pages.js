@@ -7,6 +7,8 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+const { normalizePersonDeathDate } = require('../lib/death-date');
+
 const ROOT = path.join(__dirname, '..');
 const SITE_DIR = path.join(ROOT, 'site');
 const SLUG = process.env.BOARD_SLUG || 'novosibirsk';
@@ -49,7 +51,7 @@ function loadBoardData() {
     weeklyChapterEnabled: true,
     shabbatTimesEnabled: true,
     dailyCites: db.data.dailyCites || [],
-    people: db.data.people || [],
+    people: (db.data.people || []).map(normalizePersonDeathDate),
     theme: {
       ...BOARD_THEME_DEFAULTS,
       accentColor: BOARD_THEME_DEFAULTS.accentColor,

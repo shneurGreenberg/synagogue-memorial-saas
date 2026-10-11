@@ -35,6 +35,7 @@ import { resolveBoardFeatures } from '../lib/board-features';
 import { SidebarUpcomingPanel } from '../components/SidebarUpcomingPanel';
 import { BoardWeatherSection } from '../components/BoardWeatherSection';
 import { isPersonYahrzeitToday } from '../lib/yahrzeit-today';
+import { personHasDeathDate } from '../../../lib/death-date';
 import { MemorialSubmissionPanel } from '../components/MemorialSubmissionPanel';
 import { DonationQrPanel } from '../components/DonationQrPanel';
 import { TorahReadingOverlay } from '../components/TorahReadingOverlay';
@@ -51,8 +52,13 @@ function getDailyCite(appData, hebrewDate) {
 }
 
 function setPersonDates(card) {
-  if (!card.gregorianDateOfDeath.year) {
-    return card;
+  if (!card.hasDeathDate) {
+    return {
+      ...card,
+      gregorianDateOfDeath: null,
+      hebrewDateOfDeath: null,
+      passedToday: false,
+    };
   }
 
   const gregorianDateOfDeath = new Date(
@@ -75,6 +81,15 @@ function buildPeopleList(appData, referenceDate = new Date(), timezone = resolve
     .slice(0)
     .map((a) => {
       const person = attachNameComponents({ ...a });
+      const dated = personHasDeathDate(person);
+      person.hasDeathDate = dated;
+
+      if (!dated) {
+        person.gregorianDayOfMemory = DAYS_IN_YEAR + 1;
+        person.passedToday = false;
+        return person;
+      }
+
       person.gregorianDayOfMemory = gregorianDayOfYear(
         person.gregorianDateOfDeath.month,
         person.gregorianDateOfDeath.date,
@@ -89,15 +104,11 @@ function buildPeopleList(appData, referenceDate = new Date(), timezone = resolve
       return person;
     })
     .sort((a, b) => {
-      if (a.gregorianDayOfMemory < b.gregorianDayOfMemory) {
-        return -1;
+      if (a.gregorianDayOfMemory !== b.gregorianDayOfMemory) {
+        return a.gregorianDayOfMemory - b.gregorianDayOfMemory;
       }
 
-      if (a.gregorianDayOfMemory > b.gregorianDayOfMemory) {
-        return 1;
-      }
-
-      return 0;
+      return String(a.name || '').localeCompare(String(b.name || ''), 'ru');
     })
     .map(setPersonDates);
 }

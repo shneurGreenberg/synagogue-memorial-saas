@@ -14,6 +14,7 @@
   });
 
   const searchInput = document.getElementById('peopleSearch');
+  const undatedFilter = document.getElementById('peopleUndatedFilter');
   const THUMB_WIDTH = 128;
 
   let activeEditPersonId = null;
@@ -250,6 +251,72 @@
     }
   }
 
+  function hasDeathDate(person) {
+    const death = person && person.gregorianDateOfDeath;
+    const month = Number(death && death.month);
+    const date = Number(death && death.date);
+    const year = Number(death && death.year);
+    if (!Number.isInteger(month) || !Number.isInteger(date) || !Number.isInteger(year)) {
+      return false;
+    }
+    if (month < 1 || month > 12 || date < 1 || date > 31 || year < 1 || year > 9999) {
+      return false;
+    }
+    const probe = new Date(year, month - 1, date);
+    return probe.getFullYear() === year && probe.getMonth() === month - 1 && probe.getDate() === date;
+  }
+
+  function deathDateLabel(person) {
+    if (!hasDeathDate(person)) {
+      return page.getAttribute('data-no-date-label') || 'No date of death';
+    }
+    const parts = person.gregorianDateOfDeath;
+    const dateLabel = page.getAttribute('data-date-label') || 'Date of death';
+    return dateLabel + ': ' + parts.date + '/' + parts.month + '/' + parts.year;
+  }
+
+  function syncUndatedBadge(row, person) {
+    const undated = !hasDeathDate(person);
+    row.setAttribute('data-undated', undated ? '1' : '0');
+    const nameLine = row.querySelector('.person-name-line');
+    if (!nameLine) {
+      return;
+    }
+    let badge = nameLine.querySelector('.person-undated-badge');
+    if (undated) {
+      if (!badge) {
+        badge = document.createElement('span');
+        badge.className = 'person-undated-badge';
+        nameLine.appendChild(badge);
+      }
+      badge.textContent = page.getAttribute('data-undated-badge') || 'No date';
+    } else if (badge) {
+      badge.remove();
+    }
+  }
+
+  function updateUndatedBanner() {
+    const count = people.filter(function (person) { return !hasDeathDate(person); }).length;
+    const banner = document.getElementById('undatedPeopleBanner');
+    const countEl = document.getElementById('undatedPeopleCount');
+    if (countEl) {
+      countEl.textContent = String(count);
+    }
+    if (banner) {
+      banner.hidden = count === 0;
+    }
+  }
+
+  function assertCompleteDate(form) {
+    const date = (form.querySelector('[name="date"]').value || '').trim();
+    const month = (form.querySelector('[name="month"]').value || '').trim();
+    const year = (form.querySelector('[name="year"]').value || '').trim();
+    const filled = [date, month, year].filter(Boolean).length;
+    if (filled !== 0 && filled !== 3) {
+      throw new Error(page.getAttribute('data-date-incomplete') || 'Enter the full date or leave it empty');
+    }
+  }
+
   function updateListRowMeta(person) {
     const row = list.querySelector('.person-row[data-id="' + person.id + '"]');
     if (!row) {
@@ -257,10 +324,12 @@
     }
 
     row.setAttribute('data-name', person.name || '');
-    row.setAttribute(
-      'data-date',
-      person.gregorianDateOfDeath.year + '-' + person.gregorianDateOfDeath.month + '-' + person.gregorianDateOfDeath.date,
-    );
+    if (hasDeathDate(person)) {
+      const parts = person.gregorianDateOfDeath;
+      row.setAttribute('data-date', parts.year + '-' + parts.month + '-' + parts.date);
+    } else {
+      row.setAttribute('data-date', '');
+    }
 
     const strong = row.querySelector('.person-meta strong');
     const small = row.querySelector('.person-meta small');
@@ -268,10 +337,10 @@
       strong.textContent = person.name || '';
     }
     if (small) {
-      const parts = person.gregorianDateOfDeath;
-      const dateLabel = page.getAttribute('data-date-label') || 'Date of death';
-      small.textContent = dateLabel + ': ' + parts.date + '/' + parts.month + '/' + parts.year;
+      small.textContent = deathDateLabel(person);
     }
+    syncUndatedBadge(row, person);
+    updateUndatedBanner();
   }
 
   function initPhotoCropEditor(editor) {
@@ -466,11 +535,14 @@
 
   function applyFilters() {
     const query = searchInput.value.trim().toLowerCase();
+    const undatedOnly = undatedFilter && undatedFilter.getAttribute('aria-pressed') === 'true';
     const rows = Array.from(list.querySelectorAll('.person-row'));
 
     rows.forEach(function (row) {
       const name = (row.getAttribute('data-name') || '').toLowerCase();
-      row.style.display = !query || name.includes(query) ? '' : 'none';
+      const matchesQuery = !query || name.includes(query);
+      const matchesUndated = !undatedOnly || row.getAttribute('data-undated') === '1';
+      row.style.display = matchesQuery && matchesUndated ? '' : 'none';
     });
 
     const visible = rows.filter(function (row) { return row.style.display !== 'none'; });
@@ -538,6 +610,7 @@
     }
 
     try {
+      assertCompleteDate(form);
       const formData = new FormData(form);
       formData.set('contactsJson', JSON.stringify(collectContactsFromForm(form)));
 
@@ -552,7 +625,11 @@
       });
 
       if (!response.ok) {
-        throw new Error(await response.text());
+        const body = await response.text();
+        if (body.indexOf('incomplete_death_date') !== -1) {
+          throw new Error(page.getAttribute('data-date-incomplete') || 'Enter the full date or leave it empty');
+        }
+        throw new Error(body);
       }
 
       return response.json();
@@ -580,16 +657,18 @@
 
   function createPersonRow(person) {
     const slug = page.getAttribute('data-synagogue-slug');
-    const dateLabel = page.getAttribute('data-date-label') || 'Date of death';
     const deleteConfirm = page.getAttribute('data-delete-confirm') || 'Are you sure?';
     const row = document.createElement('article');
     row.className = 'person-row person-row-clickable';
     row.setAttribute('data-name', person.name || '');
     row.setAttribute('data-id', String(person.id));
-    row.setAttribute(
-      'data-date',
-      person.gregorianDateOfDeath.year + '-' + person.gregorianDateOfDeath.month + '-' + person.gregorianDateOfDeath.date,
-    );
+    row.setAttribute('data-undated', hasDeathDate(person) ? '0' : '1');
+    if (hasDeathDate(person)) {
+      const dated = person.gregorianDateOfDeath;
+      row.setAttribute('data-date', dated.year + '-' + dated.month + '-' + dated.date);
+    } else {
+      row.setAttribute('data-date', '');
+    }
 
     if (person.photo) {
       const wrap = document.createElement('span');
@@ -619,12 +698,20 @@
 
     const meta = document.createElement('div');
     meta.className = 'person-meta';
+    const nameLine = document.createElement('div');
+    nameLine.className = 'person-name-line';
     const strong = document.createElement('strong');
     strong.textContent = person.name || '';
+    nameLine.appendChild(strong);
+    if (!hasDeathDate(person)) {
+      const badge = document.createElement('span');
+      badge.className = 'person-undated-badge';
+      badge.textContent = page.getAttribute('data-undated-badge') || 'No date';
+      nameLine.appendChild(badge);
+    }
     const small = document.createElement('small');
-    const parts = person.gregorianDateOfDeath;
-    small.textContent = dateLabel + ': ' + parts.date + '/' + parts.month + '/' + parts.year;
-    meta.appendChild(strong);
+    small.textContent = deathDateLabel(person);
+    meta.appendChild(nameLine);
     meta.appendChild(small);
 
     row.appendChild(meta);
@@ -966,9 +1053,10 @@
 
     document.getElementById('editId').value = person.id;
     document.getElementById('editName').value = person.name || '';
-    document.getElementById('editDate').value = person.gregorianDateOfDeath.date;
-    document.getElementById('editMonth').value = person.gregorianDateOfDeath.month;
-    document.getElementById('editYear').value = person.gregorianDateOfDeath.year;
+    const death = hasDeathDate(person) ? person.gregorianDateOfDeath : {};
+    document.getElementById('editDate').value = death.date || '';
+    document.getElementById('editMonth').value = death.month || '';
+    document.getElementById('editYear').value = death.year || '';
     document.getElementById('editText').value = person.text || '';
     const deletePhotoInput = document.getElementById('editDeletePhoto');
     if (deletePhotoInput) {
@@ -1036,6 +1124,8 @@
           list.appendChild(createPersonRow(person));
         });
         syncPeopleData();
+        updateUndatedBanner();
+        applyFilters();
       })
       .catch(function () {
         /* ignore */
@@ -1086,6 +1176,7 @@
           resetContactsSection(document.getElementById('addPersonModal'));
           cropEditors.add.clearCrop();
           hideModal('#addPersonModal');
+          updateUndatedBanner();
           applyFilters();
         } catch (err) {
           window.alert(err.message || 'Save failed');
@@ -1111,6 +1202,18 @@
     });
 
     searchInput.addEventListener('input', applyFilters);
+
+    if (undatedFilter) {
+      undatedFilter.addEventListener('click', function () {
+        const pressed = undatedFilter.getAttribute('aria-pressed') === 'true';
+        undatedFilter.setAttribute('aria-pressed', pressed ? 'false' : 'true');
+        undatedFilter.classList.toggle('is-active', !pressed);
+        applyFilters();
+      });
+      if (undatedFilter.getAttribute('aria-pressed') === 'true') {
+        undatedFilter.classList.add('is-active');
+      }
+    }
 
     const deletePhotoBtn = document.getElementById('editDeletePhotoBtn');
     const deletePhotoInput = document.getElementById('editDeletePhoto');

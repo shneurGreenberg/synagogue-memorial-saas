@@ -54,6 +54,8 @@ describe('public board payload', () => {
     assert.equal(payload.slug, 'demo');
     assert.equal(payload.people.length, 1);
     assert.equal(payload.people[0].name, 'Person One');
+    assert.equal(payload.people[0].hasDeathDate, true);
+    assert.deepEqual(payload.people[0].gregorianDateOfDeath, { month: 1, date: 2, year: 2000 });
     assert.equal(payload.people[0].text, undefined);
     assert.equal(payload.people[0].contact, undefined);
     assert.equal(payload.people[0].contacts, undefined);

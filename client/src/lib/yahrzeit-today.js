@@ -1,4 +1,5 @@
 import Hebcal from 'hebcal';
+import { personHasDeathDate } from '../../../lib/death-date';
 import {
   getGregorianDateInTimezone,
   getHebrewDateInTimezone,
@@ -27,10 +28,11 @@ function isHebrewYahrzeitToday(death, timezone, now = new Date()) {
 }
 
 export function isPersonYahrzeitToday(person, timezone, now = new Date()) {
-  const death = person && person.gregorianDateOfDeath;
-  if (!death || !death.month || !death.date) {
+  if (!personHasDeathDate(person)) {
     return false;
   }
+
+  const death = person.gregorianDateOfDeath;
 
   return isGregorianYahrzeitToday(death, timezone, now)
     || isHebrewYahrzeitToday(death, timezone, now);

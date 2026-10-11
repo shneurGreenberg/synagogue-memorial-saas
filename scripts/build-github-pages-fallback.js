@@ -8,6 +8,8 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+const { normalizePersonDeathDate } = require('../lib/death-date');
+
 const ROOT = path.join(__dirname, '..');
 const SITE_DIR = path.join(ROOT, 'site');
 const SNAPSHOTS_DIR = path.join(ROOT, 'static-snapshots');
@@ -66,6 +68,9 @@ function loadSnapshots() {
       continue;
     }
     const data = JSON.parse(fs.readFileSync(path.join(SNAPSHOTS_DIR, file), 'utf8'));
+    if (Array.isArray(data.people)) {
+      data.people = data.people.map(normalizePersonDeathDate);
+    }
     snapshots[slug] = data;
     console.log(`  Loaded ${slug}: ${data.people?.length || 0} people`);
   }

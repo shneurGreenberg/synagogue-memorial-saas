@@ -3,11 +3,18 @@ import React, { useEffect, useMemo } from 'react';
 import { useBoardData } from '../context/BoardDataContext';
 import { MemorialCard } from '../components/MemorialCard';
 import { isPersonYahrzeitToday } from '../lib/yahrzeit-today';
+import { personHasDeathDate } from '../../../lib/death-date';
 import { resolveBoardTimezone } from '../lib/timezone';
 
 function preparePerson(person, timezone) {
-  if (!person || !person.gregorianDateOfDeath?.year) {
-    return person;
+  if (!person || !personHasDeathDate(person)) {
+    return {
+      ...person,
+      hasDeathDate: false,
+      passedToday: false,
+      gregorianDateOfDeath: null,
+      hebrewDateOfDeath: null,
+    };
   }
 
   const gregorianDateOfDeath = new Date(
