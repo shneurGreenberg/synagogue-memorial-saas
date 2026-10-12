@@ -21,35 +21,35 @@
       "clock": 100,
       "boardHeader": 100,
       "sidebar": 100,
-      "prayers": 120,
+      "prayers": 100,
       "prayerOverlay": 100,
       "torahNames": 100,
       "weather": 100,
-      "shabbat": 130,
+      "shabbat": 100,
       "candle": 100
     },
     "fontScaleBaselines": {
-      "tileTitle": 120,
+      "tileTitle": 100,
       "tileDate": 100,
       "clock": 100,
       "boardHeader": 100,
       "sidebar": 100,
       "prayers": 100,
-      "prayerOverlay": 161,
+      "prayerOverlay": 115,
       "torahNames": 100,
       "weather": 115,
       "shabbat": 100,
-      "candle": 126
+      "candle": 90
     },
     "primaryColor": "#ecd779",
-    "textColor": "#ffffff",
-    "accentColor": "#e8ca69",
-    "tileColor": "#0d0d0d",
-    "tileOpacity": 99,
+    "textColor": "#f0f0f0",
+    "accentColor": "#ffd54f",
+    "tileColor": "#ffffff",
+    "tileOpacity": 0,
     "logo": "1782449503623.webp",
-    "candlePalette": "pearl",
-    "backgroundImage": "1791817826847-opt.jpg",
-    "tilesBackground": "1791817797873-opt.jpg",
+    "candlePalette": "ivory",
+    "backgroundImage": "1791823434856-opt.jpg",
+    "tilesBackground": "1791823434857-opt.jpg",
     "logoBorderRadius": 100,
     "logoBackground": ""
   },
@@ -6267,9 +6267,9 @@
       "he": "רוצים להוסיף את שם יקירכם?"
     },
     "texts": {
-      "ru": "Сканируйте QR-код для регистрации близких",
-      "en": "Scan the QR code to register loved ones",
-      "he": "סרקו את הברקוד לרישום יקירים"
+      "ru": "Отсканируйте QR-код, чтобы отправить имя",
+      "en": "Scan the QR code to submit a name",
+      "he": "סרקו את הברקוד"
     },
     "donationTitles": {
       "ru": "Цдака — пожертвование",
@@ -6286,14 +6286,14 @@
     "qrScale": 100,
     "titleScaleBaseline": 100,
     "textScaleBaseline": 100,
-    "qrScaleBaseline": 100
+    "qrScaleBaseline": 160
   },
   "weeklyChapterEnabled": false,
   "shabbatTimesEnabled": true,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1791822679908,
-  "exportedAt": "2026-10-12T16:31:19.908Z",
+  "contentVersion": 1791824181082,
+  "exportedAt": "2026-10-12T16:56:21.082Z",
   "jewishContent": {
     "date": "2026-10-12",
     "timezone": "Asia/Tomsk",
@@ -6495,8 +6495,8 @@
     },
     "theme": {
       "primaryColor": "#ecd779",
-      "textColor": "#ffffff",
-      "accentColor": "#e8ca69"
+      "textColor": "#f0f0f0",
+      "accentColor": "#ffd54f"
     },
     "dailyCites": [],
     "communityEvents": [
@@ -6648,6 +6648,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-12T16:31:19.908Z"
+    "updatedAt": "2026-10-12T16:56:21.082Z"
   }
 }
