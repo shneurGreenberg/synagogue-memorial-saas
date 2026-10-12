@@ -129,11 +129,15 @@ describe('admin settings dashboard template', () => {
 
     assert.match(html, /settings-color-grid/);
     assert.match(html, /settings-media-grid/);
+    assert.match(html, /settings-media-grid--community/);
+    assert.match(html, /adminCandlePreview/);
+    assert.match(html, /logo-bg-swatch-row/);
     assert.match(html, /name="primaryColor"/);
     assert.match(html, /name="tileOpacity"/);
     assert.match(html, /name="titleRu"/);
     assert.match(html, /settings-copy-details/);
     assert.match(html, /name="donationQrTitleRu"/);
     assert.doesNotMatch(html, /<details[^>]*\sopen[\s=>]/i);
+    assert.doesNotMatch(html, /id="fontScale_tileDate"[\s\S]*?field-hint/);
   });
 });

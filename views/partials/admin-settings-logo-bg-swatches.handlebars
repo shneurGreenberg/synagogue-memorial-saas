@@ -1,0 +1,20 @@
+<fieldset class="logo-bg-swatch-fieldset settings-logo-bg-fieldset">
+    <legend class="logo-bg-swatch-legend">{{t 'logo_background'}}</legend>
+    <div class="logo-bg-swatch-row" role="radiogroup" aria-label="{{t 'logo_background'}}">
+        <label class="logo-bg-swatch{{#unless synagogue.theme.logoBackground}} is-selected{{/unless}}">
+            <input type="radio" name="logoBackground" value="" {{#unless synagogue.theme.logoBackground}}checked{{/unless}}>
+            <span class="logo-bg-swatch-face logo-bg-swatch-face--transparent" aria-hidden="true"></span>
+            <span class="logo-bg-swatch-label">{{t 'logo_background_none'}}</span>
+        </label>
+        <label class="logo-bg-swatch{{#if (eq synagogue.theme.logoBackground 'white')}} is-selected{{/if}}">
+            <input type="radio" name="logoBackground" value="white" {{#if (eq synagogue.theme.logoBackground 'white')}}checked{{/if}}>
+            <span class="logo-bg-swatch-face logo-bg-swatch-face--white" aria-hidden="true"></span>
+            <span class="logo-bg-swatch-label">{{t 'logo_background_white'}}</span>
+        </label>
+        <label class="logo-bg-swatch{{#if (eq synagogue.theme.logoBackground 'black')}} is-selected{{/if}}">
+            <input type="radio" name="logoBackground" value="black" {{#if (eq synagogue.theme.logoBackground 'black')}}checked{{/if}}>
+            <span class="logo-bg-swatch-face logo-bg-swatch-face--black" aria-hidden="true"></span>
+            <span class="logo-bg-swatch-label">{{t 'logo_background_black'}}</span>
+        </label>
+    </div>
+</fieldset>

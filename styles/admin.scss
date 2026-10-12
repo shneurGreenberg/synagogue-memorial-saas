@@ -1,4 +1,7 @@
 // Admin dark theme (CSS variables)
+@import 'css-candle';
+@import 'logo-bg-swatches';
+
 $admin-radius: 14px;
 
 body.admin-body.admin-theme-light,
@@ -1796,6 +1799,52 @@ body.admin-is-busy {
     &--qr {
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     }
+
+    &--community {
+      grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+
+      @media (min-width: 1024px) {
+        grid-template-columns: minmax(168px, 200px) repeat(2, minmax(150px, 1fr)) minmax(168px, 1.15fr);
+        align-items: stretch;
+      }
+    }
+  }
+
+  .settings-candle-preview-tile {
+    .settings-candle-preview-stage {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      min-height: 7.5rem;
+      padding: 0.35rem 0.25rem 0.15rem;
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.35) 100%);
+      overflow: hidden;
+    }
+
+    .settings-candle-preview {
+      --css-candle-unit: 0.38px;
+      margin: 0 auto;
+
+      .css-candle-bottom {
+        display: none;
+      }
+    }
+
+    .settings-candle-palette-field {
+      margin: 0;
+
+      label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+      }
+
+      .form-control {
+        font-size: 0.78rem;
+        padding: 0.35rem 0.5rem !important;
+      }
+    }
   }
 
   .settings-media-tile {
@@ -1950,18 +1999,7 @@ body.admin-is-busy {
   }
 
   .settings-logo-bg-fieldset {
-    margin: 0;
-    padding: 0;
-    border: 0;
-
-    legend {
-      font-size: 0.72rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .admin-radio-inline {
-      font-size: 0.72rem;
-    }
+    width: 100%;
   }
 
   .settings-copy-details {
@@ -2035,15 +2073,6 @@ body.admin-is-busy {
     }
   }
 
-  .settings-qr-block {
-    .settings-qr-scales-tile {
-      grid-column: 1 / -1;
-
-      @media (min-width: 720px) {
-        grid-column: auto;
-      }
-    }
-  }
 }
 
 .color-picker-row {
