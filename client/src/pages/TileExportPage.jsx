@@ -104,7 +104,7 @@ export default function TileExportPage({ personId, highlightYahrzeit = false }) 
           <div className="cards-area">
             <div className="cards-grid tile-export-grid">
               <div id="tileExportCard" className="tile-export-cell">
-                <MemorialCard entry={person} />
+                <MemorialCard entry={person} emphasizeYahrzeitToday={highlightYahrzeit} />
               </div>
             </div>
           </div>

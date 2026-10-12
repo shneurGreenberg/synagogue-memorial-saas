@@ -1,4 +1,10 @@
 import { translitSplit } from './novosibirsk';
+import {
+  shouldUseKadishBoardLayout,
+  shouldPrioritizeYahrzeitForKadish,
+  prioritizeYahrzeitForKadish as reorderYahrzeitForKadish,
+  computeKadishPagination,
+} from '../../../lib/board-yahrzeit-layout.js';
 
 const WORD_SPLIT = /\s+/;
 
@@ -104,16 +110,7 @@ export function searchPeopleByString(string, allPeople) {
 }
 
 export function prioritizeYahrzeitForKadish(people) {
-  const yahrzeitToday = people.filter((person) => person.passedToday);
-
-  if (yahrzeitToday.length < 1 || yahrzeitToday.length > 2 || people.length <= 1) {
-    return people;
-  }
-
-  const featuredIds = new Set(yahrzeitToday.map((person) => person.id));
-  const others = people.filter((person) => !featuredIds.has(person.id));
-
-  return [...yahrzeitToday, ...others];
+  return reorderYahrzeitForKadish(people);
 }
 
 export function getPageShift(state) {
@@ -138,26 +135,19 @@ export function applySearchToPaginationState(state, string) {
   let people = searchPeopleByString(string, state.allPeople);
 
   const yahrzeitTodayCount = people.filter((person) => person.passedToday).length;
-  const hasKadishToday = people.length === 1
-    || (yahrzeitTodayCount >= 1 && yahrzeitTodayCount <= 2);
+  const hasKadishToday = shouldUseKadishBoardLayout(people.length, yahrzeitTodayCount);
 
-  if (hasKadishToday && yahrzeitTodayCount >= 1 && yahrzeitTodayCount <= 2 && people.length > 1) {
+  if (shouldPrioritizeYahrzeitForKadish(yahrzeitTodayCount, people.length)) {
     people = prioritizeYahrzeitForKadish(people);
   }
 
-  let totalPages = 1;
-  if (hasKadishToday) {
-    if (people.length > 12) {
-      totalPages = 1 + Math.ceil((people.length - 12) / 16);
-    }
-  } else {
-    totalPages = Math.max(1, Math.ceil(people.length / 16));
-  }
+  const { itemsPerPage, totalPages } = computeKadishPagination(people.length, hasKadishToday);
 
   state.people = people;
   state.hasKadishToday = hasKadishToday;
+  state.yahrzeitTodayCount = yahrzeitTodayCount;
   state.totalPages = totalPages;
-  state.itemsPerPage = hasKadishToday ? 12 : 16;
+  state.itemsPerPage = itemsPerPage;
   state.page = 0;
   state.pageShift = 0;
   state.filterString = string;

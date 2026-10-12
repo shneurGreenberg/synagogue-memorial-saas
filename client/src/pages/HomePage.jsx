@@ -309,12 +309,21 @@ class HomePageBase extends React.Component {
     });
   }
 
+  shouldEmphasizeYahrzeitToday(entry) {
+    const { yahrzeitTodayCount } = this.state;
+    return Boolean(entry?.passedToday && yahrzeitTodayCount >= 2);
+  }
+
   renderKadishGridContent(pageShift) {
     const { people } = this.state;
     const pick = (index) => people[pageShift + index];
     const wrap = (className, entry) => (
       <div key={className} className={className}>
-        <MemorialCard entry={entry} onOpen={this.props.onOpenCard} />
+        <MemorialCard
+          entry={entry}
+          emphasizeYahrzeitToday={this.shouldEmphasizeYahrzeitToday(entry)}
+          onOpen={this.props.onOpenCard}
+        />
       </div>
     );
 
@@ -326,7 +335,12 @@ class HomePageBase extends React.Component {
         {wrap('k-r1c4', pick(4))}
         {wrap('k-r2c1', pick(12))}
         <div className="kadish-center">
-          <MemorialCard entry={pick(0)} big onOpen={this.props.onOpenCard} />
+          <MemorialCard
+            entry={pick(0)}
+            big
+            emphasizeYahrzeitToday={this.shouldEmphasizeYahrzeitToday(pick(0))}
+            onOpen={this.props.onOpenCard}
+          />
         </div>
         {wrap('k-r2c4', pick(5))}
         {wrap('k-r3c1', pick(11))}
@@ -362,6 +376,7 @@ class HomePageBase extends React.Component {
               <MemorialCard
                 key={entry ? `person-${entry.id}` : `empty-${page}-${i}`}
                 entry={entry}
+                emphasizeYahrzeitToday={this.shouldEmphasizeYahrzeitToday(entry)}
                 onOpen={this.props.onOpenCard}
               />
             );
