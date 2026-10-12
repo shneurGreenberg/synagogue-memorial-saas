@@ -25,7 +25,12 @@ const {
   createLoginRateLimiter,
   regenerateSession,
   isAllowedImageUpload,
+  isAllowedCommunityLogoUpload,
 } = require('../lib/http-security');
+const OnboardingInvite = require('../models/OnboardingInvite');
+const CommunityOnboardingRequest = require('../models/CommunityOnboardingRequest');
+const { createSynagogueFromOnboardingRequest } = require('../lib/onboarding-approve');
+const { processCommunityLogoUpload } = require('../lib/community-logo-upload');
 const loginRateLimiter = createLoginRateLimiter();
 
 const IMAGES_DIR = path.join(__dirname, '..', 'images');
@@ -56,7 +61,11 @@ const masterUpload = multer({
         files: 12,
     },
     fileFilter(req, file, cb) {
-        if (file.fieldname === 'logo' || file.fieldname === 'donationQrImage') {
+        if (file.fieldname === 'logo') {
+            if (!isAllowedCommunityLogoUpload(file)) {
+                return cb(new Error('image_only'));
+            }
+        } else if (file.fieldname === 'donationQrImage') {
             if (!isAllowedImageUpload(file)) {
                 return cb(new Error('image_only'));
             }
@@ -344,7 +353,8 @@ router.post('/add', requireMaster, (req, res) => {
             }
 
             if (wizardPayload._logoFile) {
-                newSynagogue.theme.logo = await optimizeUploadedImage(wizardPayload._logoFile.path, 'logo');
+                const logoFile = wizardPayload._logoFile;
+                newSynagogue.theme.logo = await processCommunityLogoUpload(logoFile.path, logoFile.mimetype);
             }
 
             await newSynagogue.save();
@@ -430,6 +440,96 @@ router.post('/publish-version', requireMaster, async (req, res) => {
 router.get('/logout', (req, res) => {
     req.session.destroy();
     res.redirect('/master/login');
+});
+
+function formatSubmittedAt(date) {
+    if (!date) {
+        return '';
+    }
+    try {
+        return new Date(date).toLocaleString();
+    } catch {
+        return String(date);
+    }
+}
+
+router.get('/onboarding', requireMaster, async (req, res) => {
+    try {
+        const requests = await CommunityOnboardingRequest.find({ status: 'pending' })
+            .select('-adminPasswordHash')
+            .sort({ submittedAt: -1 })
+            .lean();
+
+        const decorated = requests.map((row) => ({
+            ...row,
+            submittedLabel: formatSubmittedAt(row.submittedAt),
+        }));
+
+        return renderMaster(req, res, 'master/onboarding', {
+            showMasterNav: true,
+            requests: decorated,
+            inviteUrl: req.query.invite ? String(req.query.invite) : '',
+        });
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+});
+
+router.post('/onboarding/invites', requireMaster, async (req, res) => {
+    try {
+        const label = String(req.body.label || '').trim();
+        const token = OnboardingInvite.generateToken();
+        await new OnboardingInvite({ token, label }).save();
+
+        const host = String(req.get('X-Forwarded-Host') || req.get('Host') || '').split(',')[0].trim();
+        const inviteUrl = `${req.protocol}://${host}/join/${token}`;
+        return res.redirect(`/master/onboarding?invite=${encodeURIComponent(inviteUrl)}`);
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+});
+
+router.post('/onboarding/approve', requireMaster, async (req, res) => {
+    try {
+        const id = String(req.body.id || '').trim();
+        const request = await CommunityOnboardingRequest.findOne({ _id: id, status: 'pending' })
+            .select('+adminPasswordHash');
+        if (!request) {
+            return res.redirect('/master/onboarding');
+        }
+
+        const synagogue = await createSynagogueFromOnboardingRequest(request);
+        request.status = 'approved';
+        request.reviewedAt = new Date();
+        request.createdSynagogueSlug = synagogue.slug;
+        await request.save();
+        invalidateBoardCache(synagogue.slug);
+
+        return res.redirect(`/master/onboarding?saved=1&created=${encodeURIComponent(synagogue.slug)}`);
+    } catch (err) {
+        console.error('Onboarding approve error:', err);
+        return res.redirect(`/master/onboarding?error=${encodeURIComponent(err.message || 'approve_failed')}`);
+    }
+});
+
+router.post('/onboarding/reject', requireMaster, async (req, res) => {
+    try {
+        const id = String(req.body.id || '').trim();
+        const reason = String(req.body.reason || '').trim();
+        const request = await CommunityOnboardingRequest.findOne({ _id: id, status: 'pending' });
+        if (!request) {
+            return res.redirect('/master/onboarding');
+        }
+
+        request.status = 'rejected';
+        request.reviewedAt = new Date();
+        request.rejectReason = reason;
+        await request.save();
+
+        return res.redirect('/master/onboarding?rejected=1');
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
 });
 
 module.exports = router;

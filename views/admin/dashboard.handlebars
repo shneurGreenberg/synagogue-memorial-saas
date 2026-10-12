@@ -394,7 +394,7 @@
                 {{#if adminPermissions.settingsBranding}}
                 <div class="community-logo-settings">
                     <div class="community-logo-row">
-                        <div class="media-preview media-preview-logo" id="communityLogoPreview"
+                        <div class="media-preview media-preview-logo{{#if (eq synagogue.theme.logoBackground 'white')}} logo-bg-white{{/if}}{{#if (eq synagogue.theme.logoBackground 'black')}} logo-bg-black{{/if}}" id="communityLogoPreview"
                             style="--preview-logo-radius: {{#if synagogue.theme.logoBorderRadius}}{{synagogue.theme.logoBorderRadius}}{{else}}100{{/if}};">
                             {{#if synagogue.theme.logo}}
                             <img src="/images/{{synagogue.theme.logo}}" alt="{{t 'logo'}}" id="communityLogoPreviewImg">
@@ -406,7 +406,7 @@
                             <h3 class="typography-controls-title">{{t 'logo'}}</h3>
                             <label class="file-drop-label file-drop-label-compact">
                                 {{t 'replace_image'}}
-                                <input type="file" name="logo" accept="image/*">
+                                <input type="file" name="logo" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml">
                             </label>
                         </div>
                     </div>
@@ -420,6 +420,21 @@
                         </div>
                         <span class="field-hint">{{t 'logo_border_radius_help'}}</span>
                     </div>
+                    <fieldset class="admin-logo-bg-fieldset">
+                        <legend>{{t 'logo_background'}}</legend>
+                        <label class="admin-radio-inline">
+                            <input type="radio" name="logoBackground" value="" {{#unless synagogue.theme.logoBackground}}checked{{/unless}}>
+                            {{t 'logo_background_none'}}
+                        </label>
+                        <label class="admin-radio-inline">
+                            <input type="radio" name="logoBackground" value="white" {{#if (eq synagogue.theme.logoBackground 'white')}}checked{{/if}}>
+                            {{t 'logo_background_white'}}
+                        </label>
+                        <label class="admin-radio-inline">
+                            <input type="radio" name="logoBackground" value="black" {{#if (eq synagogue.theme.logoBackground 'black')}}checked{{/if}}>
+                            {{t 'logo_background_black'}}
+                        </label>
+                    </fieldset>
                 </div>
                 {{/if}}
                 {{#if adminPermissions.settingsAppearance}}
@@ -611,6 +626,10 @@
                     var el = document.getElementById('logoBorderRadius');
                     return el ? el.value : '100';
                 })(),
+                logoBackground: (function () {
+                    var checked = document.querySelector('input[name="logoBackground"]:checked');
+                    return checked ? checked.value : '';
+                })(),
                 previewLang: languageSelect ? languageSelect.value : 'ru',
             }, readFontScalePatch(), readMemorialQrPatch());
         }
@@ -672,6 +691,18 @@
         if (logoBorderRadiusInput) {
             logoBorderRadiusInput.addEventListener('input', schedulePreview);
         }
+
+        document.querySelectorAll('input[name="logoBackground"]').forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                var preview = document.getElementById('communityLogoPreview');
+                if (preview) {
+                    preview.classList.remove('logo-bg-white', 'logo-bg-black');
+                    if (radio.value === 'white') preview.classList.add('logo-bg-white');
+                    if (radio.value === 'black') preview.classList.add('logo-bg-black');
+                }
+                schedulePreview();
+            });
+        });
 
         var activeSavedViewId = '{{activeSavedViewId}}' || '';
         var updateCurrentViewBtn = document.getElementById('updateCurrentViewBtn');
@@ -761,6 +792,9 @@
             }
             if (patch.logoBorderRadius !== undefined && patch.logoBorderRadius !== '') {
                 params.set('logoBorderRadius', patch.logoBorderRadius);
+            }
+            if (patch.logoBackground !== undefined) {
+                params.set('logoBackground', patch.logoBackground || '');
             }
             Object.keys(patch).forEach(function (key) {
                 if (key.indexOf('fontScale_') === 0 || key.indexOf('memorialQr') === 0) {

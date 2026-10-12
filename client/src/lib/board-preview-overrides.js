@@ -54,6 +54,10 @@ export function mergePreviewPatch(data, patch) {
   if (patch.logoBorderRadius !== undefined && patch.logoBorderRadius !== '') {
     next.theme.logoBorderRadius = Number(patch.logoBorderRadius);
   }
+  if (patch.logoBackground !== undefined) {
+    const bg = String(patch.logoBackground || '').trim().toLowerCase();
+    next.theme.logoBackground = bg === 'white' || bg === 'black' ? bg : '';
+  }
   const fontScaleKeys = ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat', 'candle'];
   fontScaleKeys.forEach((key) => {
     const value = patch[`fontScale_${key}`];
@@ -91,6 +95,7 @@ export function previewPatchFromSearchParams(params) {
     || params.has('tileOpacity')
     || params.has('candlePalette')
     || params.has('logoBorderRadius')
+    || params.has('logoBackground')
     || params.has('fontScale_tileTitle')
     || params.has('titleRu')
     || params.has('titleEn')
@@ -113,6 +118,7 @@ export function previewPatchFromSearchParams(params) {
   if (params.has('tileOpacity')) patch.tileOpacity = params.get('tileOpacity');
   if (params.has('candlePalette')) patch.candlePalette = params.get('candlePalette');
   if (params.has('logoBorderRadius')) patch.logoBorderRadius = params.get('logoBorderRadius');
+  if (params.has('logoBackground')) patch.logoBackground = params.get('logoBackground');
   ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat', 'candle'].forEach((key) => {
     if (params.has(`fontScale_${key}`)) {
       patch[`fontScale_${key}`] = params.get(`fontScale_${key}`);

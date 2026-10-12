@@ -37,7 +37,13 @@ const {
   serializeSavedViews,
 } = require('../lib/saved-views');
 const { parseMemorialQrPanelFromBody, memorialQrPanelToUpdate } = require('../lib/memorial-qr-panel');
-const { parseFontScalesFromBody, normalizeTileOpacity, normalizeLogoBorderRadius } = require('../lib/theme-typography');
+const {
+  parseFontScalesFromBody,
+  normalizeTileOpacity,
+  normalizeLogoBorderRadius,
+  normalizeLogoBackground,
+} = require('../lib/theme-typography');
+const { processCommunityLogoUpload } = require('../lib/community-logo-upload');
 const {
   IMAGES_DIR,
   PHOTOS_DIR,
@@ -47,6 +53,7 @@ const {
   createLoginRateLimiter,
   regenerateSession,
   isAllowedImageUpload,
+  isAllowedCommunityLogoUpload,
   publicErrorMessage,
 } = require('../lib/http-security');
 const {
@@ -296,7 +303,11 @@ const upload = multer({
     storage,
     limits: { fileSize: 10 * 1024 * 1024 },
     fileFilter: function (req, file, cb) {
-        if (!isAllowedImageUpload(file)) {
+        if (file.fieldname === 'logo') {
+            if (!isAllowedCommunityLogoUpload(file)) {
+                return cb(new Error('Only JPEG, PNG, WebP, GIF, or SVG images are allowed'));
+            }
+        } else if (!isAllowedImageUpload(file)) {
             return cb(new Error('Only JPEG, PNG, WebP, and GIF images are allowed'));
         }
         cb(null, true);
@@ -658,7 +669,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
         const {
             titleRu, titleEn, titleHe, primaryColor, textColor, accentColor, tileColor, tileOpacity,
-            language, shabbatTimesEnabled, candlePalette, logoBorderRadius,
+            language, shabbatTimesEnabled, candlePalette, logoBorderRadius, logoBackground,
         } = req.body;
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
         const boardFeatures = parseBoardFeaturesFromBody(req.body);
@@ -684,6 +695,9 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             updateData['theme.candlePalette'] = normalizeCandlePalette(candlePalette);
             if ('logoBorderRadius' in req.body) {
                 updateData['theme.logoBorderRadius'] = normalizeLogoBorderRadius(logoBorderRadius);
+            }
+            if ('logoBackground' in req.body) {
+                updateData['theme.logoBackground'] = normalizeLogoBackground(logoBackground);
             }
             Object.entries(fontScales).forEach(([key, value]) => {
                 updateData[`theme.fontScales.${key}`] = value;
@@ -713,7 +727,8 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         }
 
         if (permissions.settingsBranding && req.files['logo']) {
-            updateData['theme.logo'] = await optimizeUploadedImage(req.files['logo'][0].path, 'logo');
+            const logoFile = req.files['logo'][0];
+            updateData['theme.logo'] = await processCommunityLogoUpload(logoFile.path, logoFile.mimetype);
         }
         if (permissions.settingsAppearance && req.files['backgroundImage']) {
             updateData['theme.backgroundImage'] = await optimizeUploadedImage(req.files['backgroundImage'][0].path, 'background');

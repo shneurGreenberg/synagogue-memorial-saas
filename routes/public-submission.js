@@ -120,6 +120,7 @@ function buildPageContext(synagogue, lang) {
   const pt = getPublicSubmissionTranslator(lang);
   const publicSubmission = normalizePublicSubmission(synagogue.publicSubmission, synagogue.provisioning);
   const communityLogo = synagogue.theme && synagogue.theme.logo;
+  const logoBackground = synagogue.theme && synagogue.theme.logoBackground;
 
   return {
     synagogue,
@@ -133,6 +134,7 @@ function buildPageContext(synagogue, lang) {
     charityUrl: `/s/${synagogue.slug}/add-name/charity`,
     officialLogoUrl: `/images/${OFFICIAL_LOGO_FILENAME}`,
     communityLogoUrl: communityLogo ? `/images/${communityLogo}` : '',
+    communityLogoBackground: logoBackground || '',
   };
 }
 
