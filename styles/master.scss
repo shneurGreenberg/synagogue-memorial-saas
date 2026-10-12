@@ -841,6 +841,11 @@ select.master-input,
   margin-top: 1.35rem;
   padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  .is-step-hidden,
+  [hidden] {
+    display: none !important;
+  }
 }
 
 @keyframes masterWizardFade {
@@ -943,6 +948,50 @@ select.master-input,
 
 .master-onboarding-body {
   padding: 0 1rem 1rem;
+}
+
+.onboarding-invite-hint {
+  font-size: 0.85rem;
+  color: $master-muted;
+  margin: 0.35rem 0 0.65rem;
+  max-width: 42rem;
+  line-height: 1.45;
+}
+
+.onboarding-copy-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+
+  input {
+    flex: 1;
+    min-width: 12rem;
+  }
+}
+
+.onboarding-request-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.onboarding-request-card {
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.onboarding-request-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.onboarding-decision-form {
+  margin: 0;
+  display: inline-flex;
 }
 
 .master-community-title-row {

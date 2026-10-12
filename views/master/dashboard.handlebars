@@ -66,9 +66,10 @@
             <div class="master-alert master-alert-success">{{t 'onboarding_invite_created'}}</div>
             <div class="master-panel-body">
                 <label class="master-field-label">{{t 'onboarding_invite_link'}}</label>
+                <p class="onboarding-invite-hint">{{t 'onboarding_invite_reuse_hint'}}</p>
                 <div class="onboarding-copy-row">
                     <input type="text" class="form-control master-input" readonly value="{{inviteUrl}}" id="onboardingInviteUrl">
-                    <button type="button" class="btn master-btn master-btn-primary" id="copyOnboardingLinkBtn">{{t 'onboarding_copy_link'}}</button>
+                    <button type="button" class="btn master-btn master-btn-primary" id="copyOnboardingLinkBtn" data-copied-label="{{t 'onboarding_copy_done'}}">{{t 'onboarding_copy_link'}}</button>
                 </div>
             </div>
             {{/if}}
@@ -106,13 +107,12 @@
                             <p class="master-community-provision">{{t 'wizard_step_logo_title'}}: {{this.logoFilename}}</p>
                             {{/if}}
                             <div class="onboarding-request-actions">
-                                <form method="POST" action="/master/onboarding/approve">
+                                <form method="POST" action="/master/onboarding/approve" class="onboarding-decision-form">
                                     <input type="hidden" name="id" value="{{this._id}}">
                                     <button type="submit" class="btn master-btn master-btn-primary">{{t 'onboarding_approve'}}</button>
                                 </form>
-                                <form method="POST" action="/master/onboarding/reject" class="onboarding-reject-form">
+                                <form method="POST" action="/master/onboarding/reject" class="onboarding-decision-form">
                                     <input type="hidden" name="id" value="{{this._id}}">
-                                    <input type="text" name="reason" class="form-control master-input" placeholder="{{t 'onboarding_reject_reason'}}" maxlength="500">
                                     <button type="submit" class="btn master-btn master-btn-danger">{{t 'onboarding_reject'}}</button>
                                 </form>
                             </div>

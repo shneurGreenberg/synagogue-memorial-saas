@@ -292,9 +292,19 @@
     var isFirst = this.index === 0;
     var isReview = stepId === 'review';
 
-    this.backBtn.hidden = isFirst;
-    this.nextBtn.hidden = isReview;
-    this.submitBtn.hidden = !isReview;
+    if (this.backBtn) {
+      this.backBtn.hidden = isFirst;
+      this.backBtn.classList.toggle('is-step-hidden', isFirst);
+    }
+    if (this.nextBtn) {
+      this.nextBtn.hidden = isReview;
+      this.nextBtn.classList.toggle('is-step-hidden', isReview);
+      this.nextBtn.disabled = isReview;
+    }
+    if (this.submitBtn) {
+      this.submitBtn.hidden = !isReview;
+      this.submitBtn.classList.toggle('is-step-hidden', !isReview);
+    }
 
     if (isReview) {
       this.renderReview();

@@ -12,9 +12,10 @@
     <section class="master-panel">
         <div class="master-panel-body">
             <label class="master-field-label">{{t 'onboarding_invite_link'}}</label>
+            <p class="onboarding-invite-hint">{{t 'onboarding_invite_reuse_hint'}}</p>
             <div class="onboarding-copy-row">
                 <input type="text" class="form-control master-input" readonly value="{{inviteUrl}}" id="onboardingInviteUrl">
-                <button type="button" class="btn master-btn master-btn-primary" id="copyOnboardingLinkBtn">{{t 'onboarding_copy_link'}}</button>
+                <button type="button" class="btn master-btn master-btn-primary" id="copyOnboardingLinkBtn" data-copied-label="{{t 'onboarding_copy_done'}}">{{t 'onboarding_copy_link'}}</button>
             </div>
         </div>
     </section>
@@ -53,13 +54,12 @@
                     <p class="master-community-provision">{{t 'wizard_step_logo_title'}}: {{this.logoFilename}}</p>
                     {{/if}}
                     <div class="onboarding-request-actions">
-                        <form method="POST" action="/master/onboarding/approve">
+                        <form method="POST" action="/master/onboarding/approve" class="onboarding-decision-form">
                             <input type="hidden" name="id" value="{{this._id}}">
                             <button type="submit" class="btn master-btn master-btn-primary">{{t 'onboarding_approve'}}</button>
                         </form>
-                        <form method="POST" action="/master/onboarding/reject" class="onboarding-reject-form">
+                        <form method="POST" action="/master/onboarding/reject" class="onboarding-decision-form">
                             <input type="hidden" name="id" value="{{this._id}}">
-                            <input type="text" name="reason" class="form-control master-input" placeholder="{{t 'onboarding_reject_reason'}}" maxlength="500">
                             <button type="submit" class="btn master-btn master-btn-danger">{{t 'onboarding_reject'}}</button>
                         </form>
                     </div>
@@ -72,21 +72,3 @@
         </div>
     </section>
 </div>
-<script>
-(function () {
-    var btn = document.getElementById('copyOnboardingLinkBtn');
-    var input = document.getElementById('onboardingInviteUrl');
-    if (!btn || !input) return;
-    btn.addEventListener('click', function () {
-        input.select();
-        input.setSelectionRange(0, input.value.length);
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(input.value).catch(function () {
-                document.execCommand('copy');
-            });
-        } else {
-            document.execCommand('copy');
-        }
-    });
-})();
-</script>
