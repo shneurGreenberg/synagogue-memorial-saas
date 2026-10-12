@@ -418,8 +418,7 @@
             <div class="admin-panel-body" hidden>
                 {{#if adminPermissions.settingsBranding}}
                 <div class="community-logo-settings">
-                    <h3 class="typography-controls-title">{{t 'logo'}}</h3>
-                    <div class="media-upload-card media-upload-card-flat">
+                    <div class="community-logo-row">
                         <div class="media-preview media-preview-logo" id="communityLogoPreview"
                             style="--preview-logo-radius: {{#if synagogue.theme.logoBorderRadius}}{{synagogue.theme.logoBorderRadius}}{{else}}100{{/if}};">
                             {{#if synagogue.theme.logo}}
@@ -428,10 +427,13 @@
                             <span class="media-preview-empty">{{t 'no_photo'}}</span>
                             {{/if}}
                         </div>
-                        <label class="file-drop-label">
-                            {{t 'replace_image'}}
-                            <input type="file" name="logo" accept="image/*">
-                        </label>
+                        <div class="community-logo-meta">
+                            <h3 class="typography-controls-title">{{t 'logo'}}</h3>
+                            <label class="file-drop-label file-drop-label-compact">
+                                {{t 'replace_image'}}
+                                <input type="file" name="logo" accept="image/*">
+                            </label>
+                        </div>
                     </div>
                     <div class="slider-field-modern">
                         <label for="logoBorderRadius">{{t 'logo_border_radius'}}</label>
