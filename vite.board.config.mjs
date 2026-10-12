@@ -17,10 +17,10 @@ export default defineConfig({
   build: {
     outDir: path.join(rootDir, 'public/board'),
     emptyOutDir: true,
-    // lib/death-date.js is CommonJS outside the client root; include it so
+    // Shared lib/*.js modules are CommonJS outside the client root; include them so
     // named imports survive the production bundle.
     commonjsOptions: {
-      include: [/node_modules/, /lib\/death-date\.js/],
+      include: [/node_modules/, /lib\/death-date\.js/, /lib\/memorial-qr-panel\.js/],
     },
     rollupOptions: {
       output: {

@@ -155,6 +155,16 @@ const SavedViewSchema = new mongoose.Schema({
         en: String,
         he: String,
       },
+      donationTitles: {
+        ru: String,
+        en: String,
+        he: String,
+      },
+      donationTexts: {
+        ru: String,
+        en: String,
+        he: String,
+      },
       titleScale: Number,
       textScale: Number,
       qrScale: Number,
@@ -234,6 +244,16 @@ const SynagogueSchema = new mongoose.Schema({
       he: { type: String, default: '' },
     },
     texts: {
+      ru: { type: String, default: '' },
+      en: { type: String, default: '' },
+      he: { type: String, default: '' },
+    },
+    donationTitles: {
+      ru: { type: String, default: '' },
+      en: { type: String, default: '' },
+      he: { type: String, default: '' },
+    },
+    donationTexts: {
       ru: { type: String, default: '' },
       en: { type: String, default: '' },
       he: { type: String, default: '' },

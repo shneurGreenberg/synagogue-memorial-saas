@@ -218,6 +218,27 @@
       }
     });
 
+    var memorialQrTitleFields = memorialQr.titles || {};
+    var memorialQrTextFields = memorialQr.texts || {};
+    var donationQrTitleFields = memorialQr.donationTitles || {};
+    var donationQrTextFields = memorialQr.donationTexts || {};
+    [
+      ['memorialQrTitleRu', memorialQrTitleFields.ru],
+      ['memorialQrTitleEn', memorialQrTitleFields.en],
+      ['memorialQrTitleHe', memorialQrTitleFields.he],
+      ['memorialQrTextRu', memorialQrTextFields.ru],
+      ['memorialQrTextEn', memorialQrTextFields.en],
+      ['memorialQrTextHe', memorialQrTextFields.he],
+      ['donationQrTitleRu', donationQrTitleFields.ru],
+      ['donationQrTitleEn', donationQrTitleFields.en],
+      ['donationQrTitleHe', donationQrTitleFields.he],
+      ['donationQrTextRu', donationQrTextFields.ru],
+      ['donationQrTextEn', donationQrTextFields.en],
+      ['donationQrTextHe', donationQrTextFields.he],
+    ].forEach(function (pair) {
+      setInputValue(pair[0], pair[1] || '');
+    });
+
     [
       ['memorialQrTitleScale', memorialQr.titleScale],
       ['memorialQrTextScale', memorialQr.textScale],

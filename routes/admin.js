@@ -100,7 +100,6 @@ const { normalizeBoardFeatures } = require('../lib/board-features');
 const { scanPathForSlug, safeScanReturnPath } = require('../lib/grave-scan');
 
 const BOARD_FEATURE_TOGGLE_META = [
-  { key: 'sidebarNames', labelKey: 'feature_sidebar_names', helpKey: 'feature_sidebar_names_help' },
   { key: 'dailyChumash', labelKey: 'feature_daily_chumash', helpKey: 'feature_daily_chumash_help' },
   { key: 'dailyTehillim', labelKey: 'feature_daily_tehillim', helpKey: 'feature_daily_tehillim_help' },
   { key: 'dailyTanya', labelKey: 'feature_daily_tanya', helpKey: 'feature_daily_tanya_help' },
@@ -130,7 +129,7 @@ const BOARD_FEATURE_GROUPS = [
   {
     groupKey: 'board_features_sidebar_group',
     helpKey: 'board_features_sidebar_group_help',
-    keys: ['officialLogo', 'sidebarNames', 'upcomingHolidays', 'communityEvents', 'weather', 'sunriseSunset'],
+    keys: ['officialLogo', 'upcomingHolidays', 'communityEvents', 'weather', 'sunriseSunset'],
   },
   {
     groupKey: 'board_features_learning_group',
