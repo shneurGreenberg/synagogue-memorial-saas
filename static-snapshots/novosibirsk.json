@@ -3280,8 +3280,8 @@
       }
     ]
   },
-  "contentVersion": 1791789931137,
-  "exportedAt": "2026-10-12T07:25:31.137Z",
+  "contentVersion": 1791795744836,
+  "exportedAt": "2026-10-12T09:02:24.836Z",
   "jewishContent": {
     "date": "2026-10-12",
     "timezone": "Asia/Novosibirsk",
@@ -3464,7 +3464,7 @@
   },
   "sidebarApp": {
     "slug": "novosibirsk",
-    "publishedVersion": 4,
+    "publishedVersion": 5,
     "title": "Проект памяти наших родных \"Кадиш\"",
     "language": "ru",
     "location": {
@@ -3637,6 +3637,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-12T07:25:31.137Z"
+    "updatedAt": "2026-10-12T09:02:24.836Z"
   }
 }
