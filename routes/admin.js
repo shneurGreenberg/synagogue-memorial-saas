@@ -24,6 +24,7 @@ const {
     resolvePublishedVersion,
     formatPublishedAt,
 } = require('../lib/board-publish');
+const { loadChangelog, currentCodeVersion, hasUnseenRelease } = require('../lib/changelog');
 const {
   normalizeSnapshot,
   saveViewThumbnail,
@@ -89,6 +90,9 @@ const {
   buildContactMessageEntry,
 } = require('../lib/yahrzeit-reminders');
 const { getDayKeyInTimezone, resolveSynagogueTimezone, buildYahrzeitEntries } = require('../lib/yahrzeit');
+const {
+    getWeeklyKaddishEntries, buildWeeklyKaddishMessage, buildWhatsappUrl, isWeekConfirmed,
+} = require('../lib/weekly-kaddish');
 const { buildFaviconPath, resolveFaviconLogoFilename } = require('../lib/favicon');
 const { OFFICIAL_LOGO_FILENAME } = require('../lib/board-defaults');
 const { CANDLE_PALETTE_KEYS, normalizeCandlePalette } = require('../lib/candle-palette');
@@ -595,6 +599,11 @@ function renderAdmin(res, view, options = {}) {
         yahrzeitTodayCount,
         undatedPeopleCount: countPeopleWithoutDeathDate(displaySynagogue && displaySynagogue.people),
         boardPublish,
+        codeRelease: {
+            version: currentCodeVersion(),
+            unseen: hasUnseenRelease(displaySynagogue && displaySynagogue.lastRefreshedCodeVersion),
+            changelog: loadChangelog(),
+        },
         officialLogoUrl: `/images/${OFFICIAL_LOGO_FILENAME}`,
         faviconUrl: buildFaviconPath(displaySynagogue.slug, { badge: false }),
         faviconAlertUrl: buildFaviconPath(displaySynagogue.slug, { badge: true }),
@@ -1084,6 +1093,9 @@ router.post('/:slug/yahrzeit/settings', requireAdmin, requirePermission('people'
         await Synagogue.updateOne({ slug: req.params.slug }, {
             $set: {
                 'yahrzeitReminders.includeHebrewYahrzeit': includeHebrew,
+                ...('weeklyKaddishWhatsapp' in req.body
+                    ? { weeklyKaddishWhatsapp: String(req.body.weeklyKaddishWhatsapp || '').trim().slice(0, 30) }
+                    : {}),
             },
         });
         return res.redirect(`/admin/${req.params.slug}/yahrzeit?saved=1`);
@@ -1109,8 +1121,22 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
 
 
         const upcomingHolidayNotice = await getUpcomingHolidayNotice(enriched);
+        const weeklyKaddish = getWeeklyKaddishEntries(synagogue, new Date());
+        if (weeklyKaddish.entries.length) {
+            const message = buildWeeklyKaddishMessage(weeklyKaddish.entries);
+            const confirmation = synagogue.weeklyKaddishConfirmation || {};
+            weeklyKaddish.message = message;
+            weeklyKaddish.whatsappUrl = buildWhatsappUrl(synagogue.weeklyKaddishWhatsapp, message);
+            weeklyKaddish.confirmed = isWeekConfirmed(synagogue, weeklyKaddish.weekKey);
+            weeklyKaddish.confirmedBy = weeklyKaddish.confirmed ? confirmation.confirmedBy : '';
+            weeklyKaddish.confirmedAtLabel = weeklyKaddish.confirmed
+                ? new Date(confirmation.confirmedAt).toLocaleString('he-IL', { timeZone: timezone })
+                : '';
+        }
 
         renderAdmin(res, 'admin/yahrzeit', {
+            weeklyKaddish: weeklyKaddish.entries.length ? weeklyKaddish : null,
+            weeklyKaddishWhatsapp: synagogue.weeklyKaddishWhatsapp || '',
             synagogue: enriched,
             adminUser: req.adminUser,
             adminPermissions: req.adminPermissions,
@@ -1123,6 +1149,23 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
         });
     } catch (err) {
         res.status(500).send(err.message);
+    }
+});
+
+router.post('/:slug/yahrzeit/weekly-confirm', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        if (!synagogue) return res.status(404).send('Not found');
+        const { weekKey } = getWeeklyKaddishEntries(synagogue, new Date());
+        const confirmedBy = (req.adminUser && (req.adminUser.displayName || req.adminUser.username))
+            || req.session.adminUsername || 'admin';
+        await Synagogue.updateOne({ slug: req.params.slug }, {
+            $set: { weeklyKaddishConfirmation: { weekKey, confirmedBy, confirmedAt: new Date() } },
+        });
+        return res.redirect(`/admin/${req.params.slug}/yahrzeit#weekly-kaddish`);
+    } catch (err) {
+        return res.status(500).send(err.message);
     }
 });
 
@@ -1514,7 +1557,7 @@ router.post('/:slug/publish-version', requireAdmin, requirePermission('settings'
         const publishedVersion = nextPublishedVersion(synagogue.publishedVersion);
         await Synagogue.updateOne(
             { slug: req.params.slug },
-            { $set: { publishedVersion, publishedAt: new Date() } },
+            { $set: { publishedVersion, publishedAt: new Date(), lastRefreshedCodeVersion: currentCodeVersion() } },
         );
         invalidateBoardCache(req.params.slug);
 

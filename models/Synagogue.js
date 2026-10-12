@@ -303,6 +303,13 @@ const SynagogueSchema = new mongoose.Schema({
   reloadTimeout: { type: Number, default: 43200000 }, // 12 hours
   publishedVersion: { type: Number, default: 1 },
   publishedAt: { type: Date, default: null },
+  lastRefreshedCodeVersion: { type: String, default: null },
+  weeklyKaddishWhatsapp: { type: String, default: '' },
+  weeklyKaddishConfirmation: {
+    weekKey: { type: String, default: '' },
+    confirmedBy: { type: String, default: '' },
+    confirmedAt: { type: Date, default: null },
+  },
   boardClients: {
     type: [{
       screenId: String,

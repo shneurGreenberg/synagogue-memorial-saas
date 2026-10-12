@@ -12,12 +12,13 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 import com.synagogue.sidebar.widget.SidebarWidgetProvider;
 import com.synagogue.sidebar.widget.WidgetDataLoader;
 import com.synagogue.sidebar.widget.WidgetPrefs;
+import com.synagogue.sidebar.widget.ServerUrls;
 
 @CapacitorPlugin(name = "WidgetSync")
 public class WidgetSyncPlugin extends Plugin {
     @PluginMethod
     public void sync(PluginCall call) {
-        String serverUrl = call.getString("serverUrl", "https://synagogue-kadish-shneur.amvera.io");
+        String serverUrl = ServerUrls.migrate(call.getString("serverUrl", ServerUrls.DEFAULT_SERVER_URL));
         String slug = call.getString("slug", "novosibirsk");
         String language = call.getString("language", "ru");
         double lat = call.getDouble("lat", 54.9833);

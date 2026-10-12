@@ -20,6 +20,7 @@ const {
     resolvePublishedVersion,
     formatPublishedAt,
 } = require('../lib/board-publish');
+const { currentCodeVersion } = require('../lib/changelog');
 const {
   createLoginRateLimiter,
   regenerateSession,
@@ -417,7 +418,7 @@ router.post('/publish-version', requireMaster, async (req, res) => {
         const publishedVersion = nextPublishedVersion(synagogue.publishedVersion);
         await Synagogue.updateOne(
             { slug },
-            { $set: { publishedVersion, publishedAt: new Date() } },
+            { $set: { publishedVersion, publishedAt: new Date(), lastRefreshedCodeVersion: currentCodeVersion() } },
         );
         invalidateBoardCache(slug);
         return res.redirect('/master/dashboard?published=1');
