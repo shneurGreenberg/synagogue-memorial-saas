@@ -583,15 +583,15 @@
           border-radius: 12px;
         }
 
-        .yahrzeit-today-badge {
-          position: absolute;
-          top: 6px;
-          right: 8px;
-          z-index: 2;
-          color: #ffd54f;
-          font-size: clamp(16px, 1.4vw, 22px);
-          text-shadow: 0 0 8px rgba(255, 193, 7, 0.9);
-          line-height: 1;
+        &.card-yahrzeit-today {
+          border: 2px solid var(--accent-color, #ffd54f);
+          box-shadow:
+            0 0 10px var(--accent-color, #ffd54f),
+            0 0 22px var(--primary-color, #cfaf1f);
+
+          @media (prefers-reduced-motion: no-preference) {
+            animation: card-yahrzeit-today-glow 2.8s ease-in-out infinite;
+          }
         }
 
         .inner {
@@ -1618,10 +1618,29 @@
   }
 }
 
+@keyframes card-yahrzeit-today-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 8px var(--accent-color, #ffd54f),
+      0 0 18px var(--primary-color, #cfaf1f);
+  }
+
+  50% {
+    box-shadow:
+      0 0 14px var(--accent-color, #ffd54f),
+      0 0 28px var(--primary-color, #cfaf1f);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .main-container .cards-grid .card .candle,
   .prayer-reading-candle.candle-fallback,
   .candle-fallback-css {
+    animation: none;
+  }
+
+  .main-container .cards-grid .card.card-yahrzeit-today {
     animation: none;
   }
 

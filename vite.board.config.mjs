@@ -20,7 +20,12 @@ export default defineConfig({
     // Shared lib/*.js modules are CommonJS outside the client root; include them so
     // named imports survive the production bundle.
     commonjsOptions: {
-      include: [/node_modules/, /lib\/death-date\.js/, /lib\/memorial-qr-panel\.js/],
+      include: [
+        /node_modules/,
+        /lib\/death-date\.js/,
+        /lib\/memorial-qr-panel\.js/,
+        /lib\/board-yahrzeit-layout\.js/,
+      ],
     },
     rollupOptions: {
       output: {
