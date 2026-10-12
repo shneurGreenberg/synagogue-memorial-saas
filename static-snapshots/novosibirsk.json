@@ -50,7 +50,8 @@
     },
     "backgroundImage": "1781871495467.jpg",
     "tilesBackground": "1781877654975.jpg",
-    "logoBorderRadius": 100
+    "logoBorderRadius": 0,
+    "logoBackground": ""
   },
   "people": [
     {
@@ -3210,7 +3211,6 @@
   ],
   "communityEvents": [],
   "boardFeatures": {
-    "sidebarNames": false,
     "dailyChumash": false,
     "dailyTehillim": false,
     "dailyRambam": false,
@@ -3241,6 +3241,16 @@
       "en": "Scan the QR code to register loved ones",
       "he": "סרקו את הברקוד לרישום יקירים"
     },
+    "donationTitles": {
+      "ru": "Цдака — пожертвование",
+      "en": "Charity — donation",
+      "he": "צדקה"
+    },
+    "donationTexts": {
+      "ru": "Отсканируйте QR-код, чтобы сделать пожертвование в память о близких",
+      "en": "Scan the QR code to make a donation in memory of loved ones",
+      "he": "סרקו את הברקוד לתרומה לזכר יקירים"
+    },
     "titleScale": 100,
     "textScale": 100,
     "qrScale": 100,
@@ -3270,8 +3280,8 @@
       }
     ]
   },
-  "contentVersion": 1791778287630,
-  "exportedAt": "2026-10-12T04:11:27.630Z",
+  "contentVersion": 1791785864668,
+  "exportedAt": "2026-10-12T06:17:44.668Z",
   "jewishContent": {
     "date": "2026-10-12",
     "timezone": "Asia/Novosibirsk",
@@ -3454,7 +3464,7 @@
   },
   "sidebarApp": {
     "slug": "novosibirsk",
-    "publishedVersion": 2,
+    "publishedVersion": 3,
     "title": "Проект памяти наших родных \"Кадиш\"",
     "language": "ru",
     "location": {
@@ -3627,6 +3637,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-12T04:11:27.630Z"
+    "updatedAt": "2026-10-12T06:17:44.668Z"
   }
 }

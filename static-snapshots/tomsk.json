@@ -50,7 +50,8 @@
     "candlePalette": "warm",
     "backgroundImage": "1782467771943-opt.jpg",
     "tilesBackground": "1782467772463-opt.jpg",
-    "logoBorderRadius": 100
+    "logoBorderRadius": 100,
+    "logoBackground": ""
   },
   "people": [
     {
@@ -6240,7 +6241,6 @@
     }
   ],
   "boardFeatures": {
-    "sidebarNames": false,
     "dailyChumash": true,
     "dailyTehillim": false,
     "dailyRambam": true,
@@ -6271,6 +6271,16 @@
       "en": "Scan the QR code to register loved ones",
       "he": "סרקו את הברקוד לרישום יקירים"
     },
+    "donationTitles": {
+      "ru": "Цдака — пожертвование",
+      "en": "Charity — donation",
+      "he": "צדקה"
+    },
+    "donationTexts": {
+      "ru": "Отсканируйте QR-код, чтобы сделать пожертвование в память о близких",
+      "en": "Scan the QR code to make a donation in memory of loved ones",
+      "he": "סרקו את הברקוד לתרומה לזכר יקירים"
+    },
     "titleScale": 100,
     "textScale": 100,
     "qrScale": 100,
@@ -6282,8 +6292,8 @@
   "shabbatTimesEnabled": true,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1791778291835,
-  "exportedAt": "2026-10-12T04:11:31.835Z",
+  "contentVersion": 1791785871388,
+  "exportedAt": "2026-10-12T06:17:51.388Z",
   "jewishContent": {
     "date": "2026-10-12",
     "timezone": "Asia/Tomsk",
@@ -6638,6 +6648,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-12T04:11:31.835Z"
+    "updatedAt": "2026-10-12T06:17:51.388Z"
   }
 }
