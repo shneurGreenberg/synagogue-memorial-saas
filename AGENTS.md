@@ -47,6 +47,9 @@ Run `node scripts/seed.js` to seed the Novosibirsk synagogue (skips if already e
 - Admin/master UIs are Handlebars + vanilla JS in `views/` and `public/js/`.
 - Admin settings numeric fields use the `admin-settings-number-stepper` partial and `public/js/admin-number-stepper.js` (+/− steppers), not `<input type="range">`.
 - Uploaded photos go to `photos/` and images to `images/` on the local filesystem (or `/data` when persistent storage is configured).
+- Image uploads share `lib/upload-limits.js` (50MB cap); raster files are resized/compressed via `lib/image-optimize.js` (requires `sharp`) on admin, master, onboarding, and public-submission routes.
+- Admin loads synagogue data through `lib/admin-synagogue-load.js` (lean MongoDB projections + ~15s in-memory cache). Any route or handler that mutates a `Synagogue` document must call `invalidateAdminSynagogueCache(slug)` (admin POST/PUT/PATCH/DELETE under `/:slug` also go through `invalidateBoardOnMutation` in `routes/admin.js`).
+- On the public board, multiple yahrzeits on the same day render as equal small tiles with a theme-colored glow (`lib/board-yahrzeit-layout.js`, client memorial cards).
 - Master wizard uploads live in `provisioning/` and are served at `/images/provisioning/...`.
 - Public board APIs intentionally omit contacts, admin users, and other private fields.
 - `pm2` scripts in `package.json` (`yarn restart`/`yarn stop`) are for production only; use `node app.js` for development.
