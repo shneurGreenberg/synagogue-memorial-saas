@@ -21,7 +21,6 @@
 <section class="admin-panel slideshow-embedded" id="slideshow-section">
     <div class="admin-panel-header">
         <h2>{{t 'slideshow'}} / {{t 'slideshow_settings_section'}}</h2>
-        <p class="admin-panel-desc">{{t 'slideshow_timing_help'}}</p>
     </div>
     <div class="admin-panel-body">
         <form method="POST" action="/admin/{{synagogue.slug}}/slideshow/settings" class="slideshow-settings-form">
@@ -40,7 +39,6 @@
                     <label for="mainDuration">{{t 'main_duration'}}</label>
                     <input type="number" class="form-control admin-input-modern" name="mainDuration" id="mainDuration"
                         value="{{synagogue.slideshow.mainDuration}}" min="10" required>
-                    <span class="field-hint">{{t 'main_duration_help'}}</span>
                 </div>
             </div>
             <button type="submit" class="btn-admin btn-admin-primary">{{t 'save'}}</button>
@@ -244,7 +242,6 @@
     <section class="admin-panel">
         <div class="admin-panel-header">
             <h2>{{t 'add_community_event'}}</h2>
-            <p class="admin-panel-desc">{{t 'community_events_add_help'}}</p>
         </div>
         <div class="admin-panel-body events-form-layout">
             <form method="POST" action="/admin/{{synagogue.slug}}/events/add" class="add-event-form events-editor-form" id="addEventForm">
@@ -338,7 +335,6 @@
                     data-board-lang="{{synagogue.language}}"
                     style="--primary-color: {{synagogue.theme.primaryColor}}; --text-color: {{synagogue.theme.textColor}}; --accent-color: {{synagogue.theme.accentColor}};">
                     <h3 class="events-board-preview-title">{{t 'event_board_preview_title'}}</h3>
-                    <p class="field-hint">{{t 'event_board_preview_help'}}</p>
                     <div class="events-board-preview-panel">
                         <h4 class="events-board-preview-section" id="eventsPreviewSectionTitle">{{t 'sidebar_upcoming_title'}}</h4>
                         <ul class="events-board-preview-list">
@@ -377,7 +373,6 @@
     <section class="admin-panel" id="historyEventsPanel">
         <div class="admin-panel-header">
             <h2>{{t 'events_history'}}</h2>
-            <p class="admin-panel-desc">{{t 'events_history_help'}}</p>
         </div>
         <div class="admin-panel-body">
             <div class="events-list events-list-history" id="historyEventsList" data-section="history"></div>
