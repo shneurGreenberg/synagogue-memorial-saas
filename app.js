@@ -56,8 +56,11 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 15000,
   connectTimeoutMS: 15000,
-}).then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+}).then(async () => {
+  console.log('MongoDB connected');
+  const { runStartupMigrations } = require('./lib/migrations/run-migrations');
+  await runStartupMigrations();
+}).catch(err => console.error('MongoDB connection error:', err));
 
 app.use(compression());
 app.use(helmet({

@@ -69,12 +69,6 @@
                                 {{/each}}
                             </ul>
                             {{/if}}
-                            {{#if this.provisioning.photosDriveUrl}}
-                            <p class="master-community-provision">
-                                <span>{{t 'wizard_review_photos_drive'}}:</span>
-                                <a href="{{this.provisioning.photosDriveUrl}}" target="_blank" rel="noopener">{{this.provisioning.photosDriveUrl}}</a>
-                            </p>
-                            {{/if}}
                             {{#if this.provisioning.contactFiles.length}}
                             <p class="master-community-provision">{{t 'wizard_contact_files'}}: {{this.provisioning.contactFiles.length}}</p>
                             {{/if}}

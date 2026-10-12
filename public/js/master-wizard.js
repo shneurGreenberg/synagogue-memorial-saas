@@ -8,7 +8,6 @@
     { id: 'appearance', labelKey: 'wizard_step_appearance_title' },
     { id: 'features', labelKey: 'wizard_step_features_title' },
     { id: 'contacts', labelKey: 'wizard_step_contacts_title' },
-    { id: 'photos', labelKey: 'wizard_step_photos_title' },
     { id: 'yahrzeit', labelKey: 'wizard_step_yahrzeit_title' },
     { id: 'review', labelKey: 'wizard_step_review_title' },
   ];
@@ -253,7 +252,6 @@
       ['wizard_review_language', 'language'],
       ['wizard_review_city', 'city'],
       ['wizard_review_donation', 'donationUrl'],
-      ['wizard_review_photos_drive', 'photosDriveUrl'],
       ['wizard_review_yahrzeit_email', 'yahrzeitNotifyEmail'],
     ];
 

@@ -274,10 +274,10 @@ router.get('/new', requireMaster, (req, res) => {
     const wizardLabelKeys = [
         'wizard_step_basics_title', 'wizard_step_languages_title', 'wizard_step_location_title',
         'wizard_step_logo_title', 'wizard_step_donation_title', 'wizard_step_appearance_title',
-        'wizard_step_features_title', 'wizard_step_contacts_title', 'wizard_step_photos_title',
+        'wizard_step_features_title', 'wizard_step_contacts_title',
         'wizard_step_yahrzeit_title', 'wizard_step_review_title',
         'wizard_review_name', 'wizard_review_slug', 'wizard_review_language', 'wizard_review_city',
-        'wizard_review_donation', 'wizard_review_photos_drive', 'wizard_review_yahrzeit_email',
+        'wizard_review_donation', 'wizard_review_yahrzeit_email',
         'wizard_review_skipped', 'wizard_review_none_skipped', 'wizard_yes', 'wizard_no',
         'wizard_not_added', 'wizard_not_set',
     ];
