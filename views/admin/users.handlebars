@@ -1,15 +1,17 @@
 <div class="admin-page users-page">
     <header class="admin-page-header">
         <div>
-            <h1>{{t 'user_management'}}</h1>
-            <p class="admin-subtitle">{{t 'user_management_subtitle'}}</p>
+            <h1>{{#if canManageUsers}}{{t 'user_management'}}{{else}}{{t 'my_admin_preferences'}}{{/if}}</h1>
+            <p class="admin-subtitle">{{#if canManageUsers}}{{t 'user_management_subtitle'}}{{else}}{{t 'my_admin_preferences_subtitle'}}{{/if}}</p>
         </div>
+        {{#if canManageUsers}}
         <div class="header-actions">
             <button type="button" class="btn-admin btn-admin-primary btn-admin-with-icon" data-toggle="modal" data-target="#addUserModal">
                 {{{adminIcon 'add' class='btn-admin-inline-icon'}}}
                 {{t 'add_user'}}
             </button>
         </div>
+        {{/if}}
     </header>
 
     {{#if saved}}
@@ -26,8 +28,54 @@
     </div>
     {{/if}}
 
+    {{#if canManageUsers}}
     <p class="seed-notice">{{t 'user_login_hint'}}</p>
+    {{/if}}
 
+    <section class="admin-panel users-session-panel">
+        <div class="admin-panel-header">
+            <h2 class="admin-panel-title">{{t 'my_admin_preferences'}}</h2>
+        </div>
+        <div class="admin-panel-body users-session-panel-body">
+            <p class="users-session-identity">
+                <strong>{{sessionAdminProfile.displayName}}</strong>
+                <code>{{synagogue.slug}}/{{sessionAdminProfile.username}}</code>
+            </p>
+            <form method="POST" action="/admin/{{synagogue.slug}}/my-preferences" class="users-session-preferences-form" id="myAdminPreferencesForm">
+                <div class="users-session-preferences-grid">
+                    <div class="form-field">
+                        <label for="sessionAdminLanguage">{{t 'admin_language'}}</label>
+                        <select name="adminLanguage" id="sessionAdminLanguage" class="form-control admin-select-modern">
+                            <option value="ru" {{#if (eq sessionAdminProfile.adminLanguage 'ru')}}selected{{/if}}>Russian</option>
+                            <option value="en" {{#if (eq sessionAdminProfile.adminLanguage 'en')}}selected{{/if}}>English</option>
+                            <option value="he" {{#if (eq sessionAdminProfile.adminLanguage 'he')}}selected{{/if}}>Hebrew</option>
+                        </select>
+                    </div>
+                    <div class="admin-theme-setting color-mode-field users-session-theme-field"
+                        data-light-label="{{t 'light_mode'}}"
+                        data-dark-label="{{t 'dark_mode'}}">
+                        <div class="admin-theme-setting-label">{{t 'color_mode'}}</div>
+                        <input type="hidden" name="colorMode" id="sessionColorModeInput"
+                            value="{{#if (eq sessionAdminProfile.adminColorMode 'light')}}light{{else}}dark{{/if}}">
+                        <div class="admin-theme-setting-control">
+                            <label class="toggle-switch color-mode-toggle" for="sessionColorModeToggle">
+                                <input type="checkbox" id="sessionColorModeToggle"
+                                    {{#if (eq sessionAdminProfile.adminColorMode 'light')}}checked{{/if}}>
+                                <span class="toggle-slider" aria-hidden="true"></span>
+                            </label>
+                            <span class="toggle-mode-text" id="sessionColorModeToggleLabel">
+                                {{#if (eq sessionAdminProfile.adminColorMode 'light')}}{{t 'light_mode'}}{{else}}{{t 'dark_mode'}}{{/if}}
+                            </span>
+                        </div>
+                        <p class="field-hint admin-theme-setting-hint">{{t 'color_mode_help'}}</p>
+                    </div>
+                </div>
+                <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon">{{{adminIcon 'save' class='btn-admin-inline-icon'}}}{{t 'save_changes'}}</button>
+            </form>
+        </div>
+    </section>
+
+    {{#if canManageUsers}}
     <div class="admin-panel">
         <div class="admin-panel-header">
             <h2>{{t 'current_users'}}</h2>
@@ -107,8 +155,10 @@
             {{/if}}
         </div>
     </div>
+    {{/if}}
 </div>
 
+{{#if canManageUsers}}
 <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content admin-modal">
@@ -149,3 +199,4 @@
         </div>
     </div>
 </div>
+{{/if}}
