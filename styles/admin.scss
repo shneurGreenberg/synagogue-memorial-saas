@@ -3341,6 +3341,23 @@ body.admin-theme-light {
   height: 160px;
 }
 
+.admin-master-impersonation-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: 0.55rem 1rem;
+  background: linear-gradient(90deg, #4c1d95, #6d28d9);
+  color: #f3eef8;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.admin-master-impersonation-form {
+  margin: 0;
+}
+
 .code-release-banner {
   display: flex;
   flex-wrap: wrap;

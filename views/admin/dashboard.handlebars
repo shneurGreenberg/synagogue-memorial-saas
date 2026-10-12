@@ -20,9 +20,9 @@
     </div>
   {{/if}}
 
-  {{#if published}}
+  {{#if refreshed}}
     <div class="alert alert-success alert-dismissible fade show admin-alert" role="alert">
-        {{t 'publish_version_done'}}
+        {{t 'refresh_display_done'}}
         <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div>
   {{/if}}
@@ -39,7 +39,7 @@
         <span>{{t 'code_release_banner'}} <strong>v{{codeRelease.version}}</strong></span>
         <span class="code-release-actions">
             <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm" id="codeReleaseDetailsBtn">{{t 'code_release_details'}}</button>
-            <button type="submit" form="refreshDisplayForm" class="btn-admin btn-admin-primary btn-admin-sm">{{t 'code_release_refresh'}}</button>
+            <button type="submit" form="refreshDisplayForm" class="btn-admin btn-admin-primary btn-admin-sm">{{t 'refresh_display_screens'}}</button>
         </span>
     </div>
   {{/if}}
@@ -63,7 +63,7 @@
         </div>
     </dialog>
 
-    <form method="POST" action="/admin/{{synagogue.slug}}/publish-version" id="refreshDisplayForm" data-confirm="{{t 'publish_version_confirm'}}" onsubmit="return confirm(this.getAttribute('data-confirm'));"></form>
+    <form method="POST" action="/admin/{{synagogue.slug}}/refresh-screens" id="refreshDisplayForm" data-confirm="{{t 'refresh_display_confirm'}}" onsubmit="return confirm(this.getAttribute('data-confirm'));"></form>
 
 
     <form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data" class="settings-form" id="settingsForm" data-save-label="{{t 'save'}}" data-slug="{{synagogue.slug}}">

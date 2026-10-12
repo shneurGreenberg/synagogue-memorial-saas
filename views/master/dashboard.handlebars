@@ -9,8 +9,8 @@
     {{#if saved}}
     <div class="master-alert master-alert-success">{{t 'saved_success'}}</div>
     {{/if}}
-    {{#if published}}
-    <div class="master-alert master-alert-success">{{t 'publish_version_done'}}</div>
+    {{#if refreshed}}
+    <div class="master-alert master-alert-success">{{t 'refresh_display_done'}}</div>
     {{/if}}
     {{#if error}}
     <div class="master-alert master-alert-danger">
@@ -20,6 +20,22 @@
         {{else}}{{error}}{{/if}}{{/if}}{{/if}}
     </div>
     {{/if}}
+
+    <details class="master-muted-details">
+        <summary>{{t 'versions_changelog_details'}} · {{t 'app_code_version_label'}} {{appCodeVersion}}</summary>
+        <div class="master-changelog-panel">
+            {{#each codeChangelog}}
+            <section class="master-changelog-entry">
+                <h3>v{{this.version}}{{#if this.date}} <small>{{this.date}}</small>{{/if}}</h3>
+                <ul>
+                    {{#each this.items}}
+                    <li>{{this.text}}</li>
+                    {{/each}}
+                </ul>
+            </section>
+            {{/each}}
+        </div>
+    </details>
 
     <section class="master-panel">
         <div class="master-panel-header master-panel-header-split">
@@ -34,6 +50,83 @@
         </div>
     </section>
 
+    <details class="master-onboarding-details" id="master-onboarding">
+        <summary>{{t 'onboarding_heading'}} ({{onboardingRequests.length}})</summary>
+        <div class="master-onboarding-body">
+            {{#if onboardingSaved}}
+            <div class="master-alert master-alert-success">{{t 'saved_success'}}</div>
+            {{/if}}
+            {{#if onboardingRejected}}
+            <div class="master-alert master-alert-success">{{t 'onboarding_reject'}}</div>
+            {{/if}}
+            {{#if onboardingError}}
+            <div class="master-alert master-alert-danger">{{onboardingError}}</div>
+            {{/if}}
+            {{#if inviteUrl}}
+            <div class="master-alert master-alert-success">{{t 'onboarding_invite_created'}}</div>
+            <div class="master-panel-body">
+                <label class="master-field-label">{{t 'onboarding_invite_link'}}</label>
+                <div class="onboarding-copy-row">
+                    <input type="text" class="form-control master-input" readonly value="{{inviteUrl}}" id="onboardingInviteUrl">
+                    <button type="button" class="btn master-btn master-btn-primary" id="copyOnboardingLinkBtn">{{t 'onboarding_copy_link'}}</button>
+                </div>
+            </div>
+            {{/if}}
+
+            <div class="master-panel">
+                <div class="master-panel-header">
+                    <h2>{{t 'onboarding_create_invite'}}</h2>
+                </div>
+                <div class="master-panel-body">
+                    <form method="POST" action="/master/onboarding/invites" class="master-inline-form">
+                        <label>
+                            <span class="master-field-label">{{t 'onboarding_invite_label'}}</span>
+                            <input type="text" name="label" class="form-control master-input" maxlength="120" placeholder="{{t 'onboarding_invite_label_placeholder'}}">
+                        </label>
+                        <button type="submit" class="btn master-btn master-btn-primary">{{t 'onboarding_create_invite_btn'}}</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="master-panel">
+                <div class="master-panel-header">
+                    <h2>{{t 'onboarding_pending_heading'}} ({{onboardingRequests.length}})</h2>
+                </div>
+                <div class="master-panel-body">
+                    {{#if onboardingRequests.length}}
+                    <div class="onboarding-request-list">
+                        {{#each onboardingRequests}}
+                        <article class="onboarding-request-card">
+                            <header>
+                                <h3>{{this.name}} <code>{{this.slug}}</code></h3>
+                                <p class="master-community-meta">{{this.location.city}} · {{this.adminEmail}} · {{this.contactName}}</p>
+                                <p class="master-community-meta">{{t 'onboarding_submitted'}}: {{this.submittedLabel}}</p>
+                            </header>
+                            {{#if this.logoFilename}}
+                            <p class="master-community-provision">{{t 'wizard_step_logo_title'}}: {{this.logoFilename}}</p>
+                            {{/if}}
+                            <div class="onboarding-request-actions">
+                                <form method="POST" action="/master/onboarding/approve">
+                                    <input type="hidden" name="id" value="{{this._id}}">
+                                    <button type="submit" class="btn master-btn master-btn-primary">{{t 'onboarding_approve'}}</button>
+                                </form>
+                                <form method="POST" action="/master/onboarding/reject" class="onboarding-reject-form">
+                                    <input type="hidden" name="id" value="{{this._id}}">
+                                    <input type="text" name="reason" class="form-control master-input" placeholder="{{t 'onboarding_reject_reason'}}" maxlength="500">
+                                    <button type="submit" class="btn master-btn master-btn-danger">{{t 'onboarding_reject'}}</button>
+                                </form>
+                            </div>
+                        </article>
+                        {{/each}}
+                    </div>
+                    {{else}}
+                    <p>{{t 'onboarding_no_pending'}}</p>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </details>
+
     <section class="master-panel">
         <div class="master-panel-header">
             <h2>{{t 'existing_communities'}} ({{synagogues.length}})</h2>
@@ -45,30 +138,33 @@
                 <article class="master-community-card" data-id="{{this._id}}">
                     <header class="master-community-card-header">
                         <div>
-                            <h3>{{this.name}}</h3>
+                            <div class="master-community-title-row">
+                                <img class="master-community-logo" src="{{this.logoUrl}}" alt="" width="40" height="40" loading="lazy">
+                                <h3>{{this.name}}</h3>
+                            </div>
                             <p class="master-community-meta">
                                 <code>{{this.slug}}</code>
                                 · {{#if this.location.city}}{{this.location.city}}{{else}}{{t 'no_city'}}{{/if}}
                                 · {{#if this.location.timezone}}{{this.location.timezone}}{{else}}Asia/Novosibirsk{{/if}}
                                 · {{this.language}}/{{this.adminLanguage}}
                             </p>
-                            <p class="master-community-meta">
-                                {{t 'published_version_label'}}: <strong>{{this.publishSummary.publishedVersion}}</strong>
-                                · {{this.publishSummary.onPublishedVersion}} {{t 'screens_on_version'}}
-                                · {{this.publishSummary.pendingCount}} {{t 'screens_pending'}}
-                            </p>
-                            {{#if this.publishSummary.screens.length}}
-                            <ul class="master-screen-list">
-                                {{#each this.publishSummary.screens}}
-                                <li>
-                                    <span>{{#if this.label}}{{this.label}}{{else}}{{this.screenId}}{{/if}}</span>
-                                    <span>{{this.clientLabel}}</span>
-                                    <span>v{{this.publishedVersion}}</span>
-                                    <time datetime="{{this.lastSeenAt}}">{{this.lastSeenLabel}}</time>
-                                </li>
-                                {{/each}}
-                            </ul>
-                            {{/if}}
+                            <details class="master-muted-details master-community-screens-details">
+                                <summary>{{t 'published_version_label'}} {{this.publishSummary.publishedVersion}} · {{this.publishSummary.onPublishedVersion}} {{t 'screens_on_version'}} · {{this.publishSummary.pendingCount}} {{t 'screens_pending'}}</summary>
+                                {{#if this.publishSummary.screens.length}}
+                                <ul class="master-screen-list">
+                                    {{#each this.publishSummary.screens}}
+                                    <li>
+                                        <span>{{#if this.label}}{{this.label}}{{else}}{{this.screenId}}{{/if}}</span>
+                                        <span>{{this.clientLabel}}</span>
+                                        <span>v{{this.publishedVersion}}</span>
+                                        <time datetime="{{this.lastSeenAt}}">{{this.lastSeenLabel}}</time>
+                                    </li>
+                                    {{/each}}
+                                </ul>
+                                {{else}}
+                                <p class="master-empty">{{t 'no_screens_yet'}}</p>
+                                {{/if}}
+                            </details>
                             {{#if this.provisioning.photosDriveUrl}}
                             <p class="master-community-provision">
                                 <span>{{t 'wizard_review_photos_drive'}}:</span>
@@ -84,13 +180,16 @@
                                 <svg class="master-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m0 14H3V5h18v12Z"/></svg>
                                 {{t 'board'}}
                             </a>
-                            <a href="/admin/login" class="btn master-btn master-btn-secondary btn-sm" target="_blank" rel="noopener">
-                                <svg class="master-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4m0 2.18c2.53.77 4.5 2.53 5.82 4.82H6.18C7.5 5.71 9.47 3.95 12 3.18M12 7a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2m0 6.75c2.53 0 4.77.93 6.5 2.43V17c0 .55-.45 1-1 1H6.5c-.55 0-1-.45-1-1v-.82c1.73-1.5 3.97-2.43 6.5-2.43Z"/></svg>
-                                {{t 'admin'}}
-                            </a>
-                            <form method="POST" action="/master/publish-version" class="master-publish-form" data-confirm="{{t 'publish_version_confirm'}}" onsubmit="return confirm(this.getAttribute('data-confirm'));">
+                            <form method="POST" action="/master/impersonate" class="master-impersonate-form">
                                 <input type="hidden" name="slug" value="{{this.slug}}">
-                                <button type="submit" class="btn master-btn master-btn-secondary btn-sm">{{t 'publish_version'}}</button>
+                                <button type="submit" class="btn master-btn master-btn-secondary btn-sm">
+                                    <svg class="master-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4m0 2.18c2.53.77 4.5 2.53 5.82 4.82H6.18C7.5 5.71 9.47 3.95 12 3.18M12 7a2 2 0 0 1 2 2 2 2 0 0 1-2 2 2 2 0 0 1-2-2 2 2 0 0 1 2-2m0 6.75c2.53 0 4.77.93 6.5 2.43V17c0 .55-.45 1-1 1H6.5c-.55 0-1-.45-1-1v-.82c1.73-1.5 3.97-2.43 6.5-2.43Z"/></svg>
+                                    {{t 'admin'}}
+                                </button>
+                            </form>
+                            <form method="POST" action="/master/refresh-screens" class="master-publish-form" data-confirm="{{t 'refresh_display_confirm'}}" onsubmit="return confirm(this.getAttribute('data-confirm'));">
+                                <input type="hidden" name="slug" value="{{this.slug}}">
+                                <button type="submit" class="btn master-btn master-btn-secondary btn-sm">{{t 'refresh_display_screens'}}</button>
                             </form>
                             <button type="button" class="btn master-btn master-btn-secondary btn-sm master-toggle-edit" data-label-edit="{{t 'edit'}}" data-label-close="{{t 'close'}}" aria-expanded="false">
                                 <svg class="master-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25Z"/></svg>
