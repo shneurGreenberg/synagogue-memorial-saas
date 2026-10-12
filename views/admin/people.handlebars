@@ -47,7 +47,7 @@
 
     <div class="people-toolbar">
         <input type="search" id="peopleSearch" class="form-control admin-input" style="max-width: 300px; flex: 1;"
-            placeholder="{{t 'search_people'}}" aria-label="{{t 'search_people'}}">
+            placeholder="{{t 'search_people'}}" aria-label="{{t 'search_people'}}" value="{{peopleSearchQuery}}">
         <button type="button" id="peopleUndatedFilter" class="btn-admin btn-admin-secondary" aria-pressed="{{#if undatedOnly}}true{{else}}false{{/if}}">
             {{t 'undated_people_filter'}}
         </button>

@@ -10,6 +10,26 @@
     }
   }
 
+  function saveMyAdminPreferences() {
+    var form = document.getElementById('myAdminPreferencesForm');
+    if (!form) {
+      return;
+    }
+
+    var formData = new FormData(form);
+    fetch(form.action, {
+      method: 'POST',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        Accept: 'application/json',
+      },
+      body: formData,
+      credentials: 'same-origin',
+    }).catch(function () {
+      /* ignore network errors; user can retry by changing setting again */
+    });
+  }
+
   function bindSessionThemeToggle() {
     var toggle = document.getElementById('sessionColorModeToggle');
     var hidden = document.getElementById('sessionColorModeInput');
@@ -24,16 +44,20 @@
     var darkLabel = field.dataset.darkLabel || 'Dark';
 
     function applyAdminTheme(isLight) {
-      body.classList.remove('admin-theme-light', 'admin-theme-dark');
-      body.classList.add(isLight ? 'admin-theme-light' : 'admin-theme-dark');
+      body.classList.toggle('admin-theme-light', isLight);
+      body.classList.toggle('admin-theme-dark', !isLight);
       hidden.value = isLight ? 'light' : 'dark';
+      toggle.checked = isLight;
       label.textContent = isLight ? lightLabel : darkLabel;
     }
 
+    var initialLight = body.classList.contains('admin-theme-light');
+    applyAdminTheme(initialLight);
+
     toggle.addEventListener('change', function () {
       applyAdminTheme(toggle.checked);
+      saveMyAdminPreferences();
     });
-    applyAdminTheme(toggle.checked);
   }
 
   function bindSessionLanguagePreview() {
@@ -44,11 +68,24 @@
 
     languageSelect.addEventListener('change', function () {
       window.AdminLocale.apply(languageSelect.value);
+      saveMyAdminPreferences();
+    });
+  }
+
+  function bindPreferencesForm() {
+    var form = document.getElementById('myAdminPreferencesForm');
+    if (!form) {
+      return;
+    }
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      saveMyAdminPreferences();
     });
   }
 
   bindSessionThemeToggle();
   bindSessionLanguagePreview();
+  bindPreferencesForm();
 
   $('#editUserModal').on('show.bs.modal', function (event) {
     var button = event.relatedTarget;

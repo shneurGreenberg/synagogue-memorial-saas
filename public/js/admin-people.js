@@ -17,6 +17,45 @@
   const undatedFilter = document.getElementById('peopleUndatedFilter');
   const THUMB_WIDTH = 128;
 
+  function parsePeopleListSearchParam(raw) {
+    if (raw == null || raw === '') {
+      return '';
+    }
+    var text = String(raw).trim();
+    if (!text) {
+      return '';
+    }
+    try {
+      return decodeURIComponent(text.replace(/\+/g, ' ')).trim();
+    } catch (err) {
+      return text;
+    }
+  }
+
+  function getPeopleSearchQuery() {
+    if (searchInput && searchInput.value.trim()) {
+      return searchInput.value.trim();
+    }
+    return parsePeopleListSearchParam(new URLSearchParams(window.location.search).get('q'));
+  }
+
+  function buildPeopleListApiUrl(baseUrl) {
+    var query = getPeopleSearchQuery();
+    if (!query) {
+      return baseUrl;
+    }
+    var separator = baseUrl.indexOf('?') >= 0 ? '&' : '?';
+    return baseUrl + separator + 'q=' + encodeURIComponent(query);
+  }
+
+  function syncPeopleSearchFromUrl() {
+    var query = parsePeopleListSearchParam(new URLSearchParams(window.location.search).get('q'));
+    if (query && searchInput) {
+      searchInput.value = query;
+    }
+    return query;
+  }
+
   let activeEditPersonId = null;
   let editListSnapshot = null;
   let editFormSubmitted = false;
@@ -534,7 +573,7 @@
   });
 
   function applyFilters() {
-    const query = searchInput.value.trim().toLowerCase();
+    const query = getPeopleSearchQuery().toLowerCase();
     const undatedOnly = undatedFilter && undatedFilter.getAttribute('aria-pressed') === 'true';
     const rows = Array.from(list.querySelectorAll('.person-row'));
 
@@ -1101,7 +1140,9 @@
       return Promise.resolve();
     }
 
-    return fetch(window.peopleListApiUrl, {
+    syncPeopleSearchFromUrl();
+
+    return fetch(buildPeopleListApiUrl(window.peopleListApiUrl), {
       headers: { Accept: 'application/json' },
     })
       .then(function (response) {
@@ -1249,13 +1290,10 @@
       openEditModal: openEditModal,
     };
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const searchQuery = urlParams.get('q');
-    if (searchQuery && searchInput) {
-      searchInput.value = searchQuery;
-      applyFilters();
-    }
+    syncPeopleSearchFromUrl();
+    applyFilters();
 
+    const urlParams = new URLSearchParams(window.location.search);
     const editParam = urlParams.get('edit');
     if (editParam) {
       openEditModal(Number(editParam));
