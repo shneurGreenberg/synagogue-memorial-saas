@@ -296,23 +296,23 @@ export default function App() {
       <div className="wooden-panel">
         <div className="inner">
           <div className="board-right-header">
-            {boardFeatures.officialLogo && (
-              <div className="board-official-logo-wrap">
+            <div className="board-top-row">
+              {boardFeatures.officialLogo && (
                 <img
                   className="board-official-logo"
                   src="/kaddish-official-logo.svg"
                   alt=""
                   aria-hidden="true"
                 />
-              </div>
-            )}
+              )}
 
-            <div className="board-clock-block">
-              <time>
-                <h1><LiveClock timezone={effectiveTimezone} /></h1>
-                <h2>{formatHebrewDate(hebrewDate, lang)}</h2>
-                <h3>{formatGregorianDate(gregorianDate, lang)}</h3>
-              </time>
+              <div className="board-clock-block">
+                <time>
+                  <h1><LiveClock timezone={effectiveTimezone} /></h1>
+                  <h2>{formatHebrewDate(hebrewDate, lang)}</h2>
+                  <h3>{formatGregorianDate(gregorianDate, lang)}</h3>
+                </time>
+              </div>
             </div>
 
             {(remotePayload?.shabbatTimesEnabled !== false) && (

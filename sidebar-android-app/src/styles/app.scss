@@ -73,32 +73,36 @@ body {
   flex-shrink: 0;
 }
 
-.board-official-logo-wrap {
-  margin-bottom: 10px;
+.board-top-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid $golden-border;
+  /* in RTL the flex row mirrors automatically via dir; logo always physically left so it never collides with the settings button (top-right) */
 }
 
 .board-official-logo {
-  width: 88px;
-  height: 88px;
-  margin: 0 auto;
-  display: block;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
   object-fit: contain;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
 }
 
 .board-official-logo-placeholder {
-  width: 88px;
-  height: 88px;
-  margin: 0 auto;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
   display: grid;
   place-items: center;
-  font-size: 42px;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+  font-size: 24px;
 }
 
 .board-clock-block {
-  padding-bottom: 10px;
-  border-bottom: 1px solid $golden-border;
+  flex: 1 1 auto;
+  min-width: 0;
 
   h1,
   h2,
@@ -496,4 +500,12 @@ time {
   margin: 0;
   font-size: 13px;
   opacity: 0.8;
+}
+
+.is-rtl .board-top-row {
+  flex-direction: row-reverse;
+}
+.board-top-row .board-official-logo + .board-clock-block {
+  /* keep clock optically centered despite logo */
+  margin-right: 58px; /* balances logo, clears settings button */
 }
