@@ -252,9 +252,41 @@
     bindEditToggles(document);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initForms);
-  } else {
+  function initOnboardingCopy() {
+    var btn = document.getElementById('copyOnboardingLinkBtn');
+    var input = document.getElementById('onboardingInviteUrl');
+    if (!btn || !input) return;
+    btn.addEventListener('click', function () {
+      input.select();
+      input.setSelectionRange(0, input.value.length);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(input.value).catch(function () {
+          document.execCommand('copy');
+        });
+      } else {
+        document.execCommand('copy');
+      }
+    });
+  }
+
+  function initOnboardingOpen() {
+    if (window.location.hash === '#master-onboarding') {
+      var details = document.getElementById('master-onboarding');
+      if (details && !details.open) {
+        details.open = true;
+      }
+    }
+  }
+
+  function initAll() {
     initForms();
+    initOnboardingCopy();
+    initOnboardingOpen();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
   }
 })();

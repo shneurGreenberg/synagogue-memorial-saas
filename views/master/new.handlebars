@@ -4,7 +4,7 @@
             <h1>{{t 'wizard_heading'}}</h1>
             <p class="master-subtitle">{{t 'wizard_subtitle'}}</p>
         </div>
-        <a href="/master/dashboard" class="btn master-btn master-btn-secondary">
+        <a href="/master/communities" class="btn master-btn master-btn-secondary">
             <svg class="master-btn-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
             {{t 'wizard_back_dashboard'}}
         </a>
@@ -208,19 +208,8 @@
                 <ul class="master-wizard-file-list" id="wizardContactFileList" hidden></ul>
             </section>
 
-            <section class="master-wizard-card" data-step="photos" hidden>
-                <div class="master-wizard-card-icon" aria-hidden="true">9</div>
-                <h2>{{t 'wizard_step_photos_title'}}</h2>
-                <p class="master-wizard-card-lead">{{t 'wizard_step_photos_lead'}}</p>
-                <div class="master-field">
-                    <label for="wizardPhotosDrive">{{t 'wizard_photos_drive_url'}}</label>
-                    <input type="url" name="photosDriveUrl" id="wizardPhotosDrive" class="form-control master-input" placeholder="https://drive.google.com/...">
-                    <span class="master-hint">{{t 'wizard_photos_drive_hint'}}</span>
-                </div>
-            </section>
-
             <section class="master-wizard-card" data-step="yahrzeit" hidden>
-                <div class="master-wizard-card-icon" aria-hidden="true">10</div>
+                <div class="master-wizard-card-icon" aria-hidden="true">9</div>
                 <h2>{{t 'wizard_step_yahrzeit_title'}}</h2>
                 <p class="master-wizard-card-lead">{{t 'wizard_step_yahrzeit_lead'}}</p>
                 <label class="master-check master-check-block">

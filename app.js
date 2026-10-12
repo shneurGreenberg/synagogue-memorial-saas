@@ -21,6 +21,7 @@ const { getJewishFeed } = require('./lib/jewish-feed');
 const { fetchWeatherForecast } = require('./lib/weather-api');
 const { applyBoardPreviewOverrides } = require('./lib/board-preview');
 const { BOARD_VERSION } = require('./lib/board-version');
+const { currentCodeVersion } = require('./lib/changelog');
 const { resolvePublishedVersion, normalizeScreenReport, recordBoardScreen, summarizeBoardScreens } = require('./lib/board-publish');
 const { photoCropToInlineStyle } = require('./lib/photo-crop');
 const { buildPhotoThumbUrl } = require('./lib/photo-url');
@@ -56,8 +57,11 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 15000,
   connectTimeoutMS: 15000,
-}).then(() => console.log('MongoDB connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+}).then(async () => {
+  console.log('MongoDB connected');
+  const { runStartupMigrations } = require('./lib/migrations/run-migrations');
+  await runStartupMigrations();
+}).catch(err => console.error('MongoDB connection error:', err));
 
 app.use(compression());
 app.use(helmet({
@@ -452,6 +456,7 @@ app.get('/s/:slug/api/board/version', apiRateLimiter, async (req, res) => {
     return res.json({
       version,
       publishedVersion: resolvePublishedVersion(synagogue.publishedVersion),
+      codeVersion: currentCodeVersion(),
     });
   } catch (err) {
     console.error('Board version error:', err);

@@ -358,7 +358,6 @@ const SynagogueSchema = new mongoose.Schema({
     durationMs: { type: Number, default: 10000 }, // show 10 seconds
   },
   provisioning: {
-    photosDriveUrl: { type: String, default: '' },
     contactFiles: [{
       originalName: String,
       storedName: String,

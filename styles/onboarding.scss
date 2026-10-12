@@ -10,8 +10,35 @@
 }
 
 .onboarding-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
   padding: 1rem 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.onboarding-lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-inline-start: auto;
+}
+
+.onboarding-lang-label {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin: 0;
+}
+
+.onboarding-lang-select {
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 0.35rem 0.6rem;
+  font: inherit;
 }
 
 .onboarding-brand-logo {

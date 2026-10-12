@@ -4,12 +4,6 @@
             <h1>{{t 'yahrzeit_page'}}</h1>
             <p class="admin-subtitle">{{t 'yahrzeit_subtitle'}} · {{todayLabel}}</p>
         </div>
-        <div class="header-actions">
-            <a href="/admin/{{synagogue.slug}}/people" class="btn-admin btn-admin-secondary btn-admin-with-icon">
-                {{{adminIcon 'people' class='btn-admin-inline-icon'}}}
-                {{t 'people'}}
-            </a>
-        </div>
     </header>
 
 {{#if upcomingHolidayNotice}}
@@ -29,7 +23,7 @@
     <ul class="weekly-kaddish-list">
         {{#each weeklyKaddish.entries}}
         <li class="weekly-kaddish-item{{#if this.missingContact}} is-missing{{/if}}">
-            <a href="/admin/{{../synagogue.slug}}/people?q={{this.searchQuery}}" class="weekly-kaddish-name">{{this.name}}</a>
+            <a href="/admin/{{@root.synagogue.slug}}/people?q={{this.searchQuery}}" class="weekly-kaddish-name">{{this.name}}</a>
             <span class="weekly-kaddish-date">{{this.weekdayHe}} {{this.gregorianLabel}} · {{this.hebrewLabel}}</span>
             {{#if this.contacts.length}}
             <span class="weekly-kaddish-contacts">

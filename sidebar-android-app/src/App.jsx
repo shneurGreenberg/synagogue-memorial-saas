@@ -45,6 +45,7 @@ export default function App() {
 
   const lang = settings.language || 'ru';
   const publishedVersionRef = useRef(null);
+  const codeVersionRef = useRef(null);
   const handleForecastChange = useCallback((forecast) => {
     setWeatherForecast(forecast || null);
   }, []);
@@ -169,6 +170,15 @@ export default function App() {
         }
 
         const payload = await response.json();
+        const codeVersion = payload.codeVersion ? String(payload.codeVersion) : null;
+        if (codeVersion) {
+          if (codeVersionRef.current == null) {
+            codeVersionRef.current = codeVersion;
+          } else if (codeVersionRef.current !== codeVersion) {
+            window.location.reload();
+            return;
+          }
+        }
         const publishedVersion = Number(payload.publishedVersion) || 1;
         if (publishedVersionRef.current == null) {
           publishedVersionRef.current = publishedVersion;

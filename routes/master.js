@@ -15,12 +15,13 @@ const { BOARD_FEATURE_DEFAULTS } = require('../lib/board-features');
 const { verifyMasterPassword } = require('../lib/master-auth');
 const { invalidateBoardCache } = require('../lib/board-cache');
 const {
-    nextPublishedVersion,
     summarizeBoardScreens,
     resolvePublishedVersion,
     formatPublishedAt,
 } = require('../lib/board-publish');
-const { currentCodeVersion } = require('../lib/changelog');
+const { currentCodeVersion, loadChangelog } = require('../lib/changelog');
+const { refreshCommunityDisplayScreens } = require('../lib/refresh-display-screens');
+const { communityLogoUrl } = require('../lib/community-logo-url');
 const {
   createLoginRateLimiter,
   regenerateSession,
@@ -86,12 +87,12 @@ const NOMINATIM_HEADERS = {
   Accept: 'application/json',
 };
 
-function getMasterLang(req) {
-  return normalizeAdminLang(req.session.masterLanguage || 'en');
+function getMasterLang() {
+  return 'he';
 }
 
 function renderMaster(req, res, view, options = {}) {
-  const masterLanguage = getMasterLang(req);
+  const masterLanguage = getMasterLang();
   const locale = getAdminLocaleContext(masterLanguage);
   const { OFFICIAL_LOGO_FILENAME } = require('../lib/board-defaults');
 
@@ -169,34 +170,44 @@ function formatPlace(item) {
 }
 
 router.get('/login', (req, res) => {
-    renderMaster(req, res, 'master/login', { showMasterNav: false, error: null });
+    renderMaster(req, res, 'master/login', { showMasterLogout: false, error: null });
 });
 
 router.post('/login', loginRateLimiter, async (req, res) => {
     const { password } = req.body;
-    const t = getMasterTranslator(getMasterLang(req));
+    const t = getMasterTranslator(getMasterLang());
 
     try {
         if (await verifyMasterPassword(password)) {
             await regenerateSession(req);
             req.session.isMasterAdmin = true;
-            if (!req.session.masterLanguage) {
-                req.session.masterLanguage = 'en';
-            }
-            return res.redirect('/master/dashboard');
+            return res.redirect('/master/communities');
         }
 
-        return renderMaster(req, res, 'master/login', { showMasterNav: false, error: t('invalid_password') });
+        return renderMaster(req, res, 'master/login', { showMasterLogout: false, error: t('invalid_password') });
     } catch (err) {
         console.error('Master login error:', err);
-        return renderMaster(req, res, 'master/login', { showMasterNav: false, error: t('invalid_password') });
+        return renderMaster(req, res, 'master/login', { showMasterLogout: false, error: t('invalid_password') });
     }
 });
 
-router.post('/language', requireMaster, (req, res) => {
-    req.session.masterLanguage = normalizeAdminLang(req.body.language);
-    const back = req.get('Referer') || '/master/dashboard';
-    res.redirect(back);
+router.get('/', requireMaster, (req, res) => {
+    res.redirect('/master/communities');
+});
+
+router.get('/dashboard', requireMaster, (req, res) => {
+    res.redirect('/master/communities');
+});
+
+router.get('/onboarding', requireMaster, (req, res) => {
+    const query = new URLSearchParams();
+    if (req.query.invite) query.set('invite', String(req.query.invite));
+    if (req.query.saved === '1') query.set('onboarding_saved', '1');
+    if (req.query.rejected === '1') query.set('onboarding_rejected', '1');
+    if (req.query.error) query.set('onboarding_error', String(req.query.error));
+    if (req.query.created) query.set('created', String(req.query.created));
+    const suffix = query.toString() ? `?${query.toString()}` : '';
+    res.redirect(`/master/communities${suffix}#master-onboarding`);
 });
 
 router.get('/api/places', requireMasterApi, async (req, res) => {
@@ -234,9 +245,21 @@ router.get('/api/reverse', requireMasterApi, async (req, res) => {
     }
 });
 
-router.get('/dashboard', requireMaster, async (req, res) => {
+async function loadOnboardingRequests() {
+    const requests = await CommunityOnboardingRequest.find({ status: 'pending' })
+        .select('-adminPasswordHash')
+        .sort({ submittedAt: -1 })
+        .lean();
+
+    return requests.map((row) => ({
+        ...row,
+        submittedLabel: formatSubmittedAt(row.submittedAt),
+    }));
+}
+
+router.get('/communities', requireMaster, async (req, res) => {
     try {
-        const lang = getMasterLang(req);
+        const lang = getMasterLang();
         const t = getMasterTranslator(lang);
         const synagogues = (await Synagogue.find({}).sort({ name: 1 }).lean()).map((synagogue) => {
             const summary = summarizeBoardScreens(
@@ -245,6 +268,7 @@ router.get('/dashboard', requireMaster, async (req, res) => {
             );
             return {
                 ...synagogue,
+                logoUrl: communityLogoUrl(synagogue),
                 publishSummary: {
                     ...summary,
                     publishedAtLabel: formatPublishedAt(synagogue.publishedAt, lang),
@@ -256,12 +280,20 @@ router.get('/dashboard', requireMaster, async (req, res) => {
                 },
             };
         });
+        const onboardingRequests = await loadOnboardingRequests();
         renderMaster(req, res, 'master/dashboard', {
             synagogues,
-            showMasterNav: true,
+            onboardingRequests,
+            inviteUrl: req.query.invite ? String(req.query.invite) : '',
+            onboardingSaved: req.query.onboarding_saved === '1',
+            onboardingRejected: req.query.onboarding_rejected === '1',
+            onboardingError: req.query.onboarding_error || null,
+            codeChangelog: loadChangelog(),
+            appCodeVersion: currentCodeVersion(),
+            showMasterLogout: true,
             showMasterMap: true,
             saved: req.query.saved === '1',
-            published: req.query.published === '1',
+            refreshed: req.query.refreshed === '1',
             error: req.query.error || null,
         });
     } catch (err) {
@@ -270,14 +302,14 @@ router.get('/dashboard', requireMaster, async (req, res) => {
 });
 
 router.get('/new', requireMaster, (req, res) => {
-    const t = getMasterTranslator(getMasterLang(req));
+    const t = getMasterTranslator(getMasterLang());
     const wizardLabelKeys = [
         'wizard_step_basics_title', 'wizard_step_languages_title', 'wizard_step_location_title',
         'wizard_step_logo_title', 'wizard_step_donation_title', 'wizard_step_appearance_title',
-        'wizard_step_features_title', 'wizard_step_contacts_title', 'wizard_step_photos_title',
+        'wizard_step_features_title', 'wizard_step_contacts_title',
         'wizard_step_yahrzeit_title', 'wizard_step_review_title',
         'wizard_review_name', 'wizard_review_slug', 'wizard_review_language', 'wizard_review_city',
-        'wizard_review_donation', 'wizard_review_photos_drive', 'wizard_review_yahrzeit_email',
+        'wizard_review_donation', 'wizard_review_yahrzeit_email',
         'wizard_review_skipped', 'wizard_review_none_skipped', 'wizard_yes', 'wizard_no',
         'wizard_not_added', 'wizard_not_set',
     ];
@@ -287,7 +319,7 @@ router.get('/new', requireMaster, (req, res) => {
     });
 
     renderMaster(req, res, 'master/new', {
-        showMasterNav: true,
+        showMasterLogout: true,
         showMasterMap: true,
         showMasterWizard: true,
         wizardSteps: WIZARD_STEPS,
@@ -358,7 +390,7 @@ router.post('/add', requireMaster, (req, res) => {
             }
 
             await newSynagogue.save();
-            res.redirect(`/master/dashboard?saved=1&created=${encodeURIComponent(slug)}`);
+            res.redirect(`/master/communities?saved=1&created=${encodeURIComponent(slug)}`);
         } catch (err) {
             res.status(500).send(err.message);
         }
@@ -375,16 +407,16 @@ router.post('/edit', requireMaster, async (req, res) => {
         const languages = parseLanguages(req.body);
 
         if (!id || !name || !slug) {
-            return res.redirect('/master/dashboard?error=missing_fields');
+            return res.redirect('/master/communities?error=missing_fields');
         }
 
         if (!isValidSlug(slug)) {
-            return res.redirect('/master/dashboard?error=invalid_slug');
+            return res.redirect('/master/communities?error=invalid_slug');
         }
 
         const duplicate = await Synagogue.findOne({ slug, _id: { $ne: id } });
         if (duplicate) {
-            return res.redirect('/master/dashboard?error=slug_exists');
+            return res.redirect('/master/communities?error=slug_exists');
         }
 
         const update = {
@@ -401,7 +433,7 @@ router.post('/edit', requireMaster, async (req, res) => {
         }
 
         await Synagogue.updateOne({ _id: id }, { $set: update });
-        res.redirect('/master/dashboard?saved=1');
+        res.redirect('/master/communities?saved=1');
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -411,27 +443,43 @@ router.post('/delete', requireMaster, async (req, res) => {
     try {
         const { id } = req.body;
         await Synagogue.findByIdAndDelete(id);
-        res.redirect('/master/dashboard?saved=1');
+        res.redirect('/master/communities?saved=1');
     } catch (err) {
         res.status(500).send(err.message);
     }
 });
 
-router.post('/publish-version', requireMaster, async (req, res) => {
+async function handleMasterRefreshScreens(req, res) {
     try {
         const slug = normalizeSlug(req.body.slug || '');
-        const synagogue = await Synagogue.findOne({ slug }, { publishedVersion: 1 }).lean();
+        const result = await refreshCommunityDisplayScreens(slug);
+        if (!result) {
+            return res.status(404).send('Not found');
+        }
+        return res.redirect('/master/communities?refreshed=1');
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+}
+
+router.post('/refresh-screens', requireMaster, handleMasterRefreshScreens);
+router.post('/publish-version', requireMaster, handleMasterRefreshScreens);
+
+router.post('/impersonate', requireMaster, async (req, res) => {
+    try {
+        const slug = normalizeSlug(req.body.slug || '');
+        const synagogue = await Synagogue.findOne({ slug }, { slug: 1 }).lean();
         if (!synagogue) {
             return res.status(404).send('Not found');
         }
 
-        const publishedVersion = nextPublishedVersion(synagogue.publishedVersion);
-        await Synagogue.updateOne(
-            { slug },
-            { $set: { publishedVersion, publishedAt: new Date(), lastRefreshedCodeVersion: currentCodeVersion() } },
-        );
-        invalidateBoardCache(slug);
-        return res.redirect('/master/dashboard?published=1');
+        await regenerateSession(req);
+        req.session.isMasterAdmin = true;
+        req.session.impersonatedByMaster = true;
+        req.session.adminSlug = slug;
+        req.session.adminUsername = null;
+        console.info(`[master-impersonation] ${new Date().toISOString()} slug=${slug}`);
+        return res.redirect(`/admin/${slug}/dashboard`);
     } catch (err) {
         return res.status(500).send(err.message);
     }
@@ -453,28 +501,6 @@ function formatSubmittedAt(date) {
     }
 }
 
-router.get('/onboarding', requireMaster, async (req, res) => {
-    try {
-        const requests = await CommunityOnboardingRequest.find({ status: 'pending' })
-            .select('-adminPasswordHash')
-            .sort({ submittedAt: -1 })
-            .lean();
-
-        const decorated = requests.map((row) => ({
-            ...row,
-            submittedLabel: formatSubmittedAt(row.submittedAt),
-        }));
-
-        return renderMaster(req, res, 'master/onboarding', {
-            showMasterNav: true,
-            requests: decorated,
-            inviteUrl: req.query.invite ? String(req.query.invite) : '',
-        });
-    } catch (err) {
-        return res.status(500).send(err.message);
-    }
-});
-
 router.post('/onboarding/invites', requireMaster, async (req, res) => {
     try {
         const label = String(req.body.label || '').trim();
@@ -483,7 +509,7 @@ router.post('/onboarding/invites', requireMaster, async (req, res) => {
 
         const host = String(req.get('X-Forwarded-Host') || req.get('Host') || '').split(',')[0].trim();
         const inviteUrl = `${req.protocol}://${host}/join/${token}`;
-        return res.redirect(`/master/onboarding?invite=${encodeURIComponent(inviteUrl)}`);
+        return res.redirect(`/master/communities?invite=${encodeURIComponent(inviteUrl)}#master-onboarding`);
     } catch (err) {
         return res.status(500).send(err.message);
     }
@@ -495,7 +521,7 @@ router.post('/onboarding/approve', requireMaster, async (req, res) => {
         const request = await CommunityOnboardingRequest.findOne({ _id: id, status: 'pending' })
             .select('+adminPasswordHash');
         if (!request) {
-            return res.redirect('/master/onboarding');
+            return res.redirect('/master/communities#master-onboarding');
         }
 
         const synagogue = await createSynagogueFromOnboardingRequest(request);
@@ -505,10 +531,10 @@ router.post('/onboarding/approve', requireMaster, async (req, res) => {
         await request.save();
         invalidateBoardCache(synagogue.slug);
 
-        return res.redirect(`/master/onboarding?saved=1&created=${encodeURIComponent(synagogue.slug)}`);
+        return res.redirect(`/master/communities?onboarding_saved=1&created=${encodeURIComponent(synagogue.slug)}#master-onboarding`);
     } catch (err) {
         console.error('Onboarding approve error:', err);
-        return res.redirect(`/master/onboarding?error=${encodeURIComponent(err.message || 'approve_failed')}`);
+        return res.redirect(`/master/communities?onboarding_error=${encodeURIComponent(err.message || 'approve_failed')}#master-onboarding`);
     }
 });
 
@@ -518,7 +544,7 @@ router.post('/onboarding/reject', requireMaster, async (req, res) => {
         const reason = String(req.body.reason || '').trim();
         const request = await CommunityOnboardingRequest.findOne({ _id: id, status: 'pending' });
         if (!request) {
-            return res.redirect('/master/onboarding');
+            return res.redirect('/master/communities#master-onboarding');
         }
 
         request.status = 'rejected';
@@ -526,7 +552,7 @@ router.post('/onboarding/reject', requireMaster, async (req, res) => {
         request.rejectReason = reason;
         await request.save();
 
-        return res.redirect('/master/onboarding?rejected=1');
+        return res.redirect('/master/communities?onboarding_rejected=1#master-onboarding');
     } catch (err) {
         return res.status(500).send(err.message);
     }

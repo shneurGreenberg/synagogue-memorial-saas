@@ -18,6 +18,14 @@
 <body class="onboarding-body{{#if (eq lang 'he')}} onboarding-rtl{{/if}}">
     <header class="onboarding-topbar">
         <img class="onboarding-brand-logo" src="{{officialLogoUrl}}" alt="">
+        <div class="onboarding-lang-switcher">
+            <label class="onboarding-lang-label" for="onboardingLangSelect">{{onboardingT 'language_label'}}</label>
+            <select id="onboardingLangSelect" class="onboarding-lang-select" aria-label="{{onboardingT 'language_label'}}">
+                <option value="he" {{#if (eq lang 'he')}}selected{{/if}}>{{onboardingT 'lang_he'}}</option>
+                <option value="ru" {{#if (eq lang 'ru')}}selected{{/if}}>{{onboardingT 'lang_ru'}}</option>
+                <option value="en" {{#if (eq lang 'en')}}selected{{/if}}>{{onboardingT 'lang_en'}}</option>
+            </select>
+        </div>
     </header>
     <main class="onboarding-main">
         {{{body}}}
@@ -25,6 +33,7 @@
     {{#if showOnboardingMap}}
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     {{/if}}
+    <script src="/js/onboarding-lang.js"></script>
     {{#if showOnboardingWizard}}
     <script type="application/json" id="onboardingConfig">{{{onboardingConfigJson}}}</script>
     <script src="/js/onboarding-wizard.js"></script>

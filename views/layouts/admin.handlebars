@@ -15,6 +15,14 @@
 </head>
 
 <body class="admin-body admin-theme-{{#if synagogue.adminColorMode}}{{synagogue.adminColorMode}}{{else}}dark{{/if}}{{#if adminIsRtl}} admin-rtl{{/if}}">
+    {{#if impersonatedByMaster}}
+    <div class="admin-master-impersonation-banner" role="status">
+        <span>{{t 'master_impersonation_banner'}}</span>
+        <form method="POST" action="/admin/{{synagogue.slug}}/end-master-impersonation" class="admin-master-impersonation-form">
+            <button type="submit" class="btn-admin btn-admin-secondary btn-admin-sm">{{t 'master_impersonation_return'}}</button>
+        </form>
+    </div>
+    {{/if}}
     <nav class="navbar navbar-expand-lg navbar-dark admin-navbar">
         <a class="navbar-brand admin-navbar-brand" href="/admin/{{synagogue.slug}}/dashboard">
             <img class="admin-brand-logo" src="{{officialLogoUrl}}" alt="">
