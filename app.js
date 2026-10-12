@@ -150,16 +150,18 @@ function requireSameOrigin(req, res, next) {
 }
 
 app.use(allowMobileApiCors);
-app.use(bodyParser.urlencoded({ extended: true }));
+const { MAX_IMAGE_BODY } = require('./lib/upload-limits');
 
-const scanJsonParser = bodyParser.json({ limit: '12mb' });
+app.use(bodyParser.urlencoded({ extended: true, limit: MAX_IMAGE_BODY }));
+
+const scanJsonParser = bodyParser.json({ limit: MAX_IMAGE_BODY });
 app.use((req, res, next) => {
   if (req.path.includes('/api/scan-grave') && req.is('json')) {
     return scanJsonParser(req, res, next);
   }
   return next();
 });
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: MAX_IMAGE_BODY }));
 
 const sessionSecret = process.env.SESSION_SECRET || (isProduction ? null : 'secret');
 if (!sessionSecret) {

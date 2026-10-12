@@ -32,6 +32,8 @@ const OnboardingInvite = require('../models/OnboardingInvite');
 const CommunityOnboardingRequest = require('../models/CommunityOnboardingRequest');
 const { createSynagogueFromOnboardingRequest } = require('../lib/onboarding-approve');
 const { processCommunityLogoUpload } = require('../lib/community-logo-upload');
+const { optimizeUploadedImage } = require('../lib/image-optimize');
+const { MAX_UPLOAD_BYTES } = require('../lib/upload-limits');
 const loginRateLimiter = createLoginRateLimiter();
 
 const IMAGES_DIR = path.join(__dirname, '..', 'images');
@@ -58,7 +60,7 @@ const masterUpload = multer({
         },
     }),
     limits: {
-        fileSize: 25 * 1024 * 1024,
+        fileSize: MAX_UPLOAD_BYTES,
         files: 12,
     },
     fileFilter(req, file, cb) {
@@ -357,6 +359,16 @@ router.post('/add', requireMaster, (req, res) => {
             const location = parseLocation(req.body);
             const languages = parseLanguages(req.body);
             const wizardPayload = buildSynagoguePayloadFromWizard(req.body, req.files || {}, slug);
+
+            if (wizardPayload.provisioning && wizardPayload.provisioning.donationQrImage) {
+                const rel = wizardPayload.provisioning.donationQrImage;
+                const fullPath = path.join(__dirname, '..', ...rel.split('/'));
+                const optimized = await optimizeUploadedImage(fullPath, 'qr');
+                wizardPayload.provisioning.donationQrImage = path.posix.join(
+                    path.posix.dirname(rel),
+                    optimized,
+                );
+            }
 
             const newSynagogue = new Synagogue({
                 name,
