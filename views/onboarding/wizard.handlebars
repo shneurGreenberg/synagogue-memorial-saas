@@ -1,0 +1,140 @@
+<div class="onboarding-shell master-wizard-shell">
+    <header class="onboarding-header">
+        <h1>{{onboardingT 'page_title'}}</h1>
+        <p class="onboarding-lead">{{onboardingT 'intro'}}</p>
+        {{#if inviteLabel}}
+        <p class="onboarding-invite-label"><span class="onboarding-invite-badge">{{inviteLabel}}</span></p>
+        {{/if}}
+    </header>
+
+    {{#if error}}
+    <div class="onboarding-alert" role="alert">
+        {{#if (eq error 'missing')}}{{onboardingT 'error_missing'}}
+        {{else}}{{#if (eq error 'slug')}}{{onboardingT 'error_slug'}}
+        {{else}}{{#if (eq error 'upload')}}{{onboardingT 'error_upload'}}
+        {{else}}{{#if (eq error 'invalid_svg')}}{{onboardingT 'error_invalid_svg'}}
+        {{else}}{{error}}{{/if}}{{/if}}{{/if}}{{/if}}
+    </div>
+    {{/if}}
+
+    <div class="master-wizard-progress" aria-hidden="true">
+        <div class="master-wizard-progress-bar" id="onboardingProgressBar"></div>
+    </div>
+    <ol class="master-wizard-steps" id="onboardingSteps"></ol>
+
+    <form method="POST" action="/join/{{token}}" class="onboarding-form" id="onboardingForm" enctype="multipart/form-data">
+        <input type="hidden" name="lang" value="{{lang}}">
+        <input type="hidden" name="lat" id="onboardingLat" value="">
+        <input type="hidden" name="long" id="onboardingLong" value="">
+        <input type="hidden" name="timezone" id="onboardingTimezone" value="">
+
+        <section class="master-wizard-card" data-step="basics" data-required="true">
+            <h2>{{onboardingT 'step_basics'}}</h2>
+            <label class="onboarding-field">
+                <span>{{onboardingT 'name_label'}}</span>
+                <input type="text" name="name" id="onboardingName" required maxlength="120">
+            </label>
+            <label class="onboarding-field">
+                <span>{{onboardingT 'slug_label'}}</span>
+                <input type="text" name="slug" id="onboardingSlug" required maxlength="64" pattern="[a-z0-9-]+" autocomplete="off">
+                <span class="onboarding-hint">{{onboardingT 'slug_help'}}</span>
+            </label>
+            <label class="onboarding-field">
+                <span>{{onboardingT 'title_he_label'}}</span>
+                <input type="text" name="titleHe" maxlength="120">
+            </label>
+            <label class="onboarding-field">
+                <span>{{onboardingT 'title_en_label'}}</span>
+                <input type="text" name="titleEn" maxlength="120">
+            </label>
+        </section>
+
+        <section class="master-wizard-card" data-step="location" hidden>
+            <h2>{{onboardingT 'step_location'}}</h2>
+            <label class="onboarding-field">
+                <span>{{onboardingT 'search_place'}}</span>
+                <input type="search" id="onboardingPlaceSearch" autocomplete="off">
+            </label>
+            <ul class="onboarding-place-results" id="onboardingPlaceResults" hidden></ul>
+            <div id="onboardingMap" class="onboarding-map" aria-label="Map"></div>
+            <label class="onboarding-field">
+                <span>{{onboardingT 'city_label'}}</span>
+                <input type="text" name="city" id="onboardingCity" required>
+            </label>
+            <label class="onboarding-field">
+                <span>{{onboardingT 'timezone_label'}}</span>
+                <input type="text" name="timezoneDisplay" id="onboardingTimezoneDisplay" readonly>
+            </label>
+        </section>
+
+        <section class="master-wizard-card" data-step="logo" hidden>
+            <h2>{{onboardingT 'step_logo'}}</h2>
+            <label class="onboarding-field">
+                <span>{{onboardingT 'logo_label'}}</span>
+                <input type="file" name="logo" id="onboardingLogo" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml">
+            </label>
+            <div class="master-wizard-preview" id="onboardingLogoPreview" hidden>
+                <img class="master-wizard-preview-image community-logo-preview-img" id="onboardingLogoPreviewImg" alt="">
+            </div>
+            <fieldset class="onboarding-logo-bg">
+                <legend>{{onboardingT 'logo_bg_label'}}</legend>
+                <label><input type="radio" name="logoBackground" value="" checked> {{onboardingT 'logo_bg_none'}}</label>
+                <label><input type="radio" name="logoBackground" value="white"> {{onboardingT 'logo_bg_white'}}</label>
+                <label><input type="radio" name="logoBackground" value="black"> {{onboardingT 'logo_bg_black'}}</label>
+            </fieldset>
+            <p class="onboarding-hint">{{onboardingT 'step_import_hint'}}</p>
+        </section>
+
+        <section class="master-wizard-card" data-step="contact" hidden>
+            <h2>{{onboardingT 'step_contact'}}</h2>
+            <label class="onboarding-field">
+                <span>{{onboardingT 'contact_name'}}</span>
+                <input type="text" name="contactName" required maxlength="120">
+            </label>
+            <label class="onboarding-field">
+                <span>{{onboardingT 'contact_phone'}}</span>
+                <input type="tel" name="contactPhone" maxlength="40">
+            </label>
+            <label class="onboarding-field">
+                <span>{{onboardingT 'admin_email'}}</span>
+                <input type="email" name="adminEmail" required maxlength="160">
+            </label>
+            <label class="onboarding-field">
+                <span>{{onboardingT 'admin_password'}}</span>
+                <input type="password" name="adminPassword" required minlength="6" autocomplete="new-password">
+                <span class="onboarding-hint">{{onboardingT 'admin_password_help'}}</span>
+            </label>
+            <label class="onboarding-field">
+                <span>{{onboardingT 'board_language'}}</span>
+                <select name="boardLanguage">
+                    <option value="en">English</option>
+                    <option value="ru">Русский</option>
+                    <option value="he">עברית</option>
+                </select>
+            </label>
+            <label class="onboarding-field">
+                <span>{{onboardingT 'admin_language'}}</span>
+                <select name="adminLanguage">
+                    <option value="en">English</option>
+                    <option value="ru">Русский</option>
+                    <option value="he">עברית</option>
+                </select>
+            </label>
+            <label class="onboarding-field">
+                <span>{{onboardingT 'notes_label'}}</span>
+                <textarea name="notes" rows="3" maxlength="2000"></textarea>
+            </label>
+        </section>
+
+        <section class="master-wizard-card" data-step="review" hidden>
+            <h2>{{onboardingT 'step_review'}}</h2>
+            <div class="onboarding-review" id="onboardingReview"></div>
+        </section>
+
+        <footer class="onboarding-actions master-wizard-actions">
+            <button type="button" class="btn master-btn master-btn-secondary" id="onboardingBackBtn">{{onboardingT 'back'}}</button>
+            <button type="button" class="btn master-btn master-btn-primary" id="onboardingNextBtn">{{onboardingT 'next'}}</button>
+            <button type="submit" class="btn master-btn master-btn-primary" id="onboardingSubmitBtn" hidden>{{onboardingT 'submit'}}</button>
+        </footer>
+    </form>
+</div>

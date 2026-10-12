@@ -1819,6 +1819,14 @@ body.admin-is-busy {
     object-fit: cover;
   }
 
+  &.media-preview-logo.logo-bg-white {
+    background: #fff;
+  }
+
+  &.media-preview-logo.logo-bg-black {
+    background: #000;
+  }
+
   &.media-preview-logo {
     width: clamp(128px, 32vw, 168px);
     height: clamp(128px, 32vw, 168px);

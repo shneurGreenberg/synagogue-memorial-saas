@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="{{lang}}" dir="{{#if (eq lang 'he')}}rtl{{else}}ltr{{/if}}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{onboardingT 'page_title'}}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {{#if showOnboardingMap}}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+    {{/if}}
+    <link rel="stylesheet" href="/css/master.css">
+    <link rel="stylesheet" href="/css/onboarding.css">
+</head>
+
+<body class="onboarding-body{{#if (eq lang 'he')}} onboarding-rtl{{/if}}">
+    <header class="onboarding-topbar">
+        <img class="onboarding-brand-logo" src="{{officialLogoUrl}}" alt="">
+    </header>
+    <main class="onboarding-main">
+        {{{body}}}
+    </main>
+    {{#if showOnboardingMap}}
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    {{/if}}
+    {{#if showOnboardingWizard}}
+    <script type="application/json" id="onboardingConfig">{{{onboardingConfigJson}}}</script>
+    <script src="/js/onboarding-wizard.js"></script>
+    {{/if}}
+</body>
+
+</html>

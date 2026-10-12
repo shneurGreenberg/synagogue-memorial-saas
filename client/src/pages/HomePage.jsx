@@ -381,6 +381,7 @@ class HomePageBase extends React.Component {
     const logoBorderRadius = appData.theme && appData.theme.logoBorderRadius != null
       ? appData.theme.logoBorderRadius
       : 100;
+    const logoBackground = (appData.theme && appData.theme.logoBackground) || '';
     const showOfficialLogo = boardFeatures.officialLogo !== false;
     const officialLogo = 'kaddish-official-logo.svg';
     const showMemorialPrayers = boardFeatures.kelMaleRachamim || boardFeatures.izkor;
@@ -404,6 +405,7 @@ class HomePageBase extends React.Component {
                     src={assetUrl(`images/${logo}`)}
                     alt={appData.title || 'Synagogue'}
                     borderRadius={logoBorderRadius}
+                    logoBackground={logoBackground}
                   />
                 </div>
               </div>

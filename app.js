@@ -31,8 +31,10 @@ const {
   createApiRateLimiter,
   publicErrorMessage,
 } = require('./lib/http-security');
+const { getOnboardingTranslator } = require('./lib/onboarding-i18n');
 const adminRoutes = require('./routes/admin');
 const masterRoutes = require('./routes/master');
+const onboardingRoutes = require('./routes/onboarding');
 const publicSubmissionRoutes = require('./routes/public-submission');
 const graveScanRoutes = require('./routes/grave-scan');
 const bodyParser = require('body-parser');
@@ -185,6 +187,7 @@ app.use('/css', express.static(cssDirectory, {
 
 app.use('/admin', sessionMiddleware, requireSameOrigin, adminRoutes);
 app.use('/master', sessionMiddleware, requireSameOrigin, masterRoutes);
+app.use('/join', onboardingRoutes);
 
 function useSessionForGraveScan(req, res, next) {
   const pathName = `${req.baseUrl || ''}${req.path || ''}`;
@@ -259,6 +262,14 @@ app.engine('handlebars', handlebars({
       const translate = root && root.pt;
       return typeof translate === 'function' ? translate(key) : key;
     },
+    onboardingT(key, options) {
+      const root = options.data && options.data.root;
+      if (root && typeof root.onboardingT === 'function') {
+        return root.onboardingT(key);
+      }
+      const lang = (root && root.lang) || 'en';
+      return getOnboardingTranslator(lang)(key);
+    },
   },
   runtimeOptions: {
     allowProtoPropertiesByDefault: true,
@@ -287,8 +298,22 @@ if (!fs.existsSync(provisioningDir)) {
   fs.mkdirSync(provisioningDir, { recursive: true });
 }
 
-app.use('/images', express.static(IMAGES_DIR, { maxAge: staticAssetMaxAge }));
-app.use('/images', express.static(BUNDLED_IMAGES_DIR, { maxAge: staticAssetMaxAge }));
+function setCommunityImageHeaders(res, filePath) {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  if (String(filePath).toLowerCase().endsWith('.svg')) {
+    res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
+    res.setHeader('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'");
+  }
+}
+
+app.use('/images', express.static(IMAGES_DIR, {
+  maxAge: staticAssetMaxAge,
+  setHeaders: setCommunityImageHeaders,
+}));
+app.use('/images', express.static(BUNDLED_IMAGES_DIR, {
+  maxAge: staticAssetMaxAge,
+  setHeaders: setCommunityImageHeaders,
+}));
 app.use('/images/provisioning', express.static(provisioningDir, {
   maxAge: staticAssetMaxAge,
   fallthrough: true,
