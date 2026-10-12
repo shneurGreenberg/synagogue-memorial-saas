@@ -9,7 +9,12 @@ const {
 test('resolveOnboardingLang prefers query over cookie', () => {
   assert.strictEqual(resolveOnboardingLang('he', 'ru'), 'he');
   assert.strictEqual(resolveOnboardingLang('', 'ru'), 'ru');
-  assert.strictEqual(resolveOnboardingLang(undefined, undefined), 'en');
+  assert.strictEqual(resolveOnboardingLang(undefined, undefined), 'he');
+});
+
+test('resolveOnboardingLang defaults to Hebrew without query or cookie', () => {
+  assert.strictEqual(resolveOnboardingLang(null, ''), 'he');
+  assert.strictEqual(resolveOnboardingLang('   ', undefined), 'he');
 });
 
 test('readOnboardingLangCookie parses cookie header', () => {

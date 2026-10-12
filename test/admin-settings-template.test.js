@@ -129,11 +129,23 @@ describe('admin settings dashboard template', () => {
 
     assert.match(html, /settings-color-grid/);
     assert.match(html, /settings-media-grid/);
+    assert.match(html, /settings-media-grid--community/);
+    assert.match(html, /adminCandlePreview/);
+    assert.match(html, /logo-bg-swatch-row/);
     assert.match(html, /name="primaryColor"/);
     assert.match(html, /name="tileOpacity"/);
     assert.match(html, /name="titleRu"/);
+    assert.match(html, /settings-texts-styling-block/);
+    assert.match(html, /settings-texts-content-block/);
     assert.match(html, /settings-copy-details/);
     assert.match(html, /name="donationQrTitleRu"/);
+    assert.match(html, /admin-number-stepper/);
+    assert.doesNotMatch(html, /type="range"/);
     assert.doesNotMatch(html, /<details[^>]*\sopen[\s=>]/i);
+    const tileDateScaleChunk = html.slice(
+      html.indexOf('settings-scale-tile-date'),
+      html.indexOf('settings-scale-tile-date') + 1200,
+    );
+    assert.doesNotMatch(tileDateScaleChunk, /field-hint/);
   });
 });

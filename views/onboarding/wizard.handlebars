@@ -76,12 +76,7 @@
             <div class="master-wizard-preview" id="onboardingLogoPreview" hidden>
                 <img class="master-wizard-preview-image community-logo-preview-img" id="onboardingLogoPreviewImg" alt="">
             </div>
-            <fieldset class="onboarding-logo-bg">
-                <legend>{{onboardingT 'logo_bg_label'}}</legend>
-                <label><input type="radio" name="logoBackground" value="" checked> {{onboardingT 'logo_bg_none'}}</label>
-                <label><input type="radio" name="logoBackground" value="white"> {{onboardingT 'logo_bg_white'}}</label>
-                <label><input type="radio" name="logoBackground" value="black"> {{onboardingT 'logo_bg_black'}}</label>
-            </fieldset>
+            {{> onboarding-logo-bg-swatches}}
             <p class="onboarding-hint">{{onboardingT 'step_import_hint'}}</p>
         </section>
 

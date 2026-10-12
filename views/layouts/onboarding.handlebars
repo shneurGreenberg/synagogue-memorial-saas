@@ -18,13 +18,15 @@
 <body class="onboarding-body{{#if (eq lang 'he')}} onboarding-rtl{{/if}}">
     <header class="onboarding-topbar">
         <img class="onboarding-brand-logo" src="{{officialLogoUrl}}" alt="">
-        <div class="onboarding-lang-switcher">
-            <label class="onboarding-lang-label" for="onboardingLangSelect">{{onboardingT 'language_label'}}</label>
-            <select id="onboardingLangSelect" class="onboarding-lang-select" aria-label="{{onboardingT 'language_label'}}">
-                <option value="he" {{#if (eq lang 'he')}}selected{{/if}}>{{onboardingT 'lang_he'}}</option>
-                <option value="ru" {{#if (eq lang 'ru')}}selected{{/if}}>{{onboardingT 'lang_ru'}}</option>
-                <option value="en" {{#if (eq lang 'en')}}selected{{/if}}>{{onboardingT 'lang_en'}}</option>
-            </select>
+        <div class="onboarding-lang-switcher" role="navigation" aria-label="{{onboardingT 'language_label'}}">
+            <span class="onboarding-lang-globe" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m7.93 9h-3.18a15.7 15.7 0 0 0-1.2-5.02A8.02 8.02 0 0 1 19.93 11M12 4c.95 1.74 1.6 3.74 1.88 6H10.12c.28-2.26.93-4.26 1.88-6M8.45 5.98A15.7 15.7 0 0 0 7.25 11H4.07a8.02 8.02 0 0 1 4.38-5.02M4.07 13h3.18c.26 1.84.7 3.58 1.2 5.02A8.02 8.02 0 0 1 4.07 13m7.93 7c-.95-1.74-1.6-3.74-1.88-6h3.76c-.28 2.26-.93 4.26-1.88 6m3.55 1.98c.5-1.44.94-3.18 1.2-5.02h3.18a8.02 8.02 0 0 1-4.38 5.02"/></svg>
+            </span>
+            <div class="onboarding-lang-pills" id="onboardingLangPills">
+                <button type="button" class="onboarding-lang-pill{{#if (eq lang 'he')}} is-active{{/if}}" data-lang="he" aria-pressed="{{#if (eq lang 'he')}}true{{else}}false{{/if}}">עברית</button>
+                <button type="button" class="onboarding-lang-pill{{#if (eq lang 'ru')}} is-active{{/if}}" data-lang="ru" aria-pressed="{{#if (eq lang 'ru')}}true{{else}}false{{/if}}">Русский</button>
+                <button type="button" class="onboarding-lang-pill{{#if (eq lang 'en')}} is-active{{/if}}" data-lang="en" aria-pressed="{{#if (eq lang 'en')}}true{{else}}false{{/if}}">English</button>
+            </div>
         </div>
     </header>
     <main class="onboarding-main">

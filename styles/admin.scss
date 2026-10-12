@@ -1,4 +1,7 @@
 // Admin dark theme (CSS variables)
+@import 'css-candle';
+@import 'logo-bg-swatches';
+
 $admin-radius: 14px;
 
 body.admin-body.admin-theme-light,
@@ -1796,6 +1799,52 @@ body.admin-is-busy {
     &--qr {
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     }
+
+    &--community {
+      grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+
+      @media (min-width: 1024px) {
+        grid-template-columns: minmax(168px, 200px) repeat(2, minmax(150px, 1fr)) minmax(168px, 1.15fr);
+        align-items: stretch;
+      }
+    }
+  }
+
+  .settings-candle-preview-tile {
+    .settings-candle-preview-stage {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      min-height: 7.5rem;
+      padding: 0.35rem 0.25rem 0.15rem;
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.35) 100%);
+      overflow: hidden;
+    }
+
+    .settings-candle-preview {
+      --css-candle-unit: 0.38px;
+      margin: 0 auto;
+
+      .css-candle-bottom {
+        display: none;
+      }
+    }
+
+    .settings-candle-palette-field {
+      margin: 0;
+
+      label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+      }
+
+      .form-control {
+        font-size: 0.78rem;
+        padding: 0.35rem 0.5rem !important;
+      }
+    }
   }
 
   .settings-media-tile {
@@ -1950,22 +1999,17 @@ body.admin-is-busy {
   }
 
   .settings-logo-bg-fieldset {
-    margin: 0;
-    padding: 0;
-    border: 0;
+    width: 100%;
+  }
 
-    legend {
-      font-size: 0.72rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .admin-radio-inline {
-      font-size: 0.72rem;
-    }
+  .settings-texts-content-block {
+    margin-top: 0.85rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--admin-border);
   }
 
   .settings-copy-details {
-    margin-top: 0.25rem;
+    margin-top: 0.35rem;
     border: 1px solid var(--admin-border);
     border-radius: 10px;
     background: var(--admin-bg-subtle);
@@ -2035,15 +2079,6 @@ body.admin-is-busy {
     }
   }
 
-  .settings-qr-block {
-    .settings-qr-scales-tile {
-      grid-column: 1 / -1;
-
-      @media (min-width: 720px) {
-        grid-column: auto;
-      }
-    }
-  }
 }
 
 .color-picker-row {
@@ -3361,6 +3396,87 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
   text-align: end;
   font-variant-numeric: tabular-nums;
   color: var(--admin-text-muted);
+}
+
+.admin-number-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  max-width: 100%;
+}
+
+.admin-number-stepper--compact {
+  gap: 0.2rem;
+}
+
+.admin-number-stepper-btn {
+  flex: 0 0 auto;
+  width: 1.65rem;
+  height: 1.65rem;
+  padding: 0;
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  background: var(--admin-surface-elevated);
+  color: var(--admin-text);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--admin-primary);
+    color: var(--admin-primary);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.admin-number-stepper-input {
+  width: 3.25rem;
+  min-width: 0;
+  padding: 0.2rem 0.35rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.admin-number-stepper-suffix {
+  flex: 0 0 auto;
+  font-size: 0.78rem;
+  color: var(--admin-text-muted);
+  user-select: none;
+}
+
+.admin-number-stepper--compact {
+  .admin-number-stepper-btn {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .admin-number-stepper-input {
+    width: 2.85rem;
+    font-size: 0.75rem;
+    padding: 0.15rem 0.25rem;
+  }
+
+  .admin-number-stepper-suffix {
+    font-size: 0.72rem;
+  }
 }
 
 .btn-admin-danger {

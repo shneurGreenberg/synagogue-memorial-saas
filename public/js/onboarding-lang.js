@@ -1,6 +1,6 @@
 (function () {
-  var select = document.getElementById('onboardingLangSelect');
-  if (!select) {
+  var pillsRoot = document.getElementById('onboardingLangPills');
+  if (!pillsRoot) {
     return;
   }
 
@@ -14,12 +14,29 @@
       + '; samesite=lax';
   }
 
-  select.addEventListener('change', function () {
-    var lang = select.value;
-    if (!lang) {
+  function setActivePill(lang) {
+    var pills = pillsRoot.querySelectorAll('.onboarding-lang-pill');
+    Array.prototype.forEach.call(pills, function (pill) {
+      var isActive = pill.getAttribute('data-lang') === lang;
+      pill.classList.toggle('is-active', isActive);
+      pill.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+  }
+
+  pillsRoot.addEventListener('click', function (event) {
+    var pill = event.target.closest('.onboarding-lang-pill');
+    if (!pill || !pillsRoot.contains(pill)) {
       return;
     }
+
+    var lang = pill.getAttribute('data-lang');
+    if (!lang || pill.classList.contains('is-active')) {
+      return;
+    }
+
     persistLangCookie(lang);
+    setActivePill(lang);
+
     var url = new URL(window.location.href);
     url.searchParams.set('lang', lang);
     window.location.assign(url.toString());

@@ -45,6 +45,7 @@ Run `node scripts/seed.js` to seed the Novosibirsk synagogue (skips if already e
 - There is no separate linter. Smoke tests use Node's built-in test runner (`node --test`).
 - The public memorial board is a Vite-built React SPA in `public/board/` (source: `client/`). Rebuild with `npm run build:board` after client changes.
 - Admin/master UIs are Handlebars + vanilla JS in `views/` and `public/js/`.
+- Admin settings numeric fields use the `admin-settings-number-stepper` partial and `public/js/admin-number-stepper.js` (+/− steppers), not `<input type="range">`.
 - Uploaded photos go to `photos/` and images to `images/` on the local filesystem (or `/data` when persistent storage is configured).
 - Master wizard uploads live in `provisioning/` and are served at `/images/provisioning/...`.
 - Public board APIs intentionally omit contacts, admin users, and other private fields.

@@ -1,0 +1,16 @@
+<div class="admin-number-stepper{{#if compact}} admin-number-stepper--compact{{/if}}">
+    <button type="button" class="admin-number-stepper-btn" data-admin-stepper-delta="-1" aria-label="{{t 'number_stepper_decrease'}}">−</button>
+    <input type="number"
+        name="{{#if name}}{{name}}{{else}}{{#if scaleKey}}fontScale_{{scaleKey}}{{/if}}{{/if}}"
+        id="{{#if id}}{{id}}{{else}}{{#if scaleKey}}fontScale_{{scaleKey}}{{/if}}{{/if}}"
+        class="admin-number-stepper-input{{#if inputClass}} {{inputClass}}{{/if}}"
+        min="{{#if min}}{{min}}{{else}}{{#if minDefault}}{{minDefault}}{{else}}0{{/if}}{{/if}}"
+        max="{{#if max}}{{max}}{{else}}{{#if maxDefault}}{{maxDefault}}{{else}}100{{/if}}{{/if}}"
+        step="{{#if step}}{{step}}{{else}}{{#if stepDefault}}{{stepDefault}}{{else}}1{{/if}}{{/if}}"
+        value="{{value}}"
+        {{#if dataFontScaleKey}}data-font-scale-key="{{dataFontScaleKey}}"{{/if}}
+        {{#if scaleKey}}data-font-scale-key="{{scaleKey}}"{{/if}}
+        {{#if ariaLabelledby}}aria-labelledby="{{ariaLabelledby}}"{{/if}}>
+    {{#if suffix}}<span class="admin-number-stepper-suffix" aria-hidden="true">{{suffix}}</span>{{/if}}
+    <button type="button" class="admin-number-stepper-btn" data-admin-stepper-delta="1" aria-label="{{t 'number_stepper_increase'}}">+</button>
+</div>

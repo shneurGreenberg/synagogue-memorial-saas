@@ -1,5 +1,3 @@
-<div class="settings-block settings-qr-block">
-    <div class="settings-media-grid settings-media-grid--qr">
         <article class="settings-media-tile">
             <div class="saved-view-thumb settings-media-thumb settings-media-thumb--square">
                 {{#if synagogue.publicSubmission.donationQrImage}}
@@ -39,29 +37,18 @@
             <div class="settings-compact-sliders">
                 <div class="slider-field-modern settings-slider-compact">
                     <label for="memorialQrTitleScale">{{t 'memorial_qr_title_scale'}}</label>
-                    <div class="slider-row slider-row-compact">
-                        <input type="range" name="memorialQrTitleScale" id="memorialQrTitleScale" class="admin-range-input memorial-qr-preview-input"
-                            min="50" max="200" step="5" value="{{memorialQrPanel.titleScale}}">
-                        <output class="slider-value-display" id="memorialQrTitleScaleValue">{{memorialQrPanel.titleScale}}%</output>
-                    </div>
+                    {{> admin-settings-number-stepper name="memorialQrTitleScale" id="memorialQrTitleScale" min="50" max="200" step="5"
+                        value=memorialQrPanel.titleScale suffix="%" compact=true inputClass="memorial-qr-preview-input"}}
                 </div>
                 <div class="slider-field-modern settings-slider-compact">
                     <label for="memorialQrTextScale">{{t 'memorial_qr_text_scale'}}</label>
-                    <div class="slider-row slider-row-compact">
-                        <input type="range" name="memorialQrTextScale" id="memorialQrTextScale" class="admin-range-input memorial-qr-preview-input"
-                            min="50" max="200" step="5" value="{{memorialQrPanel.textScale}}">
-                        <output class="slider-value-display" id="memorialQrTextScaleValue">{{memorialQrPanel.textScale}}%</output>
-                    </div>
+                    {{> admin-settings-number-stepper name="memorialQrTextScale" id="memorialQrTextScale" min="50" max="200" step="5"
+                        value=memorialQrPanel.textScale suffix="%" compact=true inputClass="memorial-qr-preview-input"}}
                 </div>
                 <div class="slider-field-modern settings-slider-compact">
                     <label for="memorialQrQrScale">{{t 'memorial_qr_size_scale'}}</label>
-                    <div class="slider-row slider-row-compact">
-                        <input type="range" name="memorialQrQrScale" id="memorialQrQrScale" class="admin-range-input memorial-qr-preview-input"
-                            min="80" max="250" step="5" value="{{memorialQrPanel.qrScale}}">
-                        <output class="slider-value-display" id="memorialQrQrScaleValue">{{memorialQrPanel.qrScale}}%</output>
-                    </div>
+                    {{> admin-settings-number-stepper name="memorialQrQrScale" id="memorialQrQrScale" min="80" max="250" step="5"
+                        value=memorialQrPanel.qrScale suffix="%" compact=true inputClass="memorial-qr-preview-input"}}
                 </div>
             </div>
         </article>
-    </div>
-</div>
