@@ -339,6 +339,7 @@
 
   Wizard.prototype.renderReview = function () {
     if (!this.reviewEl) return;
+    var labels = (this.config && this.config.reviewLabels) || {};
     var rows = [
       ['name', 'name'],
       ['slug', 'slug'],
@@ -352,7 +353,7 @@
     this.reviewEl.innerHTML = '';
     rows.forEach(function (row) {
       var dt = document.createElement('dt');
-      dt.textContent = row[0];
+      dt.textContent = labels[row[0]] || row[0];
       var dd = document.createElement('dd');
       dd.textContent = this.fieldValue(row[1]);
       this.reviewEl.appendChild(dt);

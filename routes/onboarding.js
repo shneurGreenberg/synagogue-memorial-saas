@@ -19,6 +19,8 @@ const {
 } = require('../lib/http-security');
 const {
   resolveOnboardingLang,
+  readOnboardingLangCookie,
+  buildOnboardingLangCookie,
   getOnboardingTranslator,
 } = require('../lib/onboarding-i18n');
 const { OFFICIAL_LOGO_FILENAME } = require('../lib/board-defaults');
@@ -68,9 +70,17 @@ async function loadInvite(token) {
   return invite;
 }
 
+function resolveRequestOnboardingLang(req, overrideLang) {
+  return resolveOnboardingLang(
+    overrideLang != null ? overrideLang : req.query.lang,
+    readOnboardingLangCookie(req),
+  );
+}
+
 function renderOnboarding(req, res, view, options = {}) {
-  const lang = resolveOnboardingLang(options.lang || req.query.lang);
+  const lang = resolveRequestOnboardingLang(req, options.lang);
   const t = getOnboardingTranslator(lang);
+  res.append('Set-Cookie', buildOnboardingLangCookie(lang));
   res.render(view, {
     layout: 'onboarding',
     lang,
@@ -135,7 +145,7 @@ router.get('/:token', async (req, res) => {
     return renderOnboarding(req, res, 'onboarding/invalid', { lang: req.query.lang });
   }
 
-  const lang = resolveOnboardingLang(req.query.lang);
+  const lang = resolveRequestOnboardingLang(req);
   const t = getOnboardingTranslator(lang);
   return renderOnboarding(req, res, 'onboarding/wizard', {
     token: invite.token,
@@ -153,6 +163,16 @@ router.get('/:token', async (req, res) => {
         contact: t('step_contact'),
         review: t('step_review'),
       },
+      reviewLabels: {
+        name: t('name_label'),
+        slug: t('slug_label'),
+        titleHe: t('title_he_label'),
+        city: t('city_label'),
+        contactName: t('contact_name'),
+        adminEmail: t('admin_email'),
+        logo: t('logo_label'),
+        logoBackground: t('logo_bg_label'),
+      },
     }),
   });
 });
@@ -167,7 +187,7 @@ router.get('/:token/success', async (req, res) => {
 
 router.post('/:token', (req, res) => {
   upload.single('logo')(req, res, async (uploadErr) => {
-    const lang = resolveOnboardingLang(req.body.lang);
+    const lang = resolveRequestOnboardingLang(req, req.body.lang);
     const redirectBase = `/join/${encodeURIComponent(req.params.token)}`;
 
     if (uploadErr) {

@@ -1,0 +1,27 @@
+const test = require('node:test');
+const assert = require('node:assert');
+const {
+  resolveOnboardingLang,
+  readOnboardingLangCookie,
+  getOnboardingTranslator,
+} = require('../lib/onboarding-i18n');
+
+test('resolveOnboardingLang prefers query over cookie', () => {
+  assert.strictEqual(resolveOnboardingLang('he', 'ru'), 'he');
+  assert.strictEqual(resolveOnboardingLang('', 'ru'), 'ru');
+  assert.strictEqual(resolveOnboardingLang(undefined, undefined), 'en');
+});
+
+test('readOnboardingLangCookie parses cookie header', () => {
+  const req = { headers: { cookie: 'foo=1; onboarding_lang=ru; bar=2' } };
+  assert.strictEqual(readOnboardingLangCookie(req), 'ru');
+});
+
+test('onboarding translator returns strings for all supported languages', () => {
+  ['en', 'ru', 'he'].forEach((lang) => {
+    const t = getOnboardingTranslator(lang);
+    assert.ok(t('page_title'));
+    assert.ok(t('language_label'));
+    assert.ok(t('submit'));
+  });
+});

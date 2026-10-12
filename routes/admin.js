@@ -77,6 +77,7 @@ const {
   canSaveBoardSettings,
   permissionAllows,
 } = require('../lib/admin-users');
+const { parsePeopleListSearchParam, personMatchesPeopleSearch } = require('../lib/people-list-search');
 const { parsePublicSubmissionFromBody } = require('../lib/public-submission');
 const { parsePersonContactsFromBody, normalizePersonContact, personContactsToLegacyFields, getPersonContacts, hasContactDetails } = require('../lib/person-contact');
 const { parseContactImportFile } = require('../lib/google-contacts-import');
@@ -1281,12 +1282,10 @@ router.get('/:slug/people/list', requireAdmin, requirePermission('people'), asyn
             return res.status(404).json({ ok: false, error: 'Not found' });
         }
 
-        const query = String(req.query.q || '').trim().toLowerCase();
+        const query = parsePeopleListSearchParam(req.query.q).toLowerCase();
         let people = synagogue.people || [];
         if (query) {
-            people = people.filter((person) => (
-                String(person.name || '').toLowerCase().includes(query)
-            ));
+            people = people.filter((person) => personMatchesPeopleSearch(person.name, query));
         }
 
         return res.json({
@@ -1314,6 +1313,7 @@ router.get('/:slug/people', requireAdmin, requirePermission('people'), async (re
             importError: req.query.importError === '1',
             dateError: req.query.dateError === '1',
             undatedOnly: req.query.undated === '1',
+            peopleSearchQuery: parsePeopleListSearchParam(req.query.q),
         });
     } catch (err) {
         res.status(500).send(err.message);
