@@ -241,20 +241,33 @@
                                 <input type="file" name="tilesBackground" accept="image/*">
                             </label>
                         </article>
+                        <article class="settings-media-tile settings-candle-preview-tile">
+                            <div class="settings-candle-preview-stage">
+                                <div class="css-candle css-candle-static settings-candle-preview" id="adminCandlePreview" aria-hidden="true">
+                                    <div class="css-candle-top">
+                                        <div class="css-candle-glow"></div>
+                                        <div class="css-candle-flame"></div>
+                                        <div class="css-candle-blue-part"></div>
+                                        <div class="css-candle-thread"></div>
+                                    </div>
+                                    <div class="css-candle-wax"></div>
+                                    <div class="css-candle-bottom"></div>
+                                </div>
+                            </div>
+                            <span class="saved-view-thumb-label settings-media-thumb-label">{{t 'candle_palette'}}</span>
+                            <div class="form-field settings-candle-palette-field">
+                                <label class="sr-only" for="candlePalette">{{t 'candle_palette'}}</label>
+                                <select name="candlePalette" id="candlePalette" class="form-control admin-select-modern">
+                                    {{#each candlePaletteOptions}}
+                                    <option value="{{this.key}}" {{#if (eq ../synagogue.theme.candlePalette this.key)}}selected{{else}}{{#unless ../synagogue.theme.candlePalette}}{{#if (eq this.key 'classic')}}selected{{/if}}{{/unless}}{{/if}}>{{t this.labelKey}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+                        </article>
                     </div>
                 </div>
                 <div class="settings-block">
-                    <h3 class="settings-block-title">{{t 'candle_appearance_section'}}</h3>
                     <article class="settings-control-tile">
-                        <div class="form-field candle-palette-field settings-control-field">
-                            <label for="candlePalette">{{t 'candle_palette'}}</label>
-                            <select name="candlePalette" id="candlePalette" class="form-control admin-select-modern">
-                                {{#each candlePaletteOptions}}
-                                <option value="{{this.key}}" {{#if (eq ../synagogue.theme.candlePalette this.key)}}selected{{else}}{{#unless ../synagogue.theme.candlePalette}}{{#if (eq this.key 'classic')}}selected{{/if}}{{/unless}}{{/if}}>{{t this.labelKey}}</option>
-                                {{/each}}
-                            </select>
-                            <p class="field-hint">{{t 'candle_palette_help'}}</p>
-                        </div>
                         <div class="slider-field-modern settings-slider-compact settings-control-field">
                             <label for="fontScale_candle">{{t candleSlider.labelKey}}</label>
                             <div class="slider-row slider-row-compact">
@@ -320,7 +333,9 @@
                                         min="{{#if this.min}}{{this.min}}{{else}}50{{/if}}" max="{{#if this.max}}{{this.max}}{{else}}200{{/if}}" step="{{#if this.step}}{{this.step}}{{else}}5{{/if}}" value="{{this.value}}">
                                     <output class="slider-value-display font-scale-value" data-for="fontScale_{{this.key}}">{{this.value}}%</output>
                                 </div>
+                                {{#unless (eq this.key 'tileDate')}}
                                 <span class="field-hint">{{t this.helpKey}}</span>
+                                {{/unless}}
                             </div>
                             {{/each}}
                         </div>
@@ -342,10 +357,9 @@
                 <span class="admin-panel-chevron" aria-hidden="true"></span>
             </button>
             <div class="admin-panel-body settings-panel-body" hidden>
+                <div class="settings-block settings-community-block">
+                    <div class="settings-media-grid settings-media-grid--community">
                 {{#if adminPermissions.settingsBranding}}
-                <div class="settings-block">
-                    <h3 class="settings-block-title">{{t 'logo'}}</h3>
-                    <div class="settings-media-grid settings-media-grid--logo">
                         <article class="settings-media-tile settings-media-tile--logo">
                             <div class="saved-view-thumb settings-media-thumb settings-media-thumb--square media-preview media-preview-logo{{#if (eq synagogue.theme.logoBackground 'white')}} logo-bg-white{{/if}}{{#if (eq synagogue.theme.logoBackground 'black')}} logo-bg-black{{/if}}" id="communityLogoPreview"
                                 style="--preview-logo-radius: {{#if synagogue.theme.logoBorderRadius}}{{synagogue.theme.logoBorderRadius}}{{else}}100{{/if}};">
@@ -369,27 +383,15 @@
                                     <output class="slider-value-display" id="logoBorderRadiusValue">{{#if synagogue.theme.logoBorderRadius}}{{synagogue.theme.logoBorderRadius}}{{else}}100{{/if}}%</output>
                                 </div>
                             </div>
-                            <fieldset class="admin-logo-bg-fieldset settings-logo-bg-fieldset">
-                                <legend>{{t 'logo_background'}}</legend>
-                                <label class="admin-radio-inline">
-                                    <input type="radio" name="logoBackground" value="" {{#unless synagogue.theme.logoBackground}}checked{{/unless}}>
-                                    {{t 'logo_background_none'}}
-                                </label>
-                                <label class="admin-radio-inline">
-                                    <input type="radio" name="logoBackground" value="white" {{#if (eq synagogue.theme.logoBackground 'white')}}checked{{/if}}>
-                                    {{t 'logo_background_white'}}
-                                </label>
-                                <label class="admin-radio-inline">
-                                    <input type="radio" name="logoBackground" value="black" {{#if (eq synagogue.theme.logoBackground 'black')}}checked{{/if}}>
-                                    {{t 'logo_background_black'}}
-                                </label>
-                            </fieldset>
+                            {{> admin-settings-logo-bg-swatches}}
                         </article>
-                    </div>
-                </div>
                 {{/if}}
                 {{#if adminPermissions.settingsAppearance}}
                 {{> admin-settings-qr-codes}}
+                {{/if}}
+                    </div>
+                </div>
+                {{#if adminPermissions.settingsAppearance}}
                 <details class="settings-copy-details">
                     <summary class="settings-copy-details-summary">{{t 'texts_section'}}</summary>
                     <div class="settings-copy-details-body">
@@ -475,6 +477,8 @@
     <form method="POST" action="/admin/{{synagogue.slug}}/settings/reset-theme" id="resetThemeForm" class="visually-hidden-reset-form" aria-hidden="true"></form>
 </div>
 
+<script src="/js/candle-palette-browser.js"></script>
+<script src="/js/admin-candle-preview.js"></script>
 <script src="/js/admin-settings-panel.js"></script>
 <script>
     (function () {
@@ -657,6 +661,10 @@
                     if (radio.value === 'white') preview.classList.add('logo-bg-white');
                     if (radio.value === 'black') preview.classList.add('logo-bg-black');
                 }
+                document.querySelectorAll('.logo-bg-swatch').forEach(function (swatch) {
+                    var input = swatch.querySelector('input[name="logoBackground"]');
+                    swatch.classList.toggle('is-selected', !!(input && input.checked));
+                });
                 schedulePreview();
             });
         });

@@ -393,6 +393,10 @@
     Array.prototype.forEach.call(bgRadios, function (radio) {
       radio.addEventListener('change', function () {
         wizard.applyLogoBackgroundPreview();
+        form.querySelectorAll('.logo-bg-swatch').forEach(function (swatch) {
+          var input = swatch.querySelector('input[name="logoBackground"]');
+          swatch.classList.toggle('is-selected', !!(input && input.checked));
+        });
       });
     });
   }
