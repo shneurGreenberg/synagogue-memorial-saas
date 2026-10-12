@@ -34,39 +34,37 @@
     </div>
   {{/if}}
 
-    <section class="admin-panel publish-version-panel">
-        <div class="admin-panel-header">
-            <h2 class="admin-panel-title">{{t 'publish_version_title'}}</h2>
+  {{#if codeRelease.unseen}}
+    <div class="alert admin-alert admin-alert-warning code-release-banner" role="status" id="codeReleaseBanner">
+        <span>{{t 'code_release_banner'}} <strong>v{{codeRelease.version}}</strong></span>
+        <span class="code-release-actions">
+            <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm" id="codeReleaseDetailsBtn">{{t 'code_release_details'}}</button>
+            <button type="submit" form="refreshDisplayForm" class="btn-admin btn-admin-primary btn-admin-sm">{{t 'code_release_refresh'}}</button>
+        </span>
+    </div>
+  {{/if}}
+
+    <dialog class="code-release-dialog" id="codeReleaseDialog">
+        <div class="code-release-dialog-header">
+            <h2>{{t 'code_release_changelog_title'}}</h2>
+            <button type="button" class="close" id="codeReleaseCloseBtn" aria-label="Close">&times;</button>
         </div>
-        <div class="admin-panel-body">
-            <p class="field-hint">{{t 'publish_version_help'}}</p>
-            <p class="publish-version-stats">
-                <span>{{t 'published_version_label'}}: <strong id="publishedVersionValue">{{boardPublish.publishedVersion}}</strong></span>
-                {{#if boardPublish.publishedAtLabel}}
-                <span>{{t 'published_at_label'}}: {{boardPublish.publishedAtLabel}}</span>
-                {{/if}}
-                <span><strong>{{boardPublish.onPublishedVersion}}</strong> {{t 'screens_on_version'}}</span>
-                <span><strong>{{boardPublish.pendingCount}}</strong> {{t 'screens_pending'}}</span>
-            </p>
-            {{#if boardPublish.screens.length}}
-            <ul class="publish-screen-list">
-                {{#each boardPublish.screens}}
-                <li>
-                    <span class="publish-screen-name">{{#if this.label}}{{this.label}}{{else}}{{this.screenId}}{{/if}}</span>
-                    <span class="publish-screen-client">{{this.clientLabel}}</span>
-                    <span class="publish-screen-version">v{{this.publishedVersion}}</span>
-                    <time datetime="{{this.lastSeenAt}}">{{this.lastSeenLabel}}</time>
-                </li>
-                {{/each}}
-            </ul>
-            {{else}}
-            <p class="field-hint">{{t 'no_screens_yet'}}</p>
-            {{/if}}
-            <form method="POST" action="/admin/{{synagogue.slug}}/publish-version" data-confirm="{{t 'publish_version_confirm'}}" onsubmit="return confirm(this.getAttribute('data-confirm'));">
-                <button type="submit" class="btn-admin btn-admin-primary">{{t 'publish_version'}}</button>
-            </form>
+        <div class="code-release-dialog-body">
+            {{#each codeRelease.changelog}}
+            <section class="code-release-entry">
+                <h3>{{t 'code_release_version'}} {{this.version}} {{#if this.date}}<small>{{this.date}}</small>{{/if}}</h3>
+                <ul>
+                    {{#each this.items}}
+                    <li class="code-release-item code-release-{{this.type}}"><span class="code-release-type">{{#if (eq this.type 'added')}}{{t 'code_release_added'}}{{else if (eq this.type 'fixed')}}{{t 'code_release_fixed'}}{{else}}{{t 'code_release_changed'}}{{/if}}</span> {{this.text}}</li>
+                    {{/each}}
+                </ul>
+            </section>
+            {{/each}}
         </div>
-    </section>
+    </dialog>
+
+    <form method="POST" action="/admin/{{synagogue.slug}}/publish-version" id="refreshDisplayForm" data-confirm="{{t 'publish_version_confirm'}}" onsubmit="return confirm(this.getAttribute('data-confirm'));"></form>
+
 
     <form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data" class="settings-form" id="settingsForm" data-save-label="{{t 'save'}}" data-slug="{{synagogue.slug}}">
         {{#if adminPermissions.settingsPreview}}
@@ -554,6 +552,7 @@
         {{#if canSaveBoardSettings}}
         <div class="form-actions-sticky">
             <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon">{{{adminIcon 'save'}}}{{t 'save'}}</button>
+            <button type="submit" form="refreshDisplayForm" class="btn-admin btn-admin-secondary btn-admin-sm refresh-display-btn">{{t 'refresh_display_screens'}}</button>
         </div>
         {{/if}}
     </form>
@@ -562,6 +561,20 @@
 </div>
 
 <script src="/js/admin-settings-panel.js"></script>
+<script>
+    (function () {
+        var dialog = document.getElementById('codeReleaseDialog');
+        var openBtn = document.getElementById('codeReleaseDetailsBtn');
+        var closeBtn = document.getElementById('codeReleaseCloseBtn');
+        if (!dialog || !openBtn) return;
+        openBtn.addEventListener('click', function () {
+            if (dialog.showModal) dialog.showModal(); else dialog.setAttribute('open', '');
+        });
+        if (closeBtn) closeBtn.addEventListener('click', function () {
+            if (dialog.close) dialog.close(); else dialog.removeAttribute('open');
+        });
+    })();
+</script>
 <script>
     (function () {
         var settingsForm = document.getElementById('settingsForm');

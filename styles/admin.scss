@@ -3291,3 +3291,83 @@ body.admin-theme-light {
 .media-preview-slide {
   height: 160px;
 }
+
+.code-release-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.code-release-actions {
+  display: inline-flex;
+  gap: 0.5rem;
+}
+
+.refresh-display-btn {
+  margin-inline-start: 0.5rem;
+}
+
+.code-release-dialog {
+  width: min(560px, 92vw);
+  max-height: 80vh;
+  padding: 0;
+  border: 1px solid var(--admin-border);
+  border-radius: 14px;
+  background: var(--admin-surface);
+  color: var(--admin-text);
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+  }
+}
+
+.code-release-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid var(--admin-border);
+
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+}
+
+.code-release-dialog-body {
+  padding: 0.85rem 1.1rem;
+  overflow-y: auto;
+  max-height: calc(80vh - 4rem);
+}
+
+.code-release-entry {
+  margin-bottom: 1rem;
+
+  h3 {
+    margin: 0 0 0.4rem;
+    font-size: 1rem;
+
+    small {
+      opacity: 0.7;
+      font-weight: 400;
+      margin-inline-start: 0.4rem;
+    }
+  }
+
+  ul {
+    margin: 0;
+    padding-inline-start: 1.1rem;
+  }
+}
+
+.code-release-type {
+  font-weight: 700;
+  font-size: 0.78rem;
+  margin-inline-end: 0.3rem;
+}
+
+.code-release-added .code-release-type { color: #16a34a; }
+.code-release-fixed .code-release-type { color: #2563eb; }
+.code-release-changed .code-release-type { color: #d97706; }

@@ -24,6 +24,7 @@ const {
     resolvePublishedVersion,
     formatPublishedAt,
 } = require('../lib/board-publish');
+const { loadChangelog, currentCodeVersion, hasUnseenRelease } = require('../lib/changelog');
 const {
   normalizeSnapshot,
   saveViewThumbnail,
@@ -595,6 +596,11 @@ function renderAdmin(res, view, options = {}) {
         yahrzeitTodayCount,
         undatedPeopleCount: countPeopleWithoutDeathDate(displaySynagogue && displaySynagogue.people),
         boardPublish,
+        codeRelease: {
+            version: currentCodeVersion(),
+            unseen: hasUnseenRelease(displaySynagogue && displaySynagogue.lastRefreshedCodeVersion),
+            changelog: loadChangelog(),
+        },
         officialLogoUrl: `/images/${OFFICIAL_LOGO_FILENAME}`,
         faviconUrl: buildFaviconPath(displaySynagogue.slug, { badge: false }),
         faviconAlertUrl: buildFaviconPath(displaySynagogue.slug, { badge: true }),
@@ -1514,7 +1520,7 @@ router.post('/:slug/publish-version', requireAdmin, requirePermission('settings'
         const publishedVersion = nextPublishedVersion(synagogue.publishedVersion);
         await Synagogue.updateOne(
             { slug: req.params.slug },
-            { $set: { publishedVersion, publishedAt: new Date() } },
+            { $set: { publishedVersion, publishedAt: new Date(), lastRefreshedCodeVersion: currentCodeVersion() } },
         );
         invalidateBoardCache(req.params.slug);
 

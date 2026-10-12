@@ -49,3 +49,12 @@ Run `node scripts/seed.js` to seed the Novosibirsk synagogue (skips if already e
 - Master wizard uploads live in `provisioning/` and are served at `/images/provisioning/...`.
 - Public board APIs intentionally omit contacts, admin users, and other private fields.
 - `pm2` scripts in `package.json` (`yarn restart`/`yarn stop`) are for production only; use `node app.js` for development.
+
+### Changelog (required for every code change)
+
+Every code change (feature, fix, or behavior change) **must** add an entry to `CHANGELOG.json` at the repo root:
+- Newest version first: `{ "version": "X.Y.Z", "date": "YYYY-MM-DD", "items": [{ "type": "added|fixed|changed", "text": "<Hebrew description>" }] }`.
+- Bump the version above the current head (the head version is the app code version shown in admin).
+- When the deployed code version is newer than a community's `lastRefreshedCodeVersion`, the tenant admin dashboard shows a "new version" banner with details (this changelog) and a refresh button. Pressing refresh ("רענן מסך תצוגה") force-reloads that community's screens and records the version.
+- Admin design/settings changes are not code versions and must not be added here.
+- `test/changelog.test.js` validates the file format.
