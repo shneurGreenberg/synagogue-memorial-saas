@@ -179,10 +179,6 @@
 
     if (theme.tileOpacity != null) {
       setInputValue('tileOpacity', theme.tileOpacity);
-      var tileOpacityValue = document.getElementById('tileOpacityValue');
-      if (tileOpacityValue) {
-        tileOpacityValue.textContent = theme.tileOpacity + '%';
-      }
     }
 
     if (theme.candlePalette) {
@@ -191,10 +187,6 @@
 
     if (theme.logoBorderRadius != null) {
       setInputValue('logoBorderRadius', theme.logoBorderRadius);
-      var logoBorderRadiusValue = document.getElementById('logoBorderRadiusValue');
-      if (logoBorderRadiusValue) {
-        logoBorderRadiusValue.textContent = theme.logoBorderRadius + '%';
-      }
       var preview = document.getElementById('communityLogoPreview');
       if (preview) {
         preview.style.setProperty('--preview-logo-radius', String(theme.logoBorderRadius));
@@ -212,10 +204,6 @@
         return;
       }
       input.value = fontScales[key];
-      var output = document.querySelector('.font-scale-value[data-for="' + input.id + '"]');
-      if (output) {
-        output.textContent = fontScales[key] + '%';
-      }
     });
 
     var memorialQrTitleFields = memorialQr.titles || {};
@@ -248,10 +236,6 @@
         return;
       }
       setInputValue(pair[0], pair[1]);
-      var output = document.getElementById(pair[0] + 'Value');
-      if (output) {
-        output.textContent = pair[1] + '%';
-      }
     });
 
     var boardFeatures = snapshot.boardFeatures || {};
@@ -391,14 +375,10 @@
     }
 
     input.dataset.bound = '1';
-    var output = document.getElementById('logoBorderRadiusValue');
     var preview = document.getElementById('communityLogoPreview');
 
     function applyRadius() {
       var value = input.value;
-      if (output) {
-        output.textContent = value + '%';
-      }
       if (preview) {
         preview.style.setProperty('--preview-logo-radius', value);
       }
