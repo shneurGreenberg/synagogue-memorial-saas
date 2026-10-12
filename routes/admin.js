@@ -98,7 +98,9 @@ const {
   buildYahrzeitWeekMissedEntries,
   buildContactMessageEntry,
 } = require('../lib/yahrzeit-reminders');
-const { getDayKeyInTimezone, resolveSynagogueTimezone, buildYahrzeitEntries } = require('../lib/yahrzeit');
+const { resolveSynagogueTimezone } = require('../lib/yahrzeit');
+const { getCachedAdminYahrzeitBundle, getCachedYahrzeitTodayCount } = require('../lib/admin-yahrzeit-cache');
+const { createAdminTiming } = require('../lib/admin-timing');
 const {
     getWeeklyKaddishEntries, buildWeeklyKaddishMessage, buildWhatsappUrl, isWeekConfirmed,
 } = require('../lib/weekly-kaddish');
@@ -581,7 +583,7 @@ function renderAdmin(res, view, options = {}) {
         adminUser,
     );
     const locale = getAdminLocaleContext(displaySynagogue && displaySynagogue.adminLanguage);
-    const yahrzeitTodayCount = buildYahrzeitEntries(displaySynagogue).length;
+    const yahrzeitTodayCount = getCachedYahrzeitTodayCount(displaySynagogue);
     const publishedVersion = resolvePublishedVersion(displaySynagogue && displaySynagogue.publishedVersion);
     const boardPublishSummary = summarizeBoardScreens(
         displaySynagogue && displaySynagogue.boardClients,
@@ -1125,22 +1127,29 @@ router.post('/:slug/yahrzeit/settings', requireAdmin, requirePermission('people'
 
 router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    const timing = createAdminTiming(res, `GET /admin/${req.params.slug}/yahrzeit`);
     try {
-        const synagogue = await loadAdminSynagogue(req.params.slug, 'people');
+        const synagogue = await loadAdminSynagogue(req.params.slug, 'yahrzeit');
+        timing.mark('db');
         const enriched = enrichSynagogueForAdmin(synagogue);
         const displaySynagogue = applyUserDisplaySettings(enriched, req.adminUser);
-        const entries = buildYahrzeitPageEntries(enriched, new Date(), displaySynagogue.adminLanguage);
-        const weekEntries = buildYahrzeitWeekMissedEntries(enriched, new Date(), displaySynagogue.adminLanguage);
-        const timezone = resolveSynagogueTimezone(enriched);
-        const todayLabel = getDayKeyInTimezone(timezone);
+        const now = new Date();
+        const bundle = getCachedAdminYahrzeitBundle(enriched, {
+            now,
+            adminLanguage: displaySynagogue.adminLanguage,
+        });
+        const { entries, weekEntries, weeklyKaddish: weeklyKaddishBase, dayKey: todayLabel } = bundle;
+        timing.mark('compute');
+        const entryIds = new Set(entries.map((entry) => entry.id));
+        const weekIds = new Set(weekEntries.map((entry) => entry.id));
         const yahrzeitPeople = (enriched.people || []).filter((person) => (
-            entries.some((entry) => entry.id === person.id)
-            || weekEntries.some((entry) => entry.id === person.id)
+            entryIds.has(person.id) || weekIds.has(person.id)
         ));
 
-
         const upcomingHolidayNotice = await getUpcomingHolidayNotice(enriched);
-        const weeklyKaddish = getWeeklyKaddishEntries(synagogue, new Date());
+        timing.mark('holiday');
+        const timezone = resolveSynagogueTimezone(enriched);
+        const weeklyKaddish = weeklyKaddishBase;
         if (weeklyKaddish.entries.length) {
             const message = buildWeeklyKaddishMessage(weeklyKaddish.entries);
             const confirmation = synagogue.weeklyKaddishConfirmation || {};
@@ -1166,7 +1175,10 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
             upcomingHolidayNotice,
             saved: req.query.saved === '1',
         });
+        timing.mark('render');
+        timing.finish();
     } catch (err) {
+        timing.finish();
         res.status(500).send(err.message);
     }
 });
