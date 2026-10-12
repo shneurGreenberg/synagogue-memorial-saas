@@ -22,6 +22,7 @@ const {
   createPublicSubmissionRateLimiter,
   isAllowedImageUpload,
 } = require('../lib/http-security');
+const { MAX_UPLOAD_BYTES } = require('../lib/upload-limits');
 
 const router = express.Router();
 const OFFICIAL_LOGO_FILENAME = 'kaddish-official-logo.svg';
@@ -54,7 +55,7 @@ const upload = multer({
       cb(null, `${Date.now()}${ext || '.jpg'}`);
     },
   }),
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: MAX_UPLOAD_BYTES },
   fileFilter(req, file, cb) {
     if (!isAllowedImageUpload(file)) {
       return cb(new Error('image_only'));

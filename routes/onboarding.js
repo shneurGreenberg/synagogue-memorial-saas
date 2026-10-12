@@ -24,6 +24,7 @@ const {
   getOnboardingTranslator,
 } = require('../lib/onboarding-i18n');
 const { OFFICIAL_LOGO_FILENAME } = require('../lib/board-defaults');
+const { MAX_UPLOAD_BYTES } = require('../lib/upload-limits');
 
 const router = express.Router();
 const placesRateLimiter = createApiRateLimiter();
@@ -53,7 +54,7 @@ const upload = multer({
       cb(null, `logo-${Date.now()}-${crypto.randomBytes(4).toString('hex')}${ext}`);
     },
   }),
-  limits: { fileSize: 8 * 1024 * 1024, files: 1 },
+  limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 },
   fileFilter(req, file, cb) {
     if (!isAllowedCommunityLogoUpload(file)) {
       return cb(new Error('image_only'));

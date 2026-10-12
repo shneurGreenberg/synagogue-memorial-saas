@@ -26,9 +26,11 @@ const scanRateLimiter = rateLimit({
   message: { ok: false, error: 'rate_limited', message: 'Слишком много снимков. Подождите немного.' },
 });
 
+const { MAX_UPLOAD_BYTES } = require('../lib/upload-limits');
+
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { fileSize: 10 * 1024 * 1024 },
+  limits: { fileSize: MAX_UPLOAD_BYTES },
   fileFilter(req, file, cb) {
     if (!isAllowedImageUpload(file)) {
       return cb(new Error('image_only'));

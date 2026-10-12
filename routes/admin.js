@@ -300,9 +300,11 @@ const storage = multer.diskStorage({
     },
 });
 
+const { MAX_UPLOAD_BYTES } = require('../lib/upload-limits');
+
 const upload = multer({
     storage,
-    limits: { fileSize: 10 * 1024 * 1024 },
+    limits: { fileSize: MAX_UPLOAD_BYTES },
     fileFilter: function (req, file, cb) {
         if (file.fieldname === 'logo') {
             if (!isAllowedCommunityLogoUpload(file)) {
