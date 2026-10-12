@@ -33,7 +33,7 @@ export function SettingsScreen({
             type="url"
             value={draft.serverUrl}
             onChange={(event) => updateDraft({ ...draft, serverUrl: event.target.value })}
-            placeholder="https://synagogue-kadish-shneur.amvera.io"
+            placeholder="https://synagogue-kadish-waw-shneur.waw0.amvera.tech"
           />
         </label>
 

@@ -7,6 +7,7 @@ import com.getcapacitor.BridgeActivity;
 public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        com.synagogue.sidebar.widget.ServerUrls.migratePrefs(this);
         registerPlugin(WidgetSyncPlugin.class);
         super.onCreate(savedInstanceState);
     }

@@ -699,7 +699,7 @@ public final class WidgetDataLoader {
 
         static SharedSnapshot read(Context context) {
             android.content.SharedPreferences prefs = WidgetPrefs.prefs(context);
-            String serverUrl = prefs.getString("server_url", "https://synagogue-kadish-shneur.amvera.io");
+            String serverUrl = ServerUrls.migrate(prefs.getString("server_url", ServerUrls.DEFAULT_SERVER_URL));
             String slug = prefs.getString("slug", "novosibirsk");
             ParsedServer parsed = parseServerSettings(serverUrl, slug);
             return new SharedSnapshot(

@@ -4,7 +4,7 @@ import { fetchOfflineJewishFeed } from '../src/lib/offline-feed.js';
 import { buildAnnouncementItems } from '../src/lib/announcements.js';
 
 const settings = normalizeSettings({
-  serverUrl: 'https://synagogue-kadish-shneur.amvera.io',
+  serverUrl: 'https://synagogue-kadish-waw-shneur.waw0.amvera.tech',
   slug: 'novosibirsk',
   language: 'ru',
 });
