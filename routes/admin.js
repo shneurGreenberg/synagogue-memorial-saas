@@ -1829,7 +1829,6 @@ router.post('/:slug/slideshow/delete', requireAdmin, requireAnyPermission('event
                 await synagogue.save();
                 invalidateBoardCache(req.params.slug);
                 invalidateAdminSynagogueCache(req.params.slug);
-        invalidateAdminSynagogueCache(req.params.slug);
                 return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
             }
         }
