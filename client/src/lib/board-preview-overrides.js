@@ -1,4 +1,17 @@
+import {
+  parseMemorialQrPanelFromBody,
+  memorialQrPanelForBoard,
+} from '../../../lib/memorial-qr-panel';
+
 const PREVIEW_LANGS = ['ru', 'en', 'he'];
+
+const MEMORIAL_QR_PREVIEW_KEYS = [
+  'memorialQrTitleRu', 'memorialQrTitleEn', 'memorialQrTitleHe',
+  'memorialQrTextRu', 'memorialQrTextEn', 'memorialQrTextHe',
+  'donationQrTitleRu', 'donationQrTitleEn', 'donationQrTitleHe',
+  'donationQrTextRu', 'donationQrTextEn', 'donationQrTextHe',
+  'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale',
+];
 
 export function mergePreviewPatch(data, patch) {
   if (!data || !patch) {
@@ -53,32 +66,13 @@ export function mergePreviewPatch(data, patch) {
     next.language = patch.previewLang;
   }
 
-  const memorialQrKeys = [
-    'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale',
-  ];
-  const hasMemorialQr = memorialQrKeys.some((key) => patch[key] !== undefined && patch[key] !== '');
+  const hasMemorialQr = MEMORIAL_QR_PREVIEW_KEYS.some(
+    (key) => patch[key] !== undefined && patch[key] !== '',
+  );
   if (hasMemorialQr) {
-    const current = next.memorialQrPanel || {};
-    next.memorialQrPanel = {
-      ...current,
-      titles: { ...(current.titles || {}) },
-      texts: { ...(current.texts || {}) },
-      titleScale: current.titleScale,
-      textScale: current.textScale,
-      qrScale: current.qrScale,
-      titleScaleBaseline: current.titleScaleBaseline,
-      textScaleBaseline: current.textScaleBaseline,
-      qrScaleBaseline: current.qrScaleBaseline,
-    };
-    if (patch.memorialQrTitleScale !== undefined && patch.memorialQrTitleScale !== '') {
-      next.memorialQrPanel.titleScale = Number(patch.memorialQrTitleScale);
-    }
-    if (patch.memorialQrTextScale !== undefined && patch.memorialQrTextScale !== '') {
-      next.memorialQrPanel.textScale = Number(patch.memorialQrTextScale);
-    }
-    if (patch.memorialQrQrScale !== undefined && patch.memorialQrQrScale !== '') {
-      next.memorialQrPanel.qrScale = Number(patch.memorialQrQrScale);
-    }
+    next.memorialQrPanel = memorialQrPanelForBoard(
+      parseMemorialQrPanelFromBody(patch, next.memorialQrPanel),
+    );
   }
 
   return next;

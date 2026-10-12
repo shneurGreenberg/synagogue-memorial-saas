@@ -61,8 +61,6 @@ class MemorialCardInner extends React.Component {
           card
           golden-panel
           ${big ? 'card-big' : ''}
-          ${entry.passedToday ? 'passed-today' : ''}
-          ${entry.passedToday && !big ? 'card-outline yahrzeit-highlight' : ''}
         `}
         role="button"
         tabIndex={0}
