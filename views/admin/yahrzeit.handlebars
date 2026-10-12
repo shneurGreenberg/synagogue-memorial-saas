@@ -29,7 +29,7 @@
     <ul class="weekly-kaddish-list">
         {{#each weeklyKaddish.entries}}
         <li class="weekly-kaddish-item{{#if this.missingContact}} is-missing{{/if}}">
-            <a href="/admin/{{../synagogue.slug}}/people#person-{{this.id}}" class="weekly-kaddish-name">{{this.name}}</a>
+            <a href="/admin/{{../synagogue.slug}}/people?q={{this.searchQuery}}" class="weekly-kaddish-name">{{this.name}}</a>
             <span class="weekly-kaddish-date">{{this.weekdayHe}} {{this.gregorianLabel}} · {{this.hebrewLabel}}</span>
             {{#if this.contacts.length}}
             <span class="weekly-kaddish-contacts">
