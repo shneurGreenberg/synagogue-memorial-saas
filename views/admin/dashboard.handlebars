@@ -197,12 +197,11 @@
                                 value="{{synagogue.theme.tileColor}}" aria-hidden="true" tabindex="-1">
                             <div class="settings-embedded-slider">
                                 <span class="settings-embedded-slider-label" id="tileOpacityLabel">{{t 'tile_opacity'}}</span>
-                                <div class="slider-row slider-row-compact">
-                                    <input type="range" name="tileOpacity" id="tileOpacity" class="admin-range-input"
-                                        min="0" max="100" step="1" aria-labelledby="tileOpacityLabel"
-                                        value="{{#if synagogue.theme.tileOpacity}}{{synagogue.theme.tileOpacity}}{{else}}100{{/if}}">
-                                    <output class="slider-value-display" id="tileOpacityValue">{{#if synagogue.theme.tileOpacity}}{{synagogue.theme.tileOpacity}}{{else}}100{{/if}}%</output>
-                                </div>
+                                {{#if synagogue.theme.tileOpacity}}
+                                {{> admin-settings-number-stepper name="tileOpacity" id="tileOpacity" min="0" max="100" step="1" value=synagogue.theme.tileOpacity suffix="%" compact=true ariaLabelledby="tileOpacityLabel"}}
+                                {{else}}
+                                {{> admin-settings-number-stepper name="tileOpacity" id="tileOpacity" min="0" max="100" step="1" value="100" suffix="%" compact=true ariaLabelledby="tileOpacityLabel"}}
+                                {{/if}}
                             </div>
                             <span class="field-hint settings-color-hint">{{t 'tile_color_help'}}</span>
                         </div>
@@ -270,15 +269,10 @@
                     <article class="settings-control-tile">
                         <div class="slider-field-modern settings-slider-compact settings-control-field">
                             <label for="fontScale_candle">{{t candleSlider.labelKey}}</label>
-                            <div class="slider-row slider-row-compact">
-                                <input type="range" name="fontScale_candle" id="fontScale_candle"
-                                    class="admin-range-input font-scale-input" data-font-scale-key="candle"
-                                    min="{{#if candleSlider.min}}{{candleSlider.min}}{{else}}40{{/if}}"
-                                    max="{{#if candleSlider.max}}{{candleSlider.max}}{{else}}150{{/if}}"
-                                    step="{{#if candleSlider.step}}{{candleSlider.step}}{{else}}5{{/if}}"
-                                    value="{{candleSlider.value}}">
-                                <output class="slider-value-display font-scale-value" data-for="fontScale_candle">{{candleSlider.value}}%</output>
-                            </div>
+                            {{> admin-settings-number-stepper name="fontScale_candle" id="fontScale_candle"
+                                min=candleSlider.min max=candleSlider.max step=candleSlider.step
+                                minDefault="40" maxDefault="150" stepDefault="5" value=candleSlider.value
+                                suffix="%" compact=true inputClass="font-scale-input" dataFontScaleKey="candle"}}
                             <p class="field-hint">{{t candleSlider.helpKey}}</p>
                         </div>
                     </article>
@@ -294,55 +288,66 @@
                 </h2>
                 <span class="admin-panel-chevron" aria-hidden="true"></span>
             </button>
-            <div class="admin-panel-body" hidden>
-                {{#if (or adminPermissions.settingsAppearance adminPermissions.settingsLanguages)}}
-                <div class="form-field board-language-field">
-                    <label for="language">{{t 'language'}}</label>
-                    <select name="language" id="language" class="form-control admin-select-modern">
-                        <option value="ru" {{#if (eq synagogue.language 'ru')}}selected{{/if}}>Russian</option>
-                        <option value="en" {{#if (eq synagogue.language 'en')}}selected{{/if}}>English</option>
-                        <option value="he" {{#if (eq synagogue.language 'he')}}selected{{/if}}>Hebrew</option>
-                    </select>
-                    <p class="field-hint">{{t 'language_help'}}</p>
-                </div>
-                {{/if}}
-                <div class="typography-controls settings-typography-controls">
-                    {{#each textsFontScaleGroups}}
-                    {{#if this.sliders}}
-                    <div class="typography-group">
-                        <h3 class="typography-controls-title">
-                            {{#if (eq this.groupKey 'typography_left_column')}}
-                            <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 5v14c0 1.1.9 2 2 2h5V3H5c-1.1 0-2 .9-2 2m12-2h-5v18h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2"/></svg>
-                            {{/if}}
-                            {{#if (eq this.groupKey 'typography_center_column')}}
-                            <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 6h16v2H4V6m0 5h16v2H4v-2m0 5h16v2H4v-2Z"/></svg>
-                            {{/if}}
-                            {{#if (eq this.groupKey 'typography_right_column')}}
-                            <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 5v14c0 1.1-.9 2-2 2h-5V3h5c1.1 0 2 .9 2 2m-12 0H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h2V5Z"/></svg>
-                            {{/if}}
-                            {{t this.groupKey}}
-                        </h3>
-                        <p class="field-hint">{{t this.helpKey}}</p>
-                        <div class="font-scale-grid">
-                            {{#each this.sliders}}
-                            <div class="slider-field-modern{{#if (eq this.key 'tileDate')}} settings-slider-compact settings-scale-tile-date{{/if}}">
-                                <label for="fontScale_{{this.key}}">{{t this.labelKey}}</label>
-                                <div class="slider-row{{#if (eq this.key 'tileDate')}} slider-row-compact{{/if}}">
-                                    <input type="range" name="fontScale_{{this.key}}" id="fontScale_{{this.key}}"
-                                        class="admin-range-input font-scale-input" data-font-scale-key="{{this.key}}"
-                                        min="{{#if this.min}}{{this.min}}{{else}}50{{/if}}" max="{{#if this.max}}{{this.max}}{{else}}200{{/if}}" step="{{#if this.step}}{{this.step}}{{else}}5{{/if}}" value="{{this.value}}">
-                                    <output class="slider-value-display font-scale-value" data-for="fontScale_{{this.key}}">{{this.value}}%</output>
-                                </div>
-                                {{#unless (eq this.key 'tileDate')}}
-                                <span class="field-hint">{{t this.helpKey}}</span>
-                                {{/unless}}
-                            </div>
-                            {{/each}}
-                        </div>
+            <div class="admin-panel-body settings-panel-body" hidden>
+                <div class="settings-block settings-texts-styling-block">
+                    <h3 class="settings-block-title">{{t 'texts_styling_section'}}</h3>
+                    {{#if (or adminPermissions.settingsAppearance adminPermissions.settingsLanguages)}}
+                    <div class="form-field board-language-field">
+                        <label for="language">{{t 'language'}}</label>
+                        <select name="language" id="language" class="form-control admin-select-modern">
+                            <option value="ru" {{#if (eq synagogue.language 'ru')}}selected{{/if}}>Russian</option>
+                            <option value="en" {{#if (eq synagogue.language 'en')}}selected{{/if}}>English</option>
+                            <option value="he" {{#if (eq synagogue.language 'he')}}selected{{/if}}>Hebrew</option>
+                        </select>
+                        <p class="field-hint">{{t 'language_help'}}</p>
                     </div>
                     {{/if}}
-                    {{/each}}
+                    <div class="typography-controls settings-typography-controls">
+                        {{#each textsFontScaleGroups}}
+                        {{#if this.sliders}}
+                        <div class="typography-group">
+                            <h4 class="typography-controls-title">
+                                {{#if (eq this.groupKey 'typography_left_column')}}
+                                <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3 5v14c0 1.1.9 2 2 2h5V3H5c-1.1 0-2 .9-2 2m12-2h-5v18h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2"/></svg>
+                                {{/if}}
+                                {{#if (eq this.groupKey 'typography_center_column')}}
+                                <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 6h16v2H4V6m0 5h16v2H4v-2m0 5h16v2H4v-2Z"/></svg>
+                                {{/if}}
+                                {{#if (eq this.groupKey 'typography_right_column')}}
+                                <svg class="typography-controls-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 5v14c0 1.1-.9 2-2 2h-5V3h5c1.1 0 2 .9 2 2m-12 0H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h2V5Z"/></svg>
+                                {{/if}}
+                                {{t this.groupKey}}
+                            </h4>
+                            <p class="field-hint">{{t this.helpKey}}</p>
+                            <div class="font-scale-grid">
+                                {{#each this.sliders}}
+                                <div class="slider-field-modern{{#if (eq this.key 'tileDate')}} settings-slider-compact settings-scale-tile-date{{/if}}">
+                                    <label for="fontScale_{{this.key}}">{{t this.labelKey}}</label>
+                                    {{> admin-settings-number-stepper scaleKey=this.key min=this.min max=this.max step=this.step
+                                        minDefault="50" maxDefault="200" stepDefault="5" value=this.value suffix="%" compact=true
+                                        inputClass="font-scale-input"}}
+                                    {{#unless (eq this.key 'tileDate')}}
+                                    <span class="field-hint">{{t this.helpKey}}</span>
+                                    {{/unless}}
+                                </div>
+                                {{/each}}
+                            </div>
+                        </div>
+                        {{/if}}
+                        {{/each}}
+                    </div>
                 </div>
+                {{#if adminPermissions.settingsAppearance}}
+                <div class="settings-block settings-texts-content-block">
+                    <h3 class="settings-block-title">{{t 'texts_content_section'}}</h3>
+                    <details class="settings-copy-details">
+                        <summary class="settings-copy-details-summary">{{t 'texts_content_details_summary'}}</summary>
+                        <div class="settings-copy-details-body">
+                            {{> admin-settings-community-texts}}
+                        </div>
+                    </details>
+                </div>
+                {{/if}}
             </div>
         </section>
         {{/if}}
@@ -376,12 +381,11 @@
                             </label>
                             <div class="slider-field-modern settings-slider-compact settings-embedded-slider">
                                 <label for="logoBorderRadius">{{t 'logo_border_radius'}}</label>
-                                <div class="slider-row slider-row-compact">
-                                    <input type="range" name="logoBorderRadius" id="logoBorderRadius" class="admin-range-input logo-radius-input"
-                                        min="0" max="100" step="1"
-                                        value="{{#if synagogue.theme.logoBorderRadius}}{{synagogue.theme.logoBorderRadius}}{{else}}100{{/if}}">
-                                    <output class="slider-value-display" id="logoBorderRadiusValue">{{#if synagogue.theme.logoBorderRadius}}{{synagogue.theme.logoBorderRadius}}{{else}}100{{/if}}%</output>
-                                </div>
+                                {{#if synagogue.theme.logoBorderRadius}}
+                                {{> admin-settings-number-stepper name="logoBorderRadius" id="logoBorderRadius" min="0" max="100" step="1" value=synagogue.theme.logoBorderRadius suffix="%" compact=true inputClass="logo-radius-input"}}
+                                {{else}}
+                                {{> admin-settings-number-stepper name="logoBorderRadius" id="logoBorderRadius" min="0" max="100" step="1" value="100" suffix="%" compact=true inputClass="logo-radius-input"}}
+                                {{/if}}
                             </div>
                             {{> admin-settings-logo-bg-swatches}}
                         </article>
@@ -391,14 +395,6 @@
                 {{/if}}
                     </div>
                 </div>
-                {{#if adminPermissions.settingsAppearance}}
-                <details class="settings-copy-details">
-                    <summary class="settings-copy-details-summary">{{t 'texts_section'}}</summary>
-                    <div class="settings-copy-details-body">
-                        {{> admin-settings-community-texts}}
-                    </div>
-                </details>
-                {{/if}}
             </div>
         </section>
         {{/if}}
@@ -479,6 +475,7 @@
 
 <script src="/js/candle-palette-browser.js"></script>
 <script src="/js/admin-candle-preview.js"></script>
+<script src="/js/admin-number-stepper.js"></script>
 <script src="/js/admin-settings-panel.js"></script>
 <script>
     (function () {
@@ -613,22 +610,12 @@
         bindColorPair('tileColor', 'tileColorHex');
 
         var tileOpacityInput = document.getElementById('tileOpacity');
-        var tileOpacityValue = document.getElementById('tileOpacityValue');
-        if (tileOpacityInput && tileOpacityValue) {
-            tileOpacityInput.addEventListener('input', function () {
-                tileOpacityValue.textContent = tileOpacityInput.value + '%';
-                schedulePreview();
-            });
+        if (tileOpacityInput) {
+            tileOpacityInput.addEventListener('input', schedulePreview);
         }
 
         document.querySelectorAll('.font-scale-input').forEach(function (input) {
-            input.addEventListener('input', function () {
-                var output = document.querySelector('.font-scale-value[data-for="' + input.id + '"]');
-                if (output) {
-                    output.textContent = input.value + '%';
-                }
-                schedulePreview();
-            });
+            input.addEventListener('input', schedulePreview);
         });
 
         ['titleRu', 'titleEn', 'titleHe'].forEach(function (id) {
@@ -692,22 +679,6 @@
             }
             return Promise.resolve('');
         }
-
-        [
-            ['memorialQrTitleScale', 'memorialQrTitleScaleValue'],
-            ['memorialQrTextScale', 'memorialQrTextScaleValue'],
-            ['memorialQrQrScale', 'memorialQrQrScaleValue'],
-        ].forEach(function (pair) {
-            var input = document.getElementById(pair[0]);
-            var output = document.getElementById(pair[1]);
-            if (!input || !output) {
-                return;
-            }
-            input.addEventListener('input', function () {
-                output.textContent = input.value + '%';
-                schedulePreview();
-            });
-        });
 
         document.querySelectorAll('.memorial-qr-preview-input').forEach(function (input) {
             input.addEventListener('input', schedulePreview);
@@ -868,10 +839,7 @@
         function resetTypographySlidersToBaseline() {
             document.querySelectorAll('input[name^="fontScale_"]').forEach(function (input) {
                 input.value = 100;
-                var output = document.querySelector('.font-scale-value[data-for="' + input.name + '"]');
-                if (output) {
-                    output.textContent = '100%';
-                }
+                input.dispatchEvent(new Event('input', { bubbles: true }));
             });
 
             ['memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale'].forEach(function (id) {
@@ -880,10 +848,7 @@
                     return;
                 }
                 input.value = 100;
-                var output = document.getElementById(id + 'Value');
-                if (output) {
-                    output.textContent = '100%';
-                }
+                input.dispatchEvent(new Event('input', { bubbles: true }));
             });
 
             schedulePreview();

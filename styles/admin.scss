@@ -2002,8 +2002,14 @@ body.admin-is-busy {
     width: 100%;
   }
 
+  .settings-texts-content-block {
+    margin-top: 0.85rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--admin-border);
+  }
+
   .settings-copy-details {
-    margin-top: 0.25rem;
+    margin-top: 0.35rem;
     border: 1px solid var(--admin-border);
     border-radius: 10px;
     background: var(--admin-bg-subtle);
@@ -3390,6 +3396,87 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
   text-align: end;
   font-variant-numeric: tabular-nums;
   color: var(--admin-text-muted);
+}
+
+.admin-number-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  max-width: 100%;
+}
+
+.admin-number-stepper--compact {
+  gap: 0.2rem;
+}
+
+.admin-number-stepper-btn {
+  flex: 0 0 auto;
+  width: 1.65rem;
+  height: 1.65rem;
+  padding: 0;
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  background: var(--admin-surface-elevated);
+  color: var(--admin-text);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--admin-primary);
+    color: var(--admin-primary);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.admin-number-stepper-input {
+  width: 3.25rem;
+  min-width: 0;
+  padding: 0.2rem 0.35rem;
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.admin-number-stepper-suffix {
+  flex: 0 0 auto;
+  font-size: 0.78rem;
+  color: var(--admin-text-muted);
+  user-select: none;
+}
+
+.admin-number-stepper--compact {
+  .admin-number-stepper-btn {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .admin-number-stepper-input {
+    width: 2.85rem;
+    font-size: 0.75rem;
+    padding: 0.15rem 0.25rem;
+  }
+
+  .admin-number-stepper-suffix {
+    font-size: 0.72rem;
+  }
 }
 
 .btn-admin-danger {
