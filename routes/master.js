@@ -32,7 +32,6 @@ const OnboardingInvite = require('../models/OnboardingInvite');
 const CommunityOnboardingRequest = require('../models/CommunityOnboardingRequest');
 const { createSynagogueFromOnboardingRequest } = require('../lib/onboarding-approve');
 const { processCommunityLogoUpload } = require('../lib/community-logo-upload');
-const { optimizeUploadedImage } = require('../lib/image-optimize');
 const { MAX_UPLOAD_BYTES } = require('../lib/upload-limits');
 const loginRateLimiter = createLoginRateLimiter();
 
