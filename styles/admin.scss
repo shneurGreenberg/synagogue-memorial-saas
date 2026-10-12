@@ -3371,3 +3371,22 @@ body.admin-theme-light {
 .code-release-added .code-release-type { color: #16a34a; }
 .code-release-fixed .code-release-type { color: #2563eb; }
 .code-release-changed .code-release-type { color: #d97706; }
+
+.weekly-kaddish-notice {
+  display: block;
+  margin-bottom: 1rem;
+  .weekly-kaddish-title { font-size: 1.1rem; margin: 0 0 .4rem; }
+  .weekly-kaddish-range { font-weight: normal; opacity: .75; font-size: .9rem; }
+  .weekly-kaddish-urgent { margin: 0 0 .6rem; color: #b42318; }
+  .weekly-kaddish-list { list-style: none; margin: 0 0 .75rem; padding: 0; }
+  .weekly-kaddish-item {
+    display: flex; flex-wrap: wrap; gap: .25rem .75rem; align-items: baseline;
+    padding: .35rem 0; border-bottom: 1px solid rgba(0, 0, 0, .08);
+    &.is-missing { background: rgba(180, 35, 24, .07); }
+  }
+  .weekly-kaddish-name { font-weight: 600; }
+  .weekly-kaddish-contacts { display: inline-flex; flex-wrap: wrap; gap: .5rem; }
+  .weekly-kaddish-missing { color: #b42318; font-weight: 600; }
+  .weekly-kaddish-actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+  .weekly-kaddish-confirmed { color: #067647; font-weight: 600; }
+}

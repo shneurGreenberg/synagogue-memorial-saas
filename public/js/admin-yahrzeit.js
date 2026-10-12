@@ -84,3 +84,27 @@
     });
   });
 })();
+
+(function weeklyKaddishSend() {
+    const btn = document.getElementById('weeklyKaddishSend');
+    const textEl = document.getElementById('weeklyKaddishMessage');
+    if (!btn || !textEl) return;
+    btn.addEventListener('click', async () => {
+        const url = btn.dataset.waUrl;
+        if (url) {
+            window.open(url, '_blank', 'noopener');
+            return;
+        }
+        const text = textEl.value;
+        try {
+            await navigator.clipboard.writeText(text);
+        } catch (err) {
+            textEl.hidden = false;
+            textEl.select();
+            document.execCommand('copy');
+        }
+        alert(btn.dataset.copiedLabel);
+        const input = document.getElementById('weeklyKaddishWhatsapp');
+        if (input) { input.scrollIntoView({ behavior: 'smooth', block: 'center' }); input.focus(); }
+    });
+}());

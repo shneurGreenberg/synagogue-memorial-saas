@@ -304,6 +304,12 @@ const SynagogueSchema = new mongoose.Schema({
   publishedVersion: { type: Number, default: 1 },
   publishedAt: { type: Date, default: null },
   lastRefreshedCodeVersion: { type: String, default: null },
+  weeklyKaddishWhatsapp: { type: String, default: '' },
+  weeklyKaddishConfirmation: {
+    weekKey: { type: String, default: '' },
+    confirmedBy: { type: String, default: '' },
+    confirmedAt: { type: Date, default: null },
+  },
   boardClients: {
     type: [{
       screenId: String,
