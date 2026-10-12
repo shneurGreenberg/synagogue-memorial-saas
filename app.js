@@ -10,7 +10,6 @@ const {
   resolveBoardBackgroundImage,
   resolveTilesBackgroundImage,
 } = require('./lib/board-backgrounds');
-const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
 const Synagogue = require('./models/Synagogue');
@@ -51,6 +50,12 @@ if (isProduction || process.env.TRUST_PROXY === '1') {
   app.set('trust proxy', 1);
 }
 
+if (isProduction) {
+  app.enable('view cache');
+}
+
+const { registerStaticAssets } = require('./lib/express-static-assets');
+
 mongoose.set('strictQuery', false);
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue', {
   useNewUrlParser: true,
@@ -71,6 +76,8 @@ app.use(helmet({
   hsts: isProduction ? undefined : false,
   referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
 }));
+
+registerStaticAssets(app, { isProduction });
 
 function allowMobileApiCors(req, res, next) {
   if (!req.path.includes('/api/')) {
@@ -182,16 +189,14 @@ const sessionMiddleware = session({
   store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue' }),
 });
 
-const cssDirectory = path.join(__dirname, 'css');
-if (!fs.existsSync(cssDirectory)) {
-  fs.mkdirSync(cssDirectory);
+function adminSession(req, res, next) {
+  if (req.method === 'GET' && (req.path === '/login' || req.path === '/login/')) {
+    return next();
+  }
+  return sessionMiddleware(req, res, next);
 }
 
-app.use('/css', express.static(cssDirectory, {
-  maxAge: isProduction ? '1h' : 0,
-}));
-
-app.use('/admin', sessionMiddleware, requireSameOrigin, adminRoutes);
+app.use('/admin', adminSession, requireSameOrigin, adminRoutes);
 app.use('/master', sessionMiddleware, requireSameOrigin, masterRoutes);
 app.use('/join', onboardingRoutes);
 
@@ -287,46 +292,13 @@ app.set('view engine', 'handlebars');
 
 const { getResizedPhoto } = require('./lib/photo-resize');
 const {
-  BUNDLED_IMAGES_DIR,
-  BUNDLED_PHOTOS_DIR,
-  IMAGES_DIR,
   PHOTOS_DIR,
   isPersistent,
 } = require('./lib/storage-paths');
 
 if (isPersistent) {
-  console.log('Persistent uploads enabled:', IMAGES_DIR, PHOTOS_DIR);
+  console.log('Persistent uploads enabled:', PHOTOS_DIR);
 }
-
-const staticAssetMaxAge = isProduction ? '7d' : 0;
-const provisioningDir = path.join(__dirname, 'provisioning');
-if (!fs.existsSync(provisioningDir)) {
-  fs.mkdirSync(provisioningDir, { recursive: true });
-}
-
-function setCommunityImageHeaders(res, filePath) {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  if (String(filePath).toLowerCase().endsWith('.svg')) {
-    res.setHeader('Content-Type', 'image/svg+xml; charset=utf-8');
-    res.setHeader('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'");
-  }
-}
-
-app.use('/images', express.static(IMAGES_DIR, {
-  maxAge: staticAssetMaxAge,
-  setHeaders: setCommunityImageHeaders,
-}));
-app.use('/images', express.static(BUNDLED_IMAGES_DIR, {
-  maxAge: staticAssetMaxAge,
-  setHeaders: setCommunityImageHeaders,
-}));
-app.use('/images/provisioning', express.static(provisioningDir, {
-  maxAge: staticAssetMaxAge,
-  fallthrough: true,
-  setHeaders(res) {
-    res.setHeader('X-Content-Type-Options', 'nosniff');
-  },
-}));
 
 app.get('/photos/:filename', async (req, res, next) => {
   const width = Number(req.query.w);
@@ -357,29 +329,6 @@ app.get('/photos/:filename', async (req, res, next) => {
     return next();
   }
 });
-
-app.use('/photos', express.static(PHOTOS_DIR, { maxAge: staticAssetMaxAge }));
-app.use('/photos', express.static(BUNDLED_PHOTOS_DIR, { maxAge: staticAssetMaxAge }));
-
-app.use('/board', express.static(path.join(__dirname, 'public/board'), {
-  setHeaders(res, filePath) {
-    if (filePath.endsWith('memorial.js') || filePath.endsWith('memorial.css')) {
-      // Version query (?v=) busts cache; allow longer browser caching between deploys.
-      res.setHeader('Cache-Control', 'public, max-age=86400, must-revalidate');
-    }
-  },
-}));
-app.use('/js', express.static(path.join(__dirname, 'public/js'), {
-  maxAge: isProduction ? '7d' : 0,
-}));
-app.use('/downloads', express.static(path.join(__dirname, 'public/downloads'), {
-  setHeaders(res, filePath) {
-    if (filePath.endsWith('.apk')) {
-      res.setHeader('Content-Type', 'application/vnd.android.package-archive');
-      res.setHeader('Content-Disposition', 'attachment; filename="kaddish-sidebar.apk"');
-    }
-  },
-}));
 
 const apiRateLimiter = createApiRateLimiter();
 
