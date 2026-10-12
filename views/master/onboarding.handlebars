@@ -1,0 +1,92 @@
+<div class="master-page">
+    <header class="master-page-header">
+        <div>
+            <h1>{{t 'onboarding_heading'}}</h1>
+            <p class="master-subtitle">{{t 'onboarding_intro'}}</p>
+        </div>
+        <a href="/master/dashboard" class="btn master-btn master-btn-secondary">{{t 'wizard_back_dashboard'}}</a>
+    </header>
+
+    {{#if inviteUrl}}
+    <div class="master-alert master-alert-success">{{t 'onboarding_invite_created'}}</div>
+    <section class="master-panel">
+        <div class="master-panel-body">
+            <label class="master-field-label">{{t 'onboarding_invite_link'}}</label>
+            <div class="onboarding-copy-row">
+                <input type="text" class="form-control master-input" readonly value="{{inviteUrl}}" id="onboardingInviteUrl">
+                <button type="button" class="btn master-btn master-btn-primary" id="copyOnboardingLinkBtn">{{t 'onboarding_copy_link'}}</button>
+            </div>
+        </div>
+    </section>
+    {{/if}}
+
+    <section class="master-panel">
+        <div class="master-panel-header">
+            <h2>{{t 'onboarding_create_invite'}}</h2>
+        </div>
+        <div class="master-panel-body">
+            <form method="POST" action="/master/onboarding/invites" class="master-inline-form">
+                <label>
+                    <span class="master-field-label">{{t 'onboarding_invite_label'}}</span>
+                    <input type="text" name="label" class="form-control master-input" maxlength="120" placeholder="{{t 'onboarding_invite_label_placeholder'}}">
+                </label>
+                <button type="submit" class="btn master-btn master-btn-primary">{{t 'onboarding_create_invite_btn'}}</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="master-panel">
+        <div class="master-panel-header">
+            <h2>{{t 'onboarding_pending_heading'}} ({{requests.length}})</h2>
+        </div>
+        <div class="master-panel-body">
+            {{#if requests.length}}
+            <div class="onboarding-request-list">
+                {{#each requests}}
+                <article class="onboarding-request-card">
+                    <header>
+                        <h3>{{this.name}} <code>{{this.slug}}</code></h3>
+                        <p class="master-community-meta">{{this.location.city}} · {{this.adminEmail}} · {{this.contactName}}</p>
+                        <p class="master-community-meta">{{t 'onboarding_submitted'}}: {{this.submittedLabel}}</p>
+                    </header>
+                    {{#if this.logoFilename}}
+                    <p class="master-community-provision">{{t 'wizard_step_logo_title'}}: {{this.logoFilename}}</p>
+                    {{/if}}
+                    <div class="onboarding-request-actions">
+                        <form method="POST" action="/master/onboarding/approve">
+                            <input type="hidden" name="id" value="{{this._id}}">
+                            <button type="submit" class="btn master-btn master-btn-primary">{{t 'onboarding_approve'}}</button>
+                        </form>
+                        <form method="POST" action="/master/onboarding/reject" class="onboarding-reject-form">
+                            <input type="hidden" name="id" value="{{this._id}}">
+                            <input type="text" name="reason" class="form-control master-input" placeholder="{{t 'onboarding_reject_reason'}}" maxlength="500">
+                            <button type="submit" class="btn master-btn master-btn-danger">{{t 'onboarding_reject'}}</button>
+                        </form>
+                    </div>
+                </article>
+                {{/each}}
+            </div>
+            {{else}}
+            <p>{{t 'onboarding_no_pending'}}</p>
+            {{/if}}
+        </div>
+    </section>
+</div>
+<script>
+(function () {
+    var btn = document.getElementById('copyOnboardingLinkBtn');
+    var input = document.getElementById('onboardingInviteUrl');
+    if (!btn || !input) return;
+    btn.addEventListener('click', function () {
+        input.select();
+        input.setSelectionRange(0, input.value.length);
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(input.value).catch(function () {
+                document.execCommand('copy');
+            });
+        } else {
+            document.execCommand('copy');
+        }
+    });
+})();
+</script>

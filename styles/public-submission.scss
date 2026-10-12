@@ -53,12 +53,29 @@
   border-radius: 10px;
 }
 
+.public-community-logo-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 3px solid var(--primary-color, #cfaf1f);
+  overflow: hidden;
+
+  &.logo-bg-white {
+    background: #fff;
+  }
+
+  &.logo-bg-black {
+    background: #000;
+  }
+}
+
 .public-community-logo {
   width: 72px;
   height: 72px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 50%;
-  border: 3px solid var(--primary-color, #cfaf1f);
+  display: block;
 }
 
 .public-photo-section {

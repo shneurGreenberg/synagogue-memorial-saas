@@ -35,4 +35,22 @@
     backface-visibility: hidden;
     border-radius: var(--community-logo-radius, 50%);
   }
+
+  &.has-logo-bg-white .community-logo-flip {
+    background: #fff;
+  }
+
+  &.has-logo-bg-black .community-logo-flip {
+    background: #000;
+  }
+}
+
+.logo-bg-white,
+.has-logo-bg-white .community-logo-flip {
+  background: #fff;
+}
+
+.logo-bg-black,
+.has-logo-bg-black .community-logo-flip {
+  background: #000;
 }

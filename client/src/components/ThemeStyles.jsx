@@ -182,13 +182,11 @@ export function ThemeStyles() {
     .main-container .hayom-yom-note {
       font-size: calc(clamp(11px, 0.95vw, 14px) * var(--font-scale-sidebar)) !important;
     }
-    .main-container .nearest-dates .nearest-date-link time,
     .main-container .sidebar-holiday-link time,
     .main-container .sidebar-chabad-link time,
     .main-container .community-event-link time {
       font-size: calc(clamp(13px, 1.1vw, 17px) * var(--font-scale-sidebar)) !important;
     }
-    .main-container .nearest-dates .nearest-date-link .name,
     .main-container .sidebar-holiday-title,
     .main-container .sidebar-chabad-title,
     .main-container .community-event-title {

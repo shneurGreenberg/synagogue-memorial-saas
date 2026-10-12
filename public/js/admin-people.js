@@ -1249,7 +1249,14 @@
       openEditModal: openEditModal,
     };
 
-    const editParam = new URLSearchParams(window.location.search).get('edit');
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('q');
+    if (searchQuery && searchInput) {
+      searchInput.value = searchQuery;
+      applyFilters();
+    }
+
+    const editParam = urlParams.get('edit');
     if (editParam) {
       openEditModal(Number(editParam));
     }

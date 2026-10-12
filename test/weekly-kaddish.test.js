@@ -41,6 +41,14 @@ test('includes Shabbat, excludes outside days and undated people', () => {
   assert.strictEqual(shabbat.isShabbat, true);
   assert.strictEqual(shabbat.weekdayHe, 'שבת');
   assert.strictEqual(shabbat.gregorianLabel, '17/10');
+  assert.strictEqual(shabbat.searchQuery, encodeURIComponent('Shabbat'));
+});
+
+test('searchQuery is URL-encoded for people list links', () => {
+  const r = getWeeklyKaddishEntries(syn([
+    { id: 1, name: 'משה כהן', gregorianDateOfDeath: { year: 2020, month: 10, date: 12 } },
+  ]), NOW);
+  assert.strictEqual(r.entries[0].searchQuery, encodeURIComponent('משה כהן'));
 });
 
 test('flags missing contacts', () => {

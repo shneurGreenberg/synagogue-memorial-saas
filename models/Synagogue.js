@@ -140,6 +140,7 @@ const SavedViewSchema = new mongoose.Schema({
       },
       logo: String,
       logoBorderRadius: Number,
+      logoBackground: String,
       backgroundImage: String,
       tilesBackground: String,
       candlePalette: String,
@@ -151,6 +152,16 @@ const SavedViewSchema = new mongoose.Schema({
         he: String,
       },
       texts: {
+        ru: String,
+        en: String,
+        he: String,
+      },
+      donationTitles: {
+        ru: String,
+        en: String,
+        he: String,
+      },
+      donationTexts: {
         ru: String,
         en: String,
         he: String,
@@ -238,6 +249,16 @@ const SynagogueSchema = new mongoose.Schema({
       en: { type: String, default: '' },
       he: { type: String, default: '' },
     },
+    donationTitles: {
+      ru: { type: String, default: '' },
+      en: { type: String, default: '' },
+      he: { type: String, default: '' },
+    },
+    donationTexts: {
+      ru: { type: String, default: '' },
+      en: { type: String, default: '' },
+      he: { type: String, default: '' },
+    },
     titleScale: { type: Number, default: 100 },
     textScale: { type: Number, default: 100 },
     qrScale: { type: Number, default: 140 },
@@ -290,6 +311,7 @@ const SynagogueSchema = new mongoose.Schema({
     tilesBackground: String,
     logo: String,
     logoBorderRadius: { type: Number, default: 100, min: 0, max: 100 },
+    logoBackground: { type: String, enum: ['', 'white', 'black'], default: '' },
     candlePalette: { type: String, default: 'classic' },
   },
   location: {

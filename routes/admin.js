@@ -6,7 +6,7 @@ const path = require('path');
 const fs = require('fs');
 const { verifyPassword, ensureHashed } = require('../lib/password');
 const { sanitizeRichText } = require('../lib/sanitize');
-const { enrichSynagogueForAdmin, normalizeTitles, sanitizeHexColor } = require('../lib/admin-theme');
+const { enrichSynagogueForAdmin, normalizeTitles, sanitizeHexColor, resolveAdminColorMode } = require('../lib/admin-theme');
 const { getTranslator } = require('../lib/admin-translations');
 const { getAdminLocaleContext, normalizeAdminLang } = require('../lib/admin-locale');
 const { BOARD_THEME_DEFAULTS } = require('../lib/board-defaults');
@@ -37,7 +37,13 @@ const {
   serializeSavedViews,
 } = require('../lib/saved-views');
 const { parseMemorialQrPanelFromBody, memorialQrPanelToUpdate } = require('../lib/memorial-qr-panel');
-const { parseFontScalesFromBody, normalizeTileOpacity, normalizeLogoBorderRadius } = require('../lib/theme-typography');
+const {
+  parseFontScalesFromBody,
+  normalizeTileOpacity,
+  normalizeLogoBorderRadius,
+  normalizeLogoBackground,
+} = require('../lib/theme-typography');
+const { processCommunityLogoUpload } = require('../lib/community-logo-upload');
 const {
   IMAGES_DIR,
   PHOTOS_DIR,
@@ -47,6 +53,7 @@ const {
   createLoginRateLimiter,
   regenerateSession,
   isAllowedImageUpload,
+  isAllowedCommunityLogoUpload,
   publicErrorMessage,
 } = require('../lib/http-security');
 const {
@@ -100,7 +107,6 @@ const { normalizeBoardFeatures } = require('../lib/board-features');
 const { scanPathForSlug, safeScanReturnPath } = require('../lib/grave-scan');
 
 const BOARD_FEATURE_TOGGLE_META = [
-  { key: 'sidebarNames', labelKey: 'feature_sidebar_names', helpKey: 'feature_sidebar_names_help' },
   { key: 'dailyChumash', labelKey: 'feature_daily_chumash', helpKey: 'feature_daily_chumash_help' },
   { key: 'dailyTehillim', labelKey: 'feature_daily_tehillim', helpKey: 'feature_daily_tehillim_help' },
   { key: 'dailyTanya', labelKey: 'feature_daily_tanya', helpKey: 'feature_daily_tanya_help' },
@@ -130,7 +136,7 @@ const BOARD_FEATURE_GROUPS = [
   {
     groupKey: 'board_features_sidebar_group',
     helpKey: 'board_features_sidebar_group_help',
-    keys: ['officialLogo', 'sidebarNames', 'upcomingHolidays', 'communityEvents', 'weather', 'sunriseSunset'],
+    keys: ['officialLogo', 'upcomingHolidays', 'communityEvents', 'weather', 'sunriseSunset'],
   },
   {
     groupKey: 'board_features_learning_group',
@@ -215,7 +221,7 @@ function buildBoardFeatureGroups(boardFeatures, theme, synagogue) {
     synagogueSlug: synagogue?.slug || '',
     shabbatTimesEnabled: synagogue?.shabbatTimesEnabled === true,
     publicSubmissionEnabled: synagogue?.publicSubmission?.enabled === true,
-  }));
+  })).filter((group) => group.toggles.length > 0 || !!group.special);
 }
 
 function buildFontScaleSlider(entry, fontScales) {
@@ -237,7 +243,7 @@ function buildFontScaleGroups(fontScales, groups) {
     groupKey: group.groupKey,
     helpKey: group.helpKey,
     sliders: group.keys.map((key) => buildFontScaleSlider(metaByKey[key], fontScales)).filter(Boolean),
-  }));
+  })).filter((group) => group.sliders.length > 0);
 }
 
 function buildTextsFontScaleGroups(fontScales) {
@@ -297,7 +303,11 @@ const upload = multer({
     storage,
     limits: { fileSize: 10 * 1024 * 1024 },
     fileFilter: function (req, file, cb) {
-        if (!isAllowedImageUpload(file)) {
+        if (file.fieldname === 'logo') {
+            if (!isAllowedCommunityLogoUpload(file)) {
+                return cb(new Error('Only JPEG, PNG, WebP, GIF, or SVG images are allowed'));
+            }
+        } else if (!isAllowedImageUpload(file)) {
             return cb(new Error('Only JPEG, PNG, WebP, and GIF images are allowed'));
         }
         cb(null, true);
@@ -592,6 +602,7 @@ function renderAdmin(res, view, options = {}) {
         ...options,
         synagogue: displaySynagogue,
         adminUser,
+        canManageUsers: options.canManageUsers !== undefined ? options.canManageUsers : !adminUser,
         adminPermissions: options.adminPermissions || FULL_ADMIN_PERMISSIONS,
         adminTranslate: getTranslator(locale.adminLanguage),
         adminDir: locale.adminDir,
@@ -658,7 +669,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
         const {
             titleRu, titleEn, titleHe, primaryColor, textColor, accentColor, tileColor, tileOpacity,
-            language, shabbatTimesEnabled, candlePalette, logoBorderRadius,
+            language, shabbatTimesEnabled, candlePalette, logoBorderRadius, logoBackground,
         } = req.body;
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
         const boardFeatures = parseBoardFeaturesFromBody(req.body);
@@ -685,6 +696,9 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             if ('logoBorderRadius' in req.body) {
                 updateData['theme.logoBorderRadius'] = normalizeLogoBorderRadius(logoBorderRadius);
             }
+            if ('logoBackground' in req.body) {
+                updateData['theme.logoBackground'] = normalizeLogoBackground(logoBackground);
+            }
             Object.entries(fontScales).forEach(([key, value]) => {
                 updateData[`theme.fontScales.${key}`] = value;
             });
@@ -696,7 +710,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             }
         }
 
-        if (permissions.settingsLanguages) {
+        if (permissions.settingsLanguages || permissions.settingsAppearance) {
             updateData.language = language;
         }
 
@@ -713,7 +727,8 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         }
 
         if (permissions.settingsBranding && req.files['logo']) {
-            updateData['theme.logo'] = await optimizeUploadedImage(req.files['logo'][0].path, 'logo');
+            const logoFile = req.files['logo'][0];
+            updateData['theme.logo'] = await processCommunityLogoUpload(logoFile.path, logoFile.mimetype);
         }
         if (permissions.settingsAppearance && req.files['backgroundImage']) {
             updateData['theme.backgroundImage'] = await optimizeUploadedImage(req.files['backgroundImage'][0].path, 'background');
@@ -969,9 +984,6 @@ router.post('/:slug/settings/reset-theme', requireAdmin, requirePermission('sett
 router.post('/:slug/my-preferences', requireAdmin, parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
-    if (!permissions.settingsAdminPanel && req.session.adminUsername) {
-        return res.status(403).json({ ok: false, error: 'Forbidden' });
-    }
     try {
         const { adminLanguage, colorMode } = req.body;
         const safeColorMode = colorMode === 'light' ? 'light' : 'dark';
@@ -1003,7 +1015,11 @@ router.post('/:slug/my-preferences', requireAdmin, parseFormBody, async (req, re
             return res.json({ ok: true, adminLanguage: safeLanguage, colorMode: safeColorMode });
         }
 
-        const referer = req.get('Referer') || `/admin/${req.params.slug}/dashboard`;
+        const usersPath = `/admin/${req.params.slug}/users`;
+        const referer = req.get('Referer') || usersPath;
+        if (referer.includes(usersPath)) {
+            return res.redirect(`${usersPath}?saved=1`);
+        }
         return res.redirect(referer);
     } catch (err) {
         if (wantsJson(req)) {
@@ -1995,16 +2011,38 @@ router.post('/:slug/events/delete', requireAdmin, requirePermission('events'), p
     }
 });
 
-router.get('/:slug/users', requireAdmin, requireFullAdmin, async (req, res) => {
+router.get('/:slug/users', requireAdmin, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
         const translator = getTranslator(synagogue.adminLanguage || 'ru');
+        const currentUserId = req.adminUser ? String(req.adminUser._id) : '';
+        const allUsers = serializeAdminUsers(synagogue.adminUsers);
+        const currentSessionUser = currentUserId
+            ? allUsers.find((user) => user.id === currentUserId) || null
+            : null;
+        const enriched = enrichSynagogueForAdmin(synagogue);
+        const sessionAdminProfile = currentSessionUser
+            ? {
+                displayName: currentSessionUser.displayName,
+                username: currentSessionUser.username,
+                adminLanguage: currentSessionUser.adminLanguage,
+                adminColorMode: currentSessionUser.adminColorMode,
+            }
+            : {
+                displayName: synagogue.name || synagogue.slug,
+                username: synagogue.slug,
+                adminLanguage: normalizeAdminLang(synagogue.adminLanguage),
+                adminColorMode: resolveAdminColorMode(enriched),
+            };
         renderAdmin(res, 'admin/users', {
-            synagogue: enrichSynagogueForAdmin(synagogue),
+            synagogue: enriched,
             adminUser: req.adminUser,
             adminPermissions: req.adminPermissions,
-            adminUsers: serializeAdminUsers(synagogue.adminUsers),
+            adminUsers: allUsers.filter((user) => user.id !== currentUserId),
+            currentSessionUser,
+            sessionAdminProfile,
+            canManageUsers: !req.session.adminUsername,
             permissionToggles: buildPermissionToggles({}, translator),
             settingsSectionToggles: buildSettingsSectionToggles({}, translator),
             saved: req.query.saved === '1',

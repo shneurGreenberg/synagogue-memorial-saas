@@ -1,5 +1,4 @@
 export const BOARD_FEATURE_DEFAULTS = {
-  sidebarNames: true,
   dailyChumash: true,
   dailyTehillim: false,
   dailyTanya: true,

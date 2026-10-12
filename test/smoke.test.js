@@ -197,6 +197,36 @@ describe('http smoke', () => {
     assert.match(masterLogin.headers.location || '', /\/master\/dashboard/);
   });
 
+  it('admin users page exposes session preferences and settings drop legacy language panel', async () => {
+    const loginBody = 'slug=novosibirsk&password=admin';
+    const login = await request('POST', '/admin/login', {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(loginBody),
+      },
+      body: loginBody,
+    });
+    assert.equal(login.status, 302);
+    const cookie = []
+      .concat(login.headers['set-cookie'] || [])
+      .map((value) => String(value).split(';')[0])
+      .join('; ');
+
+    const users = await request('GET', '/admin/novosibirsk/users', {
+      headers: { Cookie: cookie },
+    });
+    assert.equal(users.status, 200);
+    assert.match(users.body, /id="myAdminPreferencesForm"/);
+    assert.match(users.body, /id="sessionAdminLanguage"/);
+
+    const dashboard = await request('GET', '/admin/novosibirsk/dashboard', {
+      headers: { Cookie: cookie },
+    });
+    assert.equal(dashboard.status, 200);
+    assert.doesNotMatch(dashboard.body, /id="adminLanguage"/);
+    assert.match(dashboard.body, /name="language"/);
+  });
+
   it('requires staff login for the gravestone scan page', async () => {
     const scan = await request('GET', `/s/${SLUG}/scan`);
     assert.equal(scan.status, 302);

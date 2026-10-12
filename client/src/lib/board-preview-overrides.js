@@ -1,4 +1,17 @@
+import {
+  parseMemorialQrPanelFromBody,
+  memorialQrPanelForBoard,
+} from '../../../lib/memorial-qr-panel';
+
 const PREVIEW_LANGS = ['ru', 'en', 'he'];
+
+const MEMORIAL_QR_PREVIEW_KEYS = [
+  'memorialQrTitleRu', 'memorialQrTitleEn', 'memorialQrTitleHe',
+  'memorialQrTextRu', 'memorialQrTextEn', 'memorialQrTextHe',
+  'donationQrTitleRu', 'donationQrTitleEn', 'donationQrTitleHe',
+  'donationQrTextRu', 'donationQrTextEn', 'donationQrTextHe',
+  'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale',
+];
 
 export function mergePreviewPatch(data, patch) {
   if (!data || !patch) {
@@ -41,6 +54,10 @@ export function mergePreviewPatch(data, patch) {
   if (patch.logoBorderRadius !== undefined && patch.logoBorderRadius !== '') {
     next.theme.logoBorderRadius = Number(patch.logoBorderRadius);
   }
+  if (patch.logoBackground !== undefined) {
+    const bg = String(patch.logoBackground || '').trim().toLowerCase();
+    next.theme.logoBackground = bg === 'white' || bg === 'black' ? bg : '';
+  }
   const fontScaleKeys = ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat', 'candle'];
   fontScaleKeys.forEach((key) => {
     const value = patch[`fontScale_${key}`];
@@ -53,32 +70,13 @@ export function mergePreviewPatch(data, patch) {
     next.language = patch.previewLang;
   }
 
-  const memorialQrKeys = [
-    'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale',
-  ];
-  const hasMemorialQr = memorialQrKeys.some((key) => patch[key] !== undefined && patch[key] !== '');
+  const hasMemorialQr = MEMORIAL_QR_PREVIEW_KEYS.some(
+    (key) => patch[key] !== undefined && patch[key] !== '',
+  );
   if (hasMemorialQr) {
-    const current = next.memorialQrPanel || {};
-    next.memorialQrPanel = {
-      ...current,
-      titles: { ...(current.titles || {}) },
-      texts: { ...(current.texts || {}) },
-      titleScale: current.titleScale,
-      textScale: current.textScale,
-      qrScale: current.qrScale,
-      titleScaleBaseline: current.titleScaleBaseline,
-      textScaleBaseline: current.textScaleBaseline,
-      qrScaleBaseline: current.qrScaleBaseline,
-    };
-    if (patch.memorialQrTitleScale !== undefined && patch.memorialQrTitleScale !== '') {
-      next.memorialQrPanel.titleScale = Number(patch.memorialQrTitleScale);
-    }
-    if (patch.memorialQrTextScale !== undefined && patch.memorialQrTextScale !== '') {
-      next.memorialQrPanel.textScale = Number(patch.memorialQrTextScale);
-    }
-    if (patch.memorialQrQrScale !== undefined && patch.memorialQrQrScale !== '') {
-      next.memorialQrPanel.qrScale = Number(patch.memorialQrQrScale);
-    }
+    next.memorialQrPanel = memorialQrPanelForBoard(
+      parseMemorialQrPanelFromBody(patch, next.memorialQrPanel),
+    );
   }
 
   return next;
@@ -97,6 +95,7 @@ export function previewPatchFromSearchParams(params) {
     || params.has('tileOpacity')
     || params.has('candlePalette')
     || params.has('logoBorderRadius')
+    || params.has('logoBackground')
     || params.has('fontScale_tileTitle')
     || params.has('titleRu')
     || params.has('titleEn')
@@ -119,6 +118,7 @@ export function previewPatchFromSearchParams(params) {
   if (params.has('tileOpacity')) patch.tileOpacity = params.get('tileOpacity');
   if (params.has('candlePalette')) patch.candlePalette = params.get('candlePalette');
   if (params.has('logoBorderRadius')) patch.logoBorderRadius = params.get('logoBorderRadius');
+  if (params.has('logoBackground')) patch.logoBackground = params.get('logoBackground');
   ['tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers', 'prayerOverlay', 'torahNames', 'weather', 'shabbat', 'candle'].forEach((key) => {
     if (params.has(`fontScale_${key}`)) {
       patch[`fontScale_${key}`] = params.get(`fontScale_${key}`);
