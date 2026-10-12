@@ -18,7 +18,7 @@
     "primaryColor": "#cfaf1f",
     "textColor": "#ffffff",
     "accentColor": "#ffd54f",
-    "logo": "1781868877961.webp",
+    "logo": "1791774465289-opt.webp",
     "tileColor": "#8c7418",
     "fontScales": {
       "tileTitle": 100,
@@ -3270,43 +3270,43 @@
       }
     ]
   },
-  "contentVersion": 1791736943268,
-  "exportedAt": "2026-10-11T16:42:23.268Z",
+  "contentVersion": 1791778287630,
+  "exportedAt": "2026-10-12T04:11:27.630Z",
   "jewishContent": {
-    "date": "2026-10-11",
+    "date": "2026-10-12",
     "timezone": "Asia/Novosibirsk",
     "dailyLearning": {
-      "date": "2026-10-11",
+      "date": "2026-10-12",
       "timezone": "Asia/Novosibirsk",
       "chumash": {
         "label": ""
       },
       "tehillim": {
-        "label": "Тегилим 145-150"
+        "label": "Тегилим 1-9"
       },
       "tanya": {
-        "label": "30 Тишрей"
+        "label": "1 Хешван"
       },
       "rambam": {
-        "label": "Levirate Marriage and Release 7"
+        "label": "Levirate Marriage and Release 8"
       },
       "rambam3": {
-        "label": "Robbery and Lost Property 4-6"
+        "label": "Robbery and Lost Property 7-9"
       },
       "hayomYom": {
         "available": true,
-        "text": "В Hallel - повторяйте Hodu Lashem (стр. 243) после каждого из следующих трех стихов, Yomar Na и т. д., даже если вы выходите на улицу в одиночку (без миньяна). Стихи V'Avraham Zakein и т. д. и Zevadya Yish 'mreini и т. д. произносятся три раза.",
-        "hebrewMonth": 7,
-        "hebrewDay": 30,
+        "text": "В Минче, а также в понедельник и четверг приближающейся недели (Lech L'cha), третья Алия («Исраэль») начинается с Ваейры Хашем Эль-Аврам и т. д. Ребе мой отец сказал кому-то в Иехиде: «С тех пор, как Б-г сказал нашему отцу Аврааму:« Иди из своей земли и т. Д. », И тогда написано:« Аврам продолжал путешествовать на юг », у нас есть начало тайны Бирурим. По указу Божественного Провидения человек отправляется в путешествие туда, где«шпат",
+        "hebrewMonth": 8,
+        "hebrewDay": 1,
         "lessons5703": {
           "chumash": {
-            "label": "Ноах, Шиши с Раши."
+            "label": "Ноах, Шевии с Раши."
           },
           "tehillim": {
-            "label": "145-150"
+            "label": "1-9."
           },
           "tanya": {
-            "label": "Теперь известно (с. 541) …без речи. (с. 543)."
+            "label": "Теперь с одним (стр. 543)... пиком уровней. (стр. 543)."
           }
         }
       }
@@ -3372,6 +3372,13 @@
         "date": "2026-12-10",
         "title": "Ханука, 7-я свеча",
         "hebrew": "חנוכה: ז׳ נרות",
+        "subcat": "major",
+        "link": ""
+      },
+      {
+        "date": "2026-12-11",
+        "title": "Ханука, 8-я свеча",
+        "hebrew": "חנוכה: ח׳ נרות",
         "subcat": "major",
         "link": ""
       }
@@ -3447,7 +3454,7 @@
   },
   "sidebarApp": {
     "slug": "novosibirsk",
-    "publishedVersion": 1,
+    "publishedVersion": 2,
     "title": "Проект памяти наших родных \"Кадиш\"",
     "language": "ru",
     "location": {
@@ -3543,6 +3550,13 @@
         "hebrew": "חנוכה: ז׳ נרות",
         "subcat": "major",
         "link": ""
+      },
+      {
+        "date": "2026-12-11",
+        "title": "Ханука, 8-я свеча",
+        "hebrew": "חנוכה: ח׳ נרות",
+        "subcat": "major",
+        "link": ""
       }
     ],
     "chabadDates": [
@@ -3613,6 +3627,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-11T16:42:23.268Z"
+    "updatedAt": "2026-10-12T04:11:27.630Z"
   }
 }

@@ -6282,43 +6282,43 @@
   "shabbatTimesEnabled": true,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1791736948261,
-  "exportedAt": "2026-10-11T16:42:28.261Z",
+  "contentVersion": 1791778291835,
+  "exportedAt": "2026-10-12T04:11:31.835Z",
   "jewishContent": {
-    "date": "2026-10-11",
+    "date": "2026-10-12",
     "timezone": "Asia/Tomsk",
     "dailyLearning": {
-      "date": "2026-10-11",
+      "date": "2026-10-12",
       "timezone": "Asia/Tomsk",
       "chumash": {
         "label": ""
       },
       "tehillim": {
-        "label": "Тегилим 145-150"
+        "label": "Тегилим 1-9"
       },
       "tanya": {
-        "label": "30 Тишрей"
+        "label": "1 Хешван"
       },
       "rambam": {
-        "label": "Levirate Marriage and Release 7"
+        "label": "Levirate Marriage and Release 8"
       },
       "rambam3": {
-        "label": "Robbery and Lost Property 4-6"
+        "label": "Robbery and Lost Property 7-9"
       },
       "hayomYom": {
         "available": true,
-        "text": "В Hallel - повторяйте Hodu Lashem (стр. 243) после каждого из следующих трех стихов, Yomar Na и т. д., даже если вы выходите на улицу в одиночку (без миньяна). Стихи V'Avraham Zakein и т. д. и Zevadya Yish 'mreini и т. д. произносятся три раза.",
-        "hebrewMonth": 7,
-        "hebrewDay": 30,
+        "text": "В Минче, а также в понедельник и четверг приближающейся недели (Lech L'cha), третья Алия («Исраэль») начинается с Ваейры Хашем Эль-Аврам и т. д. Ребе мой отец сказал кому-то в Иехиде: «С тех пор, как Б-г сказал нашему отцу Аврааму:« Иди из своей земли и т. Д. », И тогда написано:« Аврам продолжал путешествовать на юг », у нас есть начало тайны Бирурим. По указу Божественного Провидения человек отправляется в путешествие туда, где«шпат",
+        "hebrewMonth": 8,
+        "hebrewDay": 1,
         "lessons5703": {
           "chumash": {
-            "label": "Ноах, Шиши с Раши."
+            "label": "Ноах, Шевии с Раши."
           },
           "tehillim": {
-            "label": "145-150"
+            "label": "1-9."
           },
           "tanya": {
-            "label": "Теперь известно (с. 541) …без речи. (с. 543)."
+            "label": "Теперь с одним (стр. 543)... пиком уровней. (стр. 543)."
           }
         }
       }
@@ -6384,6 +6384,13 @@
         "date": "2026-12-10",
         "title": "Ханука, 7-я свеча",
         "hebrew": "חנוכה: ז׳ נרות",
+        "subcat": "major",
+        "link": ""
+      },
+      {
+        "date": "2026-12-11",
+        "title": "Ханука, 8-я свеча",
+        "hebrew": "חנוכה: ח׳ נרות",
         "subcat": "major",
         "link": ""
       }
@@ -6554,6 +6561,13 @@
         "hebrew": "חנוכה: ז׳ נרות",
         "subcat": "major",
         "link": ""
+      },
+      {
+        "date": "2026-12-11",
+        "title": "Ханука, 8-я свеча",
+        "hebrew": "חנוכה: ח׳ נרות",
+        "subcat": "major",
+        "link": ""
       }
     ],
     "chabadDates": [
@@ -6624,6 +6638,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-11T16:42:28.261Z"
+    "updatedAt": "2026-10-12T04:11:31.835Z"
   }
 }
