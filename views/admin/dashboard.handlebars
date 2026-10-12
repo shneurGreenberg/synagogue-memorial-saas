@@ -2,7 +2,6 @@
     <header class="admin-page-header">
         <div>
             <h1>{{t 'settings'}}</h1>
-            <p class="admin-subtitle">{{t 'settings_subtitle'}}</p>
         </div>
     </header>
 
@@ -47,7 +46,7 @@
     <dialog class="code-release-dialog" id="codeReleaseDialog">
         <div class="code-release-dialog-header">
             <h2>{{t 'code_release_changelog_title'}}</h2>
-            <button type="button" class="close" id="codeReleaseCloseBtn" aria-label="Close">&times;</button>
+            <button type="button" class="code-release-dialog-close" id="codeReleaseCloseBtn" aria-label="Close">&times;</button>
         </div>
         <div class="code-release-dialog-body">
             {{#each codeRelease.changelog}}
@@ -93,7 +92,6 @@
                             data-src="/s/{{synagogue.slug}}?preview=1"></iframe>
                     </div>
                 </div>
-                <p class="preview-hint">{{t 'live_preview_help'}}</p>
             </div>
         </section>
         {{/if}}
@@ -127,11 +125,7 @@
                     </button>
                     {{/if}}
                 </div>
-                {{#if adminPermissions.settingsAppearance}}
-                <p class="field-hint">{{t 'reset_theme_help'}}</p>
                 {{/if}}
-                {{/if}}
-                <p class="field-hint">{{t 'saved_views_help'}}</p>
                 <div class="saved-views-grid" id="savedViewsGrid"
                     data-slug="{{synagogue.slug}}"
                     data-delete-confirm="{{t 'saved_view_delete_confirm'}}"
@@ -186,9 +180,9 @@
                 <div class="settings-block">
                     <h3 class="settings-block-title">{{t 'colors_section'}}</h3>
                     <div class="settings-color-grid">
-                        {{> admin-settings-color-swatch id="primaryColor" name="primaryColor" labelKey="primary_color" value=synagogue.theme.primaryColor helpKey="primary_color_help"}}
-                        {{> admin-settings-color-swatch id="textColor" name="textColor" labelKey="text_color" value=synagogue.theme.textColor helpKey="text_color_help"}}
-                        {{> admin-settings-color-swatch id="accentColor" name="accentColor" labelKey="accent_color" value=synagogue.theme.accentColor helpKey="accent_color_help"}}
+                        {{> admin-settings-color-swatch id="primaryColor" name="primaryColor" labelKey="primary_color" value=synagogue.theme.primaryColor}}
+                        {{> admin-settings-color-swatch id="textColor" name="textColor" labelKey="text_color" value=synagogue.theme.textColor}}
+                        {{> admin-settings-color-swatch id="accentColor" name="accentColor" labelKey="accent_color" value=synagogue.theme.accentColor}}
                         <div class="settings-color-tile settings-color-tile--with-slider color-field-modern">
                             <label class="settings-color-label" for="tileColor">{{t 'tile_color'}}</label>
                             <input type="color" name="tileColor" id="tileColor" class="color-swatch-input settings-color-swatch"
@@ -203,7 +197,6 @@
                                 {{> admin-settings-number-stepper name="tileOpacity" id="tileOpacity" min="0" max="100" step="1" value="100" suffix="%" compact=true ariaLabelledby="tileOpacityLabel"}}
                                 {{/if}}
                             </div>
-                            <span class="field-hint settings-color-hint">{{t 'tile_color_help'}}</span>
                         </div>
                     </div>
                 </div>
@@ -219,7 +212,6 @@
                                 {{/if}}
                                 <span class="saved-view-thumb-label settings-media-thumb-label">{{t 'background_image'}}</span>
                             </div>
-                            <p class="field-hint settings-media-hint">{{t 'background_image_help'}}</p>
                             <label class="file-drop-label file-drop-label-compact settings-media-action">
                                 {{t 'replace_image'}}
                                 <input type="file" name="backgroundImage" accept="image/*">
@@ -234,7 +226,6 @@
                                 {{/if}}
                                 <span class="saved-view-thumb-label settings-media-thumb-label">{{t 'tiles_background'}}</span>
                             </div>
-                            <p class="field-hint settings-media-hint">{{t 'tiles_background_help'}}</p>
                             <label class="file-drop-label file-drop-label-compact settings-media-action">
                                 {{t 'replace_image'}}
                                 <input type="file" name="tilesBackground" accept="image/*">
@@ -262,20 +253,15 @@
                                     {{/each}}
                                 </select>
                             </div>
+                            <div class="slider-field-modern settings-slider-compact settings-candle-scale-field">
+                                <label class="settings-candle-scale-label" for="fontScale_candle">{{t candleSlider.labelKey}}</label>
+                                {{> admin-settings-number-stepper name="fontScale_candle" id="fontScale_candle"
+                                    min=candleSlider.min max=candleSlider.max step=candleSlider.step
+                                    minDefault="40" maxDefault="150" stepDefault="5" value=candleSlider.value
+                                    suffix="%" compact=true inputClass="font-scale-input" dataFontScaleKey="candle"}}
+                            </div>
                         </article>
                     </div>
-                </div>
-                <div class="settings-block">
-                    <article class="settings-control-tile">
-                        <div class="slider-field-modern settings-slider-compact settings-control-field">
-                            <label for="fontScale_candle">{{t candleSlider.labelKey}}</label>
-                            {{> admin-settings-number-stepper name="fontScale_candle" id="fontScale_candle"
-                                min=candleSlider.min max=candleSlider.max step=candleSlider.step
-                                minDefault="40" maxDefault="150" stepDefault="5" value=candleSlider.value
-                                suffix="%" compact=true inputClass="font-scale-input" dataFontScaleKey="candle"}}
-                            <p class="field-hint">{{t candleSlider.helpKey}}</p>
-                        </div>
-                    </article>
                 </div>
             </div>
         </section>
@@ -299,7 +285,6 @@
                             <option value="en" {{#if (eq synagogue.language 'en')}}selected{{/if}}>English</option>
                             <option value="he" {{#if (eq synagogue.language 'he')}}selected{{/if}}>Hebrew</option>
                         </select>
-                        <p class="field-hint">{{t 'language_help'}}</p>
                     </div>
                     {{/if}}
                     <div class="typography-controls settings-typography-controls">
@@ -318,17 +303,19 @@
                                 {{/if}}
                                 {{t this.groupKey}}
                             </h4>
-                            <p class="field-hint">{{t this.helpKey}}</p>
                             <div class="font-scale-grid">
                                 {{#each this.sliders}}
-                                <div class="slider-field-modern{{#if (eq this.key 'tileDate')}} settings-slider-compact settings-scale-tile-date{{/if}}">
+                                <div class="slider-field-modern settings-slider-compact">
                                     <label for="fontScale_{{this.key}}">{{t this.labelKey}}</label>
                                     {{> admin-settings-number-stepper scaleKey=this.key min=this.min max=this.max step=this.step
                                         minDefault="50" maxDefault="200" stepDefault="5" value=this.value suffix="%" compact=true
                                         inputClass="font-scale-input"}}
-                                    {{#unless (eq this.key 'tileDate')}}
+                                    {{#if (eq this.key 'torahNames')}}
                                     <span class="field-hint">{{t this.helpKey}}</span>
-                                    {{/unless}}
+                                    {{/if}}
+                                    {{#if (eq this.key 'prayerOverlay')}}
+                                    <span class="field-hint">{{t this.helpKey}}</span>
+                                    {{/if}}
                                 </div>
                                 {{/each}}
                             </div>
@@ -424,7 +411,6 @@
                                     <span class="toggle-slider" aria-hidden="true"></span>
                                 </label>
                             </div>
-                            <p class="field-hint admin-theme-setting-hint">{{t 'enable_shabbat_times_help'}}</p>
                         </div>
                         {{/if}}
                         {{#if (eq this.special 'publicSubmission')}}
@@ -436,7 +422,6 @@
                                     <span class="toggle-slider" aria-hidden="true"></span>
                                 </label>
                             </div>
-                            <p class="field-hint admin-theme-setting-hint">{{t 'public_submission_enabled_help'}}</p>
                         </div>
                         <div class="form-field admin-theme-setting admin-theme-setting-wide">
                             <label>{{t 'public_submission_url_hint'}}</label>
@@ -452,7 +437,6 @@
                                     <span class="toggle-slider" aria-hidden="true"></span>
                                 </label>
                             </div>
-                            <p class="field-hint admin-theme-setting-hint">{{t this.helpKey}}</p>
                         </div>
                         {{/each}}
                     </div>

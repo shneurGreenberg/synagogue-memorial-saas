@@ -142,10 +142,10 @@ describe('admin settings dashboard template', () => {
     assert.match(html, /admin-number-stepper/);
     assert.doesNotMatch(html, /type="range"/);
     assert.doesNotMatch(html, /<details[^>]*\sopen[\s=>]/i);
-    const tileDateScaleChunk = html.slice(
-      html.indexOf('settings-scale-tile-date'),
-      html.indexOf('settings-scale-tile-date') + 1200,
-    );
-    assert.doesNotMatch(tileDateScaleChunk, /field-hint/);
+    assert.match(html, /id="fontScale_tileDate"/);
+    assert.match(html, /settings-candle-scale-field/);
+    assert.match(html, /name="fontScale_candle"/);
+    assert.doesNotMatch(html, /settings-scale-tile-date/);
+    assert.doesNotMatch(html, /live_preview_help/);
   });
 });

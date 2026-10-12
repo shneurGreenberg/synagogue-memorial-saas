@@ -108,18 +108,18 @@ const { normalizeBoardFeatures } = require('../lib/board-features');
 const { scanPathForSlug, safeScanReturnPath } = require('../lib/grave-scan');
 
 const BOARD_FEATURE_TOGGLE_META = [
-  { key: 'dailyChumash', labelKey: 'feature_daily_chumash', helpKey: 'feature_daily_chumash_help' },
-  { key: 'dailyTehillim', labelKey: 'feature_daily_tehillim', helpKey: 'feature_daily_tehillim_help' },
-  { key: 'dailyTanya', labelKey: 'feature_daily_tanya', helpKey: 'feature_daily_tanya_help' },
-  { key: 'dailyRambam', labelKey: 'feature_daily_rambam', helpKey: 'feature_daily_rambam_help' },
-  { key: 'hayomYom', labelKey: 'feature_hayom_yom', helpKey: 'feature_hayom_yom_help' },
-  { key: 'upcomingHolidays', labelKey: 'feature_upcoming_holidays', helpKey: 'feature_upcoming_holidays_help' },
-  { key: 'communityEvents', labelKey: 'feature_community_events', helpKey: 'feature_community_events_help' },
-  { key: 'kelMaleRachamim', labelKey: 'feature_kel_male_rachamim', helpKey: 'feature_kel_male_rachamim_help' },
-  { key: 'izkor', labelKey: 'feature_izkor', helpKey: 'feature_izkor_help' },
-  { key: 'weather', labelKey: 'feature_weather', helpKey: 'feature_weather_help' },
-  { key: 'sunriseSunset', labelKey: 'feature_sunrise_sunset', helpKey: 'feature_sunrise_sunset_help' },
-  { key: 'officialLogo', labelKey: 'feature_official_logo', helpKey: 'feature_official_logo_help' },
+  { key: 'dailyChumash', labelKey: 'feature_daily_chumash' },
+  { key: 'dailyTehillim', labelKey: 'feature_daily_tehillim' },
+  { key: 'dailyTanya', labelKey: 'feature_daily_tanya' },
+  { key: 'dailyRambam', labelKey: 'feature_daily_rambam' },
+  { key: 'hayomYom', labelKey: 'feature_hayom_yom' },
+  { key: 'upcomingHolidays', labelKey: 'feature_upcoming_holidays' },
+  { key: 'communityEvents', labelKey: 'feature_community_events' },
+  { key: 'kelMaleRachamim', labelKey: 'feature_kel_male_rachamim' },
+  { key: 'izkor', labelKey: 'feature_izkor' },
+  { key: 'weather', labelKey: 'feature_weather' },
+  { key: 'sunriseSunset', labelKey: 'feature_sunrise_sunset' },
+  { key: 'officialLogo', labelKey: 'feature_official_logo' },
 ];
 
 const BOARD_FEATURE_GROUPS = [
@@ -207,18 +207,12 @@ function buildBoardFeatureToggles(boardFeatures) {
 
 function buildBoardFeatureGroups(boardFeatures, theme, synagogue) {
   const togglesByKey = buildBoardFeatureToggles(boardFeatures);
-  const fontScales = theme?.fontScales || {};
-  const candleSlider = buildFontScaleSlider(
-    FONT_SCALE_SLIDER_META.find((entry) => entry.key === 'candle'),
-    fontScales,
-  );
 
   return BOARD_FEATURE_GROUPS.map((group) => ({
     groupKey: group.groupKey,
     helpKey: group.helpKey,
     special: group.special || '',
     toggles: group.keys.map((key) => togglesByKey[key]).filter(Boolean),
-    candleSlider,
     synagogueSlug: synagogue?.slug || '',
     shabbatTimesEnabled: synagogue?.shabbatTimesEnabled === true,
     publicSubmissionEnabled: synagogue?.publicSubmission?.enabled === true,
