@@ -57,6 +57,7 @@ export function BoardDataProvider({ slug, children }) {
   const [calendarDayKey, setCalendarDayKey] = useState(() => getDayKeyInTimezone(getBoardTimezone()));
   const boardVersionRef = useRef(readEmbeddedContentVersion());
   const publishedVersionRef = useRef(readPublishedBoardVersion());
+  const codeVersionRef = useRef(null);
   const lastPresenceAtRef = useRef(0);
   const [uiLang, setUiLangState] = useState(() => {
     if (previewMode) {
@@ -181,6 +182,15 @@ export function BoardDataProvider({ slug, children }) {
 
         const versionPayload = await versionResponse.json();
         const { version } = versionPayload;
+        const codeVersion = versionPayload.codeVersion ? String(versionPayload.codeVersion) : null;
+        if (codeVersion) {
+          if (codeVersionRef.current == null) {
+            codeVersionRef.current = codeVersion;
+          } else if (codeVersionRef.current !== codeVersion) {
+            window.location.reload();
+            return;
+          }
+        }
         const publishedVersion = Number(versionPayload.publishedVersion);
         if (
           Number.isFinite(publishedVersion)

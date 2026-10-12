@@ -21,6 +21,7 @@ const { getJewishFeed } = require('./lib/jewish-feed');
 const { fetchWeatherForecast } = require('./lib/weather-api');
 const { applyBoardPreviewOverrides } = require('./lib/board-preview');
 const { BOARD_VERSION } = require('./lib/board-version');
+const { currentCodeVersion } = require('./lib/changelog');
 const { resolvePublishedVersion, normalizeScreenReport, recordBoardScreen, summarizeBoardScreens } = require('./lib/board-publish');
 const { photoCropToInlineStyle } = require('./lib/photo-crop');
 const { buildPhotoThumbUrl } = require('./lib/photo-url');
@@ -455,6 +456,7 @@ app.get('/s/:slug/api/board/version', apiRateLimiter, async (req, res) => {
     return res.json({
       version,
       publishedVersion: resolvePublishedVersion(synagogue.publishedVersion),
+      codeVersion: currentCodeVersion(),
     });
   } catch (err) {
     console.error('Board version error:', err);

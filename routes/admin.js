@@ -19,12 +19,12 @@ const {
     countPeopleWithoutDeathDate,
 } = require('../lib/death-date');
 const {
-    nextPublishedVersion,
     summarizeBoardScreens,
     resolvePublishedVersion,
     formatPublishedAt,
 } = require('../lib/board-publish');
 const { loadChangelog, currentCodeVersion, hasUnseenRelease } = require('../lib/changelog');
+const { refreshCommunityDisplayScreens } = require('../lib/refresh-display-screens');
 const {
   normalizeSnapshot,
   saveViewThumbnail,
@@ -621,6 +621,7 @@ function renderAdmin(res, view, options = {}) {
         faviconAlertUrl: buildFaviconPath(displaySynagogue.slug, { badge: true }),
         adminNavActive: options.adminNavActive || ADMIN_NAV_BY_VIEW[view] || '',
         adminPageScripts: ADMIN_PAGE_SCRIPTS[view] || [],
+        impersonatedByMaster: !!(res.req && res.req.session && res.req.session.impersonatedByMaster),
         layout: options.layout === false ? false : (options.layout || 'admin'),
     });
 }
@@ -1056,7 +1057,7 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             activeSavedViewName: activeSavedView ? activeSavedView.name : '',
             memorialQrPanel: enriched.memorialQrPanel,
             saved: req.query.saved === '1',
-            published: req.query.published === '1',
+            refreshed: req.query.refreshed === '1',
             error: req.query.error || null,
         });
     } catch (err) {
@@ -1562,26 +1563,39 @@ function readDeathDateOrRespond(req, res) {
     }
 }
 
-router.post('/:slug/publish-version', requireAdmin, requirePermission('settings'), async (req, res) => {
+async function handleAdminRefreshScreens(req, res) {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const synagogue = await Synagogue.findOne({ slug: req.params.slug }, { publishedVersion: 1 }).lean();
-        if (!synagogue) {
+        const result = await refreshCommunityDisplayScreens(req.params.slug);
+        if (!result) {
             return res.status(404).send('Not found');
         }
 
-        const publishedVersion = nextPublishedVersion(synagogue.publishedVersion);
-        await Synagogue.updateOne(
-            { slug: req.params.slug },
-            { $set: { publishedVersion, publishedAt: new Date(), lastRefreshedCodeVersion: currentCodeVersion() } },
-        );
-        invalidateBoardCache(req.params.slug);
-
         if (wantsJson(req)) {
-            return res.json({ ok: true, publishedVersion });
+            return res.json({ ok: true, publishedVersion: result.publishedVersion });
         }
 
-        return res.redirect(`/admin/${req.params.slug}/dashboard?published=1`);
+        return res.redirect(`/admin/${req.params.slug}/dashboard?refreshed=1`);
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+}
+
+router.post('/:slug/refresh-screens', requireAdmin, requirePermission('settings'), handleAdminRefreshScreens);
+router.post('/:slug/publish-version', requireAdmin, requirePermission('settings'), handleAdminRefreshScreens);
+
+router.post('/:slug/end-master-impersonation', requireAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    if (!req.session.impersonatedByMaster || !req.session.isMasterAdmin) {
+        return res.status(403).send('Forbidden');
+    }
+    try {
+        const slug = req.session.adminSlug;
+        await regenerateSession(req);
+        req.session.isMasterAdmin = true;
+        req.session.impersonatedByMaster = false;
+        console.info(`[master-impersonation-end] ${new Date().toISOString()} slug=${slug}`);
+        return res.redirect('/master/communities');
     } catch (err) {
         return res.status(500).send(err.message);
     }
