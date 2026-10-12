@@ -240,7 +240,12 @@ public final class WidgetDataLoader {
             views.setTextViewText(R.id.widget_hebrew_date, safeText(data.hebrewDate, ""));
             views.setTextViewText(R.id.widget_gregorian_date, safeText(data.gregorianDate, ""));
 
-            views.setTextViewText(R.id.widget_clock, safeText(data.clock, "--:--"));
+            // Live clock: TextClock ticks by itself every minute, no app wakeups needed.
+            String tz = SharedSnapshot.read(context).timezone;
+            if (tz == null || tz.trim().isEmpty() || "UTC".equals(tz)) tz = java.util.TimeZone.getDefault().getID();
+            views.setString(R.id.widget_clock, "setTimeZone", tz);
+            views.setCharSequence(R.id.widget_clock, "setFormat24Hour", "HH:mm");
+            views.setCharSequence(R.id.widget_clock, "setFormat12Hour", "HH:mm");
             views.setImageViewResource(R.id.widget_logo, R.drawable.kaddish_logo);
             views.setTextViewText(R.id.widget_parsha_heading, safeText(data.parshaHeading, WidgetI18n.weeklyChapter(lang)));
             views.setTextViewText(R.id.widget_parsha, safeText(data.parshaName, ""));

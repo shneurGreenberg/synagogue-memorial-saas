@@ -15,12 +15,34 @@ export function LiveClock({ timezone = 'Asia/Novosibirsk' }) {
   const [time, setTime] = useState(() => formatTime(safeTimezone));
 
   useEffect(() => {
-    setTime(formatTime(safeTimezone));
-    const timer = window.setInterval(() => {
-      setTime(formatTime(safeTimezone));
-    }, 1000);
+    let timer = null;
+    let aligner = null;
+    const tick = () => setTime(formatTime(safeTimezone));
+    const start = () => {
+      tick();
+      if (timer) window.clearInterval(timer);
+      if (aligner) window.clearTimeout(aligner);
+      // Align to the next full second so the minute flips immediately.
+      aligner = window.setTimeout(() => {
+        tick();
+        timer = window.setInterval(tick, 1000);
+      }, 1000 - (Date.now() % 1000) + 5);
+    };
+    const onVisible = () => {
+      if (document.visibilityState !== 'hidden') start();
+    };
+    start();
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('focus', onVisible);
+    window.addEventListener('pageshow', onVisible);
 
-    return () => window.clearInterval(timer);
+    return () => {
+      if (timer) window.clearInterval(timer);
+      if (aligner) window.clearTimeout(aligner);
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('focus', onVisible);
+      window.removeEventListener('pageshow', onVisible);
+    };
   }, [safeTimezone]);
 
   return <span>{time}</span>;

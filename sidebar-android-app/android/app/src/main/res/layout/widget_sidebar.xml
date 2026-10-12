@@ -23,13 +23,14 @@
             android:scaleType="fitCenter"
             android:src="@drawable/kaddish_logo" />
 
-        <TextView
+        <TextClock
             android:id="@+id/widget_clock"
+            android:format24Hour="HH:mm"
+            android:format12Hour="HH:mm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="12:00"
-            android:textColor="#FFFFFF"
+                        android:textColor="#FFFFFF"
             android:textSize="42sp"
             android:textStyle="bold" />
 
