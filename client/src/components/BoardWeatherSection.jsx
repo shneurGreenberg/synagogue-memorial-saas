@@ -121,7 +121,7 @@ function TodaySunStack({ t, sunTimes, locale }) {
   );
 }
 
-function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
+function BoardWeatherSectionBase({ t, uiLang, showWeather }) {
   const appData = getBoardData();
   const location = appData.location || {};
   const coords = useMemo(
@@ -133,7 +133,7 @@ function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
   const sunTimes = getTodaySunTimes(forecast);
   const hasForecast = isValidForecast(forecast);
 
-  if (!showWeather && !showSunTimes) {
+  if (!showWeather) {
     return null;
   }
 
@@ -142,7 +142,7 @@ function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
       return (
         <div className="board-weather-block">
           <section className="weather-panel weather-panel-loading" aria-label={t('weather_title')}>
-            <h2>{showSunTimes ? t('sun_times_title') : t('weather_title')}</h2>
+            <h2>{t('weather_title')}</h2>
             <p className="weather-loading">{t('weather_loading')}</p>
           </section>
         </div>
@@ -153,7 +153,7 @@ function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
       return (
         <div className="board-weather-block">
           <section className="weather-panel weather-panel-unavailable" aria-label={t('weather_title')}>
-            <h2>{showSunTimes ? t('sun_times_title') : t('weather_title')}</h2>
+            <h2>{t('weather_title')}</h2>
             <p className="weather-unavailable">{t('weather_unavailable')}</p>
           </section>
         </div>
@@ -174,47 +174,36 @@ function BoardWeatherSectionBase({ t, uiLang, showWeather, showSunTimes }) {
 
   return (
     <div className="board-weather-block">
-      {showWeather && (
-        <section className="weather-panel weather-panel-compact" aria-label={t('weather_title')}>
-          <div className="weather-today-card">
-            <div className="weather-today-left">
-              <WeatherIcon code={todayCode} className="weather-today-icon" />
-              <div className="weather-today-temp">{todayTemp}°</div>
-            </div>
-            <div className="weather-today-right">
-              {showSunTimes && (
-                <TodaySunStack t={t} sunTimes={sunTimes} locale={locale} />
-              )}
-              <div className="weather-today-label">{weatherLabel(t, todayCode)}</div>
-            </div>
+      <section className="weather-panel weather-panel-compact" aria-label={t('weather_title')}>
+        <div className="weather-today-card">
+          <div className="weather-today-left">
+            <WeatherIcon code={todayCode} className="weather-today-icon" />
+            <div className="weather-today-temp">{todayTemp}°</div>
           </div>
-          {upcoming.length > 0 && (
-            <ul className="weather-upcoming-grid">
-              {upcoming.map((day) => (
-                <li key={day.date} className="weather-cube">
-                  <span className="weather-cube-date">
-                    {new Date(`${day.date}T12:00:00`).toLocaleDateString(locale, {
-                      weekday: 'short',
-                      day: 'numeric',
-                    })}
-                  </span>
-                  <WeatherIcon code={day.code} className="weather-cube-icon" />
-                  <span className="weather-cube-temps">
-                    {day.max}°<span className="weather-cube-sep">/</span>{day.min}°
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-      )}
-
-      {!showWeather && showSunTimes && sunTimes && (
-        <section className="weather-panel weather-panel-sun-only" aria-label={t('sun_times_title')}>
-          <h2>{t('sun_times_title')}</h2>
-          <TodaySunStack t={t} sunTimes={sunTimes} locale={locale} />
-        </section>
-      )}
+          <div className="weather-today-right">
+            <TodaySunStack t={t} sunTimes={sunTimes} locale={locale} />
+            <div className="weather-today-label">{weatherLabel(t, todayCode)}</div>
+          </div>
+        </div>
+        {upcoming.length > 0 && (
+          <ul className="weather-upcoming-grid">
+            {upcoming.map((day) => (
+              <li key={day.date} className="weather-cube">
+                <span className="weather-cube-date">
+                  {new Date(`${day.date}T12:00:00`).toLocaleDateString(locale, {
+                    weekday: 'short',
+                    day: 'numeric',
+                  })}
+                </span>
+                <WeatherIcon code={day.code} className="weather-cube-icon" />
+                <span className="weather-cube-temps">
+                  {day.max}°<span className="weather-cube-sep">/</span>{day.min}°
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }
