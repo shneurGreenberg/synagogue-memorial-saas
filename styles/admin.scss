@@ -3954,3 +3954,95 @@ body.admin-theme-light {
   .weekly-kaddish-actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
   .weekly-kaddish-confirmed { color: #067647; font-weight: 600; }
 }
+
+.admin-person-requests-panel,
+.admin-person-invites-panel {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.1rem;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-panel-inline-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.1rem;
+}
+
+.admin-panel-inline-subtitle {
+  margin: 0 0 0.85rem;
+}
+
+.admin-person-requests-list,
+.admin-person-invites-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-person-request-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem 1rem;
+  align-items: start;
+  padding: 0.75rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.admin-person-request-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--admin-accent, #cfaf1f);
+  white-space: nowrap;
+}
+
+.admin-person-request-meta,
+.admin-person-request-notes {
+  margin: 0.25rem 0 0;
+  opacity: 0.88;
+  font-size: 0.92rem;
+}
+
+.admin-person-invite-create {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+}
+
+.admin-person-invite-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+
+  &.is-inactive {
+    opacity: 0.72;
+  }
+}
+
+.admin-person-invite-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: baseline;
+}
+
+.admin-person-invite-status {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.admin-person-invite-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
