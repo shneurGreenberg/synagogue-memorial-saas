@@ -125,7 +125,6 @@
     var monthInput = document.getElementById('eventMonth');
     var dayInput = document.getElementById('eventDay');
     var yearInput = document.getElementById('eventYear');
-    var showTicker = document.getElementById('eventShowTickerDate');
 
     var title = String((titleInput && titleInput.value) || '').trim();
     var text = String((textInput && textInput.value) || '').trim();
@@ -139,55 +138,58 @@
       sectionTitleEl.textContent = labels.sectionTitle || '';
     }
     if (titleEl) {
-      titleEl.textContent = title || labels.titleSample || '';
+      if (title) {
+        titleEl.textContent = title;
+        titleEl.classList.remove('is-placeholder');
+      } else {
+        titleEl.textContent = labels.titleSample || '';
+        titleEl.classList.add('is-placeholder');
+      }
     }
     if (textEl) {
       textEl.textContent = text || labels.textSample || '';
       textEl.hidden = !text && !labels.textSample;
     }
     if (dateEl) {
-      var showDate = showTicker && showTicker.checked;
-      var formatted = showDate
-        ? formatPreviewDate(
-          monthInput && monthInput.value,
-          dayInput && dayInput.value,
-          yearInput && yearInput.value,
-          previewLang,
-        )
-        : '';
-      dateEl.textContent = formatted || (showDate ? labels.dateSample || '' : '');
-      dateEl.hidden = !showDate || (!formatted && !labels.dateSample);
+      var formatted = formatPreviewDate(
+        monthInput && monthInput.value,
+        dayInput && dayInput.value,
+        yearInput && yearInput.value,
+        previewLang,
+      );
+      var hasDate = Boolean(monthInput && monthInput.value && dayInput && dayInput.value);
+      dateEl.textContent = formatted || '';
+      dateEl.hidden = !hasDate || !formatted;
     }
-  }
-
-  function bindTickerDateToggle(toggleId, fieldsId) {
-    var toggle = document.getElementById(toggleId);
-    var fields = document.getElementById(fieldsId);
-    if (!toggle || !fields) {
-      return;
-    }
-
-    function sync() {
-      fields.hidden = !toggle.checked;
-      if (!toggle.checked) {
-        fields.querySelectorAll('input').forEach(function (input) {
-          input.value = '';
-        });
-      }
-      updateEventsPreview();
-    }
-
-    toggle.addEventListener('change', sync);
-    sync();
   }
 
   function bindEventsPreview() {
-    document.querySelectorAll('.event-preview-input, #eventMonth, #eventDay, #eventYear, #eventShowTickerDate').forEach(function (input) {
+    document.querySelectorAll('.event-preview-input, #eventMonth, #eventDay, #eventYear').forEach(function (input) {
       input.addEventListener('input', updateEventsPreview);
       input.addEventListener('change', updateEventsPreview);
     });
-    bindTickerDateToggle('eventShowTickerDate', 'eventTickerDateFields');
     updateEventsPreview();
+  }
+
+  function readFormTitle(form) {
+    var field = form && form.elements && form.elements.namedItem('title');
+    if (!field || typeof field.value !== 'string') {
+      return '';
+    }
+    return field.value.trim();
+  }
+
+  function mapEventSaveError(message) {
+    if (!message) {
+      return labels.eventSaveFailed || 'Save failed';
+    }
+    if (message === 'Title is required') {
+      return labels.eventTitleRequired || message;
+    }
+    if (message === 'Schedule start is required') {
+      return labels.eventStartRequired || message;
+    }
+    return message;
   }
 
   function icon(name, className) {
@@ -395,7 +397,7 @@
       window.setTimeout(hideBusy, 400);
     } catch (err) {
       hideBusy();
-      showStatus(err.message || labels.eventSaveFailed || 'Save failed', 'error');
+      showStatus(mapEventSaveError(err.message), 'error');
     }
   }
 
@@ -417,14 +419,6 @@
     document.getElementById('editEventText').value = adminText;
 
     var hasTickerDate = Boolean(event.eventDate && event.eventDate.month && event.eventDate.date);
-    var editTickerToggle = document.getElementById('editEventShowTickerDate');
-    var editTickerFields = document.getElementById('editEventTickerDateFields');
-    if (editTickerToggle) {
-      editTickerToggle.checked = hasTickerDate;
-    }
-    if (editTickerFields) {
-      editTickerFields.hidden = !hasTickerDate;
-    }
 
     document.getElementById('editEventMonth').value = hasTickerDate && event.eventDate.month ? event.eventDate.month : '';
     document.getElementById('editEventDay').value = hasTickerDate && event.eventDate.date ? event.eventDate.date : '';
@@ -437,27 +431,27 @@
     }
   }
 
-  function stripTickerDateIfDisabled(form) {
-    var toggle = document.getElementById(form.id === 'editEventForm' ? 'editEventShowTickerDate' : 'eventShowTickerDate');
-    if (!toggle || toggle.checked) {
-      return;
+  function clearPartialEventDateFields(form) {
+    var month = form.querySelector('[name="eventMonth"]');
+    var day = form.querySelector('[name="eventDate"]');
+    var year = form.querySelector('[name="eventYear"]');
+    var hasMonth = month && String(month.value || '').trim();
+    var hasDay = day && String(day.value || '').trim();
+    if ((hasMonth && !hasDay) || (!hasMonth && hasDay)) {
+      if (month) month.value = '';
+      if (day) day.value = '';
+      if (year) year.value = '';
     }
-
-    ['eventMonth', 'eventDate', 'eventYear'].forEach(function (name) {
-      var field = form.querySelector('[name="' + name + '"]');
-      if (field) {
-        field.value = '';
-      }
-    });
   }
 
   document.querySelectorAll('#addEventForm, #editEventForm').forEach(function (form) {
     form.addEventListener('submit', function (event) {
       event.preventDefault();
 
+      var publishNow = false;
       if (form.id === 'addEventForm') {
         var submitter = event.submitter;
-        var publishNow = submitter && submitter.getAttribute('data-publish-now') === '1';
+        publishNow = submitter && submitter.getAttribute('data-publish-now') === '1';
         var existing = form.querySelector('input[name="publishNow"]');
         if (existing) {
           existing.remove();
@@ -470,13 +464,18 @@
         form.appendChild(input);
       }
 
-      stripTickerDateIfDisabled(form);
+      clearPartialEventDateFields(form);
 
-      if (form.id === 'addEventForm') {
-        var titleInput = document.getElementById('eventTitle');
-        var hasTitle = titleInput && titleInput.value.trim();
-        if (!hasTitle) {
-          showStatus(labels.eventTitleRequired || 'Enter a title.', 'error');
+      var titleValue = readFormTitle(form);
+      if (!titleValue) {
+        showStatus(labels.eventTitleRequired || 'Enter a title.', 'error');
+        return;
+      }
+
+      if (form.id === 'addEventForm' && !publishNow) {
+        var startAtField = form.querySelector('[name="startAt"]');
+        if (!startAtField || !String(startAtField.value || '').trim()) {
+          showStatus(labels.eventStartRequired || 'Choose a publish date or click Publish now.', 'error');
           return;
         }
       }
@@ -562,17 +561,6 @@
       hideBusy();
       showStatus(err.message || 'Reorder failed', 'error');
     });
-  });
-
-  document.getElementById('editEventShowTickerDate') && document.getElementById('editEventShowTickerDate').addEventListener('change', function () {
-    var fields = document.getElementById('editEventTickerDateFields');
-    if (!fields) return;
-    fields.hidden = !this.checked;
-    if (!this.checked) {
-      fields.querySelectorAll('input').forEach(function (input) {
-        input.value = '';
-      });
-    }
   });
 
   try {

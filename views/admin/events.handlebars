@@ -116,24 +116,21 @@
                         placeholder="{{t 'event_description_placeholder'}}"></textarea>
                 </div>
 
+                <div class="form-field events-event-date-block">
+                    <span class="form-field-label">{{t 'event_date_label'}}</span>
+                    <p class="field-hint">{{t 'event_date_help'}}</p>
+                    <div class="date-inputs-row">
+                        <input type="number" name="eventMonth" id="eventMonth" class="form-control admin-input-modern event-preview-input"
+                            min="1" max="12" placeholder="{{t 'month'}}" aria-label="{{t 'month'}}">
+                        <input type="number" name="eventDate" id="eventDay" class="form-control admin-input-modern event-preview-input"
+                            min="1" max="31" placeholder="{{t 'day'}}" aria-label="{{t 'day'}}">
+                        <input type="number" name="eventYear" id="eventYear" class="form-control admin-input-modern event-preview-input"
+                            min="1900" max="2100" placeholder="{{t 'year'}}" aria-label="{{t 'year'}}">
+                    </div>
+                </div>
+
                 <div class="events-scheduling-block">
                     <h3 class="events-scheduling-title">{{t 'event_scheduling_section'}}</h3>
-
-                    <label class="toggle-switch events-ticker-date-toggle">
-                        <input type="checkbox" id="eventShowTickerDate" name="showTickerDate">
-                        <span class="toggle-slider"></span>
-                        <span class="toggle-label">{{t 'event_show_ticker_date'}}</span>
-                    </label>
-                    <div class="events-ticker-date-fields" id="eventTickerDateFields" hidden>
-                        <div class="date-inputs-row">
-                            <input type="number" name="eventMonth" id="eventMonth" class="form-control admin-input-modern"
-                                min="1" max="12" placeholder="{{t 'month'}}" aria-label="{{t 'month'}}">
-                            <input type="number" name="eventDate" id="eventDay" class="form-control admin-input-modern"
-                                min="1" max="31" placeholder="{{t 'day'}}" aria-label="{{t 'day'}}">
-                            <input type="number" name="eventYear" id="eventYear" class="form-control admin-input-modern"
-                                min="1900" max="2100" placeholder="{{t 'year'}}" aria-label="{{t 'year'}}">
-                        </div>
-                    </div>
 
                     <div class="settings-two-col events-visibility-row">
                         <div class="form-field">
@@ -171,8 +168,8 @@
                         <ul class="events-board-preview-list">
                             <li class="community-event-item events-board-preview-item">
                                 <div class="community-event-link" role="note">
-                                    <time id="eventsPreviewDate">{{t 'event_board_preview_date_sample'}}</time>
                                     <span class="community-event-title" id="eventsPreviewTitle">{{t 'event_board_preview_title_sample'}}</span>
+                                    <time id="eventsPreviewDate" hidden>{{t 'event_board_preview_date_sample'}}</time>
                                     <span class="community-event-text" id="eventsPreviewText">{{t 'event_board_preview_text_sample'}}</span>
                                 </div>
                             </li>
@@ -230,22 +227,18 @@
                         <textarea name="text" id="editEventText" class="form-control admin-input-modern" rows="3"></textarea>
                     </div>
 
-                    <div class="events-scheduling-block events-scheduling-block--compact">
-                        <label class="toggle-switch events-ticker-date-toggle">
-                            <input type="checkbox" id="editEventShowTickerDate">
-                            <span class="toggle-slider"></span>
-                            <span class="toggle-label">{{t 'event_show_ticker_date'}}</span>
-                        </label>
-                        <div class="events-ticker-date-fields" id="editEventTickerDateFields" hidden>
-                            <div class="date-inputs-row">
-                                <input type="number" name="eventMonth" id="editEventMonth" class="form-control admin-input-modern"
-                                    min="1" max="12" placeholder="{{t 'month'}}" aria-label="{{t 'month'}}">
-                                <input type="number" name="eventDate" id="editEventDay" class="form-control admin-input-modern"
-                                    min="1" max="31" placeholder="{{t 'day'}}" aria-label="{{t 'day'}}">
-                                <input type="number" name="eventYear" id="editEventYear" class="form-control admin-input-modern"
-                                    min="1900" max="2100" placeholder="{{t 'year'}}" aria-label="{{t 'year'}}">
-                            </div>
+                    <div class="form-field events-event-date-block">
+                        <span class="form-field-label">{{t 'event_date_label'}}</span>
+                        <div class="date-inputs-row">
+                            <input type="number" name="eventMonth" id="editEventMonth" class="form-control admin-input-modern"
+                                min="1" max="12" placeholder="{{t 'month'}}" aria-label="{{t 'month'}}">
+                            <input type="number" name="eventDate" id="editEventDay" class="form-control admin-input-modern"
+                                min="1" max="31" placeholder="{{t 'day'}}" aria-label="{{t 'day'}}">
+                            <input type="number" name="eventYear" id="editEventYear" class="form-control admin-input-modern"
+                                min="1900" max="2100" placeholder="{{t 'year'}}" aria-label="{{t 'year'}}">
                         </div>
+                    </div>
+                    <div class="events-scheduling-block events-scheduling-block--compact">
                         <div class="settings-two-col events-visibility-row">
                             <div class="form-field">
                                 <label for="editEventStartAt">{{t 'event_start_at'}}</label>
