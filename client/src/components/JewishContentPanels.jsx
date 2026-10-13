@@ -69,8 +69,9 @@ function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
   const lessons5703 = hayomYom.lessons5703 || {};
   const tanyaItem = lessons5703.tanya?.label ? lessons5703.tanya : learning.tanya;
 
+  const chumashItem = lessons5703.chumash?.label ? lessons5703.chumash : learning.chumash;
   const chumashTile = boardFeatures.dailyChumash && (
-    <LearningTile label={t('daily_chumash')} item={learning.chumash} />
+    <LearningTile label={t('daily_chumash')} item={chumashItem} />
   );
   const tanyaTile = boardFeatures.dailyTanya && (
     <LearningTile label={t('daily_tanya')} item={tanyaItem} />

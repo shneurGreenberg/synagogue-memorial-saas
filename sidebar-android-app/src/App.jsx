@@ -213,7 +213,6 @@ export default function App() {
     upcomingHolidays: true,
     communityEvents: true,
     weather: true,
-    sunriseSunset: true,
   };
 
   const theme = remotePayload?.theme || {
@@ -342,7 +341,7 @@ export default function App() {
               serverUrl={normalizeServerUrl(settings.serverUrl)}
               slug={settings.slug}
               showWeather={boardFeatures.weather !== false}
-              showSunTimes={boardFeatures.sunriseSunset !== false}
+              showSunTimes={boardFeatures.weather !== false}
               onForecastChange={handleForecastChange}
             />
           </div>

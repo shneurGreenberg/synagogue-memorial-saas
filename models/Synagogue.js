@@ -207,7 +207,6 @@ const SavedViewSchema = new mongoose.Schema({
       kelMaleRachamim: Boolean,
       izkor: Boolean,
       weather: Boolean,
-      sunriseSunset: Boolean,
       officialLogo: Boolean,
     },
     shabbatTimesEnabled: Boolean,
@@ -246,7 +245,6 @@ const SynagogueSchema = new mongoose.Schema({
     kelMaleRachamim: { type: Boolean, default: true },
     izkor: { type: Boolean, default: true },
     weather: { type: Boolean, default: false },
-    sunriseSunset: { type: Boolean, default: false },
     officialLogo: { type: Boolean, default: true },
   },
   publicSubmission: {

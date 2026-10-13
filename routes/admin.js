@@ -135,7 +135,6 @@ const BOARD_FEATURE_TOGGLE_META = [
   { key: 'kelMaleRachamim', labelKey: 'feature_kel_male_rachamim' },
   { key: 'izkor', labelKey: 'feature_izkor' },
   { key: 'weather', labelKey: 'feature_weather' },
-  { key: 'sunriseSunset', labelKey: 'feature_sunrise_sunset' },
   { key: 'officialLogo', labelKey: 'feature_official_logo' },
 ];
 
@@ -154,7 +153,7 @@ const BOARD_FEATURE_GROUPS = [
   {
     groupKey: 'board_features_sidebar_group',
     helpKey: 'board_features_sidebar_group_help',
-    keys: ['officialLogo', 'upcomingHolidays', 'communityEvents', 'weather', 'sunriseSunset'],
+    keys: ['officialLogo', 'upcomingHolidays', 'communityEvents', 'weather'],
   },
   {
     groupKey: 'board_features_learning_group',

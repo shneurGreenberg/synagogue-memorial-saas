@@ -510,11 +510,8 @@ class HomePageBase extends React.Component {
                     <ShabbatTimes />
                   </div>
                 )}
-                {(boardFeatures.weather || boardFeatures.sunriseSunset) && (
-                  <BoardWeatherSection
-                    showWeather={boardFeatures.weather}
-                    showSunTimes={boardFeatures.sunriseSunset}
-                  />
+                {boardFeatures.weather && (
+                  <BoardWeatherSection showWeather={boardFeatures.weather} />
                 )}
               </div>
               <div className="right-panel-scroll">
