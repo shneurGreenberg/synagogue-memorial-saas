@@ -84,7 +84,7 @@ const {
 const { parsePeopleListSearchParam, personMatchesPeopleSearch } = require('../lib/people-list-search');
 const { parsePublicSubmissionFromBody, parseFormCheckbox } = require('../lib/public-submission');
 const {
-  buildSavedViewExport,
+  buildSavedViewExport, buildExportContentDisposition,
   normalizeImportedSnapshot,
   readImportName,
 } = require('../lib/saved-view-portable');
@@ -1008,9 +1008,8 @@ router.get('/:slug/settings/saved-views/:viewId/export', requireAdmin, requirePe
         }
 
         const payload = buildSavedViewExport(view);
-        const safeName = String(view.name || 'saved-view').replace(/[^\w\u0590-\u05FF.-]+/g, '_').slice(0, 80);
         res.setHeader('Content-Type', 'application/json; charset=utf-8');
-        res.setHeader('Content-Disposition', `attachment; filename="${safeName || 'saved-view'}.json"`);
+        res.setHeader('Content-Disposition', buildExportContentDisposition(view));
         return res.send(JSON.stringify(payload, null, 2));
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
