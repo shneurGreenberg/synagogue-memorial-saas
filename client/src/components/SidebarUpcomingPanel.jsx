@@ -4,14 +4,24 @@ import { getBoardData } from '../lib/board-data';
 import { resolveBoardFeatures } from '../lib/board-features';
 import { buildSidebarAnnouncements } from '../lib/sidebar-announcements';
 import { fetchJewishFeed } from '../lib/jewish-feed-client';
+import { formatIsoDateAsHebrewDate } from '../lib/hebrew-date-format';
 
 const REFRESH_MS = 60 * 60 * 1000;
+
+function holidayHebrewLine(dateStr, lang) {
+  if (lang !== 'he') {
+    return '';
+  }
+
+  return formatIsoDateAsHebrewDate(dateStr, 'he');
+}
 
 function formatHolidayDateRange(card, lang) {
   const start = formatHolidayDate(card.date, lang);
   if (!card.isRange || !card.dateEnd || card.dateEnd === card.date) {
-    if (card.hebrew) {
-      return `${start} / ${card.hebrew}`;
+    const hebrewLine = holidayHebrewLine(card.date, lang) || card.hebrew;
+    if (hebrewLine) {
+      return `${start} / ${hebrewLine}`;
     }
     return start;
   }
@@ -19,8 +29,10 @@ function formatHolidayDateRange(card, lang) {
   const end = formatHolidayDate(card.dateEnd, lang);
   const sep = lang === 'he' ? ' עד ' : ' – ';
   let label = `${start}${sep}${end}`;
-  if (card.hebrew && card.hebrewEnd) {
-    label = `${label} / ${card.hebrew}${sep}${card.hebrewEnd}`;
+  const hebrewStart = holidayHebrewLine(card.date, lang) || card.hebrew;
+  const hebrewEnd = holidayHebrewLine(card.dateEnd, lang) || card.hebrewEnd;
+  if (hebrewStart && hebrewEnd) {
+    label = `${label} / ${hebrewStart}${sep}${hebrewEnd}`;
   }
   return label;
 }
@@ -119,15 +131,17 @@ class ScrollingAnnouncementsList extends React.Component {
   };
 
   renderEvent(card, suffix) {
+    const showEventDate = card.hasEventDate !== false && card.eventDate;
+
     return (
       <li key={`${card.id}${suffix}`} className="community-event-item">
         <div className="community-event-link" role="note">
-          {card.hasEventDate !== false && card.eventDate && (
+          <span className="community-event-title">{card.title}</span>
+          {showEventDate && (
             <time dateTime={toEventDatetimeAttr(card.eventDate)}>
               {this.props.formatGregorianDate(card.eventDate)} / {this.props.formatHebrewDate(card.hebrewDate)}
             </time>
           )}
-          <span className="community-event-title">{card.title}</span>
           {card.text && (
             <span className="community-event-text">{card.text}</span>
           )}

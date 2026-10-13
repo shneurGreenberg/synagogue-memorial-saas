@@ -1,5 +1,6 @@
 import Hebcal from 'hebcal';
 import { getDisplayLanguage } from './person-names';
+import { formatHebrewDate as formatHebrewDateForLang } from './hebrew-date-format';
 
 const LATITUDE = 54.9833;
 const LONGITUDE = 82.8964;
@@ -256,40 +257,8 @@ export function configureNovosibirsk() {
 }
 
 export function formatHebrewDate(hewbrewDate) {
-    if (!hewbrewDate || typeof hewbrewDate.getDate !== 'function') {
-      return '';
-    }
-
     const lang = getDisplayLanguage();
-    let result = `${hewbrewDate.getDate()} `;
-    const month = hewbrewDate.getMonth();
-
-    if (lang === 'en') {
-      const months = ['', 'Nisan', 'Iyar', 'Sivan', 'Tamuz', 'Av', 'Elul', 'Tishrei', 'Cheshvan', 'Kislev', 'Tevet', 'Shevat', 'Adar', 'Adar II'];
-      result += months[month];
-    } else if (lang === 'he') {
-      const months = ['', 'ניסן', 'אייר', 'סיוון', 'תמוז', 'אב', 'אלול', 'תשרי', 'חשוון', 'כסלו', 'טבת', 'שבט', 'אדר', 'אדר ב'];
-      result += months[month];
-    } else {
-      switch (month) {
-        case 1: result += 'Нисана'; break;
-        case 2: result += 'Ияра'; break;
-        case 3: result += 'Сивана'; break;
-        case 4: result += 'Тамуза'; break;
-        case 5: result += 'Ава'; break;
-        case 6: result += 'Элула'; break;
-        case 7: result += 'Тишрея'; break;
-        case 8: result += 'Хешвана'; break;
-        case 9: result += 'Кислева'; break;
-        case 10: result += 'Тевета'; break;
-        case 11: result += 'Швата'; break;
-        case 12: result += 'Адара'; break;
-        case 13: result += 'Адара Бет'; break;
-      }
-    }
-
-    result += ` ${hewbrewDate.getFullYear()}`;
-    return result;
+    return formatHebrewDateForLang(hewbrewDate, lang);
 }
 
 export function formatGregorianDate(gregorianDate) {

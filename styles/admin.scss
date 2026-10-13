@@ -2759,17 +2759,23 @@ body.admin-is-busy {
 
   time {
     display: block;
-    margin-bottom: 4px;
+    margin-top: 4px;
+    margin-bottom: 2px;
     color: var(--text-color, #d0d0d0);
     font-size: 0.9rem;
   }
 
   .community-event-title {
     display: block;
-    margin-top: 4px;
+    margin-top: 0;
     font-size: 1rem;
     font-weight: 700;
     color: var(--accent-color, #ffd54f);
+
+    &.is-placeholder {
+      opacity: 0.55;
+      font-weight: 600;
+    }
   }
 
   .community-event-text {

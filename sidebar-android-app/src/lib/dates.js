@@ -1,4 +1,5 @@
 import Hebcal from 'hebcal';
+import gematriya from 'gematriya';
 
 const HEBREW_MONTHS = {
   ru: ['', 'Нисана', 'Ияра', 'Сивана', 'Тамуза', 'Ава', 'Элула', 'Тишрея', 'Хешвана', 'Кислева', 'Тевета', 'Швата', 'Адара', 'Адара Бет'],
@@ -30,12 +31,24 @@ export function getDatesInTimezone(timezone, now = new Date()) {
   return { gregorianDate, hebrewDate };
 }
 
+function gematriaDay(day) {
+  return gematriya(day, { punctuate: true });
+}
+
+function gematriaHebrewYear(year) {
+  return gematriya(year % 1000, { punctuate: true });
+}
+
 export function formatHebrewDate(hebrewDate, lang = 'ru') {
   if (!hebrewDate || typeof hebrewDate.getDate !== 'function') {
     return '';
   }
 
   const months = HEBREW_MONTHS[lang] || HEBREW_MONTHS.ru;
+  if (lang === 'he') {
+    return `${gematriaDay(hebrewDate.getDate())} ${months[hebrewDate.getMonth()]} ${gematriaHebrewYear(hebrewDate.getFullYear())}`;
+  }
+
   return `${hebrewDate.getDate()} ${months[hebrewDate.getMonth()]} ${hebrewDate.getFullYear()}`;
 }
 
