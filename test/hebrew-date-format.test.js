@@ -20,6 +20,7 @@ describe('hebrew-date-format', () => {
 
   it('formats ISO civil dates in Hebrew locale', () => {
     const formatted = formatIsoDateAsHebrewDate('2026-10-13', 'he');
-    assert.ok(formatted.includes('תשרי'));
+    assert.ok(formatted.includes('חשוון'));
+    assert.match(formatted, /תשפ/);
   });
 });

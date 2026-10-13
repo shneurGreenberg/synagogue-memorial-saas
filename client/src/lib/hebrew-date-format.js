@@ -6,12 +6,12 @@ const HEBREW_MONTHS = ['', 'ניסן', 'אייר', 'סיוון', 'תמוז', 'א
 const ENGLISH_MONTHS = ['', 'Nisan', 'Iyar', 'Sivan', 'Tamuz', 'Av', 'Elul', 'Tishrei', 'Cheshvan', 'Kislev', 'Tevet', 'Shevat', 'Adar', 'Adar II'];
 
 function gematriaDay(day) {
-  return gematriya(day, { punctuate: true });
+  return gematriya(day);
 }
 
 function gematriaHebrewYear(year) {
   const remainder = year % 1000;
-  return gematriya(remainder, { punctuate: true });
+  return gematriya(remainder, 3);
 }
 
 export function formatHebrewDate(hdate, lang = 'ru') {
