@@ -1386,7 +1386,9 @@ router.get('/:slug/contacts', requireAdmin, requirePermission('contactDirectory'
 router.post('/:slug/contacts', requireAdmin, requirePermission('contactDirectory'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
     try {
-        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug })
+            .select('contactDirectory')
+            .lean();
         if (!synagogue) {
             return res.status(404).json({ ok: false, error: 'Not found' });
         }
@@ -1402,6 +1404,7 @@ router.post('/:slug/contacts', requireAdmin, requirePermission('contactDirectory
             { $set: { contactDirectory: after } },
             { runValidators: false },
         );
+        invalidateAdminSynagogueCache(req.params.slug);
 
         return res.json({ ok: true, contact: added, total: after.length });
     } catch (err) {
@@ -1412,7 +1415,9 @@ router.post('/:slug/contacts', requireAdmin, requirePermission('contactDirectory
 router.put('/:slug/contacts/:contactId', requireAdmin, requirePermission('contactDirectory'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
     try {
-        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug })
+            .select('contactDirectory')
+            .lean();
         if (!synagogue) {
             return res.status(404).json({ ok: false, error: 'Not found' });
         }
@@ -1429,6 +1434,7 @@ router.put('/:slug/contacts/:contactId', requireAdmin, requirePermission('contac
             { $set: { contactDirectory } },
             { runValidators: false },
         );
+        invalidateAdminSynagogueCache(req.params.slug);
 
         return res.json({ ok: true, contact, total: contactDirectory.length });
     } catch (err) {
@@ -1440,7 +1446,9 @@ router.put('/:slug/contacts/:contactId', requireAdmin, requirePermission('contac
 router.delete('/:slug/contacts/:contactId', requireAdmin, requirePermission('contactDirectory'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
     try {
-        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug })
+            .select('contactDirectory')
+            .lean();
         if (!synagogue) {
             return res.status(404).json({ ok: false, error: 'Not found' });
         }
@@ -1451,6 +1459,7 @@ router.delete('/:slug/contacts/:contactId', requireAdmin, requirePermission('con
             { $set: { contactDirectory } },
             { runValidators: false },
         );
+        invalidateAdminSynagogueCache(req.params.slug);
 
         return res.json({ ok: true, total: contactDirectory.length });
     } catch (err) {
@@ -1466,7 +1475,9 @@ router.post('/:slug/contacts/import', requireAdmin, requirePermission('contactDi
         || String(req.headers.accept || '').includes('application/json');
 
     try {
-        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug })
+            .select('contactDirectory')
+            .lean();
         if (!synagogue) {
             return res.status(404).json({ ok: false, error: 'Not found' });
         }
@@ -1495,6 +1506,7 @@ router.post('/:slug/contacts/import', requireAdmin, requirePermission('contactDi
             { $set: { contactDirectory: merged } },
             { runValidators: false },
         );
+        invalidateAdminSynagogueCache(req.params.slug);
 
         if (wantsJson) {
             return res.json({

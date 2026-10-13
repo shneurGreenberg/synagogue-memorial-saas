@@ -22,6 +22,7 @@ const {
 const { currentCodeVersion, loadChangelog } = require('../lib/changelog');
 const { refreshCommunityDisplayScreens } = require('../lib/refresh-display-screens');
 const { communityLogoUrl } = require('../lib/community-logo-url');
+const { loadMasterCommunitiesList } = require('../lib/master-communities-list');
 const {
   createLoginRateLimiter,
   regenerateSession,
@@ -262,7 +263,7 @@ router.get('/communities', requireMaster, async (req, res) => {
     try {
         const lang = getMasterLang();
         const t = getMasterTranslator(lang);
-        const synagogues = (await Synagogue.find({}).sort({ name: 1 }).lean()).map((synagogue) => {
+        const synagogues = (await loadMasterCommunitiesList()).map((synagogue) => {
             const summary = summarizeBoardScreens(
                 synagogue.boardClients,
                 resolvePublishedVersion(synagogue.publishedVersion),
