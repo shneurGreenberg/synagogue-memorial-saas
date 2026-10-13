@@ -19,7 +19,7 @@
       "tileTitle": 100,
       "tileDate": 100,
       "clock": 100,
-      "boardHeader": 100,
+      "boardHeader": 80,
       "sidebar": 100,
       "prayers": 100,
       "prayerOverlay": 100,
@@ -6292,8 +6292,8 @@
   "shabbatTimesEnabled": true,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1791857849802,
-  "exportedAt": "2026-10-13T02:17:29.802Z",
+  "contentVersion": 1791883017235,
+  "exportedAt": "2026-10-13T09:16:57.235Z",
   "jewishContent": {
     "date": "2026-10-13",
     "timezone": "Asia/Tomsk",
@@ -6307,7 +6307,7 @@
         "label": "Тегилим 10-17"
       },
       "tanya": {
-        "label": "1 Хешван"
+        "label": "2 Хешван"
       },
       "rambam": {
         "label": "Virgin Maiden 1"
@@ -6662,6 +6662,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-13T02:17:29.802Z"
+    "updatedAt": "2026-10-13T09:16:57.235Z"
   }
 }
