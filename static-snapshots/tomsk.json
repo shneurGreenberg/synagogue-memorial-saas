@@ -29,27 +29,27 @@
       "candle": 100
     },
     "fontScaleBaselines": {
-      "tileTitle": 100,
+      "tileTitle": 120,
       "tileDate": 100,
       "clock": 100,
       "boardHeader": 100,
       "sidebar": 100,
       "prayers": 100,
-      "prayerOverlay": 115,
+      "prayerOverlay": 161,
       "torahNames": 100,
       "weather": 115,
       "shabbat": 100,
-      "candle": 90
+      "candle": 126
     },
     "primaryColor": "#ecd779",
-    "textColor": "#f0f0f0",
-    "accentColor": "#ffd54f",
-    "tileColor": "#ffffff",
-    "tileOpacity": 0,
+    "textColor": "#ffffff",
+    "accentColor": "#e8ca69",
+    "tileColor": "#ff9b29",
+    "tileOpacity": 99,
     "logo": "1782449503623.webp",
-    "candlePalette": "ivory",
-    "backgroundImage": "1791823434856-opt.jpg",
-    "tilesBackground": "1791823434857-opt.jpg",
+    "candlePalette": "pearl",
+    "backgroundImage": "1791833429159-opt.jpg",
+    "tilesBackground": "1791833555170-opt.jpg",
     "logoBorderRadius": 100,
     "logoBackground": ""
   },
@@ -65,7 +65,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 29 тишрей 5775"
+      "text": ""
     },
     {
       "id": 2,
@@ -78,7 +78,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 тишрей 5769"
+      "text": ""
     },
     {
       "id": 3,
@@ -91,7 +91,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 тишрей 5754"
+      "text": ""
     },
     {
       "id": 4,
@@ -104,7 +104,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 11 тишрей 5750"
+      "text": ""
     },
     {
       "id": 5,
@@ -117,7 +117,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 тишрей 5744"
+      "text": ""
     },
     {
       "id": 6,
@@ -130,7 +130,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 тишрей 5747"
+      "text": ""
     },
     {
       "id": 7,
@@ -143,7 +143,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 тишрей 5782"
+      "text": ""
     },
     {
       "id": 8,
@@ -156,7 +156,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 тишрей 5782"
+      "text": ""
     },
     {
       "id": 9,
@@ -169,7 +169,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 тишрей 5740"
+      "text": ""
     },
     {
       "id": 10,
@@ -182,7 +182,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 11 тишрей 5747"
+      "text": ""
     },
     {
       "id": 11,
@@ -195,7 +195,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 3 тишрей 5745"
+      "text": ""
     },
     {
       "id": 12,
@@ -208,7 +208,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 9 тишрей 5750"
+      "text": ""
     },
     {
       "id": 13,
@@ -221,7 +221,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 23 тишрей 5745"
+      "text": ""
     },
     {
       "id": 14,
@@ -234,7 +234,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 23 тишрей 5751"
+      "text": ""
     },
     {
       "id": 15,
@@ -247,7 +247,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 22 тишрей 5739"
+      "text": ""
     },
     {
       "id": 16,
@@ -260,7 +260,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 тишрей 5774"
+      "text": ""
     },
     {
       "id": 17,
@@ -273,7 +273,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 тишрей 5739"
+      "text": ""
     },
     {
       "id": 18,
@@ -286,7 +286,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 тишрей 5741"
+      "text": ""
     },
     {
       "id": 19,
@@ -299,7 +299,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 7 тишрей 5755"
+      "text": ""
     },
     {
       "id": 20,
@@ -312,7 +312,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 тишрей 5772"
+      "text": ""
     },
     {
       "id": 21,
@@ -325,7 +325,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 тишрей 5742"
+      "text": ""
     },
     {
       "id": 22,
@@ -338,7 +338,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 тишрей 5754"
+      "text": ""
     },
     {
       "id": 23,
@@ -351,7 +351,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 30 тишрей 5756"
+      "text": ""
     },
     {
       "id": 24,
@@ -364,7 +364,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 тишрей 5762"
+      "text": ""
     },
     {
       "id": 25,
@@ -377,7 +377,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 тишрей 5759"
+      "text": ""
     },
     {
       "id": 26,
@@ -390,7 +390,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 тишрей 5756"
+      "text": ""
     },
     {
       "id": 27,
@@ -403,7 +403,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 9 тишрей 5756"
+      "text": ""
     },
     {
       "id": 28,
@@ -416,7 +416,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 тишрей 5762"
+      "text": ""
     },
     {
       "id": 29,
@@ -429,7 +429,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 22 тишрей 5763"
+      "text": ""
     },
     {
       "id": 30,
@@ -442,7 +442,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 тишрей 5757"
+      "text": ""
     },
     {
       "id": 31,
@@ -455,7 +455,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 тишрей 5757"
+      "text": ""
     },
     {
       "id": 32,
@@ -468,7 +468,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 8 тишрей 5759"
+      "text": ""
     },
     {
       "id": 33,
@@ -481,7 +481,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 тишрей 5761"
+      "text": ""
     },
     {
       "id": 34,
@@ -494,7 +494,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 9 тишрей 5777"
+      "text": ""
     },
     {
       "id": 35,
@@ -507,7 +507,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 тишрей 5777"
+      "text": ""
     },
     {
       "id": 36,
@@ -520,7 +520,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 тишрей 5777"
+      "text": ""
     },
     {
       "id": 37,
@@ -533,7 +533,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 тишрей 5780"
+      "text": ""
     },
     {
       "id": 38,
@@ -546,7 +546,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 тишрей 5773"
+      "text": ""
     },
     {
       "id": 39,
@@ -559,7 +559,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 тишрей 5776"
+      "text": ""
     },
     {
       "id": 40,
@@ -572,7 +572,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 25 тишрей 5783"
+      "text": ""
     },
     {
       "id": 41,
@@ -585,7 +585,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 тишрей 5781"
+      "text": ""
     },
     {
       "id": 42,
@@ -598,7 +598,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 тишрей 5784"
+      "text": ""
     },
     {
       "id": 43,
@@ -611,7 +611,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 хешван 5770"
+      "text": ""
     },
     {
       "id": 44,
@@ -624,7 +624,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 9 хешван 5754"
+      "text": ""
     },
     {
       "id": 45,
@@ -637,7 +637,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 3 хешван 5750"
+      "text": ""
     },
     {
       "id": 46,
@@ -650,7 +650,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 хешван 5748"
+      "text": ""
     },
     {
       "id": 47,
@@ -663,7 +663,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 7 хешван 5771"
+      "text": ""
     },
     {
       "id": 48,
@@ -676,7 +676,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 хешван 5742"
+      "text": ""
     },
     {
       "id": 49,
@@ -689,7 +689,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 хешван 5739"
+      "text": ""
     },
     {
       "id": 50,
@@ -702,7 +702,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 30 хешван 5740"
+      "text": ""
     },
     {
       "id": 51,
@@ -715,7 +715,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 хешван 5752"
+      "text": ""
     },
     {
       "id": 52,
@@ -728,7 +728,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 5 хешван 5738"
+      "text": ""
     },
     {
       "id": 53,
@@ -741,7 +741,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 хешван 5762"
+      "text": ""
     },
     {
       "id": 54,
@@ -754,7 +754,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 24 хешван 5760"
+      "text": ""
     },
     {
       "id": 55,
@@ -767,7 +767,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 25 хешван 5782"
+      "text": ""
     },
     {
       "id": 56,
@@ -780,7 +780,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 23 хешван 5729"
+      "text": ""
     },
     {
       "id": 57,
@@ -793,7 +793,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 хешван 5747"
+      "text": ""
     },
     {
       "id": 58,
@@ -806,7 +806,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 15 хешван 5742"
+      "text": ""
     },
     {
       "id": 59,
@@ -819,7 +819,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 хешван 5769"
+      "text": ""
     },
     {
       "id": 60,
@@ -832,7 +832,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 хешван 5750"
+      "text": ""
     },
     {
       "id": 61,
@@ -845,7 +845,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 хешван 5735"
+      "text": ""
     },
     {
       "id": 62,
@@ -858,7 +858,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 хешван 5735"
+      "text": ""
     },
     {
       "id": 63,
@@ -871,7 +871,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 24 хешван 5752"
+      "text": ""
     },
     {
       "id": 64,
@@ -884,7 +884,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 хешван 5742"
+      "text": ""
     },
     {
       "id": 65,
@@ -897,7 +897,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 хешван 5742"
+      "text": ""
     },
     {
       "id": 66,
@@ -910,7 +910,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 22 хешван 5755"
+      "text": ""
     },
     {
       "id": 67,
@@ -923,7 +923,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 хешван 5756"
+      "text": ""
     },
     {
       "id": 68,
@@ -936,7 +936,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 хешван 5756"
+      "text": ""
     },
     {
       "id": 69,
@@ -949,7 +949,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 хешван 5766"
+      "text": ""
     },
     {
       "id": 70,
@@ -962,7 +962,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 хешван 5758"
+      "text": ""
     },
     {
       "id": 71,
@@ -975,7 +975,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 3 хешван 5759"
+      "text": ""
     },
     {
       "id": 72,
@@ -988,7 +988,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 хешван 5776"
+      "text": ""
     },
     {
       "id": 73,
@@ -1001,7 +1001,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 хешван 5775"
+      "text": ""
     },
     {
       "id": 74,
@@ -1014,7 +1014,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 25 хешван 5772"
+      "text": ""
     },
     {
       "id": 75,
@@ -1027,7 +1027,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 5 хешван 5767"
+      "text": ""
     },
     {
       "id": 76,
@@ -1040,7 +1040,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 27 хешван 5762"
+      "text": ""
     },
     {
       "id": 77,
@@ -1053,7 +1053,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 хешван 5771"
+      "text": ""
     },
     {
       "id": 78,
@@ -1066,7 +1066,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 хешван 5782"
+      "text": ""
     },
     {
       "id": 79,
@@ -1079,7 +1079,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 хешван 5779"
+      "text": ""
     },
     {
       "id": 80,
@@ -1092,7 +1092,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 11 хешван 5783"
+      "text": ""
     },
     {
       "id": 81,
@@ -1105,7 +1105,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 11 хешван 5781"
+      "text": ""
     },
     {
       "id": 82,
@@ -1118,7 +1118,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 хешван 5781"
+      "text": ""
     },
     {
       "id": 83,
@@ -1131,7 +1131,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 23 кислев 5759"
+      "text": ""
     },
     {
       "id": 84,
@@ -1144,7 +1144,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 кислев 5772"
+      "text": ""
     },
     {
       "id": 85,
@@ -1157,7 +1157,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 кислев 5749"
+      "text": ""
     },
     {
       "id": 86,
@@ -1170,7 +1170,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 кислев 5749"
+      "text": ""
     },
     {
       "id": 87,
@@ -1183,7 +1183,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 кислев 5764"
+      "text": ""
     },
     {
       "id": 88,
@@ -1196,7 +1196,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 кислев 5748"
+      "text": ""
     },
     {
       "id": 89,
@@ -1209,7 +1209,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 кислев 5739"
+      "text": ""
     },
     {
       "id": 90,
@@ -1222,7 +1222,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 6 кислев 5739"
+      "text": ""
     },
     {
       "id": 91,
@@ -1235,7 +1235,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 кислев 5743"
+      "text": ""
     },
     {
       "id": 92,
@@ -1248,7 +1248,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 30 кислев 5744"
+      "text": ""
     },
     {
       "id": 93,
@@ -1261,7 +1261,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 кислев 5739"
+      "text": ""
     },
     {
       "id": 94,
@@ -1274,7 +1274,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 кислев 5739"
+      "text": ""
     },
     {
       "id": 95,
@@ -1287,7 +1287,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 8 кислев 5739"
+      "text": ""
     },
     {
       "id": 96,
@@ -1300,7 +1300,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 кислев 5739"
+      "text": ""
     },
     {
       "id": 97,
@@ -1313,7 +1313,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 7 кислев 5748"
+      "text": ""
     },
     {
       "id": 98,
@@ -1326,7 +1326,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 кислев 5723"
+      "text": ""
     },
     {
       "id": 99,
@@ -1339,7 +1339,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 25 кислев 5754"
+      "text": ""
     },
     {
       "id": 100,
@@ -1352,7 +1352,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 кислев 5736"
+      "text": ""
     },
     {
       "id": 101,
@@ -1365,7 +1365,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 кислев 5736"
+      "text": ""
     },
     {
       "id": 102,
@@ -1378,7 +1378,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 кислев 5738"
+      "text": ""
     },
     {
       "id": 103,
@@ -1391,7 +1391,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 кислев 5783"
+      "text": ""
     },
     {
       "id": 104,
@@ -1404,7 +1404,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 кислев 5756"
+      "text": ""
     },
     {
       "id": 105,
@@ -1417,7 +1417,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 кислев 5763"
+      "text": ""
     },
     {
       "id": 106,
@@ -1430,7 +1430,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 7 кислев 5755"
+      "text": ""
     },
     {
       "id": 107,
@@ -1443,7 +1443,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 27 кислев 5757"
+      "text": ""
     },
     {
       "id": 108,
@@ -1456,7 +1456,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 19 кислев 5756"
+      "text": ""
     },
     {
       "id": 109,
@@ -1469,7 +1469,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 кислев 5757"
+      "text": ""
     },
     {
       "id": 110,
@@ -1482,7 +1482,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 кислев 5765"
+      "text": ""
     },
     {
       "id": 111,
@@ -1495,7 +1495,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 30 кислев 5763"
+      "text": ""
     },
     {
       "id": 112,
@@ -1508,7 +1508,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 24 кислев 5771"
+      "text": ""
     },
     {
       "id": 113,
@@ -1521,7 +1521,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 3 кислев 5768"
+      "text": ""
     },
     {
       "id": 114,
@@ -1534,7 +1534,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 9 кислев 5771"
+      "text": ""
     },
     {
       "id": 115,
@@ -1547,7 +1547,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 7 кислев 5775"
+      "text": ""
     },
     {
       "id": 116,
@@ -1560,7 +1560,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 кислев 5779"
+      "text": ""
     },
     {
       "id": 117,
@@ -1573,7 +1573,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 5 кислев 5782"
+      "text": ""
     },
     {
       "id": 118,
@@ -1586,7 +1586,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 кислев 5782"
+      "text": ""
     },
     {
       "id": 119,
@@ -1599,7 +1599,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 3 кислев 5781"
+      "text": ""
     },
     {
       "id": 120,
@@ -1612,7 +1612,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 8 тевет 5769"
+      "text": ""
     },
     {
       "id": 121,
@@ -1625,7 +1625,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 тевет 5752"
+      "text": ""
     },
     {
       "id": 122,
@@ -1638,7 +1638,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 22 тевет 5741"
+      "text": ""
     },
     {
       "id": 123,
@@ -1651,7 +1651,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 тевет 5743"
+      "text": ""
     },
     {
       "id": 124,
@@ -1664,7 +1664,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 тевет 5752"
+      "text": ""
     },
     {
       "id": 125,
@@ -1677,7 +1677,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 3 тевет 5761"
+      "text": ""
     },
     {
       "id": 126,
@@ -1690,7 +1690,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 3 тевет 5740"
+      "text": ""
     },
     {
       "id": 127,
@@ -1703,7 +1703,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 тевет 5737"
+      "text": ""
     },
     {
       "id": 128,
@@ -1716,7 +1716,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 тевет 5737"
+      "text": ""
     },
     {
       "id": 129,
@@ -1729,7 +1729,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 тевет 5739"
+      "text": ""
     },
     {
       "id": 130,
@@ -1742,7 +1742,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 19 тевет 5739"
+      "text": ""
     },
     {
       "id": 131,
@@ -1755,7 +1755,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 22 тевет 5736"
+      "text": ""
     },
     {
       "id": 132,
@@ -1768,7 +1768,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 25 тевет 5738"
+      "text": ""
     },
     {
       "id": 133,
@@ -1781,7 +1781,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 тевет 5738"
+      "text": ""
     },
     {
       "id": 134,
@@ -1794,7 +1794,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 27 тевет 5738"
+      "text": ""
     },
     {
       "id": 135,
@@ -1807,7 +1807,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 тевет 5781"
+      "text": ""
     },
     {
       "id": 136,
@@ -1820,7 +1820,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 тевет 5770"
+      "text": ""
     },
     {
       "id": 137,
@@ -1833,7 +1833,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 7 тевет 5749"
+      "text": ""
     },
     {
       "id": 138,
@@ -1846,7 +1846,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 тевет 5754"
+      "text": ""
     },
     {
       "id": 139,
@@ -1859,7 +1859,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 29 тевет 5735"
+      "text": ""
     },
     {
       "id": 140,
@@ -1872,7 +1872,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 24 тевет 5759"
+      "text": ""
     },
     {
       "id": 141,
@@ -1885,7 +1885,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 15 тевет 5770"
+      "text": ""
     },
     {
       "id": 142,
@@ -1898,7 +1898,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 тевет 5779"
+      "text": ""
     },
     {
       "id": 143,
@@ -1911,7 +1911,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 тевет 5742"
+      "text": ""
     },
     {
       "id": 144,
@@ -1924,7 +1924,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 9 тевет 5760"
+      "text": ""
     },
     {
       "id": 145,
@@ -1937,7 +1937,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 27 тевет 5734"
+      "text": ""
     },
     {
       "id": 146,
@@ -1950,7 +1950,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 тевет 5734"
+      "text": ""
     },
     {
       "id": 147,
@@ -1963,7 +1963,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 9 тевет 5734"
+      "text": ""
     },
     {
       "id": 148,
@@ -1976,7 +1976,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 тевет 5753"
+      "text": ""
     },
     {
       "id": 149,
@@ -1989,7 +1989,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 тевет 5755"
+      "text": ""
     },
     {
       "id": 150,
@@ -2002,7 +2002,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 8 тевет 5755"
+      "text": ""
     },
     {
       "id": 151,
@@ -2015,7 +2015,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 тевет 5756"
+      "text": ""
     },
     {
       "id": 152,
@@ -2028,7 +2028,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 тевет 5756"
+      "text": ""
     },
     {
       "id": 153,
@@ -2041,7 +2041,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 тевет 5756"
+      "text": ""
     },
     {
       "id": 154,
@@ -2054,7 +2054,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 тевет 5756"
+      "text": ""
     },
     {
       "id": 155,
@@ -2067,7 +2067,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 тевет 5757"
+      "text": ""
     },
     {
       "id": 156,
@@ -2080,7 +2080,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 29 тевет 5783"
+      "text": ""
     },
     {
       "id": 157,
@@ -2093,7 +2093,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 24 тевет 5762"
+      "text": ""
     },
     {
       "id": 158,
@@ -2106,7 +2106,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 тевет 5769"
+      "text": ""
     },
     {
       "id": 159,
@@ -2119,7 +2119,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 тевет 5776"
+      "text": ""
     },
     {
       "id": 160,
@@ -2132,7 +2132,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 5 тевет 5769"
+      "text": ""
     },
     {
       "id": 161,
@@ -2145,7 +2145,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 тевет 5766"
+      "text": ""
     },
     {
       "id": 162,
@@ -2158,7 +2158,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 тевет 5774"
+      "text": ""
     },
     {
       "id": 163,
@@ -2171,7 +2171,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 9 тевет 5772"
+      "text": ""
     },
     {
       "id": 164,
@@ -2184,7 +2184,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 тевет 5769"
+      "text": ""
     },
     {
       "id": 165,
@@ -2197,7 +2197,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 тевет 5777"
+      "text": ""
     },
     {
       "id": 166,
@@ -2210,7 +2210,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 29 тевет 5782"
+      "text": ""
     },
     {
       "id": 167,
@@ -2223,7 +2223,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 25 тевет 5775"
+      "text": ""
     },
     {
       "id": 168,
@@ -2236,7 +2236,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 шват 5781"
+      "text": ""
     },
     {
       "id": 169,
@@ -2249,7 +2249,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 шват 5777"
+      "text": ""
     },
     {
       "id": 170,
@@ -2262,7 +2262,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 29 шват 5739"
+      "text": ""
     },
     {
       "id": 171,
@@ -2275,7 +2275,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 шват 5747"
+      "text": ""
     },
     {
       "id": 172,
@@ -2288,7 +2288,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 шват 5761"
+      "text": ""
     },
     {
       "id": 173,
@@ -2301,7 +2301,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 шват 5741"
+      "text": ""
     },
     {
       "id": 174,
@@ -2314,7 +2314,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 шват 5755"
+      "text": ""
     },
     {
       "id": 175,
@@ -2327,7 +2327,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 29 шват 5735"
+      "text": ""
     },
     {
       "id": 176,
@@ -2340,7 +2340,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 шват 5736"
+      "text": ""
     },
     {
       "id": 177,
@@ -2353,7 +2353,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 шват 5781"
+      "text": ""
     },
     {
       "id": 178,
@@ -2366,7 +2366,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 шват 5773"
+      "text": ""
     },
     {
       "id": 179,
@@ -2379,7 +2379,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 30 шват 5753"
+      "text": ""
     },
     {
       "id": 180,
@@ -2392,7 +2392,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 шват 5735"
+      "text": ""
     },
     {
       "id": 181,
@@ -2405,7 +2405,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 шват 5784"
+      "text": ""
     },
     {
       "id": 182,
@@ -2418,7 +2418,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 шват 5781"
+      "text": ""
     },
     {
       "id": 183,
@@ -2431,7 +2431,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 шват 5755"
+      "text": ""
     },
     {
       "id": 184,
@@ -2444,7 +2444,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 шват 5763"
+      "text": ""
     },
     {
       "id": 185,
@@ -2457,7 +2457,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 шват 5759"
+      "text": ""
     },
     {
       "id": 186,
@@ -2470,7 +2470,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 шват 5758"
+      "text": ""
     },
     {
       "id": 187,
@@ -2483,7 +2483,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 30 шват 5769"
+      "text": ""
     },
     {
       "id": 188,
@@ -2496,7 +2496,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 шват 5779"
+      "text": ""
     },
     {
       "id": 189,
@@ -2509,7 +2509,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 шват 5766"
+      "text": ""
     },
     {
       "id": 190,
@@ -2522,7 +2522,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 23 шват 5780"
+      "text": ""
     },
     {
       "id": 191,
@@ -2535,7 +2535,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 22 шват 5730"
+      "text": ""
     },
     {
       "id": 192,
@@ -2548,7 +2548,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 шват 5774"
+      "text": ""
     },
     {
       "id": 193,
@@ -2561,7 +2561,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 шват 5781"
+      "text": ""
     },
     {
       "id": 194,
@@ -2574,7 +2574,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 адар I 5763"
+      "text": ""
     },
     {
       "id": 195,
@@ -2587,7 +2587,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 адар I 5763"
+      "text": ""
     },
     {
       "id": 196,
@@ -2600,7 +2600,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 8 адар I 5774"
+      "text": ""
     },
     {
       "id": 197,
@@ -2613,7 +2613,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 адар II 5744"
+      "text": ""
     },
     {
       "id": 198,
@@ -2626,7 +2626,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 7 адар II 5749"
+      "text": ""
     },
     {
       "id": 199,
@@ -2639,7 +2639,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 25 адар II 5738"
+      "text": ""
     },
     {
       "id": 200,
@@ -2652,7 +2652,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 11 адар II 5736"
+      "text": ""
     },
     {
       "id": 201,
@@ -2665,7 +2665,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 29 адар II 5736"
+      "text": ""
     },
     {
       "id": 202,
@@ -2678,7 +2678,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 6 адар II 5760"
+      "text": ""
     },
     {
       "id": 203,
@@ -2691,7 +2691,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 адар II 5755"
+      "text": ""
     },
     {
       "id": 204,
@@ -2704,7 +2704,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 3 адар II 5757"
+      "text": ""
     },
     {
       "id": 205,
@@ -2717,7 +2717,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 24 адар II 5757"
+      "text": ""
     },
     {
       "id": 206,
@@ -2730,7 +2730,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 адар II 5757"
+      "text": ""
     },
     {
       "id": 207,
@@ -2743,7 +2743,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 адар II 5757"
+      "text": ""
     },
     {
       "id": 208,
@@ -2756,7 +2756,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 адар II 5757"
+      "text": ""
     },
     {
       "id": 209,
@@ -2769,7 +2769,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 адар II 5768"
+      "text": ""
     },
     {
       "id": 210,
@@ -2782,7 +2782,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 адар II 5774"
+      "text": ""
     },
     {
       "id": 211,
@@ -2795,7 +2795,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 адар II 5784"
+      "text": ""
     },
     {
       "id": 212,
@@ -2808,7 +2808,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 25 адар II 5784"
+      "text": ""
     },
     {
       "id": 213,
@@ -2821,7 +2821,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 24 адар 5764"
+      "text": ""
     },
     {
       "id": 214,
@@ -2834,7 +2834,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 29 адар 5754"
+      "text": ""
     },
     {
       "id": 215,
@@ -2847,7 +2847,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 7 адар 5744"
+      "text": ""
     },
     {
       "id": 216,
@@ -2860,7 +2860,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 27 адар 5741"
+      "text": ""
     },
     {
       "id": 217,
@@ -2873,7 +2873,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 адар 5744"
+      "text": ""
     },
     {
       "id": 218,
@@ -2886,7 +2886,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 5 адар 5748"
+      "text": ""
     },
     {
       "id": 219,
@@ -2899,7 +2899,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 8 адар 5740"
+      "text": ""
     },
     {
       "id": 220,
@@ -2912,7 +2912,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 адар 5748"
+      "text": ""
     },
     {
       "id": 221,
@@ -2925,7 +2925,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 25 адар 5746"
+      "text": ""
     },
     {
       "id": 222,
@@ -2938,7 +2938,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 19 адар 5743"
+      "text": ""
     },
     {
       "id": 223,
@@ -2951,7 +2951,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 19 адар 5735"
+      "text": ""
     },
     {
       "id": 224,
@@ -2964,7 +2964,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 27 адар 5738"
+      "text": ""
     },
     {
       "id": 225,
@@ -2977,7 +2977,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 адар 5738"
+      "text": ""
     },
     {
       "id": 226,
@@ -2990,7 +2990,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 адар 5759"
+      "text": ""
     },
     {
       "id": 227,
@@ -3003,7 +3003,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 адар 5746"
+      "text": ""
     },
     {
       "id": 228,
@@ -3016,7 +3016,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 27 адар 5740"
+      "text": ""
     },
     {
       "id": 229,
@@ -3029,7 +3029,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 11 адар 5749"
+      "text": ""
     },
     {
       "id": 230,
@@ -3042,7 +3042,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 8 адар 5734"
+      "text": ""
     },
     {
       "id": 231,
@@ -3055,7 +3055,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 3 адар 5732"
+      "text": ""
     },
     {
       "id": 232,
@@ -3068,7 +3068,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 9 адар 5766"
+      "text": ""
     },
     {
       "id": 233,
@@ -3081,7 +3081,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 адар 5756"
+      "text": ""
     },
     {
       "id": 234,
@@ -3094,7 +3094,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 адар 5759"
+      "text": ""
     },
     {
       "id": 235,
@@ -3107,7 +3107,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 адар 5756"
+      "text": ""
     },
     {
       "id": 236,
@@ -3120,7 +3120,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 8 адар 5766"
+      "text": ""
     },
     {
       "id": 237,
@@ -3133,7 +3133,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 11 адар 5772"
+      "text": ""
     },
     {
       "id": 238,
@@ -3146,7 +3146,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 24 адар 5775"
+      "text": ""
     },
     {
       "id": 239,
@@ -3159,7 +3159,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 адар 5770"
+      "text": ""
     },
     {
       "id": 240,
@@ -3172,7 +3172,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 22 адар 5783"
+      "text": ""
     },
     {
       "id": 241,
@@ -3185,7 +3185,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 адар 5766"
+      "text": ""
     },
     {
       "id": 242,
@@ -3198,7 +3198,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 6 адар 5778"
+      "text": ""
     },
     {
       "id": 243,
@@ -3211,7 +3211,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 нисан 5771"
+      "text": ""
     },
     {
       "id": 244,
@@ -3224,7 +3224,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 нисан 5741"
+      "text": ""
     },
     {
       "id": 245,
@@ -3237,7 +3237,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 нисан 5736"
+      "text": ""
     },
     {
       "id": 246,
@@ -3250,7 +3250,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 нисан 5746"
+      "text": ""
     },
     {
       "id": 247,
@@ -3263,7 +3263,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 22 нисан 5737"
+      "text": ""
     },
     {
       "id": 248,
@@ -3276,7 +3276,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 8 нисан 5773"
+      "text": ""
     },
     {
       "id": 249,
@@ -3289,7 +3289,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 8 нисан 5740"
+      "text": ""
     },
     {
       "id": 250,
@@ -3302,7 +3302,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 24 нисан 5741"
+      "text": ""
     },
     {
       "id": 251,
@@ -3315,7 +3315,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 нисан 5749"
+      "text": ""
     },
     {
       "id": 252,
@@ -3328,7 +3328,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 22 нисан 5735"
+      "text": ""
     },
     {
       "id": 253,
@@ -3341,7 +3341,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 нисан 5741"
+      "text": ""
     },
     {
       "id": 254,
@@ -3354,7 +3354,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 30 нисан 5759"
+      "text": ""
     },
     {
       "id": 255,
@@ -3367,7 +3367,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 5 нисан 5698"
+      "text": ""
     },
     {
       "id": 256,
@@ -3380,7 +3380,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 15 нисан 5735"
+      "text": ""
     },
     {
       "id": 257,
@@ -3393,7 +3393,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 нисан 5735"
+      "text": ""
     },
     {
       "id": 258,
@@ -3406,7 +3406,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 нисан 5745"
+      "text": ""
     },
     {
       "id": 259,
@@ -3419,7 +3419,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 нисан 5746"
+      "text": ""
     },
     {
       "id": 260,
@@ -3432,7 +3432,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 11 нисан 5742"
+      "text": ""
     },
     {
       "id": 261,
@@ -3445,7 +3445,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 нисан 5767"
+      "text": ""
     },
     {
       "id": 262,
@@ -3458,7 +3458,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 6 нисан 5755"
+      "text": ""
     },
     {
       "id": 263,
@@ -3471,7 +3471,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 22 нисан 5754"
+      "text": ""
     },
     {
       "id": 264,
@@ -3484,7 +3484,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 нисан 5755"
+      "text": ""
     },
     {
       "id": 265,
@@ -3497,7 +3497,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 нисан 5758"
+      "text": ""
     },
     {
       "id": 266,
@@ -3510,7 +3510,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 9 нисан 5778"
+      "text": ""
     },
     {
       "id": 267,
@@ -3523,7 +3523,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 7 нисан 5765"
+      "text": ""
     },
     {
       "id": 268,
@@ -3536,7 +3536,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 нисан 5765"
+      "text": ""
     },
     {
       "id": 269,
@@ -3549,7 +3549,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 7 нисан 5757"
+      "text": ""
     },
     {
       "id": 270,
@@ -3562,7 +3562,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 нисан 5775"
+      "text": ""
     },
     {
       "id": 271,
@@ -3575,7 +3575,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 нисан 5770"
+      "text": ""
     },
     {
       "id": 272,
@@ -3588,7 +3588,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 нисан 5767"
+      "text": ""
     },
     {
       "id": 273,
@@ -3601,7 +3601,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 нисан 5762"
+      "text": ""
     },
     {
       "id": 274,
@@ -3614,7 +3614,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 27 нисан 5765"
+      "text": ""
     },
     {
       "id": 275,
@@ -3627,7 +3627,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 нисан 5767"
+      "text": ""
     },
     {
       "id": 276,
@@ -3640,7 +3640,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 15 нисан 5772"
+      "text": ""
     },
     {
       "id": 277,
@@ -3653,7 +3653,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 нисан 5779"
+      "text": ""
     },
     {
       "id": 278,
@@ -3666,7 +3666,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 нисан 5782"
+      "text": ""
     },
     {
       "id": 279,
@@ -3679,7 +3679,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 23 нисан 5774"
+      "text": ""
     },
     {
       "id": 280,
@@ -3692,7 +3692,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 19 нисан 5783"
+      "text": ""
     },
     {
       "id": 281,
@@ -3705,7 +3705,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 3 нисан 5775"
+      "text": ""
     },
     {
       "id": 282,
@@ -3718,7 +3718,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 5 нисан 5784"
+      "text": ""
     },
     {
       "id": 283,
@@ -3731,7 +3731,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 ияр 5771"
+      "text": ""
     },
     {
       "id": 284,
@@ -3744,7 +3744,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 ияр 5776"
+      "text": ""
     },
     {
       "id": 285,
@@ -3757,7 +3757,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 ияр 5752"
+      "text": ""
     },
     {
       "id": 286,
@@ -3770,7 +3770,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 ияр 5752"
+      "text": ""
     },
     {
       "id": 287,
@@ -3783,7 +3783,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 ияр 5751"
+      "text": ""
     },
     {
       "id": 288,
@@ -3796,7 +3796,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 ияр 5747"
+      "text": ""
     },
     {
       "id": 289,
@@ -3809,7 +3809,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 ияр 5751"
+      "text": ""
     },
     {
       "id": 290,
@@ -3822,7 +3822,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 9 ияр 5744"
+      "text": ""
     },
     {
       "id": 291,
@@ -3835,7 +3835,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 ияр 5754"
+      "text": ""
     },
     {
       "id": 292,
@@ -3848,7 +3848,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 25 ияр 5753"
+      "text": ""
     },
     {
       "id": 293,
@@ -3861,7 +3861,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 23 ияр 5738"
+      "text": ""
     },
     {
       "id": 294,
@@ -3874,7 +3874,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 ияр 5741"
+      "text": ""
     },
     {
       "id": 295,
@@ -3887,7 +3887,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 ияр 5750"
+      "text": ""
     },
     {
       "id": 296,
@@ -3900,7 +3900,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 ияр 5738"
+      "text": ""
     },
     {
       "id": 297,
@@ -3913,7 +3913,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 ияр 5749"
+      "text": ""
     },
     {
       "id": 298,
@@ -3926,7 +3926,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 ияр 5765"
+      "text": ""
     },
     {
       "id": 299,
@@ -3939,7 +3939,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 23 ияр 5735"
+      "text": ""
     },
     {
       "id": 300,
@@ -3952,7 +3952,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 ияр 5737"
+      "text": ""
     },
     {
       "id": 301,
@@ -3965,7 +3965,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 ияр 5739"
+      "text": ""
     },
     {
       "id": 302,
@@ -3978,7 +3978,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 ияр 5755"
+      "text": ""
     },
     {
       "id": 303,
@@ -3991,7 +3991,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 22 ияр 5734"
+      "text": ""
     },
     {
       "id": 304,
@@ -4004,7 +4004,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 ияр 5764"
+      "text": ""
     },
     {
       "id": 305,
@@ -4017,7 +4017,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 ияр 5734"
+      "text": ""
     },
     {
       "id": 306,
@@ -4030,7 +4030,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 ияр 5740"
+      "text": ""
     },
     {
       "id": 307,
@@ -4043,7 +4043,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 27 ияр 5755"
+      "text": ""
     },
     {
       "id": 308,
@@ -4056,7 +4056,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 23 ияр 5778"
+      "text": ""
     },
     {
       "id": 309,
@@ -4069,7 +4069,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 ияр 5760"
+      "text": ""
     },
     {
       "id": 310,
@@ -4082,7 +4082,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 ияр 5756"
+      "text": ""
     },
     {
       "id": 311,
@@ -4095,7 +4095,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 ияр 5758"
+      "text": ""
     },
     {
       "id": 312,
@@ -4108,7 +4108,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 29 ияр 5756"
+      "text": ""
     },
     {
       "id": 313,
@@ -4121,7 +4121,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 ияр 5765"
+      "text": ""
     },
     {
       "id": 314,
@@ -4134,7 +4134,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 ияр 5776"
+      "text": ""
     },
     {
       "id": 315,
@@ -4147,7 +4147,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 3 ияр 5775"
+      "text": ""
     },
     {
       "id": 316,
@@ -4160,7 +4160,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 ияр 5774"
+      "text": ""
     },
     {
       "id": 317,
@@ -4173,7 +4173,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 ияр 5784"
+      "text": ""
     },
     {
       "id": 318,
@@ -4186,7 +4186,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 сиван 5747"
+      "text": ""
     },
     {
       "id": 319,
@@ -4199,7 +4199,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 19 сиван 5748"
+      "text": ""
     },
     {
       "id": 320,
@@ -4212,7 +4212,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 24 сиван 5739"
+      "text": ""
     },
     {
       "id": 321,
@@ -4225,7 +4225,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 сиван 5779"
+      "text": ""
     },
     {
       "id": 322,
@@ -4238,7 +4238,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 сиван 5750"
+      "text": ""
     },
     {
       "id": 323,
@@ -4251,7 +4251,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 сиван 5749"
+      "text": ""
     },
     {
       "id": 324,
@@ -4264,7 +4264,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 5 сиван 5741"
+      "text": ""
     },
     {
       "id": 325,
@@ -4277,7 +4277,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 сиван 5766"
+      "text": ""
     },
     {
       "id": 326,
@@ -4290,7 +4290,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 23 сиван 5738"
+      "text": ""
     },
     {
       "id": 327,
@@ -4303,7 +4303,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 сиван 5742"
+      "text": ""
     },
     {
       "id": 328,
@@ -4316,7 +4316,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 8 сиван 5749"
+      "text": ""
     },
     {
       "id": 329,
@@ -4329,7 +4329,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 11 сиван 5739"
+      "text": ""
     },
     {
       "id": 330,
@@ -4342,7 +4342,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 сиван 5736"
+      "text": ""
     },
     {
       "id": 331,
@@ -4355,7 +4355,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 сиван 5739"
+      "text": ""
     },
     {
       "id": 332,
@@ -4368,7 +4368,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 29 сиван 5734"
+      "text": ""
     },
     {
       "id": 333,
@@ -4381,7 +4381,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 сиван 5737"
+      "text": ""
     },
     {
       "id": 334,
@@ -4394,7 +4394,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 сиван 5753"
+      "text": ""
     },
     {
       "id": 335,
@@ -4407,7 +4407,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 5 сиван 5746"
+      "text": ""
     },
     {
       "id": 336,
@@ -4420,7 +4420,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 23 сиван 5745"
+      "text": ""
     },
     {
       "id": 337,
@@ -4433,7 +4433,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 сиван 5754"
+      "text": ""
     },
     {
       "id": 338,
@@ -4446,7 +4446,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 сиван 5756"
+      "text": ""
     },
     {
       "id": 339,
@@ -4459,7 +4459,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 сиван 5756"
+      "text": ""
     },
     {
       "id": 340,
@@ -4472,7 +4472,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 сиван 5769"
+      "text": ""
     },
     {
       "id": 341,
@@ -4485,7 +4485,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 сиван 5766"
+      "text": ""
     },
     {
       "id": 342,
@@ -4498,7 +4498,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 23 сиван 5757"
+      "text": ""
     },
     {
       "id": 343,
@@ -4511,7 +4511,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 5 сиван 5766"
+      "text": ""
     },
     {
       "id": 344,
@@ -4524,7 +4524,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 сиван 5761"
+      "text": ""
     },
     {
       "id": 345,
@@ -4537,7 +4537,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 сиван 5758"
+      "text": ""
     },
     {
       "id": 346,
@@ -4550,7 +4550,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 сиван 5758"
+      "text": ""
     },
     {
       "id": 347,
@@ -4563,7 +4563,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 сиван 5764"
+      "text": ""
     },
     {
       "id": 348,
@@ -4576,7 +4576,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 сиван 5758"
+      "text": ""
     },
     {
       "id": 349,
@@ -4589,7 +4589,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 сиван 5760"
+      "text": ""
     },
     {
       "id": 350,
@@ -4602,7 +4602,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 15 сиван 5783"
+      "text": ""
     },
     {
       "id": 351,
@@ -4615,7 +4615,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 11 сиван 5777"
+      "text": ""
     },
     {
       "id": 352,
@@ -4628,7 +4628,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 сиван 5773"
+      "text": ""
     },
     {
       "id": 353,
@@ -4641,7 +4641,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 6 сиван 5768"
+      "text": ""
     },
     {
       "id": 354,
@@ -4654,7 +4654,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 сиван 5778"
+      "text": ""
     },
     {
       "id": 355,
@@ -4667,7 +4667,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 7 сиван 5781"
+      "text": ""
     },
     {
       "id": 356,
@@ -4680,7 +4680,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 сиван 5781"
+      "text": ""
     },
     {
       "id": 357,
@@ -4693,7 +4693,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 15 сиван 5775"
+      "text": ""
     },
     {
       "id": 358,
@@ -4706,7 +4706,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 сиван 5782"
+      "text": ""
     },
     {
       "id": 359,
@@ -4719,7 +4719,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 19 тамуз 5776"
+      "text": ""
     },
     {
       "id": 360,
@@ -4732,7 +4732,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 тамуз 5774"
+      "text": ""
     },
     {
       "id": 361,
@@ -4745,7 +4745,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 29 тамуз 5747"
+      "text": ""
     },
     {
       "id": 362,
@@ -4758,7 +4758,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 тамуз 5750"
+      "text": ""
     },
     {
       "id": 363,
@@ -4771,7 +4771,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 тамуз 5750"
+      "text": ""
     },
     {
       "id": 364,
@@ -4784,7 +4784,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 тамуз 5757"
+      "text": ""
     },
     {
       "id": 365,
@@ -4797,7 +4797,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 тамуз 5745"
+      "text": ""
     },
     {
       "id": 366,
@@ -4810,7 +4810,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 тамуз 5766"
+      "text": ""
     },
     {
       "id": 367,
@@ -4823,7 +4823,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 тамуз 5773"
+      "text": ""
     },
     {
       "id": 368,
@@ -4836,7 +4836,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 5 тамуз 5759"
+      "text": ""
     },
     {
       "id": 369,
@@ -4849,7 +4849,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 25 тамуз 5750"
+      "text": ""
     },
     {
       "id": 370,
@@ -4862,7 +4862,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 тамуз 5749"
+      "text": ""
     },
     {
       "id": 371,
@@ -4875,7 +4875,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 тамуз 5764"
+      "text": ""
     },
     {
       "id": 372,
@@ -4888,7 +4888,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 8 тамуз 5742"
+      "text": ""
     },
     {
       "id": 373,
@@ -4901,7 +4901,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 тамуз 5735"
+      "text": ""
     },
     {
       "id": 374,
@@ -4914,7 +4914,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 5 тамуз 5737"
+      "text": ""
     },
     {
       "id": 375,
@@ -4927,7 +4927,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 15 тамуз 5734"
+      "text": ""
     },
     {
       "id": 376,
@@ -4940,7 +4940,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 тамуз 5764"
+      "text": ""
     },
     {
       "id": 377,
@@ -4953,7 +4953,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 тамуз 5734"
+      "text": ""
     },
     {
       "id": 378,
@@ -4966,7 +4966,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 11 тамуз 5769"
+      "text": ""
     },
     {
       "id": 379,
@@ -4979,7 +4979,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 23 тамуз 5755"
+      "text": ""
     },
     {
       "id": 380,
@@ -4992,7 +4992,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 тамуз 5756"
+      "text": ""
     },
     {
       "id": 381,
@@ -5005,7 +5005,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 тамуз 5763"
+      "text": ""
     },
     {
       "id": 382,
@@ -5018,7 +5018,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 6 тамуз 5760"
+      "text": ""
     },
     {
       "id": 383,
@@ -5031,7 +5031,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 тамуз 5769"
+      "text": ""
     },
     {
       "id": 384,
@@ -5044,7 +5044,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 8 тамуз 5759"
+      "text": ""
     },
     {
       "id": 385,
@@ -5057,7 +5057,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 тамуз 5766"
+      "text": ""
     },
     {
       "id": 386,
@@ -5070,7 +5070,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 7 тамуз 5769"
+      "text": ""
     },
     {
       "id": 387,
@@ -5083,7 +5083,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 тамуз 5778"
+      "text": ""
     },
     {
       "id": 388,
@@ -5096,7 +5096,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 11 тамуз 5773"
+      "text": ""
     },
     {
       "id": 389,
@@ -5109,7 +5109,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 тамуз 5781"
+      "text": ""
     },
     {
       "id": 390,
@@ -5122,7 +5122,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 тамуз 5784"
+      "text": ""
     },
     {
       "id": 391,
@@ -5135,7 +5135,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 11 тамуз 5782"
+      "text": ""
     },
     {
       "id": 392,
@@ -5148,7 +5148,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 11 ав 5752"
+      "text": ""
     },
     {
       "id": 393,
@@ -5161,7 +5161,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 15 ав 5752"
+      "text": ""
     },
     {
       "id": 394,
@@ -5174,7 +5174,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 7 ав 5780"
+      "text": ""
     },
     {
       "id": 395,
@@ -5187,7 +5187,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 ав 5748"
+      "text": ""
     },
     {
       "id": 396,
@@ -5200,7 +5200,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 22 ав 5763"
+      "text": ""
     },
     {
       "id": 397,
@@ -5213,7 +5213,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 15 ав 5745"
+      "text": ""
     },
     {
       "id": 398,
@@ -5226,7 +5226,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 ав 5739"
+      "text": ""
     },
     {
       "id": 399,
@@ -5239,7 +5239,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 ав 5742"
+      "text": ""
     },
     {
       "id": 400,
@@ -5252,7 +5252,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 ав 5746"
+      "text": ""
     },
     {
       "id": 401,
@@ -5265,7 +5265,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 ав 5746"
+      "text": ""
     },
     {
       "id": 402,
@@ -5278,7 +5278,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 ав 5747"
+      "text": ""
     },
     {
       "id": 403,
@@ -5291,7 +5291,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 6 ав 5750"
+      "text": ""
     },
     {
       "id": 404,
@@ -5304,7 +5304,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 25 ав 5781"
+      "text": ""
     },
     {
       "id": 405,
@@ -5317,7 +5317,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 7 ав 5758"
+      "text": ""
     },
     {
       "id": 406,
@@ -5330,7 +5330,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 24 ав 5737"
+      "text": ""
     },
     {
       "id": 407,
@@ -5343,7 +5343,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 ав 5752"
+      "text": ""
     },
     {
       "id": 408,
@@ -5356,7 +5356,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 ав 5741"
+      "text": ""
     },
     {
       "id": 409,
@@ -5369,7 +5369,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 ав 5761"
+      "text": ""
     },
     {
       "id": 410,
@@ -5382,7 +5382,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 8 ав 5736"
+      "text": ""
     },
     {
       "id": 411,
@@ -5395,7 +5395,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 6 ав 5739"
+      "text": ""
     },
     {
       "id": 412,
@@ -5408,7 +5408,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 ав 5734"
+      "text": ""
     },
     {
       "id": 413,
@@ -5421,7 +5421,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 ав 5734"
+      "text": ""
     },
     {
       "id": 414,
@@ -5434,7 +5434,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 2 ав 5761"
+      "text": ""
     },
     {
       "id": 415,
@@ -5447,7 +5447,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 22 ав 5755"
+      "text": ""
     },
     {
       "id": 416,
@@ -5460,7 +5460,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 9 ав 5763"
+      "text": ""
     },
     {
       "id": 417,
@@ -5473,7 +5473,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 ав 5758"
+      "text": ""
     },
     {
       "id": 418,
@@ -5486,7 +5486,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 6 ав 5771"
+      "text": ""
     },
     {
       "id": 419,
@@ -5499,7 +5499,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 ав 5756"
+      "text": ""
     },
     {
       "id": 420,
@@ -5512,7 +5512,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 ав 5756"
+      "text": ""
     },
     {
       "id": 421,
@@ -5525,7 +5525,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 ав 5765"
+      "text": ""
     },
     {
       "id": 422,
@@ -5538,7 +5538,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 ав 5761"
+      "text": ""
     },
     {
       "id": 423,
@@ -5551,7 +5551,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 ав 5767"
+      "text": ""
     },
     {
       "id": 424,
@@ -5564,7 +5564,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 ав 5769"
+      "text": ""
     },
     {
       "id": 425,
@@ -5577,7 +5577,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 10 ав 5769"
+      "text": ""
     },
     {
       "id": 426,
@@ -5590,7 +5590,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 5 ав 5777"
+      "text": ""
     },
     {
       "id": 427,
@@ -5603,7 +5603,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 29 ав 5781"
+      "text": ""
     },
     {
       "id": 428,
@@ -5616,7 +5616,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 8 ав 5781"
+      "text": ""
     },
     {
       "id": 429,
@@ -5629,7 +5629,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 ав 5770"
+      "text": ""
     },
     {
       "id": 430,
@@ -5642,7 +5642,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 ав 5772"
+      "text": ""
     },
     {
       "id": 431,
@@ -5655,7 +5655,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 30 ав 5774"
+      "text": ""
     },
     {
       "id": 432,
@@ -5668,7 +5668,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 26 ав 5783"
+      "text": ""
     },
     {
       "id": 433,
@@ -5681,7 +5681,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 19 элул 5752"
+      "text": ""
     },
     {
       "id": 434,
@@ -5694,7 +5694,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 элул 5748"
+      "text": ""
     },
     {
       "id": 435,
@@ -5707,7 +5707,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 14 элул 5763"
+      "text": ""
     },
     {
       "id": 436,
@@ -5720,7 +5720,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 16 элул 5744"
+      "text": ""
     },
     {
       "id": 437,
@@ -5733,7 +5733,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 элул 5754"
+      "text": ""
     },
     {
       "id": 438,
@@ -5746,7 +5746,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 5 элул 5748"
+      "text": ""
     },
     {
       "id": 439,
@@ -5759,7 +5759,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 элул 5744"
+      "text": ""
     },
     {
       "id": 440,
@@ -5772,7 +5772,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 29 элул 5757"
+      "text": ""
     },
     {
       "id": 441,
@@ -5785,7 +5785,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 элул 5757"
+      "text": ""
     },
     {
       "id": 442,
@@ -5798,7 +5798,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 9 элул 5744"
+      "text": ""
     },
     {
       "id": 443,
@@ -5811,7 +5811,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 элул 5744"
+      "text": ""
     },
     {
       "id": 444,
@@ -5824,7 +5824,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 9 элул 5751"
+      "text": ""
     },
     {
       "id": 445,
@@ -5837,7 +5837,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 6 элул 5744"
+      "text": ""
     },
     {
       "id": 446,
@@ -5850,7 +5850,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 7 элул 5756"
+      "text": ""
     },
     {
       "id": 447,
@@ -5863,7 +5863,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 элул 5752"
+      "text": ""
     },
     {
       "id": 448,
@@ -5876,7 +5876,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 элул 5779"
+      "text": ""
     },
     {
       "id": 449,
@@ -5889,7 +5889,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 элул 5776"
+      "text": ""
     },
     {
       "id": 450,
@@ -5902,7 +5902,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 12 элул 5748"
+      "text": ""
     },
     {
       "id": 451,
@@ -5915,7 +5915,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 17 элул 5750"
+      "text": ""
     },
     {
       "id": 452,
@@ -5928,7 +5928,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 3 элул 5750"
+      "text": ""
     },
     {
       "id": 453,
@@ -5941,7 +5941,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 8 элул 5735"
+      "text": ""
     },
     {
       "id": 454,
@@ -5954,7 +5954,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 27 элул 5760"
+      "text": ""
     },
     {
       "id": 455,
@@ -5967,7 +5967,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 4 элул 5738"
+      "text": ""
     },
     {
       "id": 456,
@@ -5980,7 +5980,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 элул 5736"
+      "text": ""
     },
     {
       "id": 457,
@@ -5993,7 +5993,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 25 элул 5735"
+      "text": ""
     },
     {
       "id": 458,
@@ -6006,7 +6006,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 9 элул 5738"
+      "text": ""
     },
     {
       "id": 459,
@@ -6019,7 +6019,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 6 элул 5735"
+      "text": ""
     },
     {
       "id": 460,
@@ -6032,7 +6032,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 13 элул 5740"
+      "text": ""
     },
     {
       "id": 461,
@@ -6045,7 +6045,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 19 элул 5734"
+      "text": ""
     },
     {
       "id": 462,
@@ -6058,7 +6058,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 6 элул 5734"
+      "text": ""
     },
     {
       "id": 463,
@@ -6071,7 +6071,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 5 элул 5755"
+      "text": ""
     },
     {
       "id": 464,
@@ -6084,7 +6084,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 28 элул 5774"
+      "text": ""
     },
     {
       "id": 465,
@@ -6097,7 +6097,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 21 элул 5772"
+      "text": ""
     },
     {
       "id": 466,
@@ -6110,7 +6110,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 элул 5768"
+      "text": ""
     },
     {
       "id": 467,
@@ -6123,7 +6123,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 элул 5765"
+      "text": ""
     },
     {
       "id": 468,
@@ -6136,7 +6136,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 1 элул 5758"
+      "text": ""
     },
     {
       "id": 469,
@@ -6149,7 +6149,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 9 элул 5760"
+      "text": ""
     },
     {
       "id": 470,
@@ -6162,7 +6162,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 20 элул 5768"
+      "text": ""
     },
     {
       "id": 471,
@@ -6175,7 +6175,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 24 элул 5762"
+      "text": ""
     },
     {
       "id": 472,
@@ -6188,7 +6188,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 3 элул 5776"
+      "text": ""
     },
     {
       "id": 473,
@@ -6201,7 +6201,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 18 элул 5766"
+      "text": ""
     },
     {
       "id": 474,
@@ -6214,7 +6214,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 27 элул 5772"
+      "text": ""
     },
     {
       "id": 475,
@@ -6227,7 +6227,7 @@
       "hasDeathDate": true,
       "photo": "",
       "title": "",
-      "text": "Йорцайт: 24 элул 5781"
+      "text": ""
     }
   ],
   "dailyCites": [],
@@ -6267,9 +6267,9 @@
       "he": "רוצים להוסיף את שם יקירכם?"
     },
     "texts": {
-      "ru": "Отсканируйте QR-код, чтобы отправить имя",
-      "en": "Scan the QR code to submit a name",
-      "he": "סרקו את הברקוד"
+      "ru": "Сканируйте QR-код для регистрации близких",
+      "en": "Scan the QR code to register loved ones",
+      "he": "סרקו את הברקוד לרישום יקירים"
     },
     "donationTitles": {
       "ru": "Цдака — пожертвование",
@@ -6286,49 +6286,49 @@
     "qrScale": 100,
     "titleScaleBaseline": 100,
     "textScaleBaseline": 100,
-    "qrScaleBaseline": 160
+    "qrScaleBaseline": 100
   },
   "weeklyChapterEnabled": false,
   "shabbatTimesEnabled": true,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1791824181082,
-  "exportedAt": "2026-10-12T16:56:21.082Z",
+  "contentVersion": 1791857849802,
+  "exportedAt": "2026-10-13T02:17:29.802Z",
   "jewishContent": {
-    "date": "2026-10-12",
+    "date": "2026-10-13",
     "timezone": "Asia/Tomsk",
     "dailyLearning": {
-      "date": "2026-10-12",
+      "date": "2026-10-13",
       "timezone": "Asia/Tomsk",
       "chumash": {
         "label": ""
       },
       "tehillim": {
-        "label": "Тегилим 1-9"
+        "label": "Тегилим 10-17"
       },
       "tanya": {
         "label": "1 Хешван"
       },
       "rambam": {
-        "label": "Levirate Marriage and Release 8"
+        "label": "Virgin Maiden 1"
       },
       "rambam3": {
-        "label": "Robbery and Lost Property 7-9"
+        "label": "Robbery and Lost Property 10-12"
       },
       "hayomYom": {
         "available": true,
-        "text": "В Минче, а также в понедельник и четверг приближающейся недели (Lech L'cha), третья Алия («Исраэль») начинается с Ваейры Хашем Эль-Аврам и т. д. Ребе мой отец сказал кому-то в Иехиде: «С тех пор, как Б-г сказал нашему отцу Аврааму:« Иди из своей земли и т. Д. », И тогда написано:« Аврам продолжал путешествовать на юг », у нас есть начало тайны Бирурим. По указу Божественного Провидения человек отправляется в путешествие туда, где«шпат",
+        "text": "Из Сичи моего отца, после заключения Шаббата Лех Л'ча 5651 (1890): «В первые годы своего руководства Альтер Ребе публично заявил:« Нужно жить со временем. «От своего брата, Р. Иегуды Лейба, старший хасид обнаружил, что Ребе имел в виду, что нужно жить с Седрой недели и конкретным паршей дня. Каждый день нужно не только учить еженедельную паршу, но и жить с ней».",
         "hebrewMonth": 8,
-        "hebrewDay": 1,
+        "hebrewDay": 2,
         "lessons5703": {
           "chumash": {
-            "label": "Ноах, Шевии с Раши."
+            "label": "Лех Л'ча, первый Парша с Раши."
           },
           "tehillim": {
-            "label": "1-9."
+            "label": "10-17"
           },
           "tanya": {
-            "label": "Теперь с одним (стр. 543)... пиком уровней. (стр. 543)."
+            "label": "После этих слов (стр. 543)...вот так. (стр. 545)."
           }
         }
       }
@@ -6401,6 +6401,13 @@
         "date": "2026-12-11",
         "title": "Ханука, 8-я свеча",
         "hebrew": "חנוכה: ח׳ נרות",
+        "subcat": "major",
+        "link": ""
+      },
+      {
+        "date": "2026-12-12",
+        "title": "Ханука, 8-й день",
+        "hebrew": "חנוכה: יום ח׳",
         "subcat": "major",
         "link": ""
       }
@@ -6476,7 +6483,7 @@
   },
   "sidebarApp": {
     "slug": "tomsk",
-    "publishedVersion": 1,
+    "publishedVersion": 2,
     "title": "Проект памяти наших родных \"Кадиш\"",
     "language": "ru",
     "location": {
@@ -6495,8 +6502,8 @@
     },
     "theme": {
       "primaryColor": "#ecd779",
-      "textColor": "#f0f0f0",
-      "accentColor": "#ffd54f"
+      "textColor": "#ffffff",
+      "accentColor": "#e8ca69"
     },
     "dailyCites": [],
     "communityEvents": [
@@ -6578,6 +6585,13 @@
         "hebrew": "חנוכה: ח׳ נרות",
         "subcat": "major",
         "link": ""
+      },
+      {
+        "date": "2026-12-12",
+        "title": "Ханука, 8-й день",
+        "hebrew": "חנוכה: יום ח׳",
+        "subcat": "major",
+        "link": ""
       }
     ],
     "chabadDates": [
@@ -6648,6 +6662,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-12T16:56:21.082Z"
+    "updatedAt": "2026-10-13T02:17:29.802Z"
   }
 }
