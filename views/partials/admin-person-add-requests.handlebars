@@ -1,0 +1,22 @@
+{{#if pendingPersonAddRequests.length}}
+<section class="admin-person-requests-panel" id="person-add-requests">
+    <h2 class="admin-panel-inline-title">{{t 'person_add_request_heading'}}</h2>
+    <p class="admin-subtitle admin-panel-inline-subtitle">{{t 'person_add_request_intro'}}</p>
+    <ul class="admin-person-requests-list">
+        {{#each pendingPersonAddRequests}}
+        <li class="admin-person-request-card">
+            <div class="admin-person-request-badge">{{t 'person_add_request_type'}}</div>
+            <div class="admin-person-request-body">
+                <p><strong>{{deceasedName}}</strong>{{#if gregorianDateOfDeath}} — {{gregorianDateOfDeath.date}}/{{gregorianDateOfDeath.month}}/{{gregorianDateOfDeath.year}}{{/if}}</p>
+                {{#if relation}}<p class="admin-person-request-meta">{{t 'person_add_request_relation'}}: {{relation}}</p>{{/if}}
+                {{#if deceasedNotes}}<p class="admin-person-request-notes">{{deceasedNotes}}</p>{{/if}}
+                <p class="admin-person-request-meta">{{t 'person_add_request_submitter'}}: {{submitter.name}}{{#if submitter.phone}} · {{submitter.phone}}{{/if}}{{#if submitter.email}} · {{submitter.email}}{{/if}}</p>
+            </div>
+            <form method="POST" action="/admin/{{synagogue.slug}}/person-add-requests/{{id}}/dismiss" class="admin-person-request-actions">
+                <button type="submit" class="btn-admin btn-admin-secondary btn-admin-sm">{{t 'person_add_request_dismiss'}}</button>
+            </form>
+        </li>
+        {{/each}}
+    </ul>
+</section>
+{{/if}}

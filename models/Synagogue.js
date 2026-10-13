@@ -19,6 +19,21 @@ const ContactDirectoryEntrySchema = new mongoose.Schema({
   email: { type: String, default: '' },
 }, { _id: false });
 
+const PersonAddRequestSchema = new mongoose.Schema({
+  id: { type: String, default: '' },
+  status: { type: String, enum: ['pending', 'dismissed'], default: 'pending' },
+  createdAt: { type: Date, default: Date.now },
+  submitter: { type: PersonContactSchema, default: () => ({}) },
+  relation: { type: String, default: '' },
+  deceasedName: { type: String, default: '' },
+  deceasedNotes: { type: String, default: '' },
+  gregorianDateOfDeath: {
+    month: { type: Number, default: undefined },
+    date: { type: Number, default: undefined },
+    year: { type: Number, default: undefined },
+  },
+}, { _id: false });
+
 const PersonSchema = new mongoose.Schema({
   id: Number,
   name: String,
@@ -281,6 +296,7 @@ const SynagogueSchema = new mongoose.Schema({
   dailyCites: [DailyCiteSchema],
   communityEvents: [CommunityEventSchema],
   people: [PersonSchema],
+  personAddRequests: { type: [PersonAddRequestSchema], default: [] },
   contactDirectory: { type: [ContactDirectoryEntrySchema], default: [] },
   adminUsers: [AdminUserSchema],
   adminTheme: {

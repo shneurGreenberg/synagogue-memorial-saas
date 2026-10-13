@@ -1,10 +1,19 @@
 <section class="public-card public-card-success">
+    {{#if (eq successKind 'request')}}
+    <h1>{{publicT 'request_success_title'}}</h1>
+    {{else}}
     <h1>{{publicT 'success_title'}}</h1>
+    {{/if}}
     {{#if submittedName}}
     <p class="public-name">{{submittedName}}</p>
     {{/if}}
+    {{#if (eq successKind 'request')}}
+    <p class="public-intro">{{publicT 'request_success_message'}}</p>
+    {{else}}
     <p class="public-intro">{{publicT 'success_message'}}</p>
+    {{/if}}
 
+    {{#unless (eq successKind 'request')}}
     <div class="public-charity-section">
         <h2 class="public-charity-title">{{publicT 'charity_title'}}</h2>
         <p class="public-intro">{{publicT 'charity_message'}}</p>
@@ -15,5 +24,10 @@
             <p class="public-note">{{publicT 'charity_unavailable'}}</p>
             {{/if}}
         </div>
+    </div>
+    {{/unless}}
+
+    <div class="public-actions">
+        <a href="{{boardUrl}}" class="public-button public-button-secondary">{{publicT 'back_to_board'}}</a>
     </div>
 </section>

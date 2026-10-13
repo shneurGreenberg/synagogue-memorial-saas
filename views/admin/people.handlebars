@@ -41,6 +41,9 @@
     </div>
     {{/if}}
 
+    {{> admin-person-add-requests}}
+    {{> admin-person-invites}}
+
     <div id="undatedPeopleBanner" class="alert admin-alert admin-alert-warning undated-people-banner" role="status" {{#unless undatedPeopleCount}}hidden{{/unless}}>
         <span><strong id="undatedPeopleCount">{{undatedPeopleCount}}</strong> {{t 'undated_people_banner'}}</span>
     </div>
