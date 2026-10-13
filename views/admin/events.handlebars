@@ -26,63 +26,70 @@
     <div class="admin-panel-body">
         <form method="POST" action="/admin/{{synagogue.slug}}/slideshow/settings" class="slideshow-panel-form"
             id="slideshowPanelForm">
-            <div class="slideshow-mode-switch" role="radiogroup" aria-label="{{t 'slideshow_display_mode'}}">
-                <label class="slideshow-mode-segment" title="{{t 'slideshow_mode_off'}}">
-                    <input type="radio" name="slideshowMode" value="off" {{#unless synagogue.slideshow.enabled}}checked{{/unless}}>
-                    <span class="slideshow-mode-segment-face" aria-hidden="true">
-                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 13H8v-2h6v2zm0-4H8V9h6v2z"/></svg>
-                    </span>
-                </label>
-                <label class="slideshow-mode-segment" title="{{t 'slideshow_mode_rotate_short'}}">
-                    <input type="radio" name="slideshowMode" value="rotate"
-                        {{#if synagogue.slideshow.enabled}}{{#unless synagogue.slideshow.isShowNowMode}}checked{{/unless}}{{/if}}>
-                    <span class="slideshow-mode-segment-face" aria-hidden="true">
-                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8A5.9 5.9 0 0 1 6 12c0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2A5.9 5.9 0 0 1 18 12c0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/></svg>
-                    </span>
-                </label>
-                <label class="slideshow-mode-segment" title="{{t 'slideshow_mode_show_now_short'}}">
-                    <input type="radio" name="slideshowMode" value="showNow"
-                        {{#if synagogue.slideshow.enabled}}{{#if synagogue.slideshow.isShowNowMode}}checked{{/if}}{{/if}}>
-                    <span class="slideshow-mode-segment-face" aria-hidden="true">
-                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7L8 5z"/></svg>
-                    </span>
-                </label>
-            </div>
-
-            <div class="slideshow-rotate-fields" id="slideshowRotateFields"
-                {{#if synagogue.slideshow.isShowNowMode}}hidden{{/if}}>
-                <div class="settings-two-col">
-                    <div class="form-field">
-                        <label for="slideInterval">{{t 'slide_duration'}}</label>
-                        <input type="number" class="form-control admin-input-modern" name="interval" id="slideInterval"
-                            value="{{synagogue.slideshow.interval}}" min="3">
+            <div class="slideshow-panel-layout">
+                <div class="slideshow-panel-controls">
+                    <div class="slideshow-mode-switch" id="slideshowModeSwitch" role="radiogroup"
+                        aria-label="{{t 'slideshow_display_mode'}}" style="--slideshow-mode-index: 0;">
+                        <span class="slideshow-mode-thumb" aria-hidden="true"></span>
+                        <label class="slideshow-mode-segment" title="{{t 'slideshow_mode_off'}}">
+                            <input type="radio" name="slideshowMode" value="off" {{#unless synagogue.slideshow.enabled}}checked{{/unless}}>
+                            <span class="slideshow-mode-segment-face" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13 3h-2v10h2V3zm4.83 2.17-1.42 1.42A6.96 6.96 0 0 0 19 12c0 3.87-3.13 7-7 7a6.96 6.96 0 0 0-4.41-1.58l-1.42 1.42A8.96 8.96 0 0 0 12 21c4.97 0 9-4.03 9-9a8.96 8.96 0 0 0-6.17-8.83zM12 7a4.98 4.98 0 0 0-3.54 1.46L12 12V7zM3.27 3L2 4.27l3.11 3.11A8.94 8.94 0 0 0 3 12c0 4.97 4.03 9 9 9 2.12 0 4.07-.74 5.61-1.98L19.73 21 21 19.73 3.27 3z"/></svg>
+                            </span>
+                        </label>
+                        <label class="slideshow-mode-segment" title="{{t 'slideshow_mode_rotate_short'}}">
+                            <input type="radio" name="slideshowMode" value="rotate"
+                                {{#if synagogue.slideshow.enabled}}{{#unless synagogue.slideshow.isShowNowMode}}checked{{/unless}}{{/if}}>
+                            <span class="slideshow-mode-segment-face" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8A5.9 5.9 0 0 1 6 12c0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2A5.9 5.9 0 0 1 18 12c0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/></svg>
+                            </span>
+                        </label>
+                        <label class="slideshow-mode-segment" title="{{t 'slideshow_mode_show_now_short'}}">
+                            <input type="radio" name="slideshowMode" value="showNow"
+                                {{#if synagogue.slideshow.enabled}}{{#if synagogue.slideshow.isShowNowMode}}checked{{/if}}{{/if}}>
+                            <span class="slideshow-mode-segment-face" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7L8 5z"/></svg>
+                            </span>
+                        </label>
                     </div>
-                    <div class="form-field">
-                        <label for="mainDuration">{{t 'main_duration'}}</label>
-                        <input type="number" class="form-control admin-input-modern" name="mainDuration" id="mainDuration"
-                            value="{{synagogue.slideshow.mainDuration}}" min="10">
+
+                    <div class="slideshow-rotate-fields" id="slideshowRotateFields"
+                        {{#if synagogue.slideshow.enabled}}{{#unless synagogue.slideshow.isShowNowMode}}{{else}}hidden{{/unless}}{{else}}hidden{{/if}}>
+                        <div class="settings-two-col">
+                            <div class="form-field">
+                                <label for="slideInterval">{{t 'slide_duration'}}</label>
+                                <input type="number" class="form-control admin-input-modern" name="interval" id="slideInterval"
+                                    value="{{synagogue.slideshow.interval}}" min="3">
+                            </div>
+                            <div class="form-field">
+                                <label for="mainDuration">{{t 'main_duration'}}</label>
+                                <input type="number" class="form-control admin-input-modern" name="mainDuration" id="mainDuration"
+                                    value="{{synagogue.slideshow.mainDuration}}" min="10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slideshow-panel-save">
+                        <button type="submit" class="btn-admin btn-admin-primary btn-admin-sm">{{t 'save'}}</button>
                     </div>
                 </div>
-            </div>
 
-            <div class="slideshow-current-block">
-                <p class="slideshow-current-label">{{t 'slideshow_current_image'}}</p>
-                <div class="media-preview media-preview-slide slideshow-current-preview" id="slideshowCurrentPreview">
-                    {{#if synagogue.slideshow.currentSlide}}
-                    <img src="/images/{{synagogue.slideshow.currentSlide.url}}" alt="">
-                    {{else}}
-                    <span class="media-preview-empty">{{t 'no_slides'}}</span>
-                    {{/if}}
-                </div>
-                <label class="file-drop-label slideshow-upload-label">
-                    {{t 'replace_image'}}
-                    <input type="file" name="image" accept="image/*" id="slideshowImageInput"
+                <div class="slideshow-current-block">
+                    <p class="slideshow-current-label">{{t 'slideshow_current_image'}}</p>
+                    <div class="media-preview media-preview-slide slideshow-current-preview" id="slideshowCurrentPreview">
+                        {{#if synagogue.slideshow.currentSlide}}
+                        <img src="/images/{{synagogue.slideshow.currentSlide.url}}" alt="">
+                        {{else}}
+                        <span class="media-preview-empty">{{t 'no_slides'}}</span>
+                        {{/if}}
+                    </div>
+                    <input type="file" accept="image/*" id="slideshowImageInput" class="sr-only"
                         data-upload-url="/admin/{{synagogue.slug}}/slideshow/add">
-                </label>
-                <p class="field-hint">{{t 'slideshow_upload_hint'}}</p>
+                    <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm slideshow-edit-image-btn"
+                        id="slideshowEditImageBtn">{{t 'edit'}}</button>
+                    <p class="field-hint">{{t 'slideshow_upload_hint'}}</p>
+                </div>
             </div>
-
-            <button type="submit" class="btn-admin btn-admin-primary">{{t 'save'}}</button>
         </form>
     </div>
 </section>

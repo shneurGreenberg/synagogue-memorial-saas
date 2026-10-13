@@ -48,17 +48,42 @@
     preview.innerHTML = '<img src="/images/' + escapeHtml(slide.url) + '" alt="">';
   }
 
+  function readSlideshowMode(form) {
+    var mode = form.querySelector('input[name="slideshowMode"]:checked')
+      || form.querySelector('input[name="displayMode"]:checked');
+    return mode && mode.value;
+  }
+
   function syncRotateFieldsVisibility(form) {
     var rotateFields = document.getElementById('slideshowRotateFields');
     if (!rotateFields || !form) {
       return;
     }
 
-    var mode = form.querySelector('input[name="slideshowMode"]:checked')
-      || form.querySelector('input[name="displayMode"]:checked');
-    var modeValue = mode && mode.value;
-    var isRotate = modeValue === 'rotate';
-    rotateFields.hidden = !isRotate;
+    var modeValue = readSlideshowMode(form);
+    rotateFields.hidden = modeValue !== 'rotate';
+  }
+
+  function syncModeSwitchThumb(form) {
+    var switchEl = document.getElementById('slideshowModeSwitch');
+    if (!switchEl || !form) {
+      return;
+    }
+
+    var segments = switchEl.querySelectorAll('.slideshow-mode-segment');
+    var modeValue = readSlideshowMode(form);
+    var index = 0;
+    if (modeValue === 'rotate') {
+      index = 1;
+    } else if (modeValue === 'showNow') {
+      index = 2;
+    }
+    switchEl.style.setProperty('--slideshow-mode-index', String(index));
+  }
+
+  function syncSlideshowPanelUi(form) {
+    syncRotateFieldsVisibility(form);
+    syncModeSwitchThumb(form);
   }
 
   async function readJson(response) {
@@ -90,7 +115,7 @@
       }
 
       updatePreview(payload.slideshow);
-      syncRotateFieldsVisibility(form);
+      syncSlideshowPanelUi(form);
 
       if (busyText) {
         busyText.textContent = labels.saved || 'Saved';
@@ -151,14 +176,22 @@
 
     panelForm.addEventListener('change', function (event) {
       if (event.target && (event.target.name === 'slideshowMode' || event.target.name === 'displayMode')) {
-        syncRotateFieldsVisibility(panelForm);
+        syncSlideshowPanelUi(panelForm);
       }
     });
 
-    syncRotateFieldsVisibility(panelForm);
+    syncSlideshowPanelUi(panelForm);
   }
 
   var imageInput = document.getElementById('slideshowImageInput');
+  var editImageBtn = document.getElementById('slideshowEditImageBtn');
+
+  if (editImageBtn && imageInput) {
+    editImageBtn.addEventListener('click', function () {
+      imageInput.click();
+    });
+  }
+
   if (imageInput) {
     imageInput.addEventListener('change', function () {
       var file = imageInput.files && imageInput.files[0];

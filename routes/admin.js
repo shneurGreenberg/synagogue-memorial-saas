@@ -38,6 +38,7 @@ const {
   serializeSavedViews,
 } = require('../lib/saved-views');
 const { parseMemorialQrPanelFromBody, memorialQrPanelToUpdate } = require('../lib/memorial-qr-panel');
+const { parseSlideshowSettingsBody } = require('../lib/slideshow-admin-settings');
 const {
   parseFontScalesFromBody,
   normalizeTileOpacity,
@@ -1969,17 +1970,8 @@ router.post('/:slug/people/delete', requireAdmin, requirePermission('people'), a
 router.post('/:slug/slideshow/settings', requireAdmin, requireAnyPermission('events', 'slideshow'), parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { interval, mainDuration, slideshowMode, enabled, displayMode } = req.body || {};
-        const modeRaw = String(slideshowMode || '').trim();
-        let isEnabled;
-        let mode;
-        if (modeRaw === 'off' || modeRaw === 'rotate' || modeRaw === 'showNow') {
-          isEnabled = modeRaw !== 'off';
-          mode = modeRaw === 'showNow' ? 'showNow' : 'rotate';
-        } else {
-          isEnabled = enabled === 'on' || enabled === 'true' || enabled === true || enabled === '1';
-          mode = displayMode === 'showNow' ? 'showNow' : 'rotate';
-        }
+        const { interval, mainDuration } = req.body || {};
+        const { isEnabled, mode } = parseSlideshowSettingsBody(req.body);
         await Synagogue.updateOne({ slug: req.params.slug }, {
             $set: {
                 'slideshow.enabled': isEnabled,
