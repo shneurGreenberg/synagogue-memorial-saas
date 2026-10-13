@@ -6295,8 +6295,8 @@
   "shabbatTimesEnabled": true,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1791904406626,
-  "exportedAt": "2026-10-13T15:13:26.626Z",
+  "contentVersion": 1791906135416,
+  "exportedAt": "2026-10-13T15:42:15.416Z",
   "jewishContent": {
     "date": "2026-10-13",
     "timezone": "Asia/Tomsk",
@@ -6509,6 +6509,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-13T15:13:26.626Z"
+    "updatedAt": "2026-10-13T15:42:15.416Z"
   }
 }
