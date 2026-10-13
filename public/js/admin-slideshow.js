@@ -1,6 +1,8 @@
 (function () {
   var overlay = document.getElementById('adminBusyOverlay');
   var busyText = document.getElementById('adminBusyText');
+  var labels = window.slideshowAdminLabels || {};
+  var config = window.slideshowAdminConfig || {};
 
   function showBusy(message) {
     if (!overlay) {
@@ -31,94 +33,52 @@
       .replace(/"/g, '&quot;');
   }
 
-  function scrollToSlides() {
-    var grid = document.querySelector('.slides-grid');
-    if (!grid) {
+  function updatePreview(slideshow) {
+    var preview = document.getElementById('slideshowCurrentPreview');
+    if (!preview) {
       return;
     }
 
-    var panel = grid.closest('.admin-panel') || grid;
-    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    var slide = slideshow && (slideshow.currentSlide || (slideshow.images && slideshow.images[slideshow.images.length - 1]));
+    if (!slide || !slide.url) {
+      preview.innerHTML = '<span class="media-preview-empty">' + escapeHtml(labels.noSlides || '') + '</span>';
+      return;
+    }
+
+    preview.innerHTML = '<img src="/images/' + escapeHtml(slide.url) + '" alt="">';
   }
 
-  function renderSlides(slideshow, labels) {
-    var grid = document.querySelector('.slides-grid');
-    if (!grid || !slideshow) {
+  function syncRotateFieldsVisibility(form) {
+    var rotateFields = document.getElementById('slideshowRotateFields');
+    if (!rotateFields || !form) {
       return;
     }
 
-    var images = slideshow.images || [];
-    if (images.length === 0) {
-      grid.innerHTML = '<div class="admin-empty-state slides-grid-empty"><p>' + escapeHtml(labels.noSlides) + '</p></div>';
-      return;
-    }
-
-    var slug = window.location.pathname.split('/')[2];
-    var html = '';
-
-    images.forEach(function (slide) {
-      var id = String((slide && (slide._id || slide.id)) || '');
-      var caption = slide.text
-        ? '<p class="slide-caption">' + escapeHtml(slide.text) + '</p>'
-        : '<p class="slide-caption slide-caption-muted">' + escapeHtml(labels.captionOptional) + '</p>';
-
-      html += ''
-        + '<article class="slide-card slide-card-clickable" role="button" tabindex="0" data-slide-id="' + id + '">'
-        + '<div class="slide-card-image"><img src="/images/' + escapeHtml(slide.url) + '" alt=""></div>'
-        + '<div class="slide-card-body">'
-        + caption
-        + '<span class="slide-edit-hint">' + escapeHtml(labels.edit) + '</span>'
-        + '<form method="POST" action="/admin/' + slug + '/slideshow/delete" class="slide-delete-form">'
-        + '<input type="hidden" name="slideId" value="' + id + '">'
-        + '<button type="submit" class="btn-admin btn-admin-danger btn-admin-sm">' + escapeHtml(labels.delete) + '</button>'
-        + '</form>'
-        + '</div></article>';
-    });
-
-    grid.innerHTML = html;
-    window.dispatchEvent(new CustomEvent('slideshow-grid-updated'));
+    var mode = form.querySelector('input[name="displayMode"]:checked');
+    var isShowNow = mode && mode.value === 'showNow';
+    rotateFields.hidden = isShowNow;
   }
 
   async function readJson(response) {
     var contentType = response.headers.get('content-type') || '';
-
     if (!contentType.includes('application/json')) {
       throw new Error('Unexpected server response');
     }
-
     return response.json();
   }
 
-  function buildRequestBody(form) {
-    var hasFile = !!form.querySelector('input[type="file"]');
-    // Settings/delete have no file input — prefer urlencoded, but server also accepts multipart.
-    if (!hasFile) {
-      return {
-        body: new URLSearchParams(new FormData(form)),
-        contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
-      };
-    }
-    return { body: new FormData(form), contentType: null };
-  }
-
-  async function submitAjax(form, message) {
-    showBusy(message);
-    var labels = window.slideshowAdminLabels || {};
-    var isAddSlide = form.classList.contains('add-slide-form');
-    var request = buildRequestBody(form);
-    var headers = {
-      'X-Requested-With': 'XMLHttpRequest',
-      Accept: 'application/json',
-    };
-    if (request.contentType) {
-      headers['Content-Type'] = request.contentType;
-    }
+  async function submitSettings(form) {
+    showBusy(labels.saving || 'Saving...');
 
     try {
       var response = await fetch(form.action, {
         method: 'POST',
-        body: request.body,
-        headers: headers,
+        body: new URLSearchParams(new FormData(form)),
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          Accept: 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        },
         credentials: 'same-origin',
       });
 
@@ -127,30 +87,12 @@
         throw new Error((payload && payload.error) || 'Request failed');
       }
 
-      renderSlides(payload.slideshow, labels);
-
-      var slidesData = document.getElementById('slides-data');
-      if (slidesData) {
-        slidesData.textContent = JSON.stringify(payload.slideshow.images || []);
-      }
-
-      if (isAddSlide) {
-        form.reset();
-        var preview = document.getElementById('slidePreview');
-        if (preview) {
-          preview.innerHTML = '<span class="media-preview-empty">' + escapeHtml(labels.uploadPhoto || '') + '</span>';
-        }
-        scrollToSlides();
-      }
-
-      if (form.id === 'editSlideForm' && window.jQuery) {
-        window.jQuery('#editSlideModal').modal('hide');
-      }
+      updatePreview(payload.slideshow);
+      syncRotateFieldsVisibility(form);
 
       if (busyText) {
         busyText.textContent = labels.saved || 'Saved';
       }
-
       window.setTimeout(hideBusy, 600);
     } catch (err) {
       hideBusy();
@@ -158,25 +100,80 @@
     }
   }
 
-  document.querySelectorAll('.slideshow-settings-form, .add-slide-form, #editSlideForm').forEach(function (form) {
-    form.addEventListener('submit', function (event) {
+  async function uploadSlide(file, input) {
+    var uploadUrl = config.uploadUrl || (input && input.getAttribute('data-upload-url'));
+    if (!uploadUrl || !file) {
+      return;
+    }
+
+    showBusy(labels.saving || 'Saving...');
+    var formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      var response = await fetch(uploadUrl, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          Accept: 'application/json',
+        },
+        credentials: 'same-origin',
+      });
+
+      var payload = await readJson(response);
+      if (!response.ok || !payload.ok) {
+        throw new Error((payload && payload.error) || labels.uploadFailed || 'Upload failed');
+      }
+
+      updatePreview(payload.slideshow);
+      if (busyText) {
+        busyText.textContent = labels.saved || 'Saved';
+      }
+      window.setTimeout(hideBusy, 600);
+    } catch (err) {
+      hideBusy();
+      window.alert(err.message || labels.uploadFailed || 'Upload failed');
+      if (input) {
+        input.value = '';
+      }
+    }
+  }
+
+  var panelForm = document.querySelector('.slideshow-panel-form');
+  if (panelForm) {
+    panelForm.addEventListener('submit', function (event) {
       event.preventDefault();
-      var labels = window.slideshowAdminLabels || {};
-      submitAjax(form, labels.saving || 'Saving...');
+      submitSettings(panelForm);
     });
-  });
 
-  document.addEventListener('submit', function (event) {
-    var form = event.target;
-    if (!form.classList || !form.classList.contains('slide-delete-form')) {
-      return;
-    }
+    panelForm.addEventListener('change', function (event) {
+      if (event.target && event.target.name === 'displayMode') {
+        syncRotateFieldsVisibility(panelForm);
+      }
+    });
 
-    event.preventDefault();
-    if (!window.confirm((window.slideshowAdminLabels || {}).areYouSure || 'Are you sure?')) {
-      return;
-    }
+    syncRotateFieldsVisibility(panelForm);
+  }
 
-    submitAjax(form, (window.slideshowAdminLabels || {}).saving || 'Saving...');
-  });
+  var imageInput = document.getElementById('slideshowImageInput');
+  if (imageInput) {
+    imageInput.addEventListener('change', function () {
+      var file = imageInput.files && imageInput.files[0];
+      if (!file) {
+        return;
+      }
+
+      var preview = document.getElementById('slideshowCurrentPreview');
+      if (preview) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          preview.innerHTML = '<img src="' + e.target.result + '" alt="">';
+        };
+        reader.readAsDataURL(file);
+      }
+
+      uploadSlide(file, imageInput);
+    });
+  }
 })();

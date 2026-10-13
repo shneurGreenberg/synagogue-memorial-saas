@@ -109,6 +109,11 @@
                 {{#if (or adminPermissions.settingsAppearance adminPermissions.settingsPreview adminPermissions.settingsSavedViews)}}
                 <div class="saved-view-actions">
                     {{#if adminPermissions.settingsSavedViews}}
+                    <button type="button" class="btn-admin btn-admin-secondary" id="importSavedViewBtn">
+                        <svg class="btn-admin-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6m4 18H6V4h7v5h5v11M8 15.5l2.5 2.5L14 14.5l1.41 1.41-4.91 4.91L6.59 16l1.41-1.41Z"/></svg>
+                        {{t 'saved_view_import'}}
+                    </button>
+                    <input type="file" id="importSavedViewFile" accept=".json,application/json" hidden>
                     <button type="button" class="btn-admin btn-admin-secondary" id="saveCurrentViewBtn">
                         <svg class="btn-admin-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4m-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3m3-10H5V5h10v4Z"/></svg>
                         {{t 'save_current_view'}}
@@ -131,7 +136,10 @@
                     data-delete-confirm="{{t 'saved_view_delete_confirm'}}"
                     data-empty-text="{{t 'saved_views_empty'}}"
                     data-apply-error="{{t 'saved_view_apply_error'}}"
-                    data-delete-error="{{t 'saved_view_delete_error'}}">
+                    data-delete-error="{{t 'saved_view_delete_error'}}"
+                    data-export-label="{{t 'saved_view_export'}}"
+                    data-import-error="{{t 'saved_view_import_error'}}"
+                    data-import-success="{{t 'saved_view_import_success'}}">
                     {{#if savedViews.length}}
                         {{#each savedViews}}
                         <article class="saved-view-card{{#if (eq ../activeSavedViewId this.id)}} is-active{{/if}}" data-view-id="{{this.id}}">
@@ -152,6 +160,12 @@
                                     <svg class="btn-admin-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17Z"/></svg>
                                     {{t 'saved_view_apply'}}
                                 </button>
+                                {{#if ../adminPermissions.settingsSavedViews}}
+                                <button type="button" class="btn-admin btn-admin-secondary saved-view-export-btn">
+                                    <svg class="btn-admin-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 20h14v-2H5v2m7-18-5.5 5.5L11 10V3h2v7l4.5-4.5L19 8l-7 7-7-7Z"/></svg>
+                                    {{t 'saved_view_export'}}
+                                </button>
+                                {{/if}}
                                 <button type="button" class="btn-admin btn-admin-danger saved-view-delete-btn">
                                     <svg class="btn-admin-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12M19 4h-3.5l-1-1h-5l-1 1H5v2h14V4Z"/></svg>
                                     {{t 'saved_view_delete'}}
@@ -406,6 +420,7 @@
                             <div class="admin-theme-setting-label">{{t 'enable_shabbat_times'}}</div>
                             <div class="admin-theme-setting-control">
                                 <label class="toggle-switch" for="shabbatTimesEnabled">
+                                    <input type="hidden" name="shabbatTimesEnabled" value="0">
                                     <input type="checkbox" id="shabbatTimesEnabled" name="shabbatTimesEnabled" value="1" {{#if ../synagogue.shabbatTimesEnabled}}checked{{/if}}>
                                     <span class="toggle-slider" aria-hidden="true"></span>
                                 </label>
@@ -417,6 +432,7 @@
                             <div class="admin-theme-setting-label">{{t 'public_submission_enabled'}}</div>
                             <div class="admin-theme-setting-control">
                                 <label class="toggle-switch" for="publicSubmissionEnabled">
+                                    <input type="hidden" name="publicSubmissionEnabled" value="0">
                                     <input type="checkbox" id="publicSubmissionEnabled" name="publicSubmissionEnabled" value="1" {{#if ../synagogue.publicSubmission.enabled}}checked{{/if}}>
                                     <span class="toggle-slider" aria-hidden="true"></span>
                                 </label>
@@ -923,9 +939,14 @@
             applyBtn.innerHTML = (window.AdminIcons ? window.AdminIcons.render('apply', 'btn-admin-icon') : '') + ' {{t 'saved_view_apply'}}';
             var deleteBtn = document.createElement('button');
             deleteBtn.type = 'button';
+            var exportBtn = document.createElement('button');
+            exportBtn.type = 'button';
+            exportBtn.className = 'btn-admin btn-admin-secondary saved-view-export-btn btn-admin-with-icon';
+            exportBtn.innerHTML = (window.AdminIcons ? window.AdminIcons.render('export', 'btn-admin-icon') : '') + ' {{t 'saved_view_export'}}';
             deleteBtn.className = 'btn-admin btn-admin-danger saved-view-delete-btn btn-admin-with-icon';
             deleteBtn.innerHTML = (window.AdminIcons ? window.AdminIcons.render('delete', 'btn-admin-icon') : '') + ' {{t 'saved_view_delete'}}';
             actions.appendChild(applyBtn);
+            actions.appendChild(exportBtn);
             actions.appendChild(deleteBtn);
 
             article.appendChild(thumb);
@@ -1083,6 +1104,8 @@
                 emptyText: savedViewsGrid.dataset.emptyText,
                 applyError: savedViewsGrid.dataset.applyError,
                 deleteError: savedViewsGrid.dataset.deleteError,
+                importError: savedViewsGrid.dataset.importError,
+                importSuccess: savedViewsGrid.dataset.importSuccess,
                 onApply: function (viewId, viewName) {
                     setActiveSavedView(viewId, viewName);
                 },
@@ -1093,6 +1116,24 @@
                 },
                 onSnapshotApplied: function () {
                     reloadBoardPreviewFromServer();
+                },
+                onImport: function (view) {
+                    if (view) {
+                        prependSavedView(view);
+                    }
+                },
+            });
+        }
+
+        if (window.AdminSettingsPanel && typeof window.AdminSettingsPanel.initSavedViewImport === 'function') {
+            window.AdminSettingsPanel.initSavedViewImport({
+                slug: slug,
+                importError: savedViewsGrid && savedViewsGrid.dataset.importError,
+                importSuccess: savedViewsGrid && savedViewsGrid.dataset.importSuccess,
+                onImport: function (view) {
+                    if (view) {
+                        prependSavedView(view);
+                    }
                 },
             });
         }

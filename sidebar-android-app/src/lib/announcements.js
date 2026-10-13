@@ -73,8 +73,18 @@ function buildChabadItems(chabadDates) {
 
 export function prepareCommunityEvents(events, lang = 'ru') {
   const mapped = (events || []).map((event) => {
-    const title = event.titles?.[lang] || event.titles?.ru || event.titles?.en || event.title || '';
-    const text = event.texts?.[lang] || event.texts?.ru || event.texts?.en || event.text || '';
+    const title = event.title
+      || event.titles?.[lang]
+      || event.titles?.ru
+      || event.titles?.en
+      || event.titles?.he
+      || '';
+    const text = event.text
+      || event.texts?.[lang]
+      || event.texts?.ru
+      || event.texts?.en
+      || event.texts?.he
+      || '';
     const hasDate = Boolean(event.eventDate?.month && event.eventDate?.date);
 
     if (!hasDate) {

@@ -30,7 +30,7 @@ import { useBoardNavigation } from '../context/BoardNavigationContext';
 import { useBoardData } from '../context/BoardDataContext';
 import { resolveBoardTitle } from '../lib/board-title';
 import { getSidebarCommunityEvents, hasEventDate } from '../lib/community-events';
-import { resolveCommunityEventCopy } from '../lib/community-event-copy';
+import { normalizeCommunityEvent } from '../lib/community-event-copy';
 import { hasDailyStudyFeatures, resolveBoardFeatures } from '../lib/board-features';
 import { SidebarUpcomingPanel } from '../components/SidebarUpcomingPanel';
 import { BoardWeatherSection } from '../components/BoardWeatherSection';
@@ -156,13 +156,13 @@ function toEventDatetimeAttr(eventDate) {
   return `${year}-${month}-${day}`;
 }
 
-function prepareCommunityEvents(events, boardLang) {
+function prepareCommunityEvents(events) {
   return getSidebarCommunityEvents(events).map((event) => {
-    const localized = resolveCommunityEventCopy(event, boardLang);
+    const normalized = normalizeCommunityEvent(event);
     const base = {
       ...event,
-      title: localized.title,
-      text: localized.text,
+      title: normalized.title,
+      text: normalized.text,
     };
 
     if (!hasEventDate(event)) {
@@ -204,7 +204,7 @@ class HomePageBase extends React.Component {
 
     const appData = getAppData();
     const calendarState = buildCalendarState(appData);
-    const communityEvents = prepareCommunityEvents(appData.communityEvents, appData.language);
+    const communityEvents = prepareCommunityEvents(appData.communityEvents);
 
     const initialState = {
       ...calendarState,
@@ -253,7 +253,7 @@ class HomePageBase extends React.Component {
   refreshCalendarState() {
     const appData = getAppData();
     const calendarState = buildCalendarState(appData);
-    const communityEvents = prepareCommunityEvents(appData.communityEvents, appData.language);
+    const communityEvents = prepareCommunityEvents(appData.communityEvents);
 
     this.setState((state) => {
       const next = {
