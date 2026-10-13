@@ -117,15 +117,16 @@
     }
 
     .banner,
-    .community-logo-btn .banner {
+    .community-logo-btn .banner,
+    .community-logo-btn .community-logo-img {
       width: clamp(88px, 11vw, 150px);
       height: clamp(88px, 11vw, 150px);
-      border-radius: 50%;
-      object-fit: cover;
+      border-radius: 0;
+      object-fit: contain;
       object-position: center;
-      border: 3px solid $goldenPanelBorder;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-      background: #1a1510;
+      border: none;
+      box-shadow: none;
+      background: transparent;
     }
 
     .daily-cite {

@@ -1,0 +1,43 @@
+<section class="admin-person-invites-panel" id="person-invites">
+    <h2 class="admin-panel-inline-title">{{t 'person_invite_heading'}}</h2>
+    <p class="admin-subtitle admin-panel-inline-subtitle">{{t 'person_invite_intro'}}</p>
+
+    {{#if inviteCreated}}
+    <div class="alert alert-success" role="status">{{t 'person_invite_created'}}</div>
+    {{/if}}
+
+    <form method="POST" action="/admin/{{synagogue.slug}}/person-invites" class="admin-person-invite-create">
+        <label class="form-field">
+            <span>{{t 'person_invite_label'}}</span>
+            <input type="text" name="label" class="form-control admin-input" maxlength="120" placeholder="{{t 'person_invite_label_placeholder'}}">
+        </label>
+        <button type="submit" class="btn-admin btn-admin-primary">{{t 'person_invite_create_btn'}}</button>
+    </form>
+
+    {{#if personInvites.length}}
+    <ul class="admin-person-invites-list">
+        {{#each personInvites}}
+        <li class="admin-person-invite-row{{#unless active}} is-inactive{{/unless}}">
+            <div class="admin-person-invite-meta">
+                <strong>{{#if label}}{{label}}{{else}}{{t 'person_invite_unlabeled'}}{{/if}}</strong>
+                <span class="admin-person-invite-status">{{#if active}}{{t 'person_invite_status_active'}}{{else}}{{#if revoked}}{{t 'person_invite_status_revoked'}}{{else}}{{t 'person_invite_status_expired'}}{{/if}}{{/if}}</span>
+            </div>
+            <div class="admin-person-invite-url-wrap">
+                <input type="text" class="form-control admin-input person-invite-url" readonly value="{{inviteUrl}}" data-invite-url>
+            </div>
+            <div class="admin-person-invite-actions">
+                <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm person-invite-copy" data-copied-label="{{t 'person_invite_copied'}}">{{t 'person_invite_copy'}}</button>
+                <a class="btn-admin btn-admin-secondary btn-admin-sm person-invite-whatsapp" href="#" data-whatsapp-message="{{t 'person_invite_whatsapp_message'}}" target="_blank" rel="noopener noreferrer">{{t 'person_invite_whatsapp'}}</a>
+                {{#if active}}
+                <form method="POST" action="/admin/{{../synagogue.slug}}/person-invites/{{id}}/revoke">
+                    <button type="submit" class="btn-admin btn-admin-ghost btn-admin-sm">{{t 'person_invite_revoke'}}</button>
+                </form>
+                {{/if}}
+            </div>
+        </li>
+        {{/each}}
+    </ul>
+    {{else}}
+    <p class="seed-notice">{{t 'person_invite_empty'}}</p>
+    {{/if}}
+</section>

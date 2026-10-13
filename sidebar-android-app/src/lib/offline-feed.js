@@ -35,15 +35,8 @@ export async function fetchOfflineJewishFeed(lang = 'ru') {
   const payload = await response.json();
   const today = formatIsoDate(start);
 
-  const upcomingHolidays = (payload.items || [])
-    .filter((item) => item.category === 'holiday' && item.date >= today)
-    .map((item) => ({
-      date: item.date,
-      title: lang === 'he' ? (item.hebrew || item.title) : item.title,
-      hebrew: item.hebrew || '',
-      subcat: item.subcat || '',
-      link: '',
-    }));
+  const { processUpcomingHebcalHolidays } = await import('./upcoming-holidays.js');
+  const upcomingHolidays = processUpcomingHebcalHolidays(payload.items || [], lang, today, 60);
 
   return { upcomingHolidays, chabadDates: [] };
 }

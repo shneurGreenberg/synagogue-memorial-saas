@@ -31,13 +31,14 @@ import { useBoardData } from '../context/BoardDataContext';
 import { resolveBoardTitle } from '../lib/board-title';
 import { getSidebarCommunityEvents, hasEventDate } from '../lib/community-events';
 import { resolveCommunityEventCopy } from '../lib/community-event-copy';
-import { resolveBoardFeatures } from '../lib/board-features';
+import { hasDailyStudyFeatures, resolveBoardFeatures } from '../lib/board-features';
 import { SidebarUpcomingPanel } from '../components/SidebarUpcomingPanel';
 import { BoardWeatherSection } from '../components/BoardWeatherSection';
 import { isPersonYahrzeitToday } from '../lib/yahrzeit-today';
 import { personHasDeathDate } from '../../../lib/death-date';
 import { MemorialSubmissionPanel } from '../components/MemorialSubmissionPanel';
 import { DonationQrPanel } from '../components/DonationQrPanel';
+import { JewishContentPanels } from '../components/JewishContentPanels';
 import { TorahReadingOverlay } from '../components/TorahReadingOverlay';
 import { usePhotoPrefetch } from '../hooks/usePhotoPrefetch';
 
@@ -165,11 +166,12 @@ function prepareCommunityEvents(events, boardLang) {
     };
 
     if (!hasEventDate(event)) {
-      return {
-        ...base,
-        listType: 'event',
-        id: `event-${event._id}`,
-        isUndated: true,
+    return {
+      ...base,
+      listType: 'event',
+      id: `event-${event._id}`,
+      sortOrder: Number.isFinite(Number(event.sortOrder)) ? Number(event.sortOrder) : 0,
+      isUndated: true,
         hasEventDate: false,
         gregorianDate: null,
         hebrewDate: null,
@@ -186,6 +188,7 @@ function prepareCommunityEvents(events, boardLang) {
       ...base,
       listType: 'event',
       id: `event-${event._id}`,
+      sortOrder: Number.isFinite(Number(event.sortOrder)) ? Number(event.sortOrder) : 0,
       isUndated: false,
       hasEventDate: true,
       gregorianDate,
@@ -391,13 +394,11 @@ class HomePageBase extends React.Component {
 
     const boardFeatures = resolveBoardFeatures(appData.boardFeatures);
     const logo = (appData.theme && appData.theme.logo) || 'banner-transparent.png';
-    const logoBorderRadius = appData.theme && appData.theme.logoBorderRadius != null
-      ? appData.theme.logoBorderRadius
-      : 100;
-    const logoBackground = (appData.theme && appData.theme.logoBackground) || '';
     const showOfficialLogo = boardFeatures.officialLogo !== false;
     const officialLogo = 'kaddish-official-logo.svg';
-    const showMemorialPrayers = boardFeatures.kelMaleRachamim || boardFeatures.izkor;
+    const showDailyStudy = hasDailyStudyFeatures(boardFeatures);
+    const showKelMale = boardFeatures.kelMaleRachamim && !showDailyStudy;
+    const showMemorialPrayers = showKelMale || boardFeatures.izkor;
 
     const pageNames = this.getPageNames();
 
@@ -417,15 +418,13 @@ class HomePageBase extends React.Component {
                   <CommunityLogo
                     src={assetUrl(`images/${logo}`)}
                     alt={appData.title || 'Synagogue'}
-                    borderRadius={logoBorderRadius}
-                    logoBackground={logoBackground}
                   />
                 </div>
               </div>
               {showMemorialPrayers && (
                 <MemorialPrayersPanel
                   big
-                  showKelMale={boardFeatures.kelMaleRachamim}
+                  showKelMale={showKelMale}
                   showIzkor={boardFeatures.izkor}
                   kelMaleSectionTitle={this.props.t('kel_male_section_title')}
                   izkorSectionTitle={this.props.t('izkor_section_title')}
@@ -435,6 +434,7 @@ class HomePageBase extends React.Component {
                   izkorTransliterationText={this.props.t('izkor_text_transliteration', { defaultValue: '' })}
                 />
               )}
+              <JewishContentPanels uiLang={this.props.uiLang} />
               <DonationQrPanel />
             </div>
           </div>

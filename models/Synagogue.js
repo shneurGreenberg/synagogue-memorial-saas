@@ -19,6 +19,21 @@ const ContactDirectoryEntrySchema = new mongoose.Schema({
   email: { type: String, default: '' },
 }, { _id: false });
 
+const PersonAddRequestSchema = new mongoose.Schema({
+  id: { type: String, default: '' },
+  status: { type: String, enum: ['pending', 'dismissed'], default: 'pending' },
+  createdAt: { type: Date, default: Date.now },
+  submitter: { type: PersonContactSchema, default: () => ({}) },
+  relation: { type: String, default: '' },
+  deceasedName: { type: String, default: '' },
+  deceasedNotes: { type: String, default: '' },
+  gregorianDateOfDeath: {
+    month: { type: Number, default: undefined },
+    date: { type: Number, default: undefined },
+    year: { type: Number, default: undefined },
+  },
+}, { _id: false });
+
 const PersonSchema = new mongoose.Schema({
   id: Number,
   name: String,
@@ -37,6 +52,12 @@ const PersonSchema = new mongoose.Schema({
   text: String,
   contact: { type: PersonContactSchema, default: () => ({}) },
   contacts: { type: [PersonContactSchema], default: undefined },
+  hebrewDateOfDeath: {
+    month: { type: Number, default: undefined },
+    date: { type: Number, default: undefined },
+    year: { type: Number, default: undefined },
+  },
+  internalNotes: { type: String, default: '' },
 });
 
 const DailyCiteSchema = new mongoose.Schema({
@@ -91,6 +112,7 @@ const CommunityEventSchema = new mongoose.Schema({
   },
   startAt: { type: Date, default: Date.now },
   endAt: Date,
+  sortOrder: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
 });
 
@@ -194,6 +216,8 @@ const SavedViewSchema = new mongoose.Schema({
       donationUrl: String,
       donationQrImage: String,
       registrationQrImage: String,
+      showDonationQr: Boolean,
+      showRegistrationQr: Boolean,
     },
   },
 }, { _id: true, id: false });
@@ -230,6 +254,8 @@ const SynagogueSchema = new mongoose.Schema({
     donationUrl: { type: String, default: '' },
     donationQrImage: { type: String, default: '' },
     registrationQrImage: { type: String, default: '' },
+    showDonationQr: { type: Boolean, default: true },
+    showRegistrationQr: { type: Boolean, default: true },
   },
   yahrzeitReminders: {
     enabled: { type: Boolean, default: false },
@@ -270,6 +296,7 @@ const SynagogueSchema = new mongoose.Schema({
   dailyCites: [DailyCiteSchema],
   communityEvents: [CommunityEventSchema],
   people: [PersonSchema],
+  personAddRequests: { type: [PersonAddRequestSchema], default: [] },
   contactDirectory: { type: [ContactDirectoryEntrySchema], default: [] },
   adminUsers: [AdminUserSchema],
   adminTheme: {
@@ -312,6 +339,7 @@ const SynagogueSchema = new mongoose.Schema({
     logo: String,
     logoBorderRadius: { type: Number, default: 100, min: 0, max: 100 },
     logoBackground: { type: String, enum: ['', 'white', 'black'], default: '' },
+    boardFont: { type: String, default: 'georgia' },
     candlePalette: { type: String, default: 'classic' },
   },
   location: {
@@ -331,6 +359,23 @@ const SynagogueSchema = new mongoose.Schema({
     weekKey: { type: String, default: '' },
     confirmedBy: { type: String, default: '' },
     confirmedAt: { type: Date, default: null },
+  },
+  adminYahrzeitTodayCache: {
+    dayKey: { type: String, default: '' },
+    peopleRevision: { type: String, default: '' },
+    includeHebrewYahrzeit: { type: Boolean, default: true },
+    count: { type: Number, default: 0 },
+    computedAt: { type: Date, default: null },
+  },
+  adminWeeklyKaddishCache: {
+    weekKey: { type: String, default: '' },
+    peopleRevision: { type: String, default: '' },
+    includeHebrewYahrzeit: { type: Boolean, default: true },
+    weekStartKey: { type: String, default: '' },
+    weekEndKey: { type: String, default: '' },
+    missingCount: { type: Number, default: 0 },
+    entries: { type: [mongoose.Schema.Types.Mixed], default: undefined },
+    computedAt: { type: Date, default: null },
   },
   boardClients: {
     type: [{

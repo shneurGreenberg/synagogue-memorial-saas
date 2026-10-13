@@ -185,12 +185,8 @@
       setInputValue('candlePalette', theme.candlePalette);
     }
 
-    if (theme.logoBorderRadius != null) {
-      setInputValue('logoBorderRadius', theme.logoBorderRadius);
-      var preview = document.getElementById('communityLogoPreview');
-      if (preview) {
-        preview.style.setProperty('--preview-logo-radius', String(theme.logoBorderRadius));
-      }
+    if (theme.boardFont) {
+      setInputValue('boardFont', theme.boardFont);
     }
 
     if (snapshot.language) {
@@ -246,6 +242,8 @@
 
     var publicSubmission = snapshot.publicSubmission || {};
     setCheckboxValue('publicSubmissionEnabled', publicSubmission.enabled);
+    setCheckboxValue('publicSubmissionShowDonationQr', publicSubmission.showDonationQr !== false);
+    setCheckboxValue('publicSubmissionShowRegistrationQr', publicSubmission.showRegistrationQr !== false);
     if (publicSubmission.donationUrl != null) {
       setInputValue('publicSubmissionDonationUrl', publicSubmission.donationUrl);
     }
@@ -368,38 +366,16 @@
     });
   }
 
-  function initLogoBorderRadiusPreview() {
-    var input = document.getElementById('logoBorderRadius');
-    if (!input || input.dataset.bound === '1') {
-      return;
-    }
-
-    input.dataset.bound = '1';
-    var preview = document.getElementById('communityLogoPreview');
-
-    function applyRadius() {
-      var value = input.value;
-      if (preview) {
-        preview.style.setProperty('--preview-logo-radius', value);
-      }
-    }
-
-    input.addEventListener('input', applyRadius);
-    applyRadius();
-  }
-
   window.AdminSettingsPanel = {
     initCollapsiblePanels: initCollapsiblePanels,
     capturePreviewScreenshot: capturePreviewScreenshot,
     updateActiveViewBadge: updateActiveViewBadge,
     applySnapshotToSettingsForm: applySnapshotToSettingsForm,
     initSavedViewsGrid: initSavedViewsGrid,
-    initLogoBorderRadiusPreview: initLogoBorderRadiusPreview,
   };
 
   function initSettingsPageUi() {
     initCollapsiblePanels(document.querySelector('.settings-page'));
-    initLogoBorderRadiusPreview();
   }
 
   if (document.readyState === 'loading') {

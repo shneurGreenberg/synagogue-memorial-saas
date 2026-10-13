@@ -60,6 +60,8 @@ const {
 const {
   buildCommunityEventPayload,
   categorizeCommunityEvents,
+  nextCommunityEventSortOrder,
+  reorderCommunityEvents,
 } = require('../lib/community-events');
 const loginRateLimiter = createLoginRateLimiter();
 const {
@@ -80,6 +82,8 @@ const {
 } = require('../lib/admin-users');
 const { parsePeopleListSearchParam, personMatchesPeopleSearch } = require('../lib/people-list-search');
 const { parsePublicSubmissionFromBody } = require('../lib/public-submission');
+const MemorialPersonInvite = require('../models/MemorialPersonInvite');
+const { listPendingPersonAddRequests } = require('../lib/person-add-request');
 const { parsePersonContactsFromBody, normalizePersonContact, personContactsToLegacyFields, getPersonContacts, hasContactDetails } = require('../lib/person-contact');
 const { parseContactImportFile } = require('../lib/google-contacts-import');
 const {
@@ -99,6 +103,9 @@ const {
   buildContactMessageEntry,
 } = require('../lib/yahrzeit-reminders');
 const { resolveSynagogueTimezone } = require('../lib/yahrzeit');
+const { computeHebrewDateOfDeath } = require('../lib/person-hebrew-death');
+const { backfillPeopleHebrewDeathDates } = require('../lib/person-hebrew-backfill');
+const { getCachedUpcomingHolidayNotice } = require('../lib/admin-holiday-notice-cache');
 const { getCachedAdminYahrzeitBundle, getCachedYahrzeitTodayCount } = require('../lib/admin-yahrzeit-cache');
 const { createAdminTiming } = require('../lib/admin-timing');
 const {
@@ -108,6 +115,7 @@ const { buildFaviconPath, resolveFaviconLogoFilename } = require('../lib/favicon
 const { OFFICIAL_LOGO_FILENAME } = require('../lib/board-defaults');
 const { CANDLE_PALETTE_KEYS, normalizeCandlePalette } = require('../lib/candle-palette');
 const { normalizeBoardFeatures } = require('../lib/board-features');
+const { BOARD_FONTS, normalizeBoardFont } = require('../lib/board-fonts');
 const { scanPathForSlug, safeScanReturnPath } = require('../lib/grave-scan');
 
 const BOARD_FEATURE_TOGGLE_META = [
@@ -410,12 +418,19 @@ async function getUpcomingHolidayNotice(synagogue) {
     try {
         const { getUpcomingHolidays } = require('../lib/jewish-feed');
         const lang = (synagogue && (synagogue.adminLanguage || synagogue.language)) || 'ru';
-        const holidays = await getUpcomingHolidays(lang, 90, 5);
-        return holidays && holidays.length ? holidays[0] : null;
+        const timezone = resolveSynagogueTimezone(synagogue);
+        return await getCachedUpcomingHolidayNotice(async () => {
+            const holidays = await getUpcomingHolidays(lang, 30, 5);
+            return holidays && holidays.length ? holidays[0] : null;
+        }, { lang, timezone });
     } catch (err) {
         console.warn('upcoming holiday notice failed:', err.message);
         return null;
     }
+}
+
+function normalizeInternalNotes(raw) {
+    return String(raw || '').trim().slice(0, 4000);
 }
 
 function requirePermission(permission) {
@@ -559,7 +574,7 @@ const getInitials = (name) => {
 
 const ADMIN_PAGE_SCRIPTS = {
     'admin/dashboard': [],
-    'admin/people': ['admin-people.js', 'admin-person-card.js', 'contact-platform-ui.js'],
+    'admin/people': ['admin-people.js', 'admin-person-card.js', 'contact-platform-ui.js', 'admin-person-invites.js'],
     'admin/contacts': ['admin-contact-directory.js', 'contact-platform-ui.js'],
     'admin/events': ['admin-events.js', 'admin-slideshow.js'],
     'admin/users': ['admin-users.js'],
@@ -695,11 +710,8 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             updateData['theme.tileColor'] = sanitizeHexColor(tileColor, BOARD_THEME_DEFAULTS.tileColor);
             updateData['theme.tileOpacity'] = normalizeTileOpacity(tileOpacity);
             updateData['theme.candlePalette'] = normalizeCandlePalette(candlePalette);
-            if ('logoBorderRadius' in req.body) {
-                updateData['theme.logoBorderRadius'] = normalizeLogoBorderRadius(logoBorderRadius);
-            }
-            if ('logoBackground' in req.body) {
-                updateData['theme.logoBackground'] = normalizeLogoBackground(logoBackground);
+            if ('boardFont' in req.body) {
+                updateData['theme.boardFont'] = normalizeBoardFont(req.body.boardFont);
             }
             Object.entries(fontScales).forEach(([key, value]) => {
                 updateData[`theme.fontScales.${key}`] = value;
@@ -709,6 +721,12 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             ));
             if ('publicSubmissionDonationUrl' in req.body) {
                 updateData['publicSubmission.donationUrl'] = publicSubmission.donationUrl || '';
+            }
+            if ('publicSubmissionShowDonationQr' in req.body) {
+                updateData['publicSubmission.showDonationQr'] = !!publicSubmission.showDonationQr;
+            }
+            if ('publicSubmissionShowRegistrationQr' in req.body) {
+                updateData['publicSubmission.showRegistrationQr'] = !!publicSubmission.showRegistrationQr;
             }
         }
 
@@ -1059,6 +1077,11 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             activeSavedViewId: enriched.activeSavedViewId || '',
             activeSavedViewName: activeSavedView ? activeSavedView.name : '',
             memorialQrPanel: enriched.memorialQrPanel,
+            boardFontOptions: BOARD_FONTS.map((font) => ({
+              id: font.id,
+              labelKey: font.labelKey,
+              selected: normalizeBoardFont(enriched.theme.boardFont) === font.id,
+            })),
             saved: req.query.saved === '1',
             refreshed: req.query.refreshed === '1',
             error: req.query.error || null,
@@ -1102,6 +1125,10 @@ function normalizeImportedPerson(raw, fallbackId) {
     );
     person.contact = legacy.contact;
     person.contacts = legacy.contacts;
+    const hebrew = computeHebrewDateOfDeath(person.gregorianDateOfDeath);
+    if (hebrew) {
+        person.hebrewDateOfDeath = hebrew;
+    }
     return person;
 }
 
@@ -1131,6 +1158,7 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
     try {
         const synagogue = await loadAdminSynagogue(req.params.slug, 'yahrzeit');
         timing.mark('db');
+        void backfillPeopleHebrewDeathDates(req.params.slug, synagogue && synagogue.people);
         const enriched = enrichSynagogueForAdmin(synagogue);
         const displaySynagogue = applyUserDisplaySettings(enriched, req.adminUser);
         const now = new Date();
@@ -1297,6 +1325,7 @@ router.get('/:slug/people/list', requireAdmin, requirePermission('people'), asyn
         }
 
         const query = parsePeopleListSearchParam(req.query.q).toLowerCase();
+        void backfillPeopleHebrewDeathDates(req.params.slug, synagogue.people);
         let people = synagogue.people || [];
         if (query) {
             people = people.filter((person) => personMatchesPeopleSearch(person.name, query));
@@ -1313,12 +1342,39 @@ router.get('/:slug/people/list', requireAdmin, requirePermission('people'), asyn
     }
 });
 
+function buildMemorialPersonInviteUrl(req, slug, token) {
+    const host = req.get('host');
+    return `${req.protocol}://${host}/s/${encodeURIComponent(slug)}/add-name/invite/${encodeURIComponent(token)}`;
+}
+
+async function loadMemorialPersonInvitesForAdmin(req, slug) {
+    const invites = await MemorialPersonInvite.find({ synagogueSlug: slug })
+        .sort({ createdAt: -1 })
+        .limit(40)
+        .lean();
+
+    return invites.map((invite) => {
+        const doc = new MemorialPersonInvite(invite);
+        return {
+            id: String(invite._id),
+            label: invite.label || '',
+            createdAt: invite.createdAt,
+            expiresAt: invite.expiresAt,
+            revoked: !!invite.revoked,
+            active: doc.isUsable(),
+            inviteUrl: buildMemorialPersonInviteUrl(req, slug, invite.token),
+        };
+    });
+}
+
 router.get('/:slug/people', requireAdmin, requirePermission('people'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const synagogue = await loadAdminSynagogue(req.params.slug, 'people');
         const enriched = enrichSynagogueForAdmin(synagogue);
         enriched.contactDirectoryCount = normalizeContactDirectory(enriched.contactDirectory).length;
+        const pendingPersonAddRequests = listPendingPersonAddRequests(enriched.personAddRequests);
+        const personInvites = await loadMemorialPersonInvitesForAdmin(req, req.params.slug);
         renderAdmin(res, 'admin/people', {
             synagogue: enriched,
             adminUser: req.adminUser,
@@ -1328,9 +1384,72 @@ router.get('/:slug/people', requireAdmin, requirePermission('people'), async (re
             dateError: req.query.dateError === '1',
             undatedOnly: req.query.undated === '1',
             peopleSearchQuery: parsePeopleListSearchParam(req.query.q),
+            pendingPersonAddRequests,
+            personInvites,
+            inviteCreated: req.query.inviteCreated === '1',
         });
     } catch (err) {
         res.status(500).send(err.message);
+    }
+});
+
+router.post('/:slug/person-add-requests/:requestId/dismiss', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const result = await Synagogue.updateOne(
+            {
+                slug: req.params.slug,
+                'personAddRequests.id': req.params.requestId,
+            },
+            { $set: { 'personAddRequests.$.status': 'dismissed' } },
+        );
+        if (!result.matchedCount) {
+            return res.status(404).send('Not found');
+        }
+        invalidateAdminSynagogueCache(req.params.slug);
+        return res.redirect(`/admin/${req.params.slug}/people`);
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+});
+
+router.post('/:slug/person-invites', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).select('slug').lean();
+        if (!synagogue) {
+            return res.status(404).send('Not found');
+        }
+
+        const label = String(req.body.label || '').trim().slice(0, 120);
+        const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+        const token = MemorialPersonInvite.generateToken();
+        await new MemorialPersonInvite({
+            synagogueSlug: req.params.slug,
+            token,
+            label,
+            expiresAt,
+        }).save();
+
+        return res.redirect(`/admin/${req.params.slug}/people?inviteCreated=1#person-invites`);
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+});
+
+router.post('/:slug/person-invites/:inviteId/revoke', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const result = await MemorialPersonInvite.updateOne(
+            { _id: req.params.inviteId, synagogueSlug: req.params.slug },
+            { $set: { revoked: true } },
+        );
+        if (!result.matchedCount) {
+            return res.status(404).send('Not found');
+        }
+        return res.redirect(`/admin/${req.params.slug}/people#person-invites`);
+    } catch (err) {
+        return res.status(500).send(err.message);
     }
 });
 
@@ -1643,6 +1762,7 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
             id: maxId + 1,
             name,
             text: sanitizeRichText(text),
+            internalNotes: normalizeInternalNotes(req.body.internalNotes),
             photo: req.file ? await optimizeUploadedImage(req.file.path, 'photo') : '',
             photoCrop: req.file ? parsePhotoCropFromBody(req.body) : undefined,
             title: '',
@@ -1651,6 +1771,10 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
         };
         if (deathDate) {
             newPerson.gregorianDateOfDeath = deathDate;
+            const hebrew = computeHebrewDateOfDeath(deathDate);
+            if (hebrew) {
+                newPerson.hebrewDateOfDeath = hebrew;
+            }
         }
 
         await Synagogue.updateOne(
@@ -1683,14 +1807,19 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
         const updateFields = {
             'people.$.name': name,
             'people.$.text': sanitizeRichText(text),
+            'people.$.internalNotes': normalizeInternalNotes(req.body.internalNotes),
             'people.$.contact': legacy.contact,
             'people.$.contacts': legacy.contacts,
         };
         const update = { $set: updateFields };
         if (deathDate) {
             updateFields['people.$.gregorianDateOfDeath'] = deathDate;
+            const hebrew = computeHebrewDateOfDeath(deathDate);
+            if (hebrew) {
+                updateFields['people.$.hebrewDateOfDeath'] = hebrew;
+            }
         } else {
-            update.$unset = { 'people.$.gregorianDateOfDeath': '' };
+            update.$unset = { 'people.$.gregorianDateOfDeath': '', 'people.$.hebrewDateOfDeath': '' };
         }
 
         if (req.file) {
@@ -1941,8 +2070,10 @@ router.post('/:slug/events/add', requireAdmin, requirePermission('events'), pars
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const publishNow = req.body.publishNow === '1' || req.body.publishNow === 'true';
+        const existingEvents = await fetchCommunityEvents(req.params.slug);
         const payload = buildCommunityEventPayload(req.body, { publishNow });
         payload.text = sanitizeRichText(payload.text);
+        payload.sortOrder = nextCommunityEventSortOrder(existingEvents);
 
         if (!payload.title) {
             return res.status(400).json({ ok: false, error: 'Title is required' });
@@ -2020,6 +2151,31 @@ router.post('/:slug/events/publish-now', requireAdmin, requirePermission('events
         return res.json({ ok: true, events: categorizeCommunityEvents(events) });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.post('/:slug/events/reorder', requireAdmin, requirePermission('events'), parseFormBody, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { eventId, direction } = req.body;
+        if (!eventId || (direction !== 'up' && direction !== 'down')) {
+            return res.status(400).json({ ok: false, error: 'Invalid reorder request' });
+        }
+
+        const events = await fetchCommunityEvents(req.params.slug);
+        const { active } = categorizeCommunityEvents(events);
+        const reorderedActive = reorderCommunityEvents(active, eventId, direction);
+
+        const updates = reorderedActive.map((event, index) => Synagogue.updateOne(
+            { slug: req.params.slug, 'communityEvents._id': event._id },
+            { $set: { 'communityEvents.$.sortOrder': index } },
+        ));
+        await Promise.all(updates);
+
+        const nextEvents = await fetchCommunityEvents(req.params.slug);
+        return res.json({ ok: true, events: categorizeCommunityEvents(nextEvents) });
+    } catch (err) {
+        return res.status(400).json({ ok: false, error: err.message });
     }
 });
 

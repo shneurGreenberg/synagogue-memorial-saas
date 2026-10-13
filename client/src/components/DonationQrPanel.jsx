@@ -26,7 +26,7 @@ function DonationQrPanelBase({ t, i18n }) {
   const publicSubmission = data.publicSubmission || {};
   const donationUrl = String(publicSubmission.donationUrl || '').trim();
 
-  if (!donationUrl) {
+  if (!donationUrl || publicSubmission.showDonationQr === false) {
     return null;
   }
 
