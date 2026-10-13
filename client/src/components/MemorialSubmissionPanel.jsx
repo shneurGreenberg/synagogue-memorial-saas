@@ -25,6 +25,9 @@ function MemorialSubmissionPanelBase({ t, i18n }) {
   const { data } = useBoardData();
   const panel = data.memorialQrPanel || {};
   const publicSubmission = data.publicSubmission || {};
+  if (publicSubmission.showRegistrationQr === false) {
+    return null;
+  }
   const lang = resolvePanelLang(i18n);
   const titles = panel.titles || {};
   const texts = panel.texts || {};

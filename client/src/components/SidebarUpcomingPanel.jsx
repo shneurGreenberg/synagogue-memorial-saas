@@ -7,6 +7,24 @@ import { fetchJewishFeed } from '../lib/jewish-feed-client';
 
 const REFRESH_MS = 60 * 60 * 1000;
 
+function formatHolidayDateRange(card, lang) {
+  const start = formatHolidayDate(card.date, lang);
+  if (!card.isRange || !card.dateEnd || card.dateEnd === card.date) {
+    if (card.hebrew) {
+      return `${start} / ${card.hebrew}`;
+    }
+    return start;
+  }
+
+  const end = formatHolidayDate(card.dateEnd, lang);
+  const sep = lang === 'he' ? ' עד ' : ' – ';
+  let label = `${start}${sep}${end}`;
+  if (card.hebrew && card.hebrewEnd) {
+    label = `${label} / ${card.hebrew}${sep}${card.hebrewEnd}`;
+  }
+  return label;
+}
+
 function formatHolidayDate(dateStr, lang) {
   if (!dateStr) {
     return '';
@@ -119,10 +137,14 @@ class ScrollingAnnouncementsList extends React.Component {
   }
 
   renderHoliday(card, suffix) {
+    const dateAttr = card.dateEnd && card.dateEnd !== card.date
+      ? `${card.date}/${card.dateEnd}`
+      : card.date;
+
     return (
       <li key={`${card.id}${suffix}`} className="sidebar-holiday-item">
         <div className="sidebar-holiday-link" role="note">
-          <time dateTime={card.date}>{formatHolidayDate(card.date, this.props.uiLang)}</time>
+          <time dateTime={dateAttr}>{formatHolidayDateRange(card, this.props.uiLang)}</time>
           <span className="sidebar-holiday-title">{card.title}</span>
         </div>
       </li>

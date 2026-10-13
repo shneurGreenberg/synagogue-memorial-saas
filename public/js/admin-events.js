@@ -210,6 +210,7 @@
     var isHistory = options.isHistory;
     var showPublishNow = options.showPublishNow;
     var showEndNow = options.showEndNow;
+    var showReorder = options.showReorder;
 
     var description = event.text
       ? '<p class="event-card-text">' + escapeHtml(event.text) + '</p>'
@@ -220,6 +221,11 @@
     if (!isHistory) {
       actions += '<button type="button" class="btn-admin btn-admin-ghost btn-admin-sm btn-admin-with-icon event-edit-btn" data-event-id="' + id + '">'
         + icon('edit') + escapeHtml(labels.edit) + '</button>';
+    }
+
+    if (showReorder) {
+      actions += '<button type="button" class="btn-admin btn-admin-ghost btn-admin-sm event-reorder-btn" data-event-id="' + id + '" data-direction="up" aria-label="' + escapeHtml(labels.moveUp) + '">&#9650;</button>';
+      actions += '<button type="button" class="btn-admin btn-admin-ghost btn-admin-sm event-reorder-btn" data-event-id="' + id + '" data-direction="down" aria-label="' + escapeHtml(labels.moveDown) + '">&#9660;</button>';
     }
 
     if (showPublishNow) {
@@ -278,7 +284,7 @@
     renderSection(
       document.getElementById('activeEventsList'),
       categorized.active,
-      { emptyLabel: labels.noActiveEvents, showEndNow: true, showPublishNow: false, isHistory: false },
+      { emptyLabel: labels.noActiveEvents, showEndNow: true, showPublishNow: false, isHistory: false, showReorder: true },
     );
     renderSection(
       document.getElementById('scheduledEventsList'),
@@ -475,7 +481,42 @@
     var editBtn = event.target.closest('.event-edit-btn');
     if (editBtn) {
       openEditModal(editBtn.getAttribute('data-event-id'));
+      return;
     }
+
+    var reorderBtn = event.target.closest('.event-reorder-btn');
+    if (!reorderBtn) {
+      return;
+    }
+
+    event.preventDefault();
+    var eventId = reorderBtn.getAttribute('data-event-id');
+    var direction = reorderBtn.getAttribute('data-direction');
+    showBusy(labels.saving || 'Saving…');
+
+    fetch('/admin/' + slug + '/events/reorder', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+      body: new URLSearchParams({
+        eventId: eventId,
+        direction: direction,
+      }).toString(),
+    }).then(readJson).then(function (result) {
+      if (!result.ok || !result.data || !result.data.ok) {
+        throw new Error((result.data && result.data.error) || 'Reorder failed');
+      }
+      renderAllEvents(result.data.events);
+      hideBusy();
+      showStatus(labels.saved || 'Saved', 'success');
+    }).catch(function (err) {
+      hideBusy();
+      showStatus(err.message || 'Reorder failed', 'error');
+    });
   });
 
   async function translateText(text, target, source) {

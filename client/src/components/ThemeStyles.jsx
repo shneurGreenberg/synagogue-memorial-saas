@@ -9,6 +9,7 @@ import {
   resolveBoardBackgroundImage,
   resolveTilesBackgroundImage,
 } from '../lib/board-backgrounds';
+import { normalizeBoardFont, resolveBoardFontFamily } from '../lib/board-fonts';
 
 function tileGlassNoise(transparency) {
   if (transparency <= 0.01) {
@@ -64,8 +65,13 @@ export function ThemeStyles() {
   const candlePaletteCss = buildCandlePaletteCssVars(resolveCandlePalette(candlePalette));
   const backgroundImage = resolveBoardBackgroundImage(theme);
   const tilesBackground = resolveTilesBackgroundImage(theme);
+  const boardFontFamily = resolveBoardFontFamily(normalizeBoardFont(theme.boardFont));
 
   const css = `
+    body,
+    .main-container {
+      font-family: ${boardFontFamily} !important;
+    }
     :root {
       --primary-color: ${primary};
       --text-color: ${text};
