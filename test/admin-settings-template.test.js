@@ -8,6 +8,7 @@ const { getTranslator } = require('../lib/admin-translations');
 const { enrichSynagogueForAdmin } = require('../lib/admin-theme');
 const { FULL_ADMIN_PERMISSIONS } = require('../lib/admin-users');
 const { renderAdminIcon } = require('../lib/admin-icons');
+const { BOARD_FONTS, normalizeBoardFont } = require('../lib/board-fonts');
 
 const ROOT = path.join(__dirname, '..');
 const partialsDir = path.join(ROOT, 'views', 'partials');
@@ -81,6 +82,11 @@ function buildSettingsDashboardContext() {
       value: 100,
     },
     boardFeatureGroups: [],
+    boardFontOptions: BOARD_FONTS.map((font) => ({
+      id: font.id,
+      labelKey: font.labelKey,
+      selected: normalizeBoardFont(synagogue.theme.boardFont) === font.id,
+    })),
     savedViews: [],
     activeSavedViewId: '',
     activeSavedViewName: '',
