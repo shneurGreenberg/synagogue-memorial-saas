@@ -420,7 +420,7 @@ async function getUpcomingHolidayNotice(synagogue) {
         const lang = (synagogue && (synagogue.adminLanguage || synagogue.language)) || 'ru';
         const timezone = resolveSynagogueTimezone(synagogue);
         return await getCachedUpcomingHolidayNotice(async () => {
-            const holidays = await getUpcomingHolidays(lang, 90, 5);
+            const holidays = await getUpcomingHolidays(lang, 30, 5);
             return holidays && holidays.length ? holidays[0] : null;
         }, { lang, timezone });
     } catch (err) {
