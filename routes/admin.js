@@ -81,7 +81,12 @@ const {
   permissionAllows,
 } = require('../lib/admin-users');
 const { parsePeopleListSearchParam, personMatchesPeopleSearch } = require('../lib/people-list-search');
-const { parsePublicSubmissionFromBody } = require('../lib/public-submission');
+const { parsePublicSubmissionFromBody, parseFormCheckbox } = require('../lib/public-submission');
+const {
+  buildSavedViewExport,
+  normalizeImportedSnapshot,
+  readImportName,
+} = require('../lib/saved-view-portable');
 const MemorialPersonInvite = require('../models/MemorialPersonInvite');
 const { listPendingPersonAddRequests } = require('../lib/person-add-request');
 const { parsePersonContactsFromBody, normalizePersonContact, personContactsToLegacyFields, getPersonContacts, hasContactDetails } = require('../lib/person-contact');
@@ -730,10 +735,10 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
                 updateData['publicSubmission.donationUrl'] = publicSubmission.donationUrl || '';
             }
             if ('publicSubmissionShowDonationQr' in req.body) {
-                updateData['publicSubmission.showDonationQr'] = !!publicSubmission.showDonationQr;
+                updateData['publicSubmission.showDonationQr'] = parseFormCheckbox(req.body, 'publicSubmissionShowDonationQr') === true;
             }
             if ('publicSubmissionShowRegistrationQr' in req.body) {
-                updateData['publicSubmission.showRegistrationQr'] = !!publicSubmission.showRegistrationQr;
+                updateData['publicSubmission.showRegistrationQr'] = parseFormCheckbox(req.body, 'publicSubmissionShowRegistrationQr') === true;
             }
         }
 
@@ -743,7 +748,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
 
         if (permissions.settingsFeatures) {
             if ('shabbatTimesEnabled' in req.body) {
-                updateData.shabbatTimesEnabled = !!shabbatTimesEnabled;
+                updateData.shabbatTimesEnabled = parseFormCheckbox(req.body, 'shabbatTimesEnabled') === true;
             }
             Object.assign(updateData, Object.fromEntries(
                 Object.entries(boardFeatures).map(([key, value]) => [`boardFeatures.${key}`, value]),
@@ -964,7 +969,77 @@ router.delete('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermis
         }
 
         await Synagogue.updateOne({ slug: req.params.slug }, { $set: update }, { runValidators: false });
+        invalidateAdminSynagogueCache(req.params.slug);
         return res.json({ ok: true });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.get('/:slug/settings/saved-views/:viewId/export', requireAdmin, requirePermission('settings'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
+    const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
+    if (!canManageSavedViews(permissions)) {
+        return res.status(403).json({ ok: false, error: 'Forbidden' });
+    }
+
+    try {
+        const synagogue = await loadAdminSynagogue(req.params.slug, 'settings');
+        const view = findSavedView(synagogue?.savedViews, req.params.viewId);
+        if (!view) {
+            return res.status(404).json({ ok: false, error: 'Not found' });
+        }
+
+        const payload = buildSavedViewExport(view);
+        const safeName = String(view.name || 'saved-view').replace(/[^\w\u0590-\u05FF.-]+/g, '_').slice(0, 80);
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        res.setHeader('Content-Disposition', `attachment; filename="${safeName || 'saved-view'}.json"`);
+        return res.send(JSON.stringify(payload, null, 2));
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.post('/:slug/settings/saved-views/import', requireAdmin, requirePermission('settings'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
+    const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
+    if (!canManageSavedViews(permissions)) {
+        return res.status(403).json({ ok: false, error: 'Forbidden' });
+    }
+
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        if (!synagogue) {
+            return res.status(404).json({ ok: false, error: 'Not found' });
+        }
+
+        const imported = req.body && (req.body.export || req.body);
+        const name = readImportName(imported, req.body?.name);
+        if (!name) {
+            return res.status(400).json({ ok: false, error: 'Name is required' });
+        }
+
+        const snapshot = normalizeImportedSnapshot(imported, synagogue);
+        const screenshot = await saveViewThumbnail(snapshot, '');
+        const view = {
+            id: require('crypto').randomUUID(),
+            name,
+            savedAt: new Date(),
+            screenshot,
+            snapshot,
+        };
+
+        const savedViews = normalizeSavedViews(synagogue.savedViews);
+        savedViews.unshift(view);
+
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            { $set: { savedViews } },
+            { runValidators: false },
+        );
+        invalidateAdminSynagogueCache(req.params.slug);
+
+        return res.json({ ok: true, view });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
     }
