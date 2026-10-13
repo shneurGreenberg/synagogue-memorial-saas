@@ -25,6 +25,29 @@
       },
       body: formData,
       credentials: 'same-origin',
+    }).then(function (response) {
+      if (!response.ok) {
+        return null;
+      }
+      return response.json();
+    }).then(function (payload) {
+      if (!payload || !payload.ok) {
+        return;
+      }
+      if (payload.colorMode === 'light' || payload.colorMode === 'dark') {
+        var isLight = payload.colorMode === 'light';
+        document.body.classList.toggle('admin-theme-light', isLight);
+        document.body.classList.toggle('admin-theme-dark', !isLight);
+        var hidden = document.getElementById('sessionColorModeInput');
+        var toggle = document.getElementById('sessionColorModeToggle');
+        if (hidden) {
+          hidden.value = payload.colorMode;
+        }
+        if (toggle) {
+          toggle.setAttribute('aria-pressed', isLight ? 'true' : 'false');
+          toggle.dataset.mode = payload.colorMode;
+        }
+      }
     }).catch(function () {
       /* ignore network errors; user can retry by changing setting again */
     });

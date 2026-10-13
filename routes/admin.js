@@ -348,7 +348,8 @@ const contactImportUpload = multer({
     },
 });
 
-const parseFormBody = upload.none();
+const { createParseFormBody } = require('../lib/admin-parse-form-body');
+const parseFormBody = createParseFormBody(upload);
 
 function handleUpload(fields) {
     return (req, res, next) => {
@@ -1128,6 +1129,8 @@ router.post('/:slug/my-preferences', requireAdmin, parseFormBody, async (req, re
                 },
             });
         }
+
+        invalidateAdminSynagogueCache(req.params.slug);
 
         if (wantsJson(req)) {
             return res.json({ ok: true, adminLanguage: safeLanguage, colorMode: safeColorMode });

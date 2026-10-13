@@ -9,6 +9,25 @@ describe('community-events', () => {
     assert.equal(copy.title, 'שמחת תורה');
   });
 
+  it('parses eventTitle and eventDay fields from the admin announcement form', () => {
+    const copy = parseCommunityEventCopyFromBody({
+      eventTitle: 'שמחת תורה',
+      eventText: 'פרטים',
+    });
+    assert.equal(copy.title, 'שמחת תורה');
+    assert.equal(copy.text, 'פרטים');
+
+    const payload = buildCommunityEventPayload({
+      eventTitle: 'Community dinner',
+      eventMonth: '4',
+      eventDay: '12',
+      publishNow: '1',
+    }, { publishNow: true });
+    assert.equal(payload.title, 'Community dinner');
+    assert.equal(payload.eventDate.month, 4);
+    assert.equal(payload.eventDate.date, 12);
+  });
+
   it('requires schedule start when not publishing now', () => {
     assert.throws(
       () => buildCommunityEventPayload({ title: 'Event' }, { publishNow: false }),

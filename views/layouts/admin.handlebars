@@ -15,7 +15,6 @@
 </head>
 
 <body class="admin-body admin-theme-{{#if synagogue.adminColorMode}}{{synagogue.adminColorMode}}{{else}}dark{{/if}}{{#if adminIsRtl}} admin-rtl{{/if}}">
-    {{> beh-badge}}
     {{#if impersonatedByMaster}}
     <div class="admin-master-impersonation-banner" role="status">
         <span>{{t 'master_impersonation_banner'}}</span>
@@ -25,6 +24,7 @@
     </div>
     {{/if}}
     <nav class="navbar navbar-expand-lg navbar-dark admin-navbar">
+        <div class="admin-navbar-beh" aria-hidden="true">ב״ה</div>
         <a class="navbar-brand admin-navbar-brand" href="/admin/{{synagogue.slug}}/dashboard">
             <img class="admin-brand-logo" src="{{officialLogoUrl}}" alt="">
             <span>Synagogue Admin</span>
@@ -111,6 +111,7 @@
     <script src="/js/admin-icons.js"></script>
     <script src="/js/admin-nav.js"></script>
     <script src="/js/admin-locale.js"></script>
+    <script src="/js/admin-form-feedback.js"></script>
     {{#each adminPageScripts}}
     <script src="/js/{{this}}"></script>
     {{/each}}
