@@ -47,6 +47,9 @@
     </script>
     <div id="root"></div>
     <script type="module" src="/board/assets/memorial.js?v={{boardVersion}}"></script>
+    {{#if isBoardPreview}}
+    <script src="/js/board-preview-daily-learning.js?v={{boardVersion}}" defer></script>
+    {{/if}}
 </body>
 
 </html>

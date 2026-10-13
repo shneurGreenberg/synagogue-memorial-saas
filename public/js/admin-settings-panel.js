@@ -276,10 +276,32 @@
     var deleteConfirm = options.deleteConfirm || grid.dataset.deleteConfirm || 'Delete this saved view?';
     var emptyText = options.emptyText || grid.dataset.emptyText || '';
 
+    function downloadSavedViewExport(viewId, viewName) {
+      fetch('/admin/' + slug + '/settings/saved-views/' + encodeURIComponent(viewId) + '/export', {
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      }).then(function (response) {
+        if (!response.ok) {
+          throw new Error('export failed');
+        }
+        return response.blob().then(function (blob) {
+          var safeName = String(viewName || 'saved-view').replace(/[^\w\u0590-\u05FF.-]+/g, '_').slice(0, 80) || 'saved-view';
+          var url = URL.createObjectURL(blob);
+          var link = document.createElement('a');
+          link.href = url;
+          link.download = safeName + '.json';
+          link.click();
+          URL.revokeObjectURL(url);
+        });
+      }).catch(function () {
+        window.alert(options.exportError || 'Could not export saved view.');
+      });
+    }
+
     grid.addEventListener('click', function (event) {
       var applyBtn = event.target.closest('.saved-view-apply-btn');
+      var exportBtn = event.target.closest('.saved-view-export-btn');
       var deleteBtn = event.target.closest('.saved-view-delete-btn');
-      if (!applyBtn && !deleteBtn) {
+      if (!applyBtn && !exportBtn && !deleteBtn) {
         return;
       }
 
@@ -328,6 +350,13 @@
         return;
       }
 
+      if (exportBtn) {
+        var exportNameEl = card.querySelector('.saved-view-meta h3, .saved-view-thumb-label');
+        var exportName = exportNameEl ? exportNameEl.textContent.trim() : '';
+        downloadSavedViewExport(viewId, exportName);
+        return;
+      }
+
       if (deleteBtn) {
         if (!window.confirm(deleteConfirm)) {
           return;
@@ -366,12 +395,66 @@
     });
   }
 
+  function initSavedViewImport(options) {
+    options = options || {};
+    var importBtn = document.getElementById('importSavedViewBtn');
+    var importFile = document.getElementById('importSavedViewFile');
+    if (!importBtn || !importFile || importBtn.dataset.importBound === '1') {
+      return;
+    }
+
+    importBtn.dataset.importBound = '1';
+    var slug = options.slug || '';
+
+    importBtn.addEventListener('click', function () {
+      importFile.value = '';
+      importFile.click();
+    });
+
+    importFile.addEventListener('change', function () {
+      var file = importFile.files && importFile.files[0];
+      if (!file) {
+        return;
+      }
+
+      file.text().then(function (text) {
+        var parsed;
+        try {
+          parsed = JSON.parse(text);
+        } catch (err) {
+          throw new Error('invalid json');
+        }
+
+        return fetch('/admin/' + slug + '/settings/saved-views/import', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          body: JSON.stringify({ export: parsed }),
+        }).then(parseJsonResponse).then(function (result) {
+          if (result.ok && result.data && result.data.ok && result.data.view) {
+            if (typeof options.onImport === 'function') {
+              options.onImport(result.data.view);
+            }
+            window.alert(options.importSuccess || 'Saved view imported');
+            return;
+          }
+          throw new Error((result.data && result.data.error) || 'import failed');
+        });
+      }).catch(function () {
+        window.alert(options.importError || 'Could not import saved view.');
+      });
+    });
+  }
+
   window.AdminSettingsPanel = {
     initCollapsiblePanels: initCollapsiblePanels,
     capturePreviewScreenshot: capturePreviewScreenshot,
     updateActiveViewBadge: updateActiveViewBadge,
     applySnapshotToSettingsForm: applySnapshotToSettingsForm,
     initSavedViewsGrid: initSavedViewsGrid,
+    initSavedViewImport: initSavedViewImport,
   };
 
   function initSettingsPageUi() {
