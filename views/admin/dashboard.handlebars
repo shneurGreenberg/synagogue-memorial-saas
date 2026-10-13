@@ -29,7 +29,6 @@
   {{#if undatedPeopleCount}}
     <div class="alert admin-alert admin-alert-warning undated-people-banner" role="status">
         <span><strong>{{undatedPeopleCount}}</strong> {{t 'undated_people_banner'}}</span>
-        <a class="btn-admin btn-admin-secondary btn-admin-sm" href="/admin/{{synagogue.slug}}/people?undated=1">{{t 'undated_people_filter'}}</a>
     </div>
   {{/if}}
 
@@ -388,6 +387,14 @@
                                 {{t 'replace_image'}}
                                 <input type="file" name="logo" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml">
                             </label>
+                            <label class="toggle-switch settings-logo-circle-toggle">
+                                <input type="hidden" name="logoCircle" value="0">
+                                <input type="checkbox" name="logoCircle" value="1" id="logoCircleToggle"
+                                    {{#if synagogue.theme.logoCircle}}checked{{/if}}>
+                                <span class="toggle-slider" aria-hidden="true"></span>
+                                <span class="toggle-label">{{t 'logo_circle_crop'}}</span>
+                            </label>
+                            {{> admin-settings-logo-bg-swatches}}
                         </article>
                 {{/if}}
                 {{#if adminPermissions.settingsAppearance}}
@@ -580,8 +587,8 @@
                     return el ? el.value : 'classic';
                 })(),
                 logoBorderRadius: (function () {
-                    var el = document.getElementById('logoBorderRadius');
-                    return el ? el.value : '100';
+                    var el = document.getElementById('logoCircleToggle');
+                    return el && el.checked ? '100' : '0';
                 })(),
                 logoBackground: (function () {
                     var checked = document.querySelector('input[name="logoBackground"]:checked');
@@ -634,9 +641,19 @@
             candlePaletteSelect.addEventListener('change', schedulePreview);
         }
 
-        var logoBorderRadiusInput = document.getElementById('logoBorderRadius');
-        if (logoBorderRadiusInput) {
-            logoBorderRadiusInput.addEventListener('input', schedulePreview);
+        var logoCircleToggle = document.getElementById('logoCircleToggle');
+        function syncLogoCirclePreview() {
+            var previewImg = document.getElementById('communityLogoPreviewImg');
+            if (previewImg && logoCircleToggle) {
+                previewImg.style.borderRadius = logoCircleToggle.checked ? '50%' : '0';
+            }
+        }
+        if (logoCircleToggle) {
+            syncLogoCirclePreview();
+            logoCircleToggle.addEventListener('change', function () {
+                syncLogoCirclePreview();
+                schedulePreview();
+            });
         }
 
         document.querySelectorAll('input[name="logoBackground"]').forEach(function (radio) {

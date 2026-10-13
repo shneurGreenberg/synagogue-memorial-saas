@@ -14,7 +14,7 @@
   });
 
   const searchInput = document.getElementById('peopleSearch');
-  const undatedFilter = document.getElementById('peopleUndatedFilter');
+  const undatedFilter = null;
   const THUMB_WIDTH = 128;
 
   function parsePeopleListSearchParam(raw) {

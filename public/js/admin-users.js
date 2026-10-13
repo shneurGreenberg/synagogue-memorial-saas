@@ -33,29 +33,25 @@
   function bindSessionThemeToggle() {
     var toggle = document.getElementById('sessionColorModeToggle');
     var hidden = document.getElementById('sessionColorModeInput');
-    var label = document.getElementById('sessionColorModeToggleLabel');
-    var field = document.querySelector('.users-session-theme-field');
     var body = document.body;
-    if (!toggle || !hidden || !label || !field) {
+    if (!toggle || !hidden) {
       return;
     }
-
-    var lightLabel = field.dataset.lightLabel || 'Light';
-    var darkLabel = field.dataset.darkLabel || 'Dark';
 
     function applyAdminTheme(isLight) {
       body.classList.toggle('admin-theme-light', isLight);
       body.classList.toggle('admin-theme-dark', !isLight);
       hidden.value = isLight ? 'light' : 'dark';
-      toggle.checked = isLight;
-      label.textContent = isLight ? lightLabel : darkLabel;
+      toggle.setAttribute('aria-pressed', isLight ? 'true' : 'false');
+      toggle.dataset.mode = isLight ? 'light' : 'dark';
     }
 
     var initialLight = body.classList.contains('admin-theme-light');
     applyAdminTheme(initialLight);
 
-    toggle.addEventListener('change', function () {
-      applyAdminTheme(toggle.checked);
+    toggle.addEventListener('click', function () {
+      var isLight = hidden.value !== 'light';
+      applyAdminTheme(isLight);
       saveMyAdminPreferences();
     });
   }

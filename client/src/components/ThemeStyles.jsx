@@ -66,6 +66,7 @@ export function ThemeStyles() {
   const backgroundImage = resolveBoardBackgroundImage(theme);
   const tilesBackground = resolveTilesBackgroundImage(theme);
   const boardFontFamily = resolveBoardFontFamily(normalizeBoardFont(theme.boardFont));
+  const logoRadius = Number(theme.logoBorderRadius) >= 50 ? '50%' : '0';
 
   const css = `
     body,
@@ -116,6 +117,11 @@ export function ThemeStyles() {
     }
     .css-candle {
       ${candlePaletteCss}
+    }
+    .community-logo-btn .community-logo-img,
+    .main-container .banner,
+    .main-container .community-logo-btn .banner {
+      border-radius: ${logoRadius} !important;
     }
     .main-container .board-header h1 {
       color: var(--primary-color) !important;

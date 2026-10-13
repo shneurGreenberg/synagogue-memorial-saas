@@ -17,34 +17,40 @@
 
 
 {{#if weeklyKaddish}}
-<section id="weekly-kaddish" class="admin-alert admin-alert-warning weekly-kaddish-notice" role="alert">
-    <h2 class="weekly-kaddish-title">{{t 'weekly_kaddish_title'}} <span class="weekly-kaddish-range">{{weeklyKaddish.weekStartKey}} – {{weeklyKaddish.weekEndKey}}</span></h2>
-    <p class="weekly-kaddish-urgent"><strong>{{t 'weekly_kaddish_urgent'}}</strong></p>
-    <ul class="weekly-kaddish-list">
-        {{#each weeklyKaddish.entries}}
-        <li class="weekly-kaddish-item{{#if this.missingContact}} is-missing{{/if}}">
-            <a href="/admin/{{@root.synagogue.slug}}/people?q={{this.searchQuery}}" class="weekly-kaddish-name">{{this.name}}</a>
-            <span class="weekly-kaddish-date">{{this.weekdayHe}} {{this.gregorianLabel}} · {{this.hebrewLabel}}</span>
-            {{#if this.contacts.length}}
-            <span class="weekly-kaddish-contacts">
-                {{#each this.contacts}}<span class="weekly-kaddish-contact">{{this.name}}{{#if this.phone}} · {{this.phone}}{{/if}}{{#if this.email}} · {{this.email}}{{/if}}</span>{{/each}}
-            </span>
-            {{/if}}
-            {{#if this.missingContact}}<span class="weekly-kaddish-missing">⚠ {{t 'weekly_kaddish_missing_contact'}}</span>{{/if}}
-        </li>
-        {{/each}}
-    </ul>
-    <div class="weekly-kaddish-actions">
-        {{#if weeklyKaddish.confirmed}}
-        <span class="weekly-kaddish-confirmed">✓ {{t 'weekly_kaddish_confirmed_by'}} {{weeklyKaddish.confirmedBy}} · {{weeklyKaddish.confirmedAtLabel}}</span>
-        <button type="button" id="weeklyKaddishSend" class="btn-admin btn-admin-primary" data-wa-url="{{weeklyKaddish.whatsappUrl}}" data-copied-label="{{t 'weekly_kaddish_copied_set_number'}}">{{t 'weekly_kaddish_send_whatsapp'}}</button>
-        <textarea id="weeklyKaddishMessage" hidden readonly>{{weeklyKaddish.message}}</textarea>
-        {{else}}
-        <form method="POST" action="/admin/{{synagogue.slug}}/yahrzeit/weekly-confirm" class="weekly-kaddish-confirm-form">
-            <button type="submit" class="btn-admin btn-admin-primary">{{t 'weekly_kaddish_confirm'}}</button>
-        </form>
-        {{/if}}
-    </div>
+<section id="weekly-kaddish" class="admin-panel weekly-kaddish-panel">
+    <details class="weekly-kaddish-details">
+        <summary class="weekly-kaddish-summary">
+            {{t 'weekly_kaddish_summary'}}
+            <span class="weekly-kaddish-range">{{weeklyKaddish.weekStartKey}} – {{weeklyKaddish.weekEndKey}}</span>
+        </summary>
+        <div class="weekly-kaddish-details-body">
+            <ul class="weekly-kaddish-list">
+                {{#each weeklyKaddish.entries}}
+                <li class="weekly-kaddish-item{{#if this.missingContact}} is-missing{{/if}}">
+                    <a href="/admin/{{@root.synagogue.slug}}/people?q={{this.searchQuery}}" class="weekly-kaddish-name">{{this.name}}</a>
+                    <span class="weekly-kaddish-date">{{this.weekdayHe}} {{this.gregorianLabel}} · {{this.hebrewLabel}}</span>
+                    {{#if this.contacts.length}}
+                    <span class="weekly-kaddish-contacts">
+                        {{#each this.contacts}}<span class="weekly-kaddish-contact">{{this.name}}{{#if this.phone}} · {{this.phone}}{{/if}}{{#if this.email}} · {{this.email}}{{/if}}</span>{{/each}}
+                    </span>
+                    {{/if}}
+                    {{#if this.missingContact}}<span class="weekly-kaddish-missing">{{t 'weekly_kaddish_missing_contact'}}</span>{{/if}}
+                </li>
+                {{/each}}
+            </ul>
+            <div class="weekly-kaddish-actions">
+                {{#if weeklyKaddish.confirmed}}
+                <span class="weekly-kaddish-confirmed">✓ {{t 'weekly_kaddish_confirmed_by'}} {{weeklyKaddish.confirmedBy}} · {{weeklyKaddish.confirmedAtLabel}}</span>
+                <button type="button" id="weeklyKaddishSend" class="btn-admin btn-admin-primary" data-wa-url="{{weeklyKaddish.whatsappUrl}}" data-copied-label="{{t 'weekly_kaddish_copied_set_number'}}">{{t 'weekly_kaddish_send_whatsapp'}}</button>
+                <textarea id="weeklyKaddishMessage" hidden readonly>{{weeklyKaddish.message}}</textarea>
+                {{else}}
+                <form method="POST" action="/admin/{{synagogue.slug}}/yahrzeit/weekly-confirm" class="weekly-kaddish-confirm-form">
+                    <button type="submit" class="btn-admin btn-admin-primary">{{t 'weekly_kaddish_confirm'}}</button>
+                </form>
+                {{/if}}
+            </div>
+        </div>
+    </details>
 </section>
 {{/if}}
 
