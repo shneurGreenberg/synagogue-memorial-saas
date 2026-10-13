@@ -217,6 +217,11 @@
                                 <label for="editText">{{t 'biography'}}</label>
                                 <textarea name="text" id="editText" class="form-control"></textarea>
                             </div>
+                            <div class="form-field">
+                                <label for="editInternalNotes">{{t 'internal_notes_label'}}</label>
+                                <textarea name="internalNotes" id="editInternalNotes" class="form-control" rows="3" maxlength="4000" placeholder="{{t 'internal_notes_placeholder'}}"></textarea>
+                                <span class="field-hint">{{t 'internal_notes_hint'}}</span>
+                            </div>
                             {{> admin-person-contacts}}
                         </div>
                     </div>

@@ -37,6 +37,12 @@ const PersonSchema = new mongoose.Schema({
   text: String,
   contact: { type: PersonContactSchema, default: () => ({}) },
   contacts: { type: [PersonContactSchema], default: undefined },
+  hebrewDateOfDeath: {
+    month: { type: Number, default: undefined },
+    date: { type: Number, default: undefined },
+    year: { type: Number, default: undefined },
+  },
+  internalNotes: { type: String, default: '' },
 });
 
 const DailyCiteSchema = new mongoose.Schema({
@@ -331,6 +337,23 @@ const SynagogueSchema = new mongoose.Schema({
     weekKey: { type: String, default: '' },
     confirmedBy: { type: String, default: '' },
     confirmedAt: { type: Date, default: null },
+  },
+  adminYahrzeitTodayCache: {
+    dayKey: { type: String, default: '' },
+    peopleRevision: { type: String, default: '' },
+    includeHebrewYahrzeit: { type: Boolean, default: true },
+    count: { type: Number, default: 0 },
+    computedAt: { type: Date, default: null },
+  },
+  adminWeeklyKaddishCache: {
+    weekKey: { type: String, default: '' },
+    peopleRevision: { type: String, default: '' },
+    includeHebrewYahrzeit: { type: Boolean, default: true },
+    weekStartKey: { type: String, default: '' },
+    weekEndKey: { type: String, default: '' },
+    missingCount: { type: Number, default: 0 },
+    entries: { type: [mongoose.Schema.Types.Mixed], default: undefined },
+    computedAt: { type: Date, default: null },
   },
   boardClients: {
     type: [{

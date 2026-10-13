@@ -99,6 +99,9 @@ const {
   buildContactMessageEntry,
 } = require('../lib/yahrzeit-reminders');
 const { resolveSynagogueTimezone } = require('../lib/yahrzeit');
+const { computeHebrewDateOfDeath } = require('../lib/person-hebrew-death');
+const { backfillPeopleHebrewDeathDates } = require('../lib/person-hebrew-backfill');
+const { getCachedUpcomingHolidayNotice } = require('../lib/admin-holiday-notice-cache');
 const { getCachedAdminYahrzeitBundle, getCachedYahrzeitTodayCount } = require('../lib/admin-yahrzeit-cache');
 const { createAdminTiming } = require('../lib/admin-timing');
 const {
@@ -410,12 +413,19 @@ async function getUpcomingHolidayNotice(synagogue) {
     try {
         const { getUpcomingHolidays } = require('../lib/jewish-feed');
         const lang = (synagogue && (synagogue.adminLanguage || synagogue.language)) || 'ru';
-        const holidays = await getUpcomingHolidays(lang, 90, 5);
-        return holidays && holidays.length ? holidays[0] : null;
+        const timezone = resolveSynagogueTimezone(synagogue);
+        return await getCachedUpcomingHolidayNotice(async () => {
+            const holidays = await getUpcomingHolidays(lang, 90, 5);
+            return holidays && holidays.length ? holidays[0] : null;
+        }, { lang, timezone });
     } catch (err) {
         console.warn('upcoming holiday notice failed:', err.message);
         return null;
     }
+}
+
+function normalizeInternalNotes(raw) {
+    return String(raw || '').trim().slice(0, 4000);
 }
 
 function requirePermission(permission) {
@@ -1102,6 +1112,10 @@ function normalizeImportedPerson(raw, fallbackId) {
     );
     person.contact = legacy.contact;
     person.contacts = legacy.contacts;
+    const hebrew = computeHebrewDateOfDeath(person.gregorianDateOfDeath);
+    if (hebrew) {
+        person.hebrewDateOfDeath = hebrew;
+    }
     return person;
 }
 
@@ -1131,6 +1145,7 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
     try {
         const synagogue = await loadAdminSynagogue(req.params.slug, 'yahrzeit');
         timing.mark('db');
+        void backfillPeopleHebrewDeathDates(req.params.slug, synagogue && synagogue.people);
         const enriched = enrichSynagogueForAdmin(synagogue);
         const displaySynagogue = applyUserDisplaySettings(enriched, req.adminUser);
         const now = new Date();
@@ -1297,6 +1312,7 @@ router.get('/:slug/people/list', requireAdmin, requirePermission('people'), asyn
         }
 
         const query = parsePeopleListSearchParam(req.query.q).toLowerCase();
+        void backfillPeopleHebrewDeathDates(req.params.slug, synagogue.people);
         let people = synagogue.people || [];
         if (query) {
             people = people.filter((person) => personMatchesPeopleSearch(person.name, query));
@@ -1643,6 +1659,7 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
             id: maxId + 1,
             name,
             text: sanitizeRichText(text),
+            internalNotes: normalizeInternalNotes(req.body.internalNotes),
             photo: req.file ? await optimizeUploadedImage(req.file.path, 'photo') : '',
             photoCrop: req.file ? parsePhotoCropFromBody(req.body) : undefined,
             title: '',
@@ -1651,6 +1668,10 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
         };
         if (deathDate) {
             newPerson.gregorianDateOfDeath = deathDate;
+            const hebrew = computeHebrewDateOfDeath(deathDate);
+            if (hebrew) {
+                newPerson.hebrewDateOfDeath = hebrew;
+            }
         }
 
         await Synagogue.updateOne(
@@ -1683,14 +1704,19 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
         const updateFields = {
             'people.$.name': name,
             'people.$.text': sanitizeRichText(text),
+            'people.$.internalNotes': normalizeInternalNotes(req.body.internalNotes),
             'people.$.contact': legacy.contact,
             'people.$.contacts': legacy.contacts,
         };
         const update = { $set: updateFields };
         if (deathDate) {
             updateFields['people.$.gregorianDateOfDeath'] = deathDate;
+            const hebrew = computeHebrewDateOfDeath(deathDate);
+            if (hebrew) {
+                updateFields['people.$.hebrewDateOfDeath'] = hebrew;
+            }
         } else {
-            update.$unset = { 'people.$.gregorianDateOfDeath': '' };
+            update.$unset = { 'people.$.gregorianDateOfDeath': '', 'people.$.hebrewDateOfDeath': '' };
         }
 
         if (req.file) {

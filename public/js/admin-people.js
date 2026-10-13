@@ -1097,6 +1097,10 @@
     document.getElementById('editMonth').value = death.month || '';
     document.getElementById('editYear').value = death.year || '';
     document.getElementById('editText').value = person.text || '';
+    const editInternalNotes = document.getElementById('editInternalNotes');
+    if (editInternalNotes) {
+      editInternalNotes.value = person.internalNotes || '';
+    }
     const deletePhotoInput = document.getElementById('editDeletePhoto');
     if (deletePhotoInput) {
       deletePhotoInput.value = '';

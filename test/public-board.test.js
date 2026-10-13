@@ -21,6 +21,7 @@ describe('public board payload', () => {
         gregorianDateOfDeath: { month: 1, date: 2, year: 2000 },
         contact: { name: 'Relative', phone: '+100', email: 'secret@example.com' },
         contacts: [{ phone: '+200', email: 'other@example.com' }],
+        internalNotes: 'staff only',
       },
     ],
     dailyCites: [{ hebrewDate: { month: 1, date: 1 }, text: 'Cite' }],
@@ -59,6 +60,7 @@ describe('public board payload', () => {
     assert.equal(payload.people[0].text, undefined);
     assert.equal(payload.people[0].contact, undefined);
     assert.equal(payload.people[0].contacts, undefined);
+    assert.equal(payload.people[0].internalNotes, undefined);
     assert.equal(payload.contactDirectory, undefined);
     assert.equal(payload.adminUsers, undefined);
     assert.equal(payload.yahrzeitReminders, undefined);
