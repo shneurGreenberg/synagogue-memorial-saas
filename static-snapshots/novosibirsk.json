@@ -3222,7 +3222,6 @@
     "kelMaleRachamim": true,
     "izkor": false,
     "weather": true,
-    "sunriseSunset": true,
     "officialLogo": false
   },
   "publicSubmission": {
@@ -3283,8 +3282,8 @@
       }
     ]
   },
-  "contentVersion": 1791911785653,
-  "exportedAt": "2026-10-13T17:16:25.653Z",
+  "contentVersion": 1791913874503,
+  "exportedAt": "2026-10-13T17:51:14.503Z",
   "jewishContent": {
     "date": "2026-10-14",
     "timezone": "Asia/Novosibirsk",
@@ -3292,7 +3291,7 @@
       "date": "2026-10-14",
       "timezone": "Asia/Novosibirsk",
       "chumash": {
-        "label": ""
+        "label": "Лех Л'ча, Шейни с Раши."
       },
       "tehillim": {
         "label": "Тегилим 18-22"
@@ -3350,8 +3349,7 @@
       "officialLogo": false,
       "upcomingHolidays": true,
       "communityEvents": true,
-      "weather": true,
-      "sunriseSunset": true
+      "weather": true
     },
     "theme": {
       "primaryColor": "#cfaf1f",
@@ -3378,6 +3376,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-13T17:16:25.653Z"
+    "updatedAt": "2026-10-13T17:51:14.503Z"
   }
 }

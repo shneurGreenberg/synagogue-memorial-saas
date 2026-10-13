@@ -6252,7 +6252,6 @@
     "kelMaleRachamim": false,
     "izkor": false,
     "weather": true,
-    "sunriseSunset": true,
     "officialLogo": false
   },
   "publicSubmission": {
@@ -6295,8 +6294,8 @@
   "shabbatTimesEnabled": true,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1791911796385,
-  "exportedAt": "2026-10-13T17:16:36.385Z",
+  "contentVersion": 1791913879226,
+  "exportedAt": "2026-10-13T17:51:19.226Z",
   "jewishContent": {
     "date": "2026-10-14",
     "timezone": "Asia/Tomsk",
@@ -6304,7 +6303,7 @@
       "date": "2026-10-14",
       "timezone": "Asia/Tomsk",
       "chumash": {
-        "label": ""
+        "label": "Лех Л'ча, Шейни с Раши."
       },
       "tehillim": {
         "label": "Тегилим 18-22"
@@ -6362,8 +6361,7 @@
       "officialLogo": false,
       "upcomingHolidays": true,
       "communityEvents": true,
-      "weather": true,
-      "sunriseSunset": true
+      "weather": true
     },
     "theme": {
       "primaryColor": "#ecd779",
@@ -6389,6 +6387,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-13T17:16:36.385Z"
+    "updatedAt": "2026-10-13T17:51:19.226Z"
   }
 }
