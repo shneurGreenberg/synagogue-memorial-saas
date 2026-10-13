@@ -356,7 +356,6 @@ function renderMemorialBoard(req, res, synagogue) {
     faviconUrl: buildFaviconPath(synagogue.slug, { badge: false }),
     faviconAlertUrl: buildFaviconPath(synagogue.slug, { badge: true }),
     yahrzeitTodayCount,
-    isBoardPreview: req.query && req.query.preview === '1',
   });
 }
 
