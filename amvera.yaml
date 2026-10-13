@@ -9,7 +9,7 @@ meta:
     version: "20"
 
 build:
-  additionalCommands: npm run build:board
+  additionalCommands: npm run build:board && npm run build:css
 
 run:
   command: npm run start:prod
