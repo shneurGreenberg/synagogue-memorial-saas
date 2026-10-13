@@ -1,5 +1,4 @@
 const MIN_UPCOMING_DATES = 6;
-const COMMUNITY_EVENT_REPEAT_INTERVAL = 3;
 
 function parseIsoDate(dateStr) {
   if (!dateStr) {
@@ -48,12 +47,17 @@ function selectNearestUpcoming(items, now = new Date(), minCount = MIN_UPCOMING_
 function buildHolidaySidebarItems(holidays) {
   return (holidays || []).map((holiday) => {
     const gregorianDate = parseIsoDate(holiday.date);
+    const dateEnd = holiday.dateEnd && holiday.dateEnd !== holiday.date ? holiday.dateEnd : null;
 
     return {
       listType: 'holiday',
-      id: `holiday-${holiday.date}-${holiday.title}`,
+      id: `holiday-${holiday.date}-${holiday.dateEnd || ''}-${holiday.title}`,
       title: holiday.title,
       date: holiday.date,
+      dateEnd,
+      hebrew: holiday.hebrew || '',
+      hebrewEnd: holiday.hebrewEnd || '',
+      isRange: Boolean(holiday.isRange && dateEnd),
       gregorianDate,
       sortDate: gregorianDate.getTime(),
     };
@@ -86,71 +90,27 @@ function isPlaceholder(text) {
 }
 
 function buildEventSidebarItems(communityEvents) {
-  return (communityEvents || [])
-    .filter((event) => !isPlaceholder(event.title) && !isPlaceholder(event.text))
-    .map((event) => ({
-      ...event,
-      listType: 'event',
-      sortDate: event.isUndated ? null : (event.gregorianDate ? event.gregorianDate.getTime() : null),
-    }));
-}
-
-function cloneAnnouncementItem(item, suffix) {
-  return {
-    ...item,
-    id: `${item.id}-rep-${suffix}`,
-  };
-}
-
-function repeatEventsForScroll(events, cycles = 6) {
-  const repeated = [];
-
-  for (let cycle = 0; cycle < cycles; cycle += 1) {
-    events.forEach((event, index) => {
-      repeated.push(cloneAnnouncementItem(event, `scroll-${cycle}-${index}`));
-    });
-  }
-
-  return repeated;
-}
-
-function interleaveCommunityEvents(announcements, events, interval = COMMUNITY_EVENT_REPEAT_INTERVAL) {
-  if (!events.length) {
-    return announcements;
-  }
-
-  if (!announcements.length) {
-    return repeatEventsForScroll(events);
-  }
-
-  const undatedEvents = events.filter((event) => event.isUndated);
-  const datedEvents = events.filter((event) => !event.isUndated);
-  const injectableEvents = datedEvents.length ? datedEvents : events;
-  const result = [...undatedEvents];
-  let cycle = 0;
-
-  announcements.forEach((item, index) => {
-    result.push(item);
-
-    if ((index + 1) % interval !== 0) {
-      return;
-    }
-
-    injectableEvents.forEach((event, eventIndex) => {
-      result.push(cloneAnnouncementItem(event, `${index}-${eventIndex}-${cycle}`));
-    });
-    cycle += 1;
-  });
-
-  const hasInjectedEvent = result.some(
-    (item) => item.listType === 'event' && String(item.id).includes('-rep-'),
+  return sortEventsByManualOrder(
+    (communityEvents || [])
+      .filter((event) => !isPlaceholder(event.title) && !isPlaceholder(event.text))
+      .map((event) => ({
+        ...event,
+        listType: 'event',
+        sortOrder: Number.isFinite(Number(event.sortOrder)) ? Number(event.sortOrder) : 0,
+        sortDate: event.isUndated ? null : (event.gregorianDate ? event.gregorianDate.getTime() : null),
+      })),
   );
+}
 
-  if (!hasInjectedEvent) {
-    return [...events, ...announcements];
-  }
-
-  return result;
+function sortEventsByManualOrder(events) {
+  return [...events].sort((a, b) => {
+    const orderA = Number.isFinite(Number(a.sortOrder)) ? Number(a.sortOrder) : 0;
+    const orderB = Number.isFinite(Number(b.sortOrder)) ? Number(b.sortOrder) : 0;
+    if (orderA !== orderB) {
+      return orderA - orderB;
+    }
+    return sortByDate(a, b);
+  });
 }
 
 export function buildSidebarAnnouncements(communityEvents, holidays, chabadDates, boardFeatures = {}) {
@@ -168,5 +128,5 @@ export function buildSidebarAnnouncements(communityEvents, holidays, chabadDates
 
   const announcements = selectNearestUpcoming([...holidayItems, ...chabadItems]);
 
-  return interleaveCommunityEvents(announcements, events);
+  return [...announcements, ...events];
 }

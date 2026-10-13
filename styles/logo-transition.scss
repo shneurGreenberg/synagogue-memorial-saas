@@ -5,7 +5,6 @@
   border: none;
   background: transparent;
   cursor: pointer;
-  border-radius: var(--community-logo-radius, 50%);
   perspective: 600px;
   transition: transform 0.2s ease;
 
@@ -20,7 +19,7 @@
 
   .community-logo-flip {
     display: block;
-    border-radius: var(--community-logo-radius, 50%);
+    background: transparent;
     transform-style: preserve-3d;
     transition: transform 0.55s cubic-bezier(0.4, 0.2, 0.2, 1);
   }
@@ -33,24 +32,7 @@
     display: block;
     pointer-events: none;
     backface-visibility: hidden;
-    border-radius: var(--community-logo-radius, 50%);
+    border-radius: 0;
+    background: transparent;
   }
-
-  &.has-logo-bg-white .community-logo-flip {
-    background: #fff;
-  }
-
-  &.has-logo-bg-black .community-logo-flip {
-    background: #000;
-  }
-}
-
-.logo-bg-white,
-.has-logo-bg-white .community-logo-flip {
-  background: #fff;
-}
-
-.logo-bg-black,
-.has-logo-bg-black .community-logo-flip {
-  background: #000;
 }

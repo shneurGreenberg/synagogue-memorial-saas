@@ -91,6 +91,7 @@ const CommunityEventSchema = new mongoose.Schema({
   },
   startAt: { type: Date, default: Date.now },
   endAt: Date,
+  sortOrder: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },
 });
 
@@ -194,6 +195,8 @@ const SavedViewSchema = new mongoose.Schema({
       donationUrl: String,
       donationQrImage: String,
       registrationQrImage: String,
+      showDonationQr: Boolean,
+      showRegistrationQr: Boolean,
     },
   },
 }, { _id: true, id: false });
@@ -230,6 +233,8 @@ const SynagogueSchema = new mongoose.Schema({
     donationUrl: { type: String, default: '' },
     donationQrImage: { type: String, default: '' },
     registrationQrImage: { type: String, default: '' },
+    showDonationQr: { type: Boolean, default: true },
+    showRegistrationQr: { type: Boolean, default: true },
   },
   yahrzeitReminders: {
     enabled: { type: Boolean, default: false },
@@ -312,6 +317,7 @@ const SynagogueSchema = new mongoose.Schema({
     logo: String,
     logoBorderRadius: { type: Number, default: 100, min: 0, max: 100 },
     logoBackground: { type: String, enum: ['', 'white', 'black'], default: '' },
+    boardFont: { type: String, default: 'georgia' },
     candlePalette: { type: String, default: 'classic' },
   },
   location: {

@@ -1,16 +1,9 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { assetUrl } from '../lib/asset-url';
 
-function logoBackgroundClass(logoBackground) {
-  if (logoBackground === 'white') return ' has-logo-bg-white';
-  if (logoBackground === 'black') return ' has-logo-bg-black';
-  return '';
-}
-
-export function CommunityLogo({ src, alt, borderRadius = 100, logoBackground = '' }) {
+export function CommunityLogo({ src, alt }) {
   const [flipping, setFlipping] = useState(false);
   const [imgSrc, setImgSrc] = useState(src);
-  const logoRadius = useMemo(() => `${(Number(borderRadius) / 100) * 50}%`, [borderRadius]);
 
   const handleImageError = useCallback(() => {
     setImgSrc(assetUrl('images/kaddish-official-logo.svg'));
@@ -35,11 +28,10 @@ export function CommunityLogo({ src, alt, borderRadius = 100, logoBackground = '
   return (
     <button
       type="button"
-      className={`community-logo-btn${flipping ? ' is-flipping' : ''}${logoBackgroundClass(logoBackground)}`}
+      className={`community-logo-btn${flipping ? ' is-flipping' : ''}`}
       onClick={goToAdmin}
       aria-label={alt || 'Community logo'}
       title="Admin"
-      style={{ '--community-logo-radius': logoRadius }}
     >
       <span className="community-logo-flip">
         <img 

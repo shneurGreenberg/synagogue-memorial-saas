@@ -26,12 +26,19 @@ export function resolveBoardFeatures(raw) {
   return resolved;
 }
 
-export function hasJewishContentPanels(boardFeatures) {
-  const features = resolveBoardFeatures(boardFeatures);
+const DAILY_STUDY_FEATURE_KEYS = [
+  'dailyChumash',
+  'dailyTehillim',
+  'dailyTanya',
+  'dailyRambam',
+  'hayomYom',
+];
 
-  return features.dailyChumash
-    || features.dailyTehillim
-    || features.dailyTanya
-    || features.dailyRambam
-    || features.hayomYom;
+export function hasDailyStudyFeatures(boardFeatures) {
+  const features = resolveBoardFeatures(boardFeatures);
+  return DAILY_STUDY_FEATURE_KEYS.some((key) => features[key]);
+}
+
+export function hasJewishContentPanels(boardFeatures) {
+  return hasDailyStudyFeatures(boardFeatures);
 }

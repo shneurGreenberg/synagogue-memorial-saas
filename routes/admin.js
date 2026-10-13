@@ -60,6 +60,8 @@ const {
 const {
   buildCommunityEventPayload,
   categorizeCommunityEvents,
+  nextCommunityEventSortOrder,
+  reorderCommunityEvents,
 } = require('../lib/community-events');
 const loginRateLimiter = createLoginRateLimiter();
 const {
@@ -108,6 +110,7 @@ const { buildFaviconPath, resolveFaviconLogoFilename } = require('../lib/favicon
 const { OFFICIAL_LOGO_FILENAME } = require('../lib/board-defaults');
 const { CANDLE_PALETTE_KEYS, normalizeCandlePalette } = require('../lib/candle-palette');
 const { normalizeBoardFeatures } = require('../lib/board-features');
+const { BOARD_FONTS, normalizeBoardFont } = require('../lib/board-fonts');
 const { scanPathForSlug, safeScanReturnPath } = require('../lib/grave-scan');
 
 const BOARD_FEATURE_TOGGLE_META = [
@@ -695,11 +698,8 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             updateData['theme.tileColor'] = sanitizeHexColor(tileColor, BOARD_THEME_DEFAULTS.tileColor);
             updateData['theme.tileOpacity'] = normalizeTileOpacity(tileOpacity);
             updateData['theme.candlePalette'] = normalizeCandlePalette(candlePalette);
-            if ('logoBorderRadius' in req.body) {
-                updateData['theme.logoBorderRadius'] = normalizeLogoBorderRadius(logoBorderRadius);
-            }
-            if ('logoBackground' in req.body) {
-                updateData['theme.logoBackground'] = normalizeLogoBackground(logoBackground);
+            if ('boardFont' in req.body) {
+                updateData['theme.boardFont'] = normalizeBoardFont(req.body.boardFont);
             }
             Object.entries(fontScales).forEach(([key, value]) => {
                 updateData[`theme.fontScales.${key}`] = value;
@@ -709,6 +709,12 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             ));
             if ('publicSubmissionDonationUrl' in req.body) {
                 updateData['publicSubmission.donationUrl'] = publicSubmission.donationUrl || '';
+            }
+            if ('publicSubmissionShowDonationQr' in req.body) {
+                updateData['publicSubmission.showDonationQr'] = !!publicSubmission.showDonationQr;
+            }
+            if ('publicSubmissionShowRegistrationQr' in req.body) {
+                updateData['publicSubmission.showRegistrationQr'] = !!publicSubmission.showRegistrationQr;
             }
         }
 
@@ -1059,6 +1065,11 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             activeSavedViewId: enriched.activeSavedViewId || '',
             activeSavedViewName: activeSavedView ? activeSavedView.name : '',
             memorialQrPanel: enriched.memorialQrPanel,
+            boardFontOptions: BOARD_FONTS.map((font) => ({
+              id: font.id,
+              labelKey: font.labelKey,
+              selected: normalizeBoardFont(enriched.theme.boardFont) === font.id,
+            })),
             saved: req.query.saved === '1',
             refreshed: req.query.refreshed === '1',
             error: req.query.error || null,
@@ -1941,8 +1952,10 @@ router.post('/:slug/events/add', requireAdmin, requirePermission('events'), pars
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const publishNow = req.body.publishNow === '1' || req.body.publishNow === 'true';
+        const existingEvents = await fetchCommunityEvents(req.params.slug);
         const payload = buildCommunityEventPayload(req.body, { publishNow });
         payload.text = sanitizeRichText(payload.text);
+        payload.sortOrder = nextCommunityEventSortOrder(existingEvents);
 
         if (!payload.title) {
             return res.status(400).json({ ok: false, error: 'Title is required' });
@@ -2020,6 +2033,31 @@ router.post('/:slug/events/publish-now', requireAdmin, requirePermission('events
         return res.json({ ok: true, events: categorizeCommunityEvents(events) });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.post('/:slug/events/reorder', requireAdmin, requirePermission('events'), parseFormBody, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { eventId, direction } = req.body;
+        if (!eventId || (direction !== 'up' && direction !== 'down')) {
+            return res.status(400).json({ ok: false, error: 'Invalid reorder request' });
+        }
+
+        const events = await fetchCommunityEvents(req.params.slug);
+        const { active } = categorizeCommunityEvents(events);
+        const reorderedActive = reorderCommunityEvents(active, eventId, direction);
+
+        const updates = reorderedActive.map((event, index) => Synagogue.updateOne(
+            { slug: req.params.slug, 'communityEvents._id': event._id },
+            { $set: { 'communityEvents.$.sortOrder': index } },
+        ));
+        await Promise.all(updates);
+
+        const nextEvents = await fetchCommunityEvents(req.params.slug);
+        return res.json({ ok: true, events: categorizeCommunityEvents(nextEvents) });
+    } catch (err) {
+        return res.status(400).json({ ok: false, error: err.message });
     }
 });
 

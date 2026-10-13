@@ -286,6 +286,15 @@
                             <option value="he" {{#if (eq synagogue.language 'he')}}selected{{/if}}>Hebrew</option>
                         </select>
                     </div>
+                    <div class="form-field board-font-field">
+                        <label for="boardFont">{{t 'board_font'}}</label>
+                        <select name="boardFont" id="boardFont" class="form-control admin-select-modern">
+                            {{#each boardFontOptions}}
+                            <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{t this.labelKey}}</option>
+                            {{/each}}
+                        </select>
+                        <span class="field-hint">{{t 'board_font_help'}}</span>
+                    </div>
                     {{/if}}
                     <div class="typography-controls settings-typography-controls">
                         {{#each textsFontScaleGroups}}
@@ -353,8 +362,7 @@
                     <div class="settings-media-grid settings-media-grid--community">
                 {{#if adminPermissions.settingsBranding}}
                         <article class="settings-media-tile settings-media-tile--logo">
-                            <div class="saved-view-thumb settings-media-thumb settings-media-thumb--square media-preview media-preview-logo{{#if (eq synagogue.theme.logoBackground 'white')}} logo-bg-white{{/if}}{{#if (eq synagogue.theme.logoBackground 'black')}} logo-bg-black{{/if}}" id="communityLogoPreview"
-                                style="--preview-logo-radius: {{#if synagogue.theme.logoBorderRadius}}{{synagogue.theme.logoBorderRadius}}{{else}}100{{/if}};">
+                            <div class="saved-view-thumb settings-media-thumb settings-media-thumb--square media-preview media-preview-logo" id="communityLogoPreview">
                                 {{#if synagogue.theme.logo}}
                                 <img src="/images/{{synagogue.theme.logo}}" alt="{{t 'logo'}}" id="communityLogoPreviewImg">
                                 {{else}}
@@ -366,15 +374,6 @@
                                 {{t 'replace_image'}}
                                 <input type="file" name="logo" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml">
                             </label>
-                            <div class="slider-field-modern settings-slider-compact settings-embedded-slider">
-                                <label for="logoBorderRadius">{{t 'logo_border_radius'}}</label>
-                                {{#if synagogue.theme.logoBorderRadius}}
-                                {{> admin-settings-number-stepper name="logoBorderRadius" id="logoBorderRadius" min="0" max="100" step="1" value=synagogue.theme.logoBorderRadius suffix="%" compact=true inputClass="logo-radius-input"}}
-                                {{else}}
-                                {{> admin-settings-number-stepper name="logoBorderRadius" id="logoBorderRadius" min="0" max="100" step="1" value="100" suffix="%" compact=true inputClass="logo-radius-input"}}
-                                {{/if}}
-                            </div>
-                            {{> admin-settings-logo-bg-swatches}}
                         </article>
                 {{/if}}
                 {{#if adminPermissions.settingsAppearance}}
@@ -850,10 +849,16 @@
             var shabbat = document.getElementById('shabbatTimesEnabled');
             var publicSubmission = document.getElementById('publicSubmissionEnabled');
             var donationUrl = document.getElementById('publicSubmissionDonationUrl');
+            var showDonationQr = document.getElementById('publicSubmissionShowDonationQr');
+            var showRegistrationQr = document.getElementById('publicSubmissionShowRegistrationQr');
+            var boardFont = document.getElementById('boardFont');
             return {
                 shabbatTimesEnabled: shabbat && shabbat.checked ? '1' : '',
                 publicSubmissionEnabled: publicSubmission && publicSubmission.checked ? '1' : '',
                 publicSubmissionDonationUrl: donationUrl ? donationUrl.value.trim() : '',
+                publicSubmissionShowDonationQr: showDonationQr && showDonationQr.checked ? '1' : '',
+                publicSubmissionShowRegistrationQr: showRegistrationQr && showRegistrationQr.checked ? '1' : '',
+                boardFont: boardFont ? boardFont.value : 'georgia',
             };
         }
 
@@ -1038,6 +1043,38 @@
                 });
             });
         }
+
+        (function bindKelMaleDailyStudyExclusion() {
+            var kelMale = document.getElementById('feature_kelMaleRachamim');
+            var learningKeys = ['dailyChumash', 'dailyTehillim', 'dailyTanya', 'dailyRambam', 'hayomYom'];
+            if (!kelMale) {
+                return;
+            }
+
+            function learningInputs() {
+                return learningKeys.map(function (key) {
+                    return document.getElementById('feature_' + key);
+                }).filter(Boolean);
+            }
+
+            kelMale.addEventListener('change', function () {
+                if (!kelMale.checked) {
+                    return;
+                }
+                learningInputs().forEach(function (input) {
+                    input.checked = false;
+                });
+            });
+
+            learningInputs().forEach(function (input) {
+                input.addEventListener('change', function () {
+                    if (!input.checked) {
+                        return;
+                    }
+                    kelMale.checked = false;
+                });
+            });
+        })();
 
         if (savedViewsGrid && window.AdminSettingsPanel && typeof window.AdminSettingsPanel.initSavedViewsGrid === 'function') {
             window.AdminSettingsPanel.initSavedViewsGrid({

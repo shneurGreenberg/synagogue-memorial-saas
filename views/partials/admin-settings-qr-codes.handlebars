@@ -1,4 +1,13 @@
         <article class="settings-media-tile">
+            <div class="admin-theme-setting settings-qr-visibility-toggle">
+                <div class="admin-theme-setting-label">{{t 'show_donation_qr_on_board'}}</div>
+                <div class="admin-theme-setting-control">
+                    <label class="toggle-switch" for="publicSubmissionShowDonationQr">
+                        <input type="checkbox" id="publicSubmissionShowDonationQr" name="publicSubmissionShowDonationQr" value="1" {{#if synagogue.publicSubmission.showDonationQr}}checked{{/if}}>
+                        <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                </div>
+            </div>
             <div class="saved-view-thumb settings-media-thumb settings-media-thumb--square">
                 {{#if synagogue.publicSubmission.donationQrImage}}
                 <img src="/images/{{synagogue.publicSubmission.donationQrImage}}" alt="{{t 'donation_qr_alt'}}">
@@ -17,6 +26,15 @@
             </div>
         </article>
         <article class="settings-media-tile">
+            <div class="admin-theme-setting settings-qr-visibility-toggle">
+                <div class="admin-theme-setting-label">{{t 'show_registration_qr_on_board'}}</div>
+                <div class="admin-theme-setting-control">
+                    <label class="toggle-switch" for="publicSubmissionShowRegistrationQr">
+                        <input type="checkbox" id="publicSubmissionShowRegistrationQr" name="publicSubmissionShowRegistrationQr" value="1" {{#if synagogue.publicSubmission.showRegistrationQr}}checked{{/if}}>
+                        <span class="toggle-slider" aria-hidden="true"></span>
+                    </label>
+                </div>
+            </div>
             <div class="saved-view-thumb settings-media-thumb settings-media-thumb--square">
                 {{#if synagogue.publicSubmission.registrationQrImage}}
                 <img src="/images/{{synagogue.publicSubmission.registrationQrImage}}" alt="{{t 'memorial_submission_qr_alt'}}">

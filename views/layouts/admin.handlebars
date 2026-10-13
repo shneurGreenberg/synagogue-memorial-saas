@@ -15,6 +15,7 @@
 </head>
 
 <body class="admin-body admin-theme-{{#if synagogue.adminColorMode}}{{synagogue.adminColorMode}}{{else}}dark{{/if}}{{#if adminIsRtl}} admin-rtl{{/if}}">
+    {{> beh-badge}}
     {{#if impersonatedByMaster}}
     <div class="admin-master-impersonation-banner" role="status">
         <span>{{t 'master_impersonation_banner'}}</span>
