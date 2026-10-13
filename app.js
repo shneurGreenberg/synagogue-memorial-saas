@@ -13,7 +13,12 @@ const {
 const path = require('path');
 const mongoose = require('mongoose');
 const Synagogue = require('./models/Synagogue');
-const { loadSynagogueBoard } = require('./lib/load-synagogue-board');
+const { loadSynagogueBoard, loadSynagogueLocation, loadSynagogueLite } = require('./lib/load-synagogue-board');
+const { getBoardContentVersion } = require('./lib/board-cache');
+const { getCachedYahrzeitTodayCount } = require('./lib/admin-yahrzeit-cache');
+const { loadBoardPersonWithText } = require('./lib/board-people-text');
+const { sendJsonWithEtag } = require('./lib/http-etag');
+const { computeSidebarAppEtag } = require('./lib/sidebar-app-etag');
 const { computeBoardVersion, slimBoardPayload } = require('./lib/board-payload');
 const { toPublicBoardPayload, toPublicPersonPayload } = require('./lib/public-board');
 const { getJewishFeed } = require('./lib/jewish-feed');
@@ -290,7 +295,6 @@ app.engine('handlebars', handlebars({
 
 app.set('view engine', 'handlebars');
 
-const { getResizedPhoto } = require('./lib/photo-resize');
 const {
   PHOTOS_DIR,
   isPersistent,
@@ -316,6 +320,7 @@ app.get('/photos/:filename', async (req, res, next) => {
     : null;
 
   try {
+    const { getResizedPhoto } = require('./lib/photo-resize');
     const filePath = await getResizedPhoto(req.params.filename, width, crop);
 
     if (!filePath) {
@@ -332,12 +337,15 @@ app.get('/photos/:filename', async (req, res, next) => {
 
 const apiRateLimiter = createApiRateLimiter();
 
+function resolveBoardContentVersion(slug, synagogue) {
+  return getBoardContentVersion(slug) || computeBoardVersion(synagogue);
+}
+
 function renderMemorialBoard(req, res, synagogue) {
   const { buildFaviconPath } = require('./lib/favicon');
-  const { buildYahrzeitEntries } = require('./lib/yahrzeit');
-  const yahrzeitTodayCount = buildYahrzeitEntries(synagogue).length;
+  const yahrzeitTodayCount = getCachedYahrzeitTodayCount(synagogue);
   const publicData = toPublicBoardPayload(synagogue, { includeText: false });
-  const contentVersion = computeBoardVersion(synagogue);
+  const contentVersion = resolveBoardContentVersion(synagogue.slug, synagogue);
 
   res.render('board', {
     layout: false,
@@ -402,13 +410,13 @@ app.get('/s/:slug/api/board/version', apiRateLimiter, async (req, res) => {
       return res.status(404).json({ error: 'Synagogue not found' });
     }
 
-    const version = computeBoardVersion(synagogue);
-    res.setHeader('Cache-Control', 'no-store');
-    return res.json({
+    const version = resolveBoardContentVersion(req.params.slug, synagogue);
+    const body = {
       version,
       publishedVersion: resolvePublishedVersion(synagogue.publishedVersion),
       codeVersion: currentCodeVersion(),
-    });
+    };
+    return sendJsonWithEtag(req, res, version, body, { cacheControl: 'no-cache' });
   } catch (err) {
     console.error('Board version error:', err);
     return res.status(500).json({ error: publicErrorMessage(err) });
@@ -460,12 +468,19 @@ app.get('/s/:slug/api/board/person/:personId', apiRateLimiter, async (req, res) 
       return res.status(404).json({ error: 'Synagogue not found' });
     }
 
-    const person = (synagogue.people || []).find(
+    let person = (synagogue.people || []).find(
       (entry) => String(entry.id) === String(req.params.personId),
     );
 
     if (!person) {
       return res.status(404).json({ error: 'Person not found' });
+    }
+
+    if (person.text === undefined) {
+      const withText = await loadBoardPersonWithText(req.params.slug, req.params.personId);
+      if (withText) {
+        person = { ...person, text: withText.text };
+      }
     }
 
     res.setHeader('Cache-Control', 'no-store');
@@ -478,27 +493,18 @@ app.get('/s/:slug/api/board/person/:personId', apiRateLimiter, async (req, res) 
 
 app.get('/s/:slug/api/board', apiRateLimiter, async (req, res) => {
   try {
-    const synagogue = await loadSynagogueBoard(req.params.slug);
+    const includeText = req.query.slim === '0';
+    const synagogue = await loadSynagogueBoard(req.params.slug, { includePeopleText: includeText });
 
     if (!synagogue) {
       return res.status(404).json({ error: 'Synagogue not found' });
     }
 
-    const version = computeBoardVersion(synagogue);
-    const etag = `"${version}"`;
-    if (req.headers['if-none-match'] === etag) {
-      res.setHeader('ETag', etag);
-      res.setHeader('Cache-Control', 'no-cache');
-      return res.status(304).end();
-    }
-
-    const includeText = req.query.slim === '0';
+    const version = resolveBoardContentVersion(req.params.slug, synagogue);
     const payload = includeText
       ? toPublicBoardPayload(synagogue, { includeText: true })
       : slimBoardPayload(synagogue);
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('ETag', etag);
-    return res.json(payload);
+    return sendJsonWithEtag(req, res, version, payload, { cacheControl: 'no-cache' });
   } catch (err) {
     console.error('Board payload error:', err);
     return res.status(500).json({ error: publicErrorMessage(err) });
@@ -507,14 +513,14 @@ app.get('/s/:slug/api/board', apiRateLimiter, async (req, res) => {
 
 app.get('/s/:slug/api/weather', apiRateLimiter, async (req, res) => {
   try {
-    const synagogue = await loadSynagogueBoard(req.params.slug);
+    const location = await loadSynagogueLocation(req.params.slug);
 
-    if (!synagogue) {
+    if (!location) {
       return res.status(404).json({ error: 'Synagogue not found' });
     }
 
-    const lat = Number(synagogue.location?.lat);
-    const long = Number(synagogue.location?.long);
+    const lat = Number(location.lat);
+    const long = Number(location.long);
 
     if (!Number.isFinite(lat) || !Number.isFinite(long)) {
       return res.status(400).json({ error: 'Invalid synagogue location' });
@@ -531,14 +537,14 @@ app.get('/s/:slug/api/weather', apiRateLimiter, async (req, res) => {
 
 app.get('/s/:slug/api/jewish-content', apiRateLimiter, async (req, res) => {
   try {
-    const synagogue = await loadSynagogueBoard(req.params.slug);
+    const lite = await loadSynagogueLite(req.params.slug);
 
-    if (!synagogue) {
+    if (!lite) {
       return res.status(404).json({ error: 'Synagogue not found' });
     }
 
-    const lang = ['ru', 'en', 'he'].includes(req.query.lang) ? req.query.lang : synagogue.language || 'ru';
-    const feed = await getJewishFeed(lang, synagogue);
+    const lang = ['ru', 'en', 'he'].includes(req.query.lang) ? req.query.lang : lite.language;
+    const feed = await getJewishFeed(lang, { location: lite.location });
 
     res.setHeader('Cache-Control', 'public, max-age=3600');
     return res.json(feed);
@@ -559,9 +565,8 @@ app.get('/s/:slug/api/sidebar-app', apiRateLimiter, async (req, res) => {
     const lang = ['ru', 'en', 'he'].includes(req.query.lang) ? req.query.lang : synagogue.language || 'ru';
     const { buildSidebarAppPayload } = require('./lib/sidebar-app-payload');
     const payload = await buildSidebarAppPayload(synagogue, lang);
-
-    res.setHeader('Cache-Control', 'no-store');
-    return res.json(payload);
+    const etag = computeSidebarAppEtag(payload);
+    return sendJsonWithEtag(req, res, etag, payload, { cacheControl: 'no-cache' });
   } catch (err) {
     console.error('Sidebar app payload error:', err);
     return res.status(500).json({ error: publicErrorMessage(err) });
