@@ -6,9 +6,6 @@
         </div>
     </header>
 
-    <div id="eventsStatusBanner" class="admin-alert events-status-banner events-status-banner--success" hidden aria-live="polite"></div>
-
-
 {{#if upcomingHolidayNotice}}
 <section class="admin-alert admin-alert-info upcoming-holiday-notice" role="status">
     <strong>{{t 'upcoming_holiday_notice_title'}}:</strong>
@@ -117,12 +114,12 @@
                 <div class="events-editor-fields">
                 <div class="form-field">
                     <label for="eventTitle">{{t 'event_title'}}</label>
-                    <input type="text" name="title" id="eventTitle" class="form-control admin-input-modern event-preview-input"
+                    <input type="text" name="eventTitle" id="eventTitle" class="form-control admin-input-modern event-preview-input"
                         placeholder="{{t 'event_title_placeholder'}}" required>
                 </div>
                 <div class="form-field">
                     <label for="eventText">{{t 'event_description_optional'}}</label>
-                    <textarea name="text" id="eventText" class="form-control admin-input-modern event-preview-input" rows="3"
+                    <textarea name="eventText" id="eventText" class="form-control admin-input-modern event-preview-input" rows="3"
                         placeholder="{{t 'event_description_placeholder'}}"></textarea>
                 </div>
 
@@ -132,7 +129,7 @@
                     <div class="date-inputs-row">
                         <input type="number" name="eventMonth" id="eventMonth" class="form-control admin-input-modern event-preview-input"
                             min="1" max="12" placeholder="{{t 'month'}}" aria-label="{{t 'month'}}">
-                        <input type="number" name="eventDate" id="eventDay" class="form-control admin-input-modern event-preview-input"
+                        <input type="number" name="eventDay" id="eventDay" class="form-control admin-input-modern event-preview-input"
                             min="1" max="31" placeholder="{{t 'day'}}" aria-label="{{t 'day'}}">
                         <input type="number" name="eventYear" id="eventYear" class="form-control admin-input-modern event-preview-input"
                             min="1900" max="2100" placeholder="{{t 'year'}}" aria-label="{{t 'year'}}">
@@ -157,6 +154,7 @@
                     <p class="field-hint events-scheduling-hint">{{t 'event_scheduling_hint'}}</p>
 
                     <div class="event-form-actions events-scheduling-actions">
+                        <div class="admin-form-feedback" id="addEventFormFeedback" role="alert" aria-live="polite" hidden></div>
                         <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon" data-publish-now="0">
                             {{{adminIcon 'schedule' class='btn-admin-inline-icon'}}}
                             {{t 'schedule_event'}}
@@ -230,11 +228,11 @@
                 <div class="modal-body">
                     <div class="form-field">
                         <label for="editEventTitle">{{t 'event_title'}}</label>
-                        <input type="text" name="title" id="editEventTitle" class="form-control admin-input-modern" required>
+                        <input type="text" name="eventTitle" id="editEventTitle" class="form-control admin-input-modern" required>
                     </div>
                     <div class="form-field">
                         <label for="editEventText">{{t 'event_description_optional'}}</label>
-                        <textarea name="text" id="editEventText" class="form-control admin-input-modern" rows="3"></textarea>
+                        <textarea name="eventText" id="editEventText" class="form-control admin-input-modern" rows="3"></textarea>
                     </div>
 
                     <div class="form-field events-event-date-block">
@@ -242,7 +240,7 @@
                         <div class="date-inputs-row">
                             <input type="number" name="eventMonth" id="editEventMonth" class="form-control admin-input-modern"
                                 min="1" max="12" placeholder="{{t 'month'}}" aria-label="{{t 'month'}}">
-                            <input type="number" name="eventDate" id="editEventDay" class="form-control admin-input-modern"
+                            <input type="number" name="eventDay" id="editEventDay" class="form-control admin-input-modern"
                                 min="1" max="31" placeholder="{{t 'day'}}" aria-label="{{t 'day'}}">
                             <input type="number" name="eventYear" id="editEventYear" class="form-control admin-input-modern"
                                 min="1900" max="2100" placeholder="{{t 'year'}}" aria-label="{{t 'year'}}">
@@ -264,6 +262,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <div class="admin-form-feedback admin-form-feedback--modal" id="editEventFormFeedback" role="alert" aria-live="polite" hidden></div>
                     <button type="button" class="btn-admin btn-admin-ghost btn-admin-with-icon" data-dismiss="modal">{{{adminIcon 'cancel' class='btn-admin-inline-icon'}}}{{t 'cancel'}}</button>
                     <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon">{{{adminIcon 'save' class='btn-admin-inline-icon'}}}{{t 'save_changes'}}</button>
                 </div>
