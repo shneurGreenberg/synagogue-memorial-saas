@@ -49,7 +49,8 @@ const {
   IMAGES_DIR,
   PHOTOS_DIR,
 } = require('../lib/storage-paths');
-const { optimizeUploadedImage } = require('../lib/image-optimize');
+const { optimizeUploadedImage, storeUploadedImageOriginal } = require('../lib/image-optimize');
+const { resolveCommunityDisplayName } = require('../lib/community-display-name');
 const {
   createLoginRateLimiter,
   regenerateSession,
@@ -609,6 +610,12 @@ function renderAdmin(res, view, options = {}) {
         enrichSynagogueForAdmin(synagogue),
         adminUser,
     );
+    if (displaySynagogue) {
+        displaySynagogue.communityDisplayName = resolveCommunityDisplayName(
+            displaySynagogue,
+            displaySynagogue.adminLanguage,
+        );
+    }
     const locale = getAdminLocaleContext(displaySynagogue && displaySynagogue.adminLanguage);
     const yahrzeitTodayCount = getCachedYahrzeitTodayCount(displaySynagogue);
     const publishedVersion = resolvePublishedVersion(displaySynagogue && displaySynagogue.publishedVersion);
@@ -698,7 +705,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
         const {
             titleRu, titleEn, titleHe, primaryColor, textColor, accentColor, tileColor, tileOpacity,
-            language, shabbatTimesEnabled, candlePalette, logoBorderRadius, logoBackground,
+            language, shabbatTimesEnabled, candlePalette, logoBorderRadius, logoBackground, logoCircle,
         } = req.body;
         const synagogue = await loadAdminSynagogue(req.params.slug, 'settings');
         const boardFeatures = parseBoardFeaturesFromBody(req.body);
@@ -758,9 +765,19 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             }
         }
 
-        if (permissions.settingsBranding && req.files['logo']) {
-            const logoFile = req.files['logo'][0];
-            updateData['theme.logo'] = await processCommunityLogoUpload(logoFile.path, logoFile.mimetype);
+        if (permissions.settingsBranding) {
+            if ('logoCircle' in req.body || 'logoBorderRadius' in req.body) {
+                const circleOn = parseFormCheckbox(req.body, 'logoCircle') === true
+                    || Number(logoBorderRadius) >= 50;
+                updateData['theme.logoBorderRadius'] = circleOn ? 100 : 0;
+            }
+            if (logoBackground !== undefined) {
+                updateData['theme.logoBackground'] = normalizeLogoBackground(logoBackground);
+            }
+            if (req.files['logo']) {
+                const logoFile = req.files['logo'][0];
+                updateData['theme.logo'] = await processCommunityLogoUpload(logoFile.path, logoFile.mimetype);
+            }
         }
         if (permissions.settingsAppearance && req.files['backgroundImage']) {
             updateData['theme.backgroundImage'] = await optimizeUploadedImage(req.files['backgroundImage'][0].path, 'background');
@@ -1953,10 +1970,17 @@ router.post('/:slug/people/delete', requireAdmin, requirePermission('people'), a
 router.post('/:slug/slideshow/settings', requireAdmin, requireAnyPermission('events', 'slideshow'), parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { enabled, interval, mainDuration, displayMode } = req.body || {};
-        // Unchecked checkbox is omitted from both multipart and urlencoded bodies → false
-        const isEnabled = enabled === 'on' || enabled === 'true' || enabled === true || enabled === '1';
-        const mode = displayMode === 'showNow' ? 'showNow' : 'rotate';
+        const { interval, mainDuration, slideshowMode, enabled, displayMode } = req.body || {};
+        const modeRaw = String(slideshowMode || '').trim();
+        let isEnabled;
+        let mode;
+        if (modeRaw === 'off' || modeRaw === 'rotate' || modeRaw === 'showNow') {
+          isEnabled = modeRaw !== 'off';
+          mode = modeRaw === 'showNow' ? 'showNow' : 'rotate';
+        } else {
+          isEnabled = enabled === 'on' || enabled === 'true' || enabled === true || enabled === '1';
+          mode = displayMode === 'showNow' ? 'showNow' : 'rotate';
+        }
         await Synagogue.updateOne({ slug: req.params.slug }, {
             $set: {
                 'slideshow.enabled': isEnabled,
@@ -1988,7 +2012,7 @@ router.post('/:slug/slideshow/add', requireAdmin, requireAnyPermission('events',
             .map((slide) => slide && slide.url)
             .filter(Boolean);
 
-        const optimizedFilename = await optimizeUploadedImage(req.file.path, 'slideshow');
+        const optimizedFilename = storeUploadedImageOriginal(req.file.path);
         synagogue.slideshow = synagogue.slideshow || {};
         synagogue.slideshow.images = [{ url: optimizedFilename, text: '' }];
         synagogue.markModified('slideshow.images');
@@ -2013,7 +2037,7 @@ router.post('/:slug/slideshow/edit', requireAdmin, requireAnyPermission('events'
         };
 
         if (req.file) {
-            updateFields['slideshow.images.$.url'] = await optimizeUploadedImage(req.file.path, 'slideshow');
+            updateFields['slideshow.images.$.url'] = storeUploadedImageOriginal(req.file.path);
         }
 
         const slideIdStr = String(slideId || '').trim();
@@ -2271,18 +2295,24 @@ router.get('/:slug/users', requireAdmin, async (req, res) => {
             ? allUsers.find((user) => user.id === currentUserId) || null
             : null;
         const enriched = enrichSynagogueForAdmin(synagogue);
+        const communityDisplayName = resolveCommunityDisplayName(
+            enriched,
+            currentSessionUser?.adminLanguage || enriched.adminLanguage,
+        );
         const sessionAdminProfile = currentSessionUser
             ? {
                 displayName: currentSessionUser.displayName,
                 username: currentSessionUser.username,
                 adminLanguage: currentSessionUser.adminLanguage,
                 adminColorMode: currentSessionUser.adminColorMode,
+                communityDisplayName,
             }
             : {
-                displayName: synagogue.name || synagogue.slug,
+                displayName: communityDisplayName,
                 username: synagogue.slug,
                 adminLanguage: normalizeAdminLang(synagogue.adminLanguage),
                 adminColorMode: resolveAdminColorMode(enriched),
+                communityDisplayName,
             };
         renderAdmin(res, 'admin/users', {
             synagogue: enriched,

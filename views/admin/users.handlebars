@@ -39,6 +39,7 @@
         <div class="admin-panel-body users-session-panel-body">
             <p class="users-session-identity">
                 <strong>{{sessionAdminProfile.displayName}}</strong>
+                <span class="users-session-community">{{sessionAdminProfile.communityDisplayName}}</span>
                 <code>{{synagogue.slug}}/{{sessionAdminProfile.username}}</code>
             </p>
             <form method="POST" action="/admin/{{synagogue.slug}}/my-preferences" class="users-session-preferences-form" id="myAdminPreferencesForm">
@@ -51,22 +52,21 @@
                             <option value="he" {{#if (eq sessionAdminProfile.adminLanguage 'he')}}selected{{/if}}>Hebrew</option>
                         </select>
                     </div>
-                    <div class="admin-theme-setting color-mode-field users-session-theme-field"
-                        data-light-label="{{t 'light_mode'}}"
-                        data-dark-label="{{t 'dark_mode'}}">
-                        <div class="admin-theme-setting-label">{{t 'color_mode'}}</div>
+                    <div class="admin-theme-setting users-session-theme-field users-session-theme-inline">
                         <input type="hidden" name="colorMode" id="sessionColorModeInput"
                             value="{{#if (eq sessionAdminProfile.adminColorMode 'light')}}light{{else}}dark{{/if}}">
-                        <div class="admin-theme-setting-control">
-                            <label class="toggle-switch color-mode-toggle" for="sessionColorModeToggle">
-                                <input type="checkbox" id="sessionColorModeToggle"
-                                    {{#if (eq sessionAdminProfile.adminColorMode 'light')}}checked{{/if}}>
-                                <span class="toggle-slider" aria-hidden="true"></span>
-                            </label>
-                            <span class="toggle-mode-text" id="sessionColorModeToggleLabel">
-                                {{#if (eq sessionAdminProfile.adminColorMode 'light')}}{{t 'light_mode'}}{{else}}{{t 'dark_mode'}}{{/if}}
+                        <span class="admin-theme-setting-label" id="sessionColorModeLabel">{{t 'color_mode'}}</span>
+                        <button type="button" class="admin-theme-icon-toggle" id="sessionColorModeToggle"
+                            aria-labelledby="sessionColorModeLabel"
+                            aria-pressed="{{#if (eq sessionAdminProfile.adminColorMode 'light')}}true{{else}}false{{/if}}"
+                            data-mode="{{#if (eq sessionAdminProfile.adminColorMode 'light')}}light{{else}}dark{{/if}}">
+                            <span class="admin-theme-icon-toggle-sun" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.8 1.42-1.42M1 13h3v-2H1v2m10-9h2V1h-2v3m7.24 2.16 1.41-1.41-1.79-1.8-1.41 1.41 1.79 1.8M17 13h3v-2h-3v2m-2.76 7.24 1.8 1.79 1.41-1.41-1.79-1.8-1.41 1.41M12 18h2v3h-2v-3M4.22 18.16l1.41 1.41 1.8-1.79-1.41-1.41-1.8 1.79M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/></svg>
                             </span>
-                        </div>
+                            <span class="admin-theme-icon-toggle-moon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.5 5.5 0 0 1-7.64-7.64A8.9 8.9 0 0 0 12 3Z"/></svg>
+                            </span>
+                        </button>
                     </div>
                 </div>
             </form>

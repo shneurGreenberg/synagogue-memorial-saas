@@ -49,6 +49,8 @@ const MongoStore = require('connect-mongo');
 assertProductionSecrets();
 
 const app = express();
+// Cache-bust compiled SCSS (css/ is built at deploy and served immutable)
+app.locals.cssVersion = String(Date.now());
 const isProduction = process.env.NODE_ENV === 'production';
 
 if (isProduction || process.env.TRUST_PROXY === '1') {

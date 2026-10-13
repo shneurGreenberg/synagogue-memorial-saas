@@ -956,6 +956,68 @@ body.admin-login-page {
   margin: 0;
 }
 
+.users-session-community {
+  color: var(--admin-text-muted);
+  font-weight: 500;
+}
+
+.users-session-theme-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+
+  .admin-theme-setting-label {
+    margin: 0;
+    white-space: nowrap;
+  }
+}
+
+.admin-theme-icon-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid var(--admin-border);
+  background: var(--admin-surface-elevated);
+  color: var(--admin-text);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  svg {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  .admin-theme-icon-toggle-moon {
+    display: none;
+  }
+
+  &[data-mode='light'] .admin-theme-icon-toggle-sun {
+    display: none;
+  }
+
+  &[data-mode='light'] .admin-theme-icon-toggle-moon {
+    display: block;
+  }
+
+  &:hover {
+    border-color: var(--admin-accent, #cfaf1f);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--admin-focus-ring, #cfaf1f);
+    outline-offset: 2px;
+  }
+}
+
+.settings-logo-circle-toggle {
+  margin-top: 0.5rem;
+}
+
 .community-logo-settings {
   margin-bottom: 1.25rem;
 
@@ -2697,17 +2759,23 @@ body.admin-is-busy {
 
   time {
     display: block;
-    margin-bottom: 4px;
+    margin-top: 4px;
+    margin-bottom: 2px;
     color: var(--text-color, #d0d0d0);
     font-size: 0.9rem;
   }
 
   .community-event-title {
     display: block;
-    margin-top: 4px;
+    margin-top: 0;
     font-size: 1rem;
     font-weight: 700;
     color: var(--accent-color, #ffd54f);
+
+    &.is-placeholder {
+      opacity: 0.55;
+      font-weight: 600;
+    }
   }
 
   .community-event-text {
@@ -3728,21 +3796,53 @@ body.admin-theme-light {
     max-width: 36rem;
   }
 
-  .slideshow-mode-fieldset {
-    border: 0;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  .slideshow-mode-switch {
+    display: inline-flex;
+    align-items: stretch;
+    padding: 3px;
+    border-radius: 999px;
+    background: var(--admin-surface-elevated);
+    border: 1px solid var(--admin-border);
+    gap: 2px;
+    width: fit-content;
   }
 
-  .slideshow-mode-option {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-    font-size: 0.95rem;
+  .slideshow-mode-segment {
+    margin: 0;
     cursor: pointer;
+
+    input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .slideshow-mode-segment-face {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.75rem;
+      height: 2.35rem;
+      border-radius: 999px;
+      color: var(--admin-text-muted);
+      transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+
+      svg {
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+    }
+
+    input:checked + .slideshow-mode-segment-face {
+      background: var(--admin-accent, #cfaf1f);
+      color: #1a1a1a;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    input:focus-visible + .slideshow-mode-segment-face {
+      outline: 2px solid var(--admin-focus-ring, #cfaf1f);
+      outline-offset: 2px;
+    }
   }
 
   .slideshow-current-block {
@@ -4013,23 +4113,97 @@ body.admin-theme-light {
 .code-release-fixed .code-release-type { color: #2563eb; }
 .code-release-changed .code-release-type { color: #d97706; }
 
-.weekly-kaddish-notice {
-  display: block;
+.weekly-kaddish-panel {
   margin-bottom: 1rem;
-  .weekly-kaddish-title { font-size: 1.1rem; margin: 0 0 .4rem; }
-  .weekly-kaddish-range { font-weight: normal; opacity: .75; font-size: .9rem; }
-  .weekly-kaddish-urgent { margin: 0 0 .6rem; color: #b42318; }
-  .weekly-kaddish-list { list-style: none; margin: 0 0 .75rem; padding: 0; }
-  .weekly-kaddish-item {
-    display: flex; flex-wrap: wrap; gap: .25rem .75rem; align-items: baseline;
-    padding: .35rem 0; border-bottom: 1px solid rgba(0, 0, 0, .08);
-    &.is-missing { background: rgba(180, 35, 24, .07); }
+}
+
+.weekly-kaddish-details {
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  background: var(--admin-surface-elevated);
+  padding: 0.65rem 0.85rem;
+}
+
+.weekly-kaddish-summary {
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.75rem;
+
+  &::-webkit-details-marker {
+    display: none;
   }
-  .weekly-kaddish-name { font-weight: 600; }
-  .weekly-kaddish-contacts { display: inline-flex; flex-wrap: wrap; gap: .5rem; }
-  .weekly-kaddish-missing { color: #b42318; font-weight: 600; }
-  .weekly-kaddish-actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
-  .weekly-kaddish-confirmed { color: #067647; font-weight: 600; }
+
+  &::before {
+    content: '▸';
+    margin-inline-end: 0.35rem;
+    color: var(--admin-text-muted);
+  }
+}
+
+.weekly-kaddish-details[open] .weekly-kaddish-summary::before {
+  content: '▾';
+}
+
+.weekly-kaddish-range {
+  font-weight: normal;
+  opacity: 0.75;
+  font-size: 0.9rem;
+}
+
+.weekly-kaddish-details-body {
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--admin-border);
+}
+
+.weekly-kaddish-list {
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+}
+
+.weekly-kaddish-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  align-items: baseline;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+  &.is-missing {
+    background: rgba(0, 0, 0, 0.03);
+  }
+}
+
+.weekly-kaddish-name {
+  font-weight: 600;
+}
+
+.weekly-kaddish-contacts {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.weekly-kaddish-missing {
+  color: var(--admin-text-muted);
+  font-size: 0.92rem;
+}
+
+.weekly-kaddish-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.weekly-kaddish-confirmed {
+  color: #067647;
+  font-weight: 600;
 }
 
 .admin-person-requests-panel,

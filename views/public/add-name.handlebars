@@ -2,7 +2,7 @@
     <div class="public-brand">
         <img class="public-brand-logo" src="{{officialLogoUrl}}" alt="">
         {{#if communityLogoUrl}}
-        <span class="public-community-logo-wrap{{#if (eq communityLogoBackground 'white')}} logo-bg-white{{/if}}{{#if (eq communityLogoBackground 'black')}} logo-bg-black{{/if}}">
+        <span class="public-community-logo-wrap{{#if communityLogoCircle}} is-logo-circle{{/if}}{{#if (eq communityLogoBackground 'white')}} logo-bg-white{{/if}}{{#if (eq communityLogoBackground 'black')}} logo-bg-black{{/if}}">
             <img class="public-community-logo" src="{{communityLogoUrl}}" alt="{{synagogue.name}}">
         </span>
         {{/if}}

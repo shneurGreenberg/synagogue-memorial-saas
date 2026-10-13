@@ -8,6 +8,7 @@ const CITY_TIMEZONE_ALIASES = {
   'tel aviv': 'Asia/Jerusalem',
   томск: 'Asia/Tomsk',
   תומסק: 'Asia/Tomsk',
+  טומסק: 'Asia/Tomsk',
   новосибирск: 'Asia/Novosibirsk',
   נובוסיבירסק: 'Asia/Novosibirsk',
   москва: 'Europe/Moscow',
@@ -20,6 +21,7 @@ const CITY_TIMEZONE_ALIASES = {
 const CITY_ALIAS_TO_CANONICAL = {
   томск: 'tomsk',
   תומסק: 'tomsk',
+  טומסק: 'tomsk',
   'tomsk, russia': 'tomsk',
   новосибирск: 'novosibirsk',
   נובוסיבירסק: 'novosibirsk',

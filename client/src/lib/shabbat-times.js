@@ -25,6 +25,7 @@ const CITY_GEONAME_IDS = {
 const CITY_NAME_ALIASES = {
   томск: 'tomsk',
   תומסק: 'tomsk',
+  טומסק: 'tomsk',
   'tomsk, russia': 'tomsk',
   'томск, россия': 'tomsk',
   новосибирск: 'novosibirsk',

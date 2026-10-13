@@ -26,25 +26,28 @@
     <div class="admin-panel-body">
         <form method="POST" action="/admin/{{synagogue.slug}}/slideshow/settings" class="slideshow-panel-form"
             id="slideshowPanelForm">
-            <label class="toggle-switch slideshow-enable-toggle">
-                <input type="checkbox" name="enabled" {{#if synagogue.slideshow.enabled}}checked{{/if}}>
-                <span class="toggle-slider"></span>
-                <span class="toggle-label">{{t 'enable_slideshow'}}</span>
-            </label>
-
-            <fieldset class="slideshow-mode-fieldset">
-                <legend class="sr-only">{{t 'slideshow_display_mode'}}</legend>
-                <label class="slideshow-mode-option">
-                    <input type="radio" name="displayMode" value="showNow"
-                        {{#if synagogue.slideshow.isShowNowMode}}checked{{/if}}>
-                    <span>{{t 'slideshow_mode_show_now'}}</span>
+            <div class="slideshow-mode-switch" role="radiogroup" aria-label="{{t 'slideshow_display_mode'}}">
+                <label class="slideshow-mode-segment" title="{{t 'slideshow_mode_off'}}">
+                    <input type="radio" name="slideshowMode" value="off" {{#unless synagogue.slideshow.enabled}}checked{{/unless}}>
+                    <span class="slideshow-mode-segment-face" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 13H8v-2h6v2zm0-4H8V9h6v2z"/></svg>
+                    </span>
                 </label>
-                <label class="slideshow-mode-option">
-                    <input type="radio" name="displayMode" value="rotate"
-                        {{#unless synagogue.slideshow.isShowNowMode}}checked{{/unless}}>
-                    <span>{{t 'slideshow_mode_rotate'}}</span>
+                <label class="slideshow-mode-segment" title="{{t 'slideshow_mode_rotate_short'}}">
+                    <input type="radio" name="slideshowMode" value="rotate"
+                        {{#if synagogue.slideshow.enabled}}{{#unless synagogue.slideshow.isShowNowMode}}checked{{/unless}}{{/if}}>
+                    <span class="slideshow-mode-segment-face" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8A5.9 5.9 0 0 1 6 12c0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2A5.9 5.9 0 0 1 18 12c0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/></svg>
+                    </span>
                 </label>
-            </fieldset>
+                <label class="slideshow-mode-segment" title="{{t 'slideshow_mode_show_now_short'}}">
+                    <input type="radio" name="slideshowMode" value="showNow"
+                        {{#if synagogue.slideshow.enabled}}{{#if synagogue.slideshow.isShowNowMode}}checked{{/if}}{{/if}}>
+                    <span class="slideshow-mode-segment-face" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7L8 5z"/></svg>
+                    </span>
+                </label>
+            </div>
 
             <div class="slideshow-rotate-fields" id="slideshowRotateFields"
                 {{#if synagogue.slideshow.isShowNowMode}}hidden{{/if}}>
@@ -116,24 +119,21 @@
                         placeholder="{{t 'event_description_placeholder'}}"></textarea>
                 </div>
 
+                <div class="form-field events-event-date-block">
+                    <span class="form-field-label">{{t 'event_date_label'}}</span>
+                    <p class="field-hint">{{t 'event_date_help'}}</p>
+                    <div class="date-inputs-row">
+                        <input type="number" name="eventMonth" id="eventMonth" class="form-control admin-input-modern event-preview-input"
+                            min="1" max="12" placeholder="{{t 'month'}}" aria-label="{{t 'month'}}">
+                        <input type="number" name="eventDate" id="eventDay" class="form-control admin-input-modern event-preview-input"
+                            min="1" max="31" placeholder="{{t 'day'}}" aria-label="{{t 'day'}}">
+                        <input type="number" name="eventYear" id="eventYear" class="form-control admin-input-modern event-preview-input"
+                            min="1900" max="2100" placeholder="{{t 'year'}}" aria-label="{{t 'year'}}">
+                    </div>
+                </div>
+
                 <div class="events-scheduling-block">
                     <h3 class="events-scheduling-title">{{t 'event_scheduling_section'}}</h3>
-
-                    <label class="toggle-switch events-ticker-date-toggle">
-                        <input type="checkbox" id="eventShowTickerDate" name="showTickerDate">
-                        <span class="toggle-slider"></span>
-                        <span class="toggle-label">{{t 'event_show_ticker_date'}}</span>
-                    </label>
-                    <div class="events-ticker-date-fields" id="eventTickerDateFields" hidden>
-                        <div class="date-inputs-row">
-                            <input type="number" name="eventMonth" id="eventMonth" class="form-control admin-input-modern"
-                                min="1" max="12" placeholder="{{t 'month'}}" aria-label="{{t 'month'}}">
-                            <input type="number" name="eventDate" id="eventDay" class="form-control admin-input-modern"
-                                min="1" max="31" placeholder="{{t 'day'}}" aria-label="{{t 'day'}}">
-                            <input type="number" name="eventYear" id="eventYear" class="form-control admin-input-modern"
-                                min="1900" max="2100" placeholder="{{t 'year'}}" aria-label="{{t 'year'}}">
-                        </div>
-                    </div>
 
                     <div class="settings-two-col events-visibility-row">
                         <div class="form-field">
@@ -171,8 +171,8 @@
                         <ul class="events-board-preview-list">
                             <li class="community-event-item events-board-preview-item">
                                 <div class="community-event-link" role="note">
-                                    <time id="eventsPreviewDate">{{t 'event_board_preview_date_sample'}}</time>
                                     <span class="community-event-title" id="eventsPreviewTitle">{{t 'event_board_preview_title_sample'}}</span>
+                                    <time id="eventsPreviewDate" hidden>{{t 'event_board_preview_date_sample'}}</time>
                                     <span class="community-event-text" id="eventsPreviewText">{{t 'event_board_preview_text_sample'}}</span>
                                 </div>
                             </li>
@@ -230,22 +230,18 @@
                         <textarea name="text" id="editEventText" class="form-control admin-input-modern" rows="3"></textarea>
                     </div>
 
-                    <div class="events-scheduling-block events-scheduling-block--compact">
-                        <label class="toggle-switch events-ticker-date-toggle">
-                            <input type="checkbox" id="editEventShowTickerDate">
-                            <span class="toggle-slider"></span>
-                            <span class="toggle-label">{{t 'event_show_ticker_date'}}</span>
-                        </label>
-                        <div class="events-ticker-date-fields" id="editEventTickerDateFields" hidden>
-                            <div class="date-inputs-row">
-                                <input type="number" name="eventMonth" id="editEventMonth" class="form-control admin-input-modern"
-                                    min="1" max="12" placeholder="{{t 'month'}}" aria-label="{{t 'month'}}">
-                                <input type="number" name="eventDate" id="editEventDay" class="form-control admin-input-modern"
-                                    min="1" max="31" placeholder="{{t 'day'}}" aria-label="{{t 'day'}}">
-                                <input type="number" name="eventYear" id="editEventYear" class="form-control admin-input-modern"
-                                    min="1900" max="2100" placeholder="{{t 'year'}}" aria-label="{{t 'year'}}">
-                            </div>
+                    <div class="form-field events-event-date-block">
+                        <span class="form-field-label">{{t 'event_date_label'}}</span>
+                        <div class="date-inputs-row">
+                            <input type="number" name="eventMonth" id="editEventMonth" class="form-control admin-input-modern"
+                                min="1" max="12" placeholder="{{t 'month'}}" aria-label="{{t 'month'}}">
+                            <input type="number" name="eventDate" id="editEventDay" class="form-control admin-input-modern"
+                                min="1" max="31" placeholder="{{t 'day'}}" aria-label="{{t 'day'}}">
+                            <input type="number" name="eventYear" id="editEventYear" class="form-control admin-input-modern"
+                                min="1900" max="2100" placeholder="{{t 'year'}}" aria-label="{{t 'year'}}">
                         </div>
+                    </div>
+                    <div class="events-scheduling-block events-scheduling-block--compact">
                         <div class="settings-two-col events-visibility-row">
                             <div class="form-field">
                                 <label for="editEventStartAt">{{t 'event_start_at'}}</label>

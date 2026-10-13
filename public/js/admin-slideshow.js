@@ -54,9 +54,11 @@
       return;
     }
 
-    var mode = form.querySelector('input[name="displayMode"]:checked');
-    var isShowNow = mode && mode.value === 'showNow';
-    rotateFields.hidden = isShowNow;
+    var mode = form.querySelector('input[name="slideshowMode"]:checked')
+      || form.querySelector('input[name="displayMode"]:checked');
+    var modeValue = mode && mode.value;
+    var isRotate = modeValue === 'rotate';
+    rotateFields.hidden = !isRotate;
   }
 
   async function readJson(response) {
@@ -148,7 +150,7 @@
     });
 
     panelForm.addEventListener('change', function (event) {
-      if (event.target && event.target.name === 'displayMode') {
+      if (event.target && (event.target.name === 'slideshowMode' || event.target.name === 'displayMode')) {
         syncRotateFieldsVisibility(panelForm);
       }
     });

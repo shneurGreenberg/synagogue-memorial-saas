@@ -22,6 +22,7 @@ const {
 } = require('../lib/person-add-request');
 const { appendDeceasedPerson, photoCropFromBody } = require('../lib/public-submission-deceased');
 const { optimizeUploadedImage } = require('../lib/image-optimize');
+const { normalizeLogoBorderRadius } = require('../lib/theme-typography');
 const {
   createPublicSubmissionRateLimiter,
   isAllowedImageUpload,
@@ -127,6 +128,9 @@ function buildPageContext(synagogue, lang, options = {}) {
   const publicSubmission = normalizePublicSubmission(synagogue.publicSubmission, synagogue.provisioning);
   const communityLogo = synagogue.theme && synagogue.theme.logo;
   const logoBackground = synagogue.theme && synagogue.theme.logoBackground;
+  const communityLogoCircle = normalizeLogoBorderRadius(
+    synagogue.theme && synagogue.theme.logoBorderRadius,
+  ) >= 50;
 
   return {
     synagogue,
@@ -141,6 +145,7 @@ function buildPageContext(synagogue, lang, options = {}) {
     officialLogoUrl: `/images/${OFFICIAL_LOGO_FILENAME}`,
     communityLogoUrl: communityLogo ? `/images/${communityLogo}` : '',
     communityLogoBackground: logoBackground || '',
+    communityLogoCircle,
     inviteMode: !!options.inviteMode,
   };
 }

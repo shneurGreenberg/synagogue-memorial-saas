@@ -276,25 +276,15 @@
     var deleteConfirm = options.deleteConfirm || grid.dataset.deleteConfirm || 'Delete this saved view?';
     var emptyText = options.emptyText || grid.dataset.emptyText || '';
 
-    function downloadSavedViewExport(viewId, viewName) {
-      fetch('/admin/' + slug + '/settings/saved-views/' + encodeURIComponent(viewId) + '/export', {
-        headers: { 'X-Requested-With': 'XMLHttpRequest' },
-      }).then(function (response) {
-        if (!response.ok) {
-          throw new Error('export failed');
-        }
-        return response.blob().then(function (blob) {
-          var safeName = String(viewName || 'saved-view').replace(/[^\w\u0590-\u05FF.-]+/g, '_').slice(0, 80) || 'saved-view';
-          var url = URL.createObjectURL(blob);
-          var link = document.createElement('a');
-          link.href = url;
-          link.download = safeName + '.json';
-          link.click();
-          URL.revokeObjectURL(url);
-        });
-      }).catch(function () {
-        window.alert(options.exportError || 'Could not export saved view.');
-      });
+    function downloadSavedViewExport(viewId) {
+      var url = '/admin/' + slug + '/settings/saved-views/' + encodeURIComponent(viewId) + '/export';
+      var link = document.createElement('a');
+      link.href = url;
+      link.rel = 'noopener';
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
 
     grid.addEventListener('click', function (event) {
@@ -351,9 +341,7 @@
       }
 
       if (exportBtn) {
-        var exportNameEl = card.querySelector('.saved-view-meta h3, .saved-view-thumb-label');
-        var exportName = exportNameEl ? exportNameEl.textContent.trim() : '';
-        downloadSavedViewExport(viewId, exportName);
+        downloadSavedViewExport(viewId);
         return;
       }
 
