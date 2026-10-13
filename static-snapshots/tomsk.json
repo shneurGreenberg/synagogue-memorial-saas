@@ -19,7 +19,7 @@
       "tileTitle": 100,
       "tileDate": 100,
       "clock": 100,
-      "boardHeader": 80,
+      "boardHeader": 100,
       "sidebar": 100,
       "prayers": 100,
       "prayerOverlay": 100,
@@ -44,14 +44,15 @@
     "primaryColor": "#ecd779",
     "textColor": "#ffffff",
     "accentColor": "#e8ca69",
-    "tileColor": "#ff9b29",
+    "tileColor": "#0d0d0d",
     "tileOpacity": 99,
     "logo": "1782449503623.webp",
     "candlePalette": "pearl",
-    "backgroundImage": "1791833429159-opt.jpg",
-    "tilesBackground": "1791833555170-opt.jpg",
+    "backgroundImage": "1791817826847-opt.jpg",
+    "tilesBackground": "1791817797873-opt.jpg",
     "logoBorderRadius": 100,
-    "logoBackground": ""
+    "logoBackground": "",
+    "boardFont": "georgia"
   },
   "people": [
     {
@@ -6258,7 +6259,9 @@
     "enabled": true,
     "donationUrl": "https://jewtomsk.ru/donations",
     "donationQrImage": "1782461400617-opt.png",
-    "registrationQrImage": ""
+    "registrationQrImage": "",
+    "showDonationQr": true,
+    "showRegistrationQr": true
   },
   "memorialQrPanel": {
     "titles": {
@@ -6292,8 +6295,8 @@
   "shabbatTimesEnabled": true,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1791883017235,
-  "exportedAt": "2026-10-13T09:16:57.235Z",
+  "contentVersion": 1791904406626,
+  "exportedAt": "2026-10-13T15:13:26.626Z",
   "jewishContent": {
     "date": "2026-10-13",
     "timezone": "Asia/Tomsk",
@@ -6333,85 +6336,7 @@
         }
       }
     },
-    "upcomingHolidays": [
-      {
-        "date": "2026-11-09",
-        "title": "Сигд",
-        "hebrew": "חג הסיגד",
-        "subcat": "modern",
-        "link": ""
-      },
-      {
-        "date": "2026-12-04",
-        "title": "Ханука, 1-я свеча",
-        "hebrew": "חנוכה: א׳ נר",
-        "subcat": "major",
-        "link": ""
-      },
-      {
-        "date": "2026-12-05",
-        "title": "Ханука, 2-я свеча",
-        "hebrew": "חנוכה: ב׳ נרות",
-        "subcat": "major",
-        "link": ""
-      },
-      {
-        "date": "2026-12-06",
-        "title": "Ханука, 3-я свеча",
-        "hebrew": "חנוכה: ג׳ נרות",
-        "subcat": "major",
-        "link": ""
-      },
-      {
-        "date": "2026-12-07",
-        "title": "Ханука, 4-я свеча",
-        "hebrew": "חנוכה: ד׳ נרות",
-        "subcat": "major",
-        "link": ""
-      },
-      {
-        "date": "2026-12-08",
-        "title": "Ханука, 5-я свеча",
-        "hebrew": "חנוכה: ה׳ נרות",
-        "subcat": "major",
-        "link": ""
-      },
-      {
-        "date": "2026-12-09",
-        "title": "Ханука, 6-я свеча",
-        "hebrew": "חנוכה: ו׳ נרות",
-        "subcat": "major",
-        "link": ""
-      },
-      {
-        "date": "2026-12-10",
-        "title": "Праздник дочерей",
-        "hebrew": "חג הבנות",
-        "subcat": "minor",
-        "link": ""
-      },
-      {
-        "date": "2026-12-10",
-        "title": "Ханука, 7-я свеча",
-        "hebrew": "חנוכה: ז׳ נרות",
-        "subcat": "major",
-        "link": ""
-      },
-      {
-        "date": "2026-12-11",
-        "title": "Ханука, 8-я свеча",
-        "hebrew": "חנוכה: ח׳ נרות",
-        "subcat": "major",
-        "link": ""
-      },
-      {
-        "date": "2026-12-12",
-        "title": "Ханука, 8-й день",
-        "hebrew": "חנוכה: יום ח׳",
-        "subcat": "major",
-        "link": ""
-      }
-    ],
+    "upcomingHolidays": [],
     "chabadDates": [
       {
         "date": "2026-11-29",
@@ -6515,85 +6440,7 @@
         "createdAt": "2026-06-26T06:36:57.839Z"
       }
     ],
-    "upcomingHolidays": [
-      {
-        "date": "2026-11-09",
-        "title": "Сигд",
-        "hebrew": "חג הסיגד",
-        "subcat": "modern",
-        "link": ""
-      },
-      {
-        "date": "2026-12-04",
-        "title": "Ханука, 1-я свеча",
-        "hebrew": "חנוכה: א׳ נר",
-        "subcat": "major",
-        "link": ""
-      },
-      {
-        "date": "2026-12-05",
-        "title": "Ханука, 2-я свеча",
-        "hebrew": "חנוכה: ב׳ נרות",
-        "subcat": "major",
-        "link": ""
-      },
-      {
-        "date": "2026-12-06",
-        "title": "Ханука, 3-я свеча",
-        "hebrew": "חנוכה: ג׳ נרות",
-        "subcat": "major",
-        "link": ""
-      },
-      {
-        "date": "2026-12-07",
-        "title": "Ханука, 4-я свеча",
-        "hebrew": "חנוכה: ד׳ נרות",
-        "subcat": "major",
-        "link": ""
-      },
-      {
-        "date": "2026-12-08",
-        "title": "Ханука, 5-я свеча",
-        "hebrew": "חנוכה: ה׳ נרות",
-        "subcat": "major",
-        "link": ""
-      },
-      {
-        "date": "2026-12-09",
-        "title": "Ханука, 6-я свеча",
-        "hebrew": "חנוכה: ו׳ נרות",
-        "subcat": "major",
-        "link": ""
-      },
-      {
-        "date": "2026-12-10",
-        "title": "Праздник дочерей",
-        "hebrew": "חג הבנות",
-        "subcat": "minor",
-        "link": ""
-      },
-      {
-        "date": "2026-12-10",
-        "title": "Ханука, 7-я свеча",
-        "hebrew": "חנוכה: ז׳ נרות",
-        "subcat": "major",
-        "link": ""
-      },
-      {
-        "date": "2026-12-11",
-        "title": "Ханука, 8-я свеча",
-        "hebrew": "חנוכה: ח׳ נרות",
-        "subcat": "major",
-        "link": ""
-      },
-      {
-        "date": "2026-12-12",
-        "title": "Ханука, 8-й день",
-        "hebrew": "חנוכה: יום ח׳",
-        "subcat": "major",
-        "link": ""
-      }
-    ],
+    "upcomingHolidays": [],
     "chabadDates": [
       {
         "date": "2026-11-29",
@@ -6662,6 +6509,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-13T09:16:57.235Z"
+    "updatedAt": "2026-10-13T15:13:26.626Z"
   }
 }
