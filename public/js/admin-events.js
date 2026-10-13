@@ -172,11 +172,24 @@
   }
 
   function readFormTitle(form) {
-    var field = form && form.elements && form.elements.namedItem('title');
-    if (!field || typeof field.value !== 'string') {
+    if (!form) {
       return '';
     }
-    return field.value.trim();
+    var byId = form.id === 'addEventForm'
+      ? document.getElementById('eventTitle')
+      : document.getElementById('editEventTitle');
+    if (byId && typeof byId.value === 'string') {
+      return byId.value.trim();
+    }
+    var field = form.elements && (form.elements.namedItem('eventTitle') || form.elements.namedItem('title'));
+    if (!field) {
+      return '';
+    }
+    var value = field.value;
+    if (typeof value === 'string') {
+      return value.trim();
+    }
+    return '';
   }
 
   function mapEventSaveError(message) {
@@ -201,23 +214,46 @@
 
   var statusTimer = null;
 
-  function showStatus(message, type) {
-    var banner = document.getElementById('eventsStatusBanner');
-    if (!banner) {
-      return;
+  function feedbackElForForm(form) {
+    if (!form) {
+      return null;
+    }
+    if (form.id === 'addEventForm') {
+      return document.getElementById('addEventFormFeedback');
+    }
+    if (form.id === 'editEventForm') {
+      return document.getElementById('editEventFormFeedback');
+    }
+    return null;
+  }
+
+  function showStatus(message, type, form) {
+    var isError = type === 'error';
+    var feedback = feedbackElForForm(form);
+    if (feedback) {
+      feedback.textContent = message;
+      feedback.className = 'admin-form-feedback admin-form-feedback--' + (type || 'success');
+      feedback.hidden = !message;
+      if (message && typeof feedback.scrollIntoView === 'function') {
+        feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
     }
 
-    banner.textContent = message;
-    banner.className = 'admin-alert events-status-banner events-status-banner--' + (type || 'success');
-    banner.hidden = false;
+    if (!isError && window.AdminFormFeedback && typeof window.AdminFormFeedback.showSuccess === 'function') {
+      window.AdminFormFeedback.showSuccess(message);
+    }
 
     if (statusTimer) {
       window.clearTimeout(statusTimer);
     }
 
-    statusTimer = window.setTimeout(function () {
-      banner.hidden = true;
-    }, 5000);
+    if (!isError && message) {
+      statusTimer = window.setTimeout(function () {
+        if (feedback) {
+          feedback.hidden = true;
+        }
+      }, 5000);
+    }
   }
 
   function scrollToActiveEvents() {
@@ -379,11 +415,11 @@
         form.reset();
         updateEventsPreview();
         scrollToActiveEvents();
-        showStatus(labels.eventSaved || labels.saved || 'Saved', 'success');
+        showStatus(labels.eventSaved || labels.saved || 'Saved', 'success', form);
       } else if (form.classList && form.classList.contains('event-delete-form')) {
-        showStatus(labels.eventDeleted || labels.saved || 'Saved', 'success');
+        showStatus(labels.eventDeleted || labels.saved || 'Saved', 'success', form);
       } else {
-        showStatus(labels.eventSaved || labels.saved || 'Saved', 'success');
+        showStatus(labels.eventSaved || labels.saved || 'Saved', 'success', form);
       }
 
       if (form.id === 'editEventForm' && window.jQuery) {
@@ -397,7 +433,7 @@
       window.setTimeout(hideBusy, 400);
     } catch (err) {
       hideBusy();
-      showStatus(mapEventSaveError(err.message), 'error');
+      showStatus(mapEventSaveError(err.message), 'error', form);
     }
   }
 
@@ -433,7 +469,7 @@
 
   function clearPartialEventDateFields(form) {
     var month = form.querySelector('[name="eventMonth"]');
-    var day = form.querySelector('[name="eventDate"]');
+    var day = form.querySelector('[name="eventDay"], [name="eventDate"]');
     var year = form.querySelector('[name="eventYear"]');
     var hasMonth = month && String(month.value || '').trim();
     var hasDay = day && String(day.value || '').trim();
@@ -468,14 +504,14 @@
 
       var titleValue = readFormTitle(form);
       if (!titleValue) {
-        showStatus(labels.eventTitleRequired || 'Enter a title.', 'error');
+        showStatus(labels.eventTitleRequired || 'Enter a title.', 'error', form);
         return;
       }
 
       if (form.id === 'addEventForm' && !publishNow) {
         var startAtField = form.querySelector('[name="startAt"]');
         if (!startAtField || !String(startAtField.value || '').trim()) {
-          showStatus(labels.eventStartRequired || 'Choose a publish date or click Publish now.', 'error');
+          showStatus(labels.eventStartRequired || 'Choose a publish date or click Publish now.', 'error', form);
           return;
         }
       }
@@ -556,10 +592,10 @@
       }
       renderAllEvents(result.data.events);
       hideBusy();
-      showStatus(labels.saved || 'Saved', 'success');
+      showStatus(labels.saved || 'Saved', 'success', null);
     }).catch(function (err) {
       hideBusy();
-      showStatus(err.message || 'Reorder failed', 'error');
+      showStatus(err.message || 'Reorder failed', 'error', null);
     });
   });
 

@@ -9,7 +9,6 @@ export const BOARD_FEATURE_DEFAULTS = {
   kelMaleRachamim: true,
   izkor: true,
   weather: false,
-  sunriseSunset: false,
   officialLogo: true,
 };
 

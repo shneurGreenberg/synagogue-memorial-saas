@@ -38,6 +38,7 @@ const {
   serializeSavedViews,
 } = require('../lib/saved-views');
 const { parseMemorialQrPanelFromBody, memorialQrPanelToUpdate } = require('../lib/memorial-qr-panel');
+const { parseSlideshowSettingsBody } = require('../lib/slideshow-admin-settings');
 const {
   parseFontScalesFromBody,
   normalizeTileOpacity,
@@ -135,7 +136,6 @@ const BOARD_FEATURE_TOGGLE_META = [
   { key: 'kelMaleRachamim', labelKey: 'feature_kel_male_rachamim' },
   { key: 'izkor', labelKey: 'feature_izkor' },
   { key: 'weather', labelKey: 'feature_weather' },
-  { key: 'sunriseSunset', labelKey: 'feature_sunrise_sunset' },
   { key: 'officialLogo', labelKey: 'feature_official_logo' },
 ];
 
@@ -154,7 +154,7 @@ const BOARD_FEATURE_GROUPS = [
   {
     groupKey: 'board_features_sidebar_group',
     helpKey: 'board_features_sidebar_group_help',
-    keys: ['officialLogo', 'upcomingHolidays', 'communityEvents', 'weather', 'sunriseSunset'],
+    keys: ['officialLogo', 'upcomingHolidays', 'communityEvents', 'weather'],
   },
   {
     groupKey: 'board_features_learning_group',
@@ -348,7 +348,8 @@ const contactImportUpload = multer({
     },
 });
 
-const parseFormBody = upload.none();
+const { createParseFormBody } = require('../lib/admin-parse-form-body');
+const parseFormBody = createParseFormBody(upload);
 
 function handleUpload(fields) {
     return (req, res, next) => {
@@ -1128,6 +1129,8 @@ router.post('/:slug/my-preferences', requireAdmin, parseFormBody, async (req, re
                 },
             });
         }
+
+        invalidateAdminSynagogueCache(req.params.slug);
 
         if (wantsJson(req)) {
             return res.json({ ok: true, adminLanguage: safeLanguage, colorMode: safeColorMode });
@@ -1969,17 +1972,8 @@ router.post('/:slug/people/delete', requireAdmin, requirePermission('people'), a
 router.post('/:slug/slideshow/settings', requireAdmin, requireAnyPermission('events', 'slideshow'), parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { interval, mainDuration, slideshowMode, enabled, displayMode } = req.body || {};
-        const modeRaw = String(slideshowMode || '').trim();
-        let isEnabled;
-        let mode;
-        if (modeRaw === 'off' || modeRaw === 'rotate' || modeRaw === 'showNow') {
-          isEnabled = modeRaw !== 'off';
-          mode = modeRaw === 'showNow' ? 'showNow' : 'rotate';
-        } else {
-          isEnabled = enabled === 'on' || enabled === 'true' || enabled === true || enabled === '1';
-          mode = displayMode === 'showNow' ? 'showNow' : 'rotate';
-        }
+        const { interval, mainDuration } = req.body || {};
+        const { isEnabled, mode } = parseSlideshowSettingsBody(req.body);
         await Synagogue.updateOne({ slug: req.params.slug }, {
             $set: {
                 'slideshow.enabled': isEnabled,

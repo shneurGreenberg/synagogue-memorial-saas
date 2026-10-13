@@ -21,20 +21,59 @@
     });
   }
 
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var script = document.createElement('script');
+      script.src = src;
+      script.async = true;
+      script.onload = function () {
+        resolve();
+      };
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
   function loadHtml2Canvas() {
     if (window.html2canvas) {
       return Promise.resolve(window.html2canvas);
     }
 
-    return new Promise(function (resolve, reject) {
-      var script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
-      script.async = true;
-      script.onload = function () {
-        resolve(window.html2canvas);
-      };
-      script.onerror = reject;
-      document.head.appendChild(script);
+    return loadScript('/js/vendor/html2canvas.min.js').then(function () {
+      if (window.html2canvas) {
+        return window.html2canvas;
+      }
+      return loadScript('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js').then(function () {
+        return window.html2canvas;
+      });
+    });
+  }
+
+  function waitForPreviewFrameReady(frame, timeoutMs) {
+    var deadline = Date.now() + (timeoutMs || 8000);
+    return new Promise(function (resolve) {
+      function check() {
+        if (!frame) {
+          resolve(false);
+          return;
+        }
+        if (frame.dataset.previewReady === '1' && frame.contentDocument) {
+          resolve(true);
+          return;
+        }
+        if (Date.now() >= deadline) {
+          resolve(false);
+          return;
+        }
+        window.setTimeout(check, 80);
+      }
+      check();
+    });
+  }
+
+  function delay(ms) {
+    return new Promise(function (resolve) {
+      window.setTimeout(resolve, ms);
     });
   }
 
@@ -58,33 +97,45 @@
 
   function capturePreviewScreenshot() {
     var frame = document.getElementById('boardPreviewFrame');
-    var doc = frame && frame.contentDocument;
-    var root = doc && (doc.querySelector('.main-container') || doc.querySelector('.wooden-panel'));
-    if (!root) {
+    if (!frame) {
       return Promise.resolve('');
     }
 
-    var BOARD_W = 1920;
-    var BOARD_H = 1080;
     var TARGET_W = 480;
     var TARGET_H = 270;
 
-    return waitForImages(root).then(function () {
-      return loadHtml2Canvas();
-    }).then(function (html2canvas) {
-      return html2canvas(root, {
-        backgroundColor: '#2a2118',
-        scale: TARGET_W / BOARD_W,
-        width: BOARD_W,
-        height: BOARD_H,
-        windowWidth: BOARD_W,
-        windowHeight: BOARD_H,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        imageTimeout: 15000,
-      });
-    }).then(function (canvas) {
+    return waitForPreviewFrameReady(frame).then(function () {
+      return delay(120);
+    }).then(function () {
+      var doc = frame.contentDocument;
+      var root = doc && (doc.querySelector('.main-container') || doc.querySelector('.wooden-panel'));
+      if (!root) {
+        return '';
+      }
+
+      var boardW = Math.max(root.scrollWidth || 0, root.clientWidth || 0, 960);
+      var boardH = Math.max(root.scrollHeight || 0, root.clientHeight || 0, 540);
+      var scale = Math.min(TARGET_W / boardW, TARGET_H / boardH);
+
+      return waitForImages(root).then(function () {
+        return loadHtml2Canvas();
+      }).then(function (html2canvas) {
+        return html2canvas(root, {
+          backgroundColor: '#2a2118',
+          scale: scale,
+          width: boardW,
+          height: boardH,
+          windowWidth: boardW,
+          windowHeight: boardH,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          imageTimeout: 15000,
+        });
+      }).then(function (canvas) {
+        if (!canvas) {
+          return '';
+        }
       var thumb = document.createElement('canvas');
       thumb.width = TARGET_W;
       thumb.height = TARGET_H;
@@ -115,8 +166,9 @@
         offsetY = Math.round((TARGET_H - drawH) / 2);
       }
 
-      ctx.drawImage(canvas, 0, 0, sourceW, sourceH, offsetX, offsetY, drawW, drawH);
-      return thumb.toDataURL('image/jpeg', 0.9);
+        ctx.drawImage(canvas, 0, 0, sourceW, sourceH, offsetX, offsetY, drawW, drawH);
+        return thumb.toDataURL('image/jpeg', 0.85);
+      });
     }).catch(function () {
       return '';
     });
