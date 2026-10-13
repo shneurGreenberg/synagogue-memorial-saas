@@ -389,6 +389,7 @@ const SynagogueSchema = new mongoose.Schema({
   },
   slideshow: {
     enabled: { type: Boolean, default: false },
+    displayMode: { type: String, enum: ['rotate', 'showNow'], default: 'rotate' },
     interval: { type: Number, default: 10 }, // seconds for each slide
     mainDuration: { type: Number, default: 30 }, // seconds for main view
     images: [{

@@ -18,224 +18,83 @@
 {{/if}}
 
 
-<section class="admin-panel slideshow-embedded" id="slideshow-section">
+<section class="admin-panel slideshow-compact" id="slideshow-section">
     <div class="admin-panel-header">
-        <h2>{{t 'slideshow'}} / {{t 'slideshow_settings_section'}}</h2>
+        <h2>{{t 'slideshow'}}</h2>
+        <p class="admin-subtitle">{{t 'slideshow_subtitle'}}</p>
     </div>
     <div class="admin-panel-body">
-        <form method="POST" action="/admin/{{synagogue.slug}}/slideshow/settings" class="slideshow-settings-form">
+        <form method="POST" action="/admin/{{synagogue.slug}}/slideshow/settings" class="slideshow-panel-form"
+            id="slideshowPanelForm">
             <label class="toggle-switch slideshow-enable-toggle">
                 <input type="checkbox" name="enabled" {{#if synagogue.slideshow.enabled}}checked{{/if}}>
                 <span class="toggle-slider"></span>
                 <span class="toggle-label">{{t 'enable_slideshow'}}</span>
             </label>
-            <div class="settings-two-col">
-                <div class="form-field">
-                    <label for="slideInterval">{{t 'slide_duration'}}</label>
-                    <input type="number" class="form-control admin-input-modern" name="interval" id="slideInterval"
-                        value="{{synagogue.slideshow.interval}}" min="3" required>
-                </div>
-                <div class="form-field">
-                    <label for="mainDuration">{{t 'main_duration'}}</label>
-                    <input type="number" class="form-control admin-input-modern" name="mainDuration" id="mainDuration"
-                        value="{{synagogue.slideshow.mainDuration}}" min="10" required>
+
+            <fieldset class="slideshow-mode-fieldset">
+                <legend class="sr-only">{{t 'slideshow_display_mode'}}</legend>
+                <label class="slideshow-mode-option">
+                    <input type="radio" name="displayMode" value="showNow"
+                        {{#if synagogue.slideshow.isShowNowMode}}checked{{/if}}>
+                    <span>{{t 'slideshow_mode_show_now'}}</span>
+                </label>
+                <label class="slideshow-mode-option">
+                    <input type="radio" name="displayMode" value="rotate"
+                        {{#unless synagogue.slideshow.isShowNowMode}}checked{{/unless}}>
+                    <span>{{t 'slideshow_mode_rotate'}}</span>
+                </label>
+            </fieldset>
+
+            <div class="slideshow-rotate-fields" id="slideshowRotateFields"
+                {{#if synagogue.slideshow.isShowNowMode}}hidden{{/if}}>
+                <div class="settings-two-col">
+                    <div class="form-field">
+                        <label for="slideInterval">{{t 'slide_duration'}}</label>
+                        <input type="number" class="form-control admin-input-modern" name="interval" id="slideInterval"
+                            value="{{synagogue.slideshow.interval}}" min="3">
+                    </div>
+                    <div class="form-field">
+                        <label for="mainDuration">{{t 'main_duration'}}</label>
+                        <input type="number" class="form-control admin-input-modern" name="mainDuration" id="mainDuration"
+                            value="{{synagogue.slideshow.mainDuration}}" min="10">
+                    </div>
                 </div>
             </div>
+
+            <div class="slideshow-current-block">
+                <p class="slideshow-current-label">{{t 'slideshow_current_image'}}</p>
+                <div class="media-preview media-preview-slide slideshow-current-preview" id="slideshowCurrentPreview">
+                    {{#if synagogue.slideshow.currentSlide}}
+                    <img src="/images/{{synagogue.slideshow.currentSlide.url}}" alt="">
+                    {{else}}
+                    <span class="media-preview-empty">{{t 'no_slides'}}</span>
+                    {{/if}}
+                </div>
+                <label class="file-drop-label slideshow-upload-label">
+                    {{t 'replace_image'}}
+                    <input type="file" name="image" accept="image/*" id="slideshowImageInput"
+                        data-upload-url="/admin/{{synagogue.slug}}/slideshow/add">
+                </label>
+                <p class="field-hint">{{t 'slideshow_upload_hint'}}</p>
+            </div>
+
             <button type="submit" class="btn-admin btn-admin-primary">{{t 'save'}}</button>
         </form>
     </div>
 </section>
-
-<section class="admin-panel">
-    <div class="admin-panel-header">
-        <h2>{{t 'add_new_slide'}}</h2>
-    </div>
-    <div class="admin-panel-body">
-        <form method="POST" action="/admin/{{synagogue.slug}}/slideshow/add" enctype="multipart/form-data"
-            class="add-slide-form">
-            <div class="add-slide-layout">
-                <div class="media-upload-card add-slide-preview-card">
-                    <div class="media-preview media-preview-slide" id="slidePreview">
-                        <span class="media-preview-empty">{{t 'upload_photo'}}</span>
-                    </div>
-                    <label class="file-drop-label">
-                        {{t 'image'}}
-                        <input type="file" name="image" accept="image/*" required id="slideImageInput">
-                    </label>
-                </div>
-                <div class="add-slide-fields">
-                    <div class="form-field">
-                        <label for="slideText">{{t 'slide_caption_optional'}}</label>
-                        <input type="text" name="text" id="slideText" class="form-control admin-input-modern"
-                            placeholder="{{t 'text'}}">
-                    </div>
-                    <button type="submit" class="btn-admin btn-admin-primary btn-admin-submit">
-                        <span class="btn-submit-icon" aria-hidden="true">&#10003;</span>
-                        {{t 'add_slide_submit'}}
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</section>
-
-<section class="admin-panel">
-    <div class="admin-panel-header">
-        <h2>{{t 'current_slides'}}</h2>
-    </div>
-    <div class="admin-panel-body">
-        <div class="slides-grid">
-            {{#each synagogue.slideshow.images}}
-            <article class="slide-card slide-card-clickable" role="button" tabindex="0"
-                data-slide-id="{{#if this._id}}{{this._id}}{{else}}{{this.id}}{{/if}}">
-                <div class="slide-card-image">
-                    <img src="/images/{{this.url}}" alt="{{this.text}}">
-                </div>
-                <div class="slide-card-body">
-                    {{#if this.text}}
-                    <p class="slide-caption">{{this.text}}</p>
-                    {{else}}
-                    <p class="slide-caption slide-caption-muted">{{t 'slide_caption_optional'}}</p>
-                    {{/if}}
-                    <span class="slide-edit-hint">{{t 'edit'}}</span>
-                    <form method="POST" action="/admin/{{../synagogue.slug}}/slideshow/delete"
-                        class="slide-delete-form"
-                        onsubmit="return confirm('{{t 'are_you_sure'}}');">
-                        <input type="hidden" name="slideId" value="{{#if this._id}}{{this._id}}{{else}}{{this.id}}{{/if}}">
-                        <button type="submit" class="btn-admin btn-admin-danger btn-admin-sm">{{t 'delete'}}</button>
-                    </form>
-                </div>
-            </article>
-            {{else}}
-            <div class="admin-empty-state slides-grid-empty">
-                <p>{{t 'no_slides'}}</p>
-            </div>
-            {{/each}}
-        </div>
-    </div>
-</section>
-
-<div class="modal fade admin-modal" id="editSlideModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <form method="POST" action="/admin/{{synagogue.slug}}/slideshow/edit" enctype="multipart/form-data"
-                id="editSlideForm">
-                <input type="hidden" name="slideId" id="editSlideId">
-                <div class="modal-header">
-                    <h5 class="modal-title">{{t 'edit_slide'}}</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="{{t 'cancel'}}">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="media-preview media-preview-slide mb-3" id="editSlidePreview"></div>
-                    <div class="form-field">
-                        <label for="editSlideText">{{t 'slide_caption_optional'}}</label>
-                        <input type="text" name="text" id="editSlideText" class="form-control admin-input-modern">
-                    </div>
-                    <div class="form-field">
-                        <label class="file-drop-label d-inline-block">
-                            {{t 'replace_image'}}
-                            <input type="file" name="image" accept="image/*" id="editSlideImage">
-                        </label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-admin btn-admin-ghost" data-dismiss="modal">{{t 'cancel'}}</button>
-                    <button type="submit" class="btn-admin btn-admin-primary">{{t 'save_slide_changes'}}</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <script>
     window.slideshowAdminLabels = {
         saving: '{{t 'saving'}}',
         saved: '{{t 'saved'}}',
         noSlides: '{{t 'no_slides'}}',
-        captionOptional: '{{t 'slide_caption_optional'}}',
-        edit: '{{t 'edit'}}',
-        delete: '{{t 'delete'}}',
-        areYouSure: '{{t 'are_you_sure'}}',
-        uploadPhoto: '{{t 'upload_photo'}}'
+        uploadPhoto: '{{t 'upload_photo'}}',
+        uploadFailed: '{{t 'upload_error'}}'
     };
-</script>
-<script id="slides-data" type="application/json">{{{json synagogue.slideshow.images}}}</script>
-<script>
-    (function () {
-        var input = document.getElementById('slideImageInput');
-        var preview = document.getElementById('slidePreview');
-        if (input && preview) {
-            input.addEventListener('change', function () {
-                var file = input.files && input.files[0];
-                if (!file) return;
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    preview.innerHTML = '<img src="' + e.target.result + '" alt="">';
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-
-        var slidesById = {};
-        try {
-            var slidesDataEl = document.getElementById('slides-data');
-            var parsed = JSON.parse(slidesDataEl && slidesDataEl.textContent || '[]');
-            (parsed || []).forEach(function (slide) {
-                var key = slide && (slide._id || slide.id);
-                if (key != null && key !== '') {
-                    slidesById[String(key)] = slide;
-                }
-            });
-        } catch (e) { /* ignore */ }
-
-        function openEditSlide(card) {
-            var id = card.getAttribute('data-slide-id');
-            var slide = slidesById[id];
-            if (!slide) return;
-            var url = slide.url;
-            var text = slide.text || '';
-
-            document.getElementById('editSlideId').value = id;
-            document.getElementById('editSlideText').value = text;
-            document.getElementById('editSlidePreview').innerHTML =
-                '<img src="/images/' + url + '" alt="">';
-
-            if (window.jQuery) {
-                window.jQuery('#editSlideModal').modal('show');
-            }
-        }
-
-        function bindSlideCards() {
-            document.querySelectorAll('.slide-card-clickable').forEach(function (card) {
-                card.addEventListener('click', function (event) {
-                    if (event.target.closest('.slide-delete-form')) {
-                        return;
-                    }
-                    openEditSlide(card);
-                });
-                card.addEventListener('keydown', function (event) {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault();
-                        openEditSlide(card);
-                    }
-                });
-            });
-        }
-
-        bindSlideCards();
-        window.addEventListener('slideshow-grid-updated', function () {
-            try {
-                slidesById = {};
-                JSON.parse(document.getElementById('slides-data').textContent).forEach(function (slide) {
-                    var key = slide && (slide._id || slide.id);
-                    if (key != null && key !== '') {
-                        slidesById[String(key)] = slide;
-                    }
-                });
-            } catch (e) { /* ignore */ }
-            bindSlideCards();
-        });
-    })();
+    window.slideshowAdminConfig = {
+        uploadUrl: '/admin/{{synagogue.slug}}/slideshow/add'
+    };
 </script>
 
 
@@ -247,87 +106,59 @@
             <form method="POST" action="/admin/{{synagogue.slug}}/events/add" class="add-event-form events-editor-form" id="addEventForm">
                 <div class="events-editor-fields">
                 <div class="form-field">
-                    <label for="eventTitleRu">{{t 'event_title'}} ({{t 'language_ru'}})</label>
-                    <input type="text" name="titleRu" id="eventTitleRu" class="form-control admin-input-modern event-preview-input"
-                        placeholder="{{t 'event_title_placeholder'}}">
+                    <label for="eventTitle">{{t 'event_title'}}</label>
+                    <input type="text" name="title" id="eventTitle" class="form-control admin-input-modern event-preview-input"
+                        placeholder="{{t 'event_title_placeholder'}}" required>
                 </div>
                 <div class="form-field">
-                    <label for="eventTitleEn">{{t 'event_title'}} ({{t 'language_en'}})</label>
-                    <input type="text" name="titleEn" id="eventTitleEn" class="form-control admin-input-modern event-preview-input"
-                        placeholder="{{t 'event_title_placeholder'}}">
-                </div>
-                <div class="form-field">
-                    <label for="eventTextRu">{{t 'event_description_optional'}} ({{t 'language_ru'}})</label>
-                    <textarea name="textRu" id="eventTextRu" class="form-control admin-input-modern event-preview-input" rows="2"
+                    <label for="eventText">{{t 'event_description_optional'}}</label>
+                    <textarea name="text" id="eventText" class="form-control admin-input-modern event-preview-input" rows="3"
                         placeholder="{{t 'event_description_placeholder'}}"></textarea>
                 </div>
-                <div class="form-field">
-                    <label for="eventTextEn">{{t 'event_description_optional'}} ({{t 'language_en'}})</label>
-                    <textarea name="textEn" id="eventTextEn" class="form-control admin-input-modern event-preview-input" rows="2"
-                        placeholder="{{t 'event_description_placeholder'}}"></textarea>
-                </div>
-                <div class="form-field">
-                    <label for="eventTitleHe">{{t 'event_title'}} ({{t 'language_he'}})</label>
-                    <input type="text" name="titleHe" id="eventTitleHe" class="form-control admin-input-modern event-preview-input"
-                        placeholder="{{t 'event_title_placeholder'}}">
-                </div>
-                <div class="form-field">
-                    <label for="eventTextHe">{{t 'event_description_optional'}} ({{t 'language_he'}})</label>
-                    <textarea name="textHe" id="eventTextHe" class="form-control admin-input-modern event-preview-input" rows="2"
-                        placeholder="{{t 'event_description_placeholder'}}"></textarea>
-                </div>
-                <div class="event-form-actions event-translate-actions">
-                    <button type="button" class="btn-admin btn-admin-ghost btn-admin-with-icon auto-translate-btn"
-                        data-translate-scope="add">
-                        {{{adminIcon 'translate' class='btn-admin-inline-icon'}}}
-                        תרגום אוטומטי
-                    </button>
-                    <span class="field-hint auto-translate-status" data-translate-status="add" hidden></span>
-                </div>
-                <div class="form-field">
-                    <label>{{t 'event_date_label'}} <span class="field-optional">({{t 'optional'}})</span></label>
-                    <div class="date-inputs-row">
-                        <div class="date-input-group">
-                            <label for="eventMonth" class="sr-only">{{t 'month'}}</label>
+
+                <div class="events-scheduling-block">
+                    <h3 class="events-scheduling-title">{{t 'event_scheduling_section'}}</h3>
+
+                    <label class="toggle-switch events-ticker-date-toggle">
+                        <input type="checkbox" id="eventShowTickerDate" name="showTickerDate">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label">{{t 'event_show_ticker_date'}}</span>
+                    </label>
+                    <div class="events-ticker-date-fields" id="eventTickerDateFields" hidden>
+                        <div class="date-inputs-row">
                             <input type="number" name="eventMonth" id="eventMonth" class="form-control admin-input-modern"
-                                min="1" max="12" placeholder="{{t 'month'}}">
-                        </div>
-                        <div class="date-input-group">
-                            <label for="eventDay" class="sr-only">{{t 'day'}}</label>
+                                min="1" max="12" placeholder="{{t 'month'}}" aria-label="{{t 'month'}}">
                             <input type="number" name="eventDate" id="eventDay" class="form-control admin-input-modern"
-                                min="1" max="31" placeholder="{{t 'day'}}">
-                        </div>
-                        <div class="date-input-group">
-                            <label for="eventYear" class="sr-only">{{t 'year'}}</label>
+                                min="1" max="31" placeholder="{{t 'day'}}" aria-label="{{t 'day'}}">
                             <input type="number" name="eventYear" id="eventYear" class="form-control admin-input-modern"
-                                min="1900" max="2100" placeholder="{{t 'year'}}">
+                                min="1900" max="2100" placeholder="{{t 'year'}}" aria-label="{{t 'year'}}">
                         </div>
                     </div>
-                    <span class="field-hint">{{t 'event_date_help'}}</span>
-                </div>
-                <div class="settings-two-col">
-                    <div class="form-field">
-                        <label for="eventStartAt">{{t 'event_start_at'}} <span class="field-optional">({{t 'optional'}})</span></label>
-                        <input type="datetime-local" name="startAt" id="eventStartAt"
-                            class="form-control admin-input-modern">
-                        <span class="field-hint">{{t 'event_start_at_help'}}</span>
+
+                    <div class="settings-two-col events-visibility-row">
+                        <div class="form-field">
+                            <label for="eventStartAt">{{t 'event_start_at'}}</label>
+                            <input type="datetime-local" name="startAt" id="eventStartAt"
+                                class="form-control admin-input-modern">
+                        </div>
+                        <div class="form-field">
+                            <label for="eventEndAt">{{t 'event_end_at'}}</label>
+                            <input type="datetime-local" name="endAt" id="eventEndAt"
+                                class="form-control admin-input-modern">
+                        </div>
                     </div>
-                    <div class="form-field">
-                        <label for="eventEndAt">{{t 'event_end_at'}} <span class="field-optional">({{t 'optional'}})</span></label>
-                        <input type="datetime-local" name="endAt" id="eventEndAt"
-                            class="form-control admin-input-modern">
-                        <span class="field-hint">{{t 'event_end_at_help'}}</span>
+                    <p class="field-hint events-scheduling-hint">{{t 'event_scheduling_hint'}}</p>
+
+                    <div class="event-form-actions events-scheduling-actions">
+                        <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon" data-publish-now="0">
+                            {{{adminIcon 'schedule' class='btn-admin-inline-icon'}}}
+                            {{t 'schedule_event'}}
+                        </button>
+                        <button type="submit" class="btn-admin btn-admin-accent btn-admin-with-icon" data-publish-now="1">
+                            {{{adminIcon 'publish' class='btn-admin-inline-icon'}}}
+                            {{t 'publish_now'}}
+                        </button>
                     </div>
-                </div>
-                <div class="event-form-actions">
-                    <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon" data-publish-now="0">
-                        {{{adminIcon 'schedule' class='btn-admin-inline-icon'}}}
-                        {{t 'schedule_event'}}
-                    </button>
-                    <button type="submit" class="btn-admin btn-admin-accent btn-admin-with-icon" data-publish-now="1">
-                        {{{adminIcon 'publish' class='btn-admin-inline-icon'}}}
-                        {{t 'publish_now'}}
-                    </button>
                 </div>
                 </div>
 
@@ -391,57 +222,42 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-field">
-                        <label for="editEventTitleRu">{{t 'event_title'}} ({{t 'language_ru'}})</label>
-                        <input type="text" name="titleRu" id="editEventTitleRu" class="form-control admin-input-modern">
+                        <label for="editEventTitle">{{t 'event_title'}}</label>
+                        <input type="text" name="title" id="editEventTitle" class="form-control admin-input-modern" required>
                     </div>
                     <div class="form-field">
-                        <label for="editEventTitleEn">{{t 'event_title'}} ({{t 'language_en'}})</label>
-                        <input type="text" name="titleEn" id="editEventTitleEn" class="form-control admin-input-modern">
+                        <label for="editEventText">{{t 'event_description_optional'}}</label>
+                        <textarea name="text" id="editEventText" class="form-control admin-input-modern" rows="3"></textarea>
                     </div>
-                    <div class="form-field">
-                        <label for="editEventTextRu">{{t 'event_description_optional'}} ({{t 'language_ru'}})</label>
-                        <textarea name="textRu" id="editEventTextRu" class="form-control admin-input-modern" rows="2"></textarea>
-                    </div>
-                    <div class="form-field">
-                        <label for="editEventTextEn">{{t 'event_description_optional'}} ({{t 'language_en'}})</label>
-                        <textarea name="textEn" id="editEventTextEn" class="form-control admin-input-modern" rows="2"></textarea>
-                    </div>
-                    <div class="form-field">
-                        <label for="editEventTitleHe">{{t 'event_title'}} ({{t 'language_he'}})</label>
-                        <input type="text" name="titleHe" id="editEventTitleHe" class="form-control admin-input-modern">
-                    </div>
-                    <div class="form-field">
-                        <label for="editEventTextHe">{{t 'event_description_optional'}} ({{t 'language_he'}})</label>
-                        <textarea name="textHe" id="editEventTextHe" class="form-control admin-input-modern" rows="2"></textarea>
-                    </div>
-                    <div class="event-form-actions event-translate-actions">
-                        <button type="button" class="btn-admin btn-admin-ghost btn-admin-with-icon auto-translate-btn"
-                            data-translate-scope="edit">
-                            {{{adminIcon 'translate' class='btn-admin-inline-icon'}}}
-                            תרגום אוטומטי
-                        </button>
-                        <span class="field-hint auto-translate-status" data-translate-status="edit" hidden></span>
-                    </div>
-                    <div class="form-field">
-                        <label>{{t 'event_date_label'}} <span class="field-optional">({{t 'optional'}})</span></label>
-                        <div class="date-inputs-row">
-                            <input type="number" name="eventMonth" id="editEventMonth" class="form-control admin-input-modern"
-                                min="1" max="12" placeholder="{{t 'month'}}">
-                            <input type="number" name="eventDate" id="editEventDay" class="form-control admin-input-modern"
-                                min="1" max="31" placeholder="{{t 'day'}}">
-                            <input type="number" name="eventYear" id="editEventYear" class="form-control admin-input-modern"
-                                min="1900" max="2100" placeholder="{{t 'year'}}">
+
+                    <div class="events-scheduling-block events-scheduling-block--compact">
+                        <label class="toggle-switch events-ticker-date-toggle">
+                            <input type="checkbox" id="editEventShowTickerDate">
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">{{t 'event_show_ticker_date'}}</span>
+                        </label>
+                        <div class="events-ticker-date-fields" id="editEventTickerDateFields" hidden>
+                            <div class="date-inputs-row">
+                                <input type="number" name="eventMonth" id="editEventMonth" class="form-control admin-input-modern"
+                                    min="1" max="12" placeholder="{{t 'month'}}" aria-label="{{t 'month'}}">
+                                <input type="number" name="eventDate" id="editEventDay" class="form-control admin-input-modern"
+                                    min="1" max="31" placeholder="{{t 'day'}}" aria-label="{{t 'day'}}">
+                                <input type="number" name="eventYear" id="editEventYear" class="form-control admin-input-modern"
+                                    min="1900" max="2100" placeholder="{{t 'year'}}" aria-label="{{t 'year'}}">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-field">
-                        <label for="editEventStartAt">{{t 'event_start_at'}}</label>
-                        <input type="datetime-local" name="startAt" id="editEventStartAt"
-                            class="form-control admin-input-modern">
-                    </div>
-                    <div class="form-field">
-                        <label for="editEventEndAt">{{t 'event_end_at'}}</label>
-                        <input type="datetime-local" name="endAt" id="editEventEndAt"
-                            class="form-control admin-input-modern">
+                        <div class="settings-two-col events-visibility-row">
+                            <div class="form-field">
+                                <label for="editEventStartAt">{{t 'event_start_at'}}</label>
+                                <input type="datetime-local" name="startAt" id="editEventStartAt"
+                                    class="form-control admin-input-modern">
+                            </div>
+                            <div class="form-field">
+                                <label for="editEventEndAt">{{t 'event_end_at'}}</label>
+                                <input type="datetime-local" name="endAt" id="editEventEndAt"
+                                    class="form-control admin-input-modern">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

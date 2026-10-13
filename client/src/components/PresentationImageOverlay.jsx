@@ -53,15 +53,19 @@ function resolveSlideshow(raw) {
     return null;
   }
 
+  const activeSlide = images[images.length - 1];
+
   const intervalSec = Number(raw.interval);
   const mainSec = Number(raw.mainDuration);
 
+  const displayMode = raw.displayMode === 'showNow' ? 'showNow' : 'rotate';
+
   return {
     mode: 'slideshow',
-    images: images.map((slide) => ({
-      url: slide.url || slide.image,
-      text: slide.text || '',
-    })),
+    displayMode,
+    images: [{
+      url: activeSlide.url || activeSlide.image,
+    }],
     mainDurationMs: Number.isFinite(mainSec) && mainSec >= 5 ? mainSec * 1000 : 30 * 1000,
     slideIntervalMs: Number.isFinite(intervalSec) && intervalSec >= 2 ? intervalSec * 1000 : 10 * 1000,
   };
@@ -112,6 +116,15 @@ export function PresentationImageOverlay() {
       clear();
       timer = window.setTimeout(fn, ms);
     };
+
+    if (config.displayMode === 'showNow') {
+      setSlideIndex(0);
+      setVisible(true);
+      return () => {
+        cancelled = true;
+        clear();
+      };
+    }
 
     const showSlides = () => {
       if (cancelled || document.hidden) {
@@ -171,9 +184,6 @@ export function PresentationImageOverlay() {
         src={src}
         alt=""
       />
-      {isSlideshow && slide.text ? (
-        <div className="slideshow-caption">{slide.text}</div>
-      ) : null}
     </div>,
     document.body,
   );

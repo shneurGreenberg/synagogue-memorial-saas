@@ -120,20 +120,15 @@
       || (window.eventsPreviewLabels && window.eventsPreviewLabels.ru)
       || {};
 
-    var titleRu = document.getElementById('eventTitleRu');
-    var titleEn = document.getElementById('eventTitleEn');
-    var textRu = document.getElementById('eventTextRu');
-    var textEn = document.getElementById('eventTextEn');
+    var titleInput = document.getElementById('eventTitle');
+    var textInput = document.getElementById('eventText');
     var monthInput = document.getElementById('eventMonth');
     var dayInput = document.getElementById('eventDay');
     var yearInput = document.getElementById('eventYear');
+    var showTicker = document.getElementById('eventShowTickerDate');
 
-    var title = previewLang === 'en'
-      ? String((titleEn && titleEn.value) || (titleRu && titleRu.value) || '').trim()
-      : String((titleRu && titleRu.value) || (titleEn && titleEn.value) || '').trim();
-    var text = previewLang === 'en'
-      ? String((textEn && textEn.value) || (textRu && textRu.value) || '').trim()
-      : String((textRu && textRu.value) || (textEn && textEn.value) || '').trim();
+    var title = String((titleInput && titleInput.value) || '').trim();
+    var text = String((textInput && textInput.value) || '').trim();
 
     var sectionTitleEl = document.getElementById('eventsPreviewSectionTitle');
     var titleEl = document.getElementById('eventsPreviewTitle');
@@ -151,22 +146,47 @@
       textEl.hidden = !text && !labels.textSample;
     }
     if (dateEl) {
-      var formatted = formatPreviewDate(
-        monthInput && monthInput.value,
-        dayInput && dayInput.value,
-        yearInput && yearInput.value,
-        previewLang,
-      );
-      dateEl.textContent = formatted || labels.dateSample || '';
-      dateEl.hidden = !formatted && !labels.dateSample;
+      var showDate = showTicker && showTicker.checked;
+      var formatted = showDate
+        ? formatPreviewDate(
+          monthInput && monthInput.value,
+          dayInput && dayInput.value,
+          yearInput && yearInput.value,
+          previewLang,
+        )
+        : '';
+      dateEl.textContent = formatted || (showDate ? labels.dateSample || '' : '');
+      dateEl.hidden = !showDate || (!formatted && !labels.dateSample);
     }
   }
 
+  function bindTickerDateToggle(toggleId, fieldsId) {
+    var toggle = document.getElementById(toggleId);
+    var fields = document.getElementById(fieldsId);
+    if (!toggle || !fields) {
+      return;
+    }
+
+    function sync() {
+      fields.hidden = !toggle.checked;
+      if (!toggle.checked) {
+        fields.querySelectorAll('input').forEach(function (input) {
+          input.value = '';
+        });
+      }
+      updateEventsPreview();
+    }
+
+    toggle.addEventListener('change', sync);
+    sync();
+  }
+
   function bindEventsPreview() {
-    document.querySelectorAll('.event-preview-input, #eventMonth, #eventDay, #eventYear').forEach(function (input) {
+    document.querySelectorAll('.event-preview-input, #eventMonth, #eventDay, #eventYear, #eventShowTickerDate').forEach(function (input) {
       input.addEventListener('input', updateEventsPreview);
       input.addEventListener('change', updateEventsPreview);
     });
+    bindTickerDateToggle('eventShowTickerDate', 'eventTickerDateFields');
     updateEventsPreview();
   }
 
@@ -388,23 +408,47 @@
     document.getElementById('editEventId').value = eventId;
     var titles = event.titles || {};
     var texts = event.texts || {};
-    document.getElementById('editEventTitleRu').value = titles.ru || event.title || '';
-    document.getElementById('editEventTitleEn').value = titles.en || event.title || '';
-    var editTitleHe = document.getElementById('editEventTitleHe');
-    if (editTitleHe) editTitleHe.value = titles.he || '';
-    document.getElementById('editEventTextRu').value = texts.ru || event.text || '';
-    document.getElementById('editEventTextEn').value = texts.en || event.text || '';
-    var editTextHe = document.getElementById('editEventTextHe');
-    if (editTextHe) editTextHe.value = texts.he || '';
-    document.getElementById('editEventMonth').value = event.eventDate && event.eventDate.month ? event.eventDate.month : '';
-    document.getElementById('editEventDay').value = event.eventDate && event.eventDate.date ? event.eventDate.date : '';
-    document.getElementById('editEventYear').value = event.eventDate && event.eventDate.year ? event.eventDate.year : '';
+    var adminTitle = String(event.title || '').trim()
+      || String(titles.he || titles.ru || titles.en || '').trim();
+    var adminText = String(event.text || '').trim()
+      || String(texts.he || texts.ru || texts.en || '').trim();
+
+    document.getElementById('editEventTitle').value = adminTitle;
+    document.getElementById('editEventText').value = adminText;
+
+    var hasTickerDate = Boolean(event.eventDate && event.eventDate.month && event.eventDate.date);
+    var editTickerToggle = document.getElementById('editEventShowTickerDate');
+    var editTickerFields = document.getElementById('editEventTickerDateFields');
+    if (editTickerToggle) {
+      editTickerToggle.checked = hasTickerDate;
+    }
+    if (editTickerFields) {
+      editTickerFields.hidden = !hasTickerDate;
+    }
+
+    document.getElementById('editEventMonth').value = hasTickerDate && event.eventDate.month ? event.eventDate.month : '';
+    document.getElementById('editEventDay').value = hasTickerDate && event.eventDate.date ? event.eventDate.date : '';
+    document.getElementById('editEventYear').value = hasTickerDate && event.eventDate.year ? event.eventDate.year : '';
     document.getElementById('editEventStartAt').value = toDatetimeLocalValue(event.startAt);
     document.getElementById('editEventEndAt').value = toDatetimeLocalValue(event.endAt);
 
     if (window.jQuery) {
       window.jQuery('#editEventModal').modal('show');
     }
+  }
+
+  function stripTickerDateIfDisabled(form) {
+    var toggle = document.getElementById(form.id === 'editEventForm' ? 'editEventShowTickerDate' : 'eventShowTickerDate');
+    if (!toggle || toggle.checked) {
+      return;
+    }
+
+    ['eventMonth', 'eventDate', 'eventYear'].forEach(function (name) {
+      var field = form.querySelector('[name="' + name + '"]');
+      if (field) {
+        field.value = '';
+      }
+    });
   }
 
   document.querySelectorAll('#addEventForm, #editEventForm').forEach(function (form) {
@@ -426,12 +470,13 @@
         form.appendChild(input);
       }
 
+      stripTickerDateIfDisabled(form);
+
       if (form.id === 'addEventForm') {
-        var titleRu = document.getElementById('eventTitleRu');
-        var titleEn = document.getElementById('eventTitleEn');
-        var hasTitle = (titleRu && titleRu.value.trim()) || (titleEn && titleEn.value.trim());
+        var titleInput = document.getElementById('eventTitle');
+        var hasTitle = titleInput && titleInput.value.trim();
         if (!hasTitle) {
-          showStatus(labels.eventTitleRequired || 'Enter a title in Russian or English.', 'error');
+          showStatus(labels.eventTitleRequired || 'Enter a title.', 'error');
           return;
         }
       }
@@ -519,114 +564,15 @@
     });
   });
 
-  async function translateText(text, target, source) {
-    var slug = window.location.pathname.split('/')[2];
-    var response = await fetch('/admin/' + slug + '/translate', {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-      },
-      body: JSON.stringify({ text: text, target: target, source: source || 'auto' }),
-    });
-    var payload = await response.json().catch(function () { return null; });
-    if (!response.ok || !payload || !payload.ok || !payload.translated) {
-      throw new Error((payload && payload.error) || 'Translate failed');
+  document.getElementById('editEventShowTickerDate') && document.getElementById('editEventShowTickerDate').addEventListener('change', function () {
+    var fields = document.getElementById('editEventTickerDateFields');
+    if (!fields) return;
+    fields.hidden = !this.checked;
+    if (!this.checked) {
+      fields.querySelectorAll('input').forEach(function (input) {
+        input.value = '';
+      });
     }
-    return payload.translated;
-  }
-
-  function detectSourceLang(text) {
-    if (/[\u0590-\u05FF]/.test(text)) return 'he';
-    if (/[\u0400-\u04FF]/.test(text)) return 'ru';
-    return 'en';
-  }
-
-  async function autoTranslateScope(scope) {
-    var map = scope === 'edit'
-      ? {
-          title: { ru: 'editEventTitleRu', en: 'editEventTitleEn', he: 'editEventTitleHe' },
-          text: { ru: 'editEventTextRu', en: 'editEventTextEn', he: 'editEventTextHe' },
-        }
-      : {
-          title: { ru: 'eventTitleRu', en: 'eventTitleEn', he: 'eventTitleHe' },
-          text: { ru: 'eventTextRu', en: 'eventTextEn', he: 'eventTextHe' },
-        };
-    var status = document.querySelector('[data-translate-status="' + scope + '"]');
-    var button = document.querySelector('.auto-translate-btn[data-translate-scope="' + scope + '"]');
-
-    function setStatus(message, isError) {
-      if (!status) return;
-      status.hidden = !message;
-      status.textContent = message || '';
-      status.style.color = isError ? '#c62828' : '';
-    }
-
-    var langs = ['ru', 'en', 'he'];
-    var sourceLang = null;
-    var sourceTitle = '';
-    var sourceText = '';
-
-    langs.forEach(function (lang) {
-      var titleEl = document.getElementById(map.title[lang]);
-      var textEl = document.getElementById(map.text[lang]);
-      var titleVal = titleEl ? String(titleEl.value || '').trim() : '';
-      var textVal = textEl ? String(textEl.value || '').trim() : '';
-      if (!sourceTitle && titleVal) {
-        sourceTitle = titleVal;
-        sourceLang = lang;
-      }
-      if (!sourceText && textVal) {
-        sourceText = textVal;
-        if (!sourceLang) sourceLang = lang;
-      }
-    });
-
-    if (!sourceTitle && !sourceText) {
-      setStatus('אין טקסט לתרגום', true);
-      return;
-    }
-
-    if (!sourceLang) {
-      sourceLang = detectSourceLang(sourceTitle || sourceText);
-    }
-
-    if (button) button.disabled = true;
-    setStatus('מתרגם…', false);
-
-    try {
-      for (var i = 0; i < langs.length; i += 1) {
-        var target = langs[i];
-        if (target === sourceLang) continue;
-
-        var titleTarget = document.getElementById(map.title[target]);
-        var textTarget = document.getElementById(map.text[target]);
-
-        if (titleTarget && sourceTitle && !String(titleTarget.value || '').trim()) {
-          titleTarget.value = await translateText(sourceTitle, target, sourceLang);
-          titleTarget.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-        if (textTarget && sourceText && !String(textTarget.value || '').trim()) {
-          textTarget.value = await translateText(sourceText, target, sourceLang);
-          textTarget.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-      }
-      setStatus('התרגום הושלם', false);
-      window.setTimeout(function () { setStatus('', false); }, 2500);
-    } catch (err) {
-      setStatus(err.message || 'שגיאת תרגום / Translate failed', true);
-    } finally {
-      if (button) button.disabled = false;
-    }
-  }
-
-  document.addEventListener('click', function (event) {
-    var btn = event.target.closest('.auto-translate-btn');
-    if (!btn) return;
-    event.preventDefault();
-    autoTranslateScope(btn.getAttribute('data-translate-scope') || 'add');
   });
 
   try {

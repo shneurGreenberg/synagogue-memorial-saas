@@ -394,24 +394,31 @@ async function loadAdminContext(req, res, next) {
     }
 }
 
+function deleteSlideshowImageFiles(urls) {
+    (urls || []).forEach((url) => {
+        const filename = path.basename(String(url || '').trim());
+        if (!filename) {
+            return;
+        }
+        const filePath = path.join(IMAGES_DIR, filename);
+        try {
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        } catch {
+            /* ignore missing or locked files */
+        }
+    });
+}
+
 async function fetchSlideshow(slug) {
     const doc = await loadAdminSynagogue(slug, 'settings');
     if (!doc || !doc.slideshow) {
         return null;
     }
-    
-    // Ensure all slides have an _id for deletion to work
-    if (Array.isArray(doc.slideshow.images)) {
-        doc.slideshow.images = doc.slideshow.images.map((slide, index) => {
-            if (slide && !slide._id && !slide.id) {
-                // Use index as fallback identifier for slides without _id
-                return { ...slide, id: `slide-${index}` };
-            }
-            return slide;
-        });
-    }
-    
-    return doc.slideshow;
+
+    const enriched = enrichSynagogueForAdmin(doc);
+    return enriched.slideshow;
 }
 
 async function getUpcomingHolidayNotice(synagogue) {
@@ -1871,12 +1878,14 @@ router.post('/:slug/people/delete', requireAdmin, requirePermission('people'), a
 router.post('/:slug/slideshow/settings', requireAdmin, requireAnyPermission('events', 'slideshow'), parseFormBody, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { enabled, interval, mainDuration } = req.body || {};
+        const { enabled, interval, mainDuration, displayMode } = req.body || {};
         // Unchecked checkbox is omitted from both multipart and urlencoded bodies → false
         const isEnabled = enabled === 'on' || enabled === 'true' || enabled === true || enabled === '1';
+        const mode = displayMode === 'showNow' ? 'showNow' : 'rotate';
         await Synagogue.updateOne({ slug: req.params.slug }, {
             $set: {
                 'slideshow.enabled': isEnabled,
+                'slideshow.displayMode': mode,
                 'slideshow.interval': parseInt(interval, 10) || 10,
                 'slideshow.mainDuration': parseInt(mainDuration, 10) || 30
             }
@@ -1892,22 +1901,26 @@ router.post('/:slug/slideshow/settings', requireAdmin, requireAnyPermission('eve
 router.post('/:slug/slideshow/add', requireAdmin, requireAnyPermission('events', 'slideshow'), upload.single('image'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const { text } = req.body;
         if (!req.file) {
             return res.status(400).json({ ok: false, error: 'Image is required' });
         }
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        if (!synagogue) {
+            return res.status(404).json({ ok: false, error: 'Synagogue not found' });
+        }
+
+        const previousUrls = ((synagogue.slideshow && synagogue.slideshow.images) || [])
+            .map((slide) => slide && slide.url)
+            .filter(Boolean);
+
         const optimizedFilename = await optimizeUploadedImage(req.file.path, 'slideshow');
-        await Synagogue.updateOne(
-            { slug: req.params.slug },
-            {
-                $push: {
-                    'slideshow.images': {
-                        url: optimizedFilename,
-                        text: sanitizeRichText(text)
-                    }
-                }
-            }
-        );
+        synagogue.slideshow = synagogue.slideshow || {};
+        synagogue.slideshow.images = [{ url: optimizedFilename, text: '' }];
+        synagogue.markModified('slideshow.images');
+        await synagogue.save();
+
+        deleteSlideshowImageFiles(previousUrls);
+
         invalidateBoardCache(req.params.slug);
         invalidateAdminSynagogueCache(req.params.slug);
         return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
@@ -2004,45 +2017,6 @@ router.post('/:slug/slideshow/delete', requireAdmin, requireAnyPermission('event
         return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
-    }
-});
-
-// Free auto-translate proxy for announcements (no paid API key)
-router.post('/:slug/translate', requireAdmin, requireAnyPermission('events', 'slideshow'), async (req, res) => {
-    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
-    try {
-        const text = String((req.body && req.body.text) || '').trim();
-        const target = String((req.body && req.body.target) || '').trim().toLowerCase();
-        const source = String((req.body && req.body.source) || 'auto').trim().toLowerCase() || 'auto';
-        const allowed = new Set(['ru', 'en', 'he', 'auto']);
-        if (!text) {
-            return res.status(400).json({ ok: false, error: 'text is required' });
-        }
-        if (!allowed.has(target) || target === 'auto') {
-            return res.status(400).json({ ok: false, error: 'target must be ru, en, or he' });
-        }
-        if (!allowed.has(source)) {
-            return res.status(400).json({ ok: false, error: 'invalid source language' });
-        }
-
-        const url = 'https://translate.googleapis.com/translate_a/single'
-            + `?client=gtx&sl=${encodeURIComponent(source)}&tl=${encodeURIComponent(target)}&dt=t&q=${encodeURIComponent(text)}`;
-        const response = await fetch(url, {
-            headers: { Accept: 'application/json' },
-        });
-        if (!response.ok) {
-            return res.status(502).json({ ok: false, error: 'Translate service unavailable' });
-        }
-        const payload = await response.json();
-        const translated = Array.isArray(payload) && Array.isArray(payload[0])
-            ? payload[0].map((part) => (Array.isArray(part) ? String(part[0] || '') : '')).join('')
-            : '';
-        if (!translated) {
-            return res.status(502).json({ ok: false, error: 'Empty translation response' });
-        }
-        return res.json({ ok: true, translated, target, source });
-    } catch (err) {
-        return res.status(502).json({ ok: false, error: err.message || 'Translate failed' });
     }
 });
 
