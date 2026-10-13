@@ -137,7 +137,8 @@ describe('admin settings dashboard template', () => {
     assert.match(html, /settings-media-grid/);
     assert.match(html, /settings-media-grid--community/);
     assert.match(html, /adminCandlePreview/);
-    assert.match(html, /logo-bg-swatch-row/);
+    assert.match(html, /name="boardFont"/);
+    assert.match(html, /publicSubmissionShowDonationQr/);
     assert.match(html, /name="primaryColor"/);
     assert.match(html, /name="tileOpacity"/);
     assert.match(html, /name="titleRu"/);
