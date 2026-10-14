@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const {
   normalizeMemorialQrPanel,
   memorialQrPanelForBoard,
+  memorialQrPanelForAdminEdit,
   parseMemorialQrPanelFromBody,
   MEMORIAL_QR_DEFAULTS,
   DONATION_QR_DEFAULTS,
@@ -18,6 +19,12 @@ describe('memorial-qr-panel', () => {
     assert.equal(panel.titles.ru, '');
     assert.equal(panel.titles.en, 'Custom');
     assert.equal(panel.donationTitles.ru, '');
+  });
+
+  it('prefills admin edit fields with board default copy', () => {
+    const panel = memorialQrPanelForAdminEdit({});
+    assert.equal(panel.donationTitles.en, DONATION_QR_DEFAULTS.titles.en);
+    assert.equal(panel.titles.he, MEMORIAL_QR_DEFAULTS.titles.he);
   });
 
   it('applies defaults for board display when fields are empty', () => {

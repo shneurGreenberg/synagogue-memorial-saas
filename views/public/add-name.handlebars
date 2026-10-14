@@ -11,6 +11,16 @@
     <h1>{{publicT 'page_title'}}</h1>
     <p class="public-intro">{{publicT 'intro'}}</p>
 
+    {{#if publicSubmission.donationUrl}}
+    <div class="public-charity-section public-form-donation">
+        <h2 class="public-charity-title">{{publicT 'charity_title'}}</h2>
+        <p class="public-intro">{{publicT 'charity_message'}}</p>
+        <div class="public-actions">
+            <a href="{{publicSubmission.donationUrl}}" class="public-button public-button-primary" target="_blank" rel="noopener noreferrer">{{publicT 'charity_button'}}</a>
+        </div>
+    </div>
+    {{/if}}
+
     {{#if errorMessage}}
     <p class="public-error" role="alert">{{errorMessage}}</p>
     {{/if}}

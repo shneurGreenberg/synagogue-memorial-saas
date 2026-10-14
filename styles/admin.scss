@@ -3071,6 +3071,42 @@ body.admin-login-page {
       padding: 0.75rem;
     }
   }
+
+  .admin-wrong-community-card {
+    max-width: 480px;
+  }
+
+  .admin-wrong-community-lead {
+    line-height: 1.5;
+  }
+
+  .admin-wrong-community-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .admin-wrong-community-target {
+    margin: 0 0 0.25rem;
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--admin-text);
+  }
+
+  .btn-admin-block {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .admin-wrong-community-back {
+    display: block;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--admin-text-muted);
+    text-decoration: underline;
+  }
 }
 
 // --- RTL admin (Hebrew) ---
