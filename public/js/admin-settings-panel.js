@@ -221,9 +221,17 @@
     var titles = snapshot.titles || {};
     var memorialQr = snapshot.memorialQrPanel || {};
 
-    setInputValue('titleRu', titles.ru || '');
-    setInputValue('titleEn', titles.en || '');
-    setInputValue('titleHe', titles.he || '');
+    if (snapshot.titles) {
+      if (titles.ru != null) {
+        setInputValue('titleRu', titles.ru);
+      }
+      if (titles.en != null) {
+        setInputValue('titleEn', titles.en);
+      }
+      if (titles.he != null) {
+        setInputValue('titleHe', titles.he);
+      }
+    }
     setColorPair('primaryColor', 'primaryColorHex', theme.primaryColor);
     setColorPair('textColor', 'textColorHex', theme.textColor);
     setColorPair('accentColor', 'accentColorHex', theme.accentColor);
@@ -241,7 +249,7 @@
       setInputValue('boardFont', theme.boardFont);
     }
 
-    if (snapshot.language) {
+    if (Object.prototype.hasOwnProperty.call(snapshot, 'language') && snapshot.language) {
       setInputValue('language', snapshot.language);
     }
 
@@ -254,26 +262,30 @@
       input.value = fontScales[key];
     });
 
-    var memorialQrTitleFields = memorialQr.titles || {};
-    var memorialQrTextFields = memorialQr.texts || {};
-    var donationQrTitleFields = memorialQr.donationTitles || {};
-    var donationQrTextFields = memorialQr.donationTexts || {};
-    [
-      ['memorialQrTitleRu', memorialQrTitleFields.ru],
-      ['memorialQrTitleEn', memorialQrTitleFields.en],
-      ['memorialQrTitleHe', memorialQrTitleFields.he],
-      ['memorialQrTextRu', memorialQrTextFields.ru],
-      ['memorialQrTextEn', memorialQrTextFields.en],
-      ['memorialQrTextHe', memorialQrTextFields.he],
-      ['donationQrTitleRu', donationQrTitleFields.ru],
-      ['donationQrTitleEn', donationQrTitleFields.en],
-      ['donationQrTitleHe', donationQrTitleFields.he],
-      ['donationQrTextRu', donationQrTextFields.ru],
-      ['donationQrTextEn', donationQrTextFields.en],
-      ['donationQrTextHe', donationQrTextFields.he],
-    ].forEach(function (pair) {
-      setInputValue(pair[0], pair[1] || '');
-    });
+    if (memorialQr.titles || memorialQr.texts || memorialQr.donationTitles || memorialQr.donationTexts) {
+      var memorialQrTitleFields = memorialQr.titles || {};
+      var memorialQrTextFields = memorialQr.texts || {};
+      var donationQrTitleFields = memorialQr.donationTitles || {};
+      var donationQrTextFields = memorialQr.donationTexts || {};
+      [
+        ['memorialQrTitleRu', memorialQrTitleFields.ru],
+        ['memorialQrTitleEn', memorialQrTitleFields.en],
+        ['memorialQrTitleHe', memorialQrTitleFields.he],
+        ['memorialQrTextRu', memorialQrTextFields.ru],
+        ['memorialQrTextEn', memorialQrTextFields.en],
+        ['memorialQrTextHe', memorialQrTextFields.he],
+        ['donationQrTitleRu', donationQrTitleFields.ru],
+        ['donationQrTitleEn', donationQrTitleFields.en],
+        ['donationQrTitleHe', donationQrTitleFields.he],
+        ['donationQrTextRu', donationQrTextFields.ru],
+        ['donationQrTextEn', donationQrTextFields.en],
+        ['donationQrTextHe', donationQrTextFields.he],
+      ].forEach(function (pair) {
+        if (pair[1] != null) {
+          setInputValue(pair[0], pair[1]);
+        }
+      });
+    }
 
     [
       ['memorialQrTitleScale', memorialQr.titleScale],
@@ -286,18 +298,24 @@
       setInputValue(pair[0], pair[1]);
     });
 
-    var boardFeatures = snapshot.boardFeatures || {};
-    Object.keys(boardFeatures).forEach(function (key) {
-      setCheckboxValue('feature_' + key, boardFeatures[key]);
-    });
-    setCheckboxValue('shabbatTimesEnabled', snapshot.shabbatTimesEnabled);
+    if (snapshot.boardFeatures) {
+      var boardFeatures = snapshot.boardFeatures || {};
+      Object.keys(boardFeatures).forEach(function (key) {
+        setCheckboxValue('feature_' + key, boardFeatures[key]);
+      });
+    }
+    if (Object.prototype.hasOwnProperty.call(snapshot, 'shabbatTimesEnabled')) {
+      setCheckboxValue('shabbatTimesEnabled', snapshot.shabbatTimesEnabled);
+    }
 
-    var publicSubmission = snapshot.publicSubmission || {};
-    setCheckboxValue('publicSubmissionEnabled', publicSubmission.enabled);
-    setCheckboxValue('publicSubmissionShowDonationQr', publicSubmission.showDonationQr !== false);
-    setCheckboxValue('publicSubmissionShowRegistrationQr', publicSubmission.showRegistrationQr !== false);
-    if (publicSubmission.donationUrl != null) {
-      setInputValue('publicSubmissionDonationUrl', publicSubmission.donationUrl);
+    if (snapshot.publicSubmission) {
+      var publicSubmission = snapshot.publicSubmission || {};
+      setCheckboxValue('publicSubmissionEnabled', publicSubmission.enabled);
+      setCheckboxValue('publicSubmissionShowDonationQr', publicSubmission.showDonationQr !== false);
+      setCheckboxValue('publicSubmissionShowRegistrationQr', publicSubmission.showRegistrationQr !== false);
+      if (publicSubmission.donationUrl != null) {
+        setInputValue('publicSubmissionDonationUrl', publicSubmission.donationUrl);
+      }
     }
   }
 
