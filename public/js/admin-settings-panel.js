@@ -228,9 +228,17 @@
     setColorPair('textColor', 'textColorHex', theme.textColor);
     setColorPair('accentColor', 'accentColorHex', theme.accentColor);
     setColorPair('tileColor', 'tileColorHex', theme.tileColor);
+    setColorPair('panelBorderColor', 'panelBorderColorHex', theme.panelBorderColor);
+    setColorPair('tileBorderColor', 'tileBorderColorHex', theme.tileBorderColor);
 
     if (theme.tileOpacity != null) {
       setInputValue('tileOpacity', theme.tileOpacity);
+    }
+    if (theme.panelBorderOpacity != null) {
+      setInputValue('panelBorderOpacity', theme.panelBorderOpacity);
+    }
+    if (theme.tileBorderOpacity != null) {
+      setInputValue('tileBorderOpacity', theme.tileBorderOpacity);
     }
 
     if (theme.candlePalette) {

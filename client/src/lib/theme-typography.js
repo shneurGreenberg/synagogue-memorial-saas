@@ -5,6 +5,8 @@ export const FONT_SCALE_DEFAULTS = {
   boardHeader: 100,
   sidebar: 100,
   prayers: 100,
+  dailyStudy: 100,
+  hayomYom: 100,
   prayerOverlay: 100,
   torahNames: 100,
   weather: 100,

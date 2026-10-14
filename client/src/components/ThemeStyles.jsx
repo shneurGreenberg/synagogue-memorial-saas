@@ -10,6 +10,7 @@ import {
   resolveTilesBackgroundImage,
 } from '../lib/board-backgrounds';
 import { normalizeBoardFont, resolveBoardFontFamily } from '../lib/board-fonts';
+import { resolvePanelBorderCss, resolveTileBorderCss } from '../lib/theme-borders';
 
 function tileGlassNoise(transparency) {
   if (transparency <= 0.01) {
@@ -66,14 +67,35 @@ export function ThemeStyles() {
   const backgroundImage = resolveBoardBackgroundImage(theme);
   const tilesBackground = resolveTilesBackgroundImage(theme);
   const boardFontFamily = resolveBoardFontFamily(normalizeBoardFont(theme.boardFont));
+  const panelBorderCss = resolvePanelBorderCss(theme);
+  const tileBorderCss = resolveTileBorderCss(theme, tileVars.tileGlassBorder);
   const logoRadius = Number(theme.logoBorderRadius) >= 50 ? '50%' : '0';
+  const headingFontRule = `
+    .main-container .board-header h1,
+    .main-container .board-header-button,
+    .main-container .cards-grid .card .inner h3,
+    .main-container .cards-grid-kadish .card .inner h3,
+    .main-container .jewish-sidebar-panels h2,
+    .main-container .hayom-yom-panel h2,
+    .main-container .daily-gates-panel h2,
+    .main-container .nearest-dates h2,
+    .main-container .memorial-prayers-section-title,
+    .main-container .memorial-prayers .memorial-prayer-block h1,
+    .main-container .memorial-prayers-inner > h2 {
+      font-family: ${boardFontFamily} !important;
+      font-weight: 400 !important;
+    }
+  `;
 
   const css = `
     body,
     .main-container {
       font-family: ${boardFontFamily} !important;
     }
+    ${headingFontRule}
     :root {
+      --panel-border-color: ${panelBorderCss};
+      --tile-border-color: ${tileBorderCss};
       --primary-color: ${primary};
       --text-color: ${text};
       --accent-color: ${accent};
@@ -104,6 +126,8 @@ export function ThemeStyles() {
       --font-scale-clock: ${scale('clock')};
       --font-scale-board-header: ${scale('boardHeader')};
       --font-scale-sidebar: ${scale('sidebar')};
+      --font-scale-daily-study: ${scale('dailyStudy')};
+      --font-scale-hayom-yom: ${scale('hayomYom')};
       --font-scale-prayers: ${scale('prayers')};
       --font-scale-prayer-overlay: ${scale('prayerOverlay')};
       --font-scale-torah-names: ${scale('torahNames')};
@@ -170,29 +194,33 @@ export function ThemeStyles() {
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
     }
     .main-container .jewish-sidebar-panels h2,
-    .main-container .hayom-yom-panel h2,
-    .main-container .daily-gates-panel h2,
     .main-container .nearest-dates h2 {
       font-size: calc(clamp(15px, 1.35vw, 22px) * var(--font-scale-sidebar)) !important;
+    }
+    .main-container .daily-gates-panel h2 {
+      font-size: calc(clamp(15px, 1.35vw, 22px) * var(--font-scale-daily-study)) !important;
+    }
+    .main-container .hayom-yom-panel h2 {
+      font-size: calc(clamp(15px, 1.35vw, 22px) * var(--font-scale-hayom-yom)) !important;
     }
     .main-container .daily-cite {
       font-size: calc(clamp(14px, 1.35vw, 20px) * var(--font-scale-sidebar)) !important;
     }
     .main-container .daily-gate-tile {
-      font-size: calc(clamp(11px, 0.95vw, 14px) * var(--font-scale-sidebar)) !important;
+      font-size: calc(clamp(11px, 0.95vw, 14px) * var(--font-scale-daily-study)) !important;
     }
     .main-container .daily-gate-label {
-      font-size: calc(clamp(10px, 0.85vw, 12px) * var(--font-scale-sidebar)) !important;
+      font-size: calc(clamp(10px, 0.85vw, 12px) * var(--font-scale-daily-study)) !important;
     }
     .main-container .daily-gate-sublabel {
-      font-size: calc(clamp(9px, 0.8vw, 11px) * var(--font-scale-sidebar)) !important;
+      font-size: calc(clamp(9px, 0.8vw, 11px) * var(--font-scale-daily-study)) !important;
     }
     .main-container .daily-gate-value {
-      font-size: calc(clamp(11px, 0.95vw, 14px) * var(--font-scale-sidebar)) !important;
+      font-size: calc(clamp(11px, 0.95vw, 14px) * var(--font-scale-daily-study)) !important;
     }
     .main-container .hayom-yom-text,
     .main-container .hayom-yom-note {
-      font-size: calc(clamp(11px, 0.95vw, 14px) * var(--font-scale-sidebar)) !important;
+      font-size: calc(clamp(11px, 0.95vw, 14px) * var(--font-scale-hayom-yom)) !important;
     }
     .main-container .sidebar-holiday-link time,
     .main-container .sidebar-chabad-link time,
@@ -282,6 +310,7 @@ export function ThemeStyles() {
       background-color: #3d3424;
       background-image: url('${assetUrl(`images/${tilesBackground}`)}') !important;
       background-size: cover;
+      border-color: var(--panel-border-color) !important;
     }
     ${GLASS_SELECTORS} {
       background-color: var(--tile-glass-legacy-base) !important;
@@ -291,7 +320,7 @@ export function ThemeStyles() {
         'var(--tile-glass-legacy-frost)',
         tileTransparency,
       )} !important;
-      border-color: var(--tile-glass-border) !important;
+      border-color: var(--tile-border-color, var(--tile-glass-border)) !important;
       box-shadow:
         inset 0 1px 0 var(--tile-glass-legacy-highlight),
         inset 0 0 22px var(--tile-glass-legacy-glow),
@@ -317,7 +346,7 @@ export function ThemeStyles() {
 
   return (
     <style
-      key={`theme-${primary}-${text}-${accent}-${tileVars.tileColor}-${tileTransparency}-${candlePalette}`}
+      key={`theme-${primary}-${text}-${accent}-${tileVars.tileColor}-${tileTransparency}-${candlePalette}-${theme.boardFont}-${panelBorderCss}-${tileBorderCss}`}
       dangerouslySetInnerHTML={{ __html: css }}
     />
   );

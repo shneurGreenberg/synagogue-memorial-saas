@@ -122,7 +122,8 @@ const { buildFaviconPath, resolveFaviconLogoFilename } = require('../lib/favicon
 const { OFFICIAL_LOGO_FILENAME } = require('../lib/board-defaults');
 const { CANDLE_PALETTE_KEYS, normalizeCandlePalette } = require('../lib/candle-palette');
 const { normalizeBoardFeatures } = require('../lib/board-features');
-const { BOARD_FONTS, normalizeBoardFont } = require('../lib/board-fonts');
+const { BOARD_FONTS, normalizeBoardFont, buildAllBoardFontsGoogleHref } = require('../lib/board-fonts');
+const { normalizeThemeBorders } = require('../lib/theme-borders');
 const { scanPathForSlug, safeScanReturnPath } = require('../lib/grave-scan');
 
 const BOARD_FEATURE_TOGGLE_META = [
@@ -174,6 +175,8 @@ const FONT_SCALE_SLIDER_META = [
   { key: 'tileDate', labelKey: 'font_scale_tile_date', helpKey: 'font_scale_tile_date_help' },
   { key: 'boardHeader', labelKey: 'font_scale_board_header', helpKey: 'font_scale_board_header_help' },
   { key: 'sidebar', labelKey: 'font_scale_sidebar', helpKey: 'font_scale_sidebar_help' },
+  { key: 'dailyStudy', labelKey: 'font_scale_daily_study', helpKey: 'font_scale_daily_study_help' },
+  { key: 'hayomYom', labelKey: 'font_scale_hayom_yom', helpKey: 'font_scale_hayom_yom_help' },
   { key: 'clock', labelKey: 'font_scale_clock', helpKey: 'font_scale_clock_help' },
   { key: 'prayers', labelKey: 'font_scale_prayers', helpKey: 'font_scale_prayers_help' },
   { key: 'prayerOverlay', labelKey: 'font_scale_prayer_overlay', helpKey: 'font_scale_prayer_overlay_help' },
@@ -192,7 +195,7 @@ const TEXTS_FONT_SCALE_GROUPS = [
   {
     groupKey: 'typography_left_column',
     helpKey: 'typography_left_column_help',
-    keys: ['prayers'],
+    keys: ['prayers', 'dailyStudy', 'hayomYom'],
   },
   {
     groupKey: 'typography_right_column',
@@ -706,6 +709,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
         const {
             titleRu, titleEn, titleHe, primaryColor, textColor, accentColor, tileColor, tileOpacity,
+            panelBorderColor, panelBorderOpacity, tileBorderColor, tileBorderOpacity,
             language, shabbatTimesEnabled, candlePalette, logoBorderRadius, logoBackground, logoCircle,
         } = req.body;
         const synagogue = await loadAdminSynagogue(req.params.slug, 'settings');
@@ -729,6 +733,16 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             updateData['theme.accentColor'] = sanitizeHexColor(accentColor, BOARD_THEME_DEFAULTS.accentColor);
             updateData['theme.tileColor'] = sanitizeHexColor(tileColor, BOARD_THEME_DEFAULTS.tileColor);
             updateData['theme.tileOpacity'] = normalizeTileOpacity(tileOpacity);
+            const themeBorders = normalizeThemeBorders({
+              panelBorderColor,
+              panelBorderOpacity,
+              tileBorderColor,
+              tileBorderOpacity,
+            });
+            updateData['theme.panelBorderColor'] = themeBorders.panelBorderColor;
+            updateData['theme.panelBorderOpacity'] = themeBorders.panelBorderOpacity;
+            updateData['theme.tileBorderColor'] = themeBorders.tileBorderColor;
+            updateData['theme.tileBorderOpacity'] = themeBorders.tileBorderOpacity;
             updateData['theme.candlePalette'] = normalizeCandlePalette(candlePalette);
             if ('boardFont' in req.body) {
                 updateData['theme.boardFont'] = normalizeBoardFont(req.body.boardFont);
@@ -1178,9 +1192,12 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             activeSavedViewId: enriched.activeSavedViewId || '',
             activeSavedViewName: activeSavedView ? activeSavedView.name : '',
             memorialQrPanel: enriched.memorialQrPanel,
+            boardFontsGoogleHref: buildAllBoardFontsGoogleHref(),
             boardFontOptions: BOARD_FONTS.map((font) => ({
               id: font.id,
               labelKey: font.labelKey,
+              family: font.family,
+              previewSample: font.previewSample,
               selected: normalizeBoardFont(enriched.theme.boardFont) === font.id,
             })),
             saved: req.query.saved === '1',

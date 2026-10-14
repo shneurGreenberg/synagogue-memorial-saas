@@ -190,6 +190,9 @@
                 <span class="admin-panel-chevron" aria-hidden="true"></span>
             </button>
             <div class="admin-panel-body settings-panel-body" hidden>
+                {{#if boardFontsGoogleHref}}
+                <link rel="stylesheet" href="{{boardFontsGoogleHref}}">
+                {{/if}}
                 <div class="settings-block">
                     <h3 class="settings-block-title">{{t 'colors_section'}}</h3>
                     <div class="settings-color-grid">
@@ -209,6 +212,28 @@
                                 {{else}}
                                 {{> admin-settings-number-stepper name="tileOpacity" id="tileOpacity" min="0" max="100" step="1" value="100" suffix="%" compact=true ariaLabelledby="tileOpacityLabel"}}
                                 {{/if}}
+                            </div>
+                        </div>
+                        <div class="settings-color-tile settings-color-tile--with-slider color-field-modern">
+                            <label class="settings-color-label" for="panelBorderColor">{{t 'panel_border_color'}}</label>
+                            <input type="color" name="panelBorderColor" id="panelBorderColor" class="color-swatch-input settings-color-swatch"
+                                value="{{synagogue.theme.panelBorderColor}}">
+                            <input type="text" class="color-hex-display settings-color-hex" id="panelBorderColorHex" readonly
+                                value="{{synagogue.theme.panelBorderColor}}" aria-hidden="true" tabindex="-1">
+                            <div class="settings-embedded-slider">
+                                <span class="settings-embedded-slider-label" id="panelBorderOpacityLabel">{{t 'panel_border_opacity'}}</span>
+                                {{> admin-settings-number-stepper name="panelBorderOpacity" id="panelBorderOpacity" min="0" max="100" step="1" value=synagogue.theme.panelBorderOpacity suffix="%" compact=true ariaLabelledby="panelBorderOpacityLabel"}}
+                            </div>
+                        </div>
+                        <div class="settings-color-tile settings-color-tile--with-slider color-field-modern">
+                            <label class="settings-color-label" for="tileBorderColor">{{t 'tile_border_color'}}</label>
+                            <input type="color" name="tileBorderColor" id="tileBorderColor" class="color-swatch-input settings-color-swatch"
+                                value="{{synagogue.theme.tileBorderColor}}">
+                            <input type="text" class="color-hex-display settings-color-hex" id="tileBorderColorHex" readonly
+                                value="{{synagogue.theme.tileBorderColor}}" aria-hidden="true" tabindex="-1">
+                            <div class="settings-embedded-slider">
+                                <span class="settings-embedded-slider-label" id="tileBorderOpacityLabel">{{t 'tile_border_opacity'}}</span>
+                                {{> admin-settings-number-stepper name="tileBorderOpacity" id="tileBorderOpacity" min="0" max="100" step="1" value=synagogue.theme.tileBorderOpacity suffix="%" compact=true ariaLabelledby="tileBorderOpacityLabel"}}
                             </div>
                         </div>
                     </div>
@@ -301,9 +326,10 @@
                     </div>
                     <div class="form-field board-font-field">
                         <label for="boardFont">{{t 'board_font'}}</label>
-                        <select name="boardFont" id="boardFont" class="form-control admin-select-modern">
+                        <select name="boardFont" id="boardFont" class="form-control admin-select-modern board-font-select">
                             {{#each boardFontOptions}}
-                            <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}>{{t this.labelKey}}</option>
+                            <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}
+                                style="font-family: {{this.family}};">{{t this.labelKey}} — {{this.previewSample}}</option>
                             {{/each}}
                         </select>
                         <span class="field-hint">{{t 'board_font_help'}}</span>
@@ -568,6 +594,11 @@
             var accent = document.getElementById('accentColor');
             var tile = document.getElementById('tileColor');
             var tileOpacity = document.getElementById('tileOpacity');
+            var panelBorderColor = document.getElementById('panelBorderColor');
+            var panelBorderOpacity = document.getElementById('panelBorderOpacity');
+            var tileBorderColor = document.getElementById('tileBorderColor');
+            var tileBorderOpacity = document.getElementById('tileBorderOpacity');
+            var boardFont = document.getElementById('boardFont');
             var titleRu = document.getElementById('titleRu');
             var titleEn = document.getElementById('titleEn');
             var titleHe = document.getElementById('titleHe');
@@ -583,6 +614,11 @@
                 accentColor: accent ? accent.value : '',
                 tileColor: tile ? tile.value : '',
                 tileOpacity: tileOpacity ? tileOpacity.value : '100',
+                panelBorderColor: panelBorderColor ? panelBorderColor.value : '',
+                panelBorderOpacity: panelBorderOpacity ? panelBorderOpacity.value : '100',
+                tileBorderColor: tileBorderColor ? tileBorderColor.value : '',
+                tileBorderOpacity: tileBorderOpacity ? tileBorderOpacity.value : '100',
+                boardFont: boardFont ? boardFont.value : '',
                 candlePalette: (function () {
                     var el = document.getElementById('candlePalette');
                     return el ? el.value : 'classic';
@@ -615,10 +651,19 @@
         bindColorPair('textColor', 'textColorHex');
         bindColorPair('accentColor', 'accentColorHex');
         bindColorPair('tileColor', 'tileColorHex');
+        bindColorPair('panelBorderColor', 'panelBorderColorHex');
+        bindColorPair('tileBorderColor', 'tileBorderColorHex');
 
-        var tileOpacityInput = document.getElementById('tileOpacity');
-        if (tileOpacityInput) {
-            tileOpacityInput.addEventListener('input', schedulePreview);
+        ['tileOpacity', 'panelBorderOpacity', 'tileBorderOpacity'].forEach(function (id) {
+            var input = document.getElementById(id);
+            if (input) {
+                input.addEventListener('input', schedulePreview);
+            }
+        });
+
+        var boardFontSelect = document.getElementById('boardFont');
+        if (boardFontSelect) {
+            boardFontSelect.addEventListener('change', schedulePreview);
         }
 
         document.querySelectorAll('.font-scale-input').forEach(function (input) {
@@ -740,6 +785,13 @@
             params.set('accentColor', patch.accentColor || '');
             params.set('tileColor', patch.tileColor || '');
             params.set('tileOpacity', patch.tileOpacity || '100');
+            params.set('panelBorderColor', patch.panelBorderColor || '');
+            params.set('panelBorderOpacity', patch.panelBorderOpacity || '100');
+            params.set('tileBorderColor', patch.tileBorderColor || '');
+            params.set('tileBorderOpacity', patch.tileBorderOpacity || '100');
+            if (patch.boardFont) {
+                params.set('boardFont', patch.boardFont);
+            }
             if (patch.candlePalette) {
                 params.set('candlePalette', patch.candlePalette);
             }

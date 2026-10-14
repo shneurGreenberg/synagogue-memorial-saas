@@ -43,7 +43,7 @@
   z-index: 2;
   filter: blur(calc(35 * var(--css-candle-unit)));
   background: var(--candle-flame-glow);
-  animation: css-candle-flicker 0.1s infinite;
+  opacity: 0.55;
 }
 
 .css-candle-flame {
@@ -57,9 +57,8 @@
   border-radius: 50% 50% 20% 20%;
   box-shadow: 0 calc(-5 * var(--css-candle-unit)) calc(7 * var(--css-candle-unit)) 0 var(--candle-flame-shadow);
   background: linear-gradient(var(--candle-flame-core) 70%, transparent);
-  animation:
-    css-candle-flame-tilt 4s linear infinite,
-    css-candle-flame-grow 4s linear infinite;
+  will-change: transform, opacity;
+  animation: css-candle-flame-sway 3.2s ease-in-out infinite;
 }
 
 .css-candle-blue-part {
@@ -140,36 +139,20 @@
   background: radial-gradient(var(--candle-base-outer), var(--candle-base-inner));
 }
 
-@keyframes css-candle-flicker {
-  50% {
-    opacity: 0.8;
-  }
-}
-
-@keyframes css-candle-flame-tilt {
+@keyframes css-candle-flame-sway {
   0%,
   100% {
-    transform: rotate(-2deg);
+    transform: rotate(-2deg) scaleY(0.92);
+    opacity: 0.92;
   }
 
   50% {
-    transform: rotate(2deg);
-  }
-}
-
-@keyframes css-candle-flame-grow {
-  0%,
-  100% {
-    height: 85%;
-  }
-
-  50% {
-    height: 100%;
+    transform: rotate(2deg) scaleY(1);
+    opacity: 1;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .css-candle-glow,
   .css-candle-flame {
     animation: none !important;
   }
@@ -179,5 +162,17 @@
   .css-candle-glow,
   .css-candle-flame {
     animation: none !important;
+  }
+}
+
+.css-candle-lite {
+  .css-candle-glow {
+    display: none;
+  }
+
+  .css-candle-flame {
+    box-shadow: none;
+    animation: css-candle-flame-sway 3.6s ease-in-out infinite;
+    will-change: transform, opacity;
   }
 }

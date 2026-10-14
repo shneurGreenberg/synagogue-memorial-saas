@@ -1791,6 +1791,14 @@ body.admin-is-busy {
     color: var(--admin-text-muted);
   }
 
+  .board-font-select {
+    option {
+      font-size: 0.95rem;
+      line-height: 1.35;
+      padding: 0.25rem 0;
+    }
+  }
+
   .settings-color-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
