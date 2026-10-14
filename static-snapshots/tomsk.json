@@ -22,6 +22,8 @@
       "boardHeader": 100,
       "sidebar": 100,
       "prayers": 100,
+      "dailyStudy": 100,
+      "hayomYom": 100,
       "prayerOverlay": 100,
       "torahNames": 100,
       "weather": 100,
@@ -29,16 +31,18 @@
       "candle": 100
     },
     "fontScaleBaselines": {
-      "tileTitle": 120,
-      "tileDate": 100,
+      "tileTitle": 138,
+      "tileDate": 130,
       "clock": 100,
-      "boardHeader": 100,
+      "boardHeader": 70,
       "sidebar": 100,
-      "prayers": 100,
+      "prayers": 132,
+      "dailyStudy": 100,
+      "hayomYom": 100,
       "prayerOverlay": 161,
       "torahNames": 100,
-      "weather": 115,
-      "shabbat": 100,
+      "weather": 152,
+      "shabbat": 167,
       "candle": 126
     },
     "primaryColor": "#ecd779",
@@ -52,7 +56,11 @@
     "tilesBackground": "1791817797873-opt.jpg",
     "logoBorderRadius": 100,
     "logoBackground": "",
-    "boardFont": "georgia"
+    "boardFont": "tinos",
+    "panelBorderColor": "#604f2f",
+    "panelBorderOpacity": 100,
+    "tileBorderColor": "#60500e",
+    "tileBorderOpacity": 100
   },
   "people": [
     {
@@ -6283,19 +6291,19 @@
       "en": "Scan the QR code to make a donation in memory of loved ones",
       "he": "סרקו את הברקוד לתרומה לזכר יקירים"
     },
-    "titleScale": 100,
-    "textScale": 100,
-    "qrScale": 100,
-    "titleScaleBaseline": 100,
-    "textScaleBaseline": 100,
-    "qrScaleBaseline": 100
+    "titleScale": 80,
+    "textScale": 80,
+    "qrScale": 120,
+    "titleScaleBaseline": 115,
+    "textScaleBaseline": 115,
+    "qrScaleBaseline": 173
   },
   "weeklyChapterEnabled": false,
   "shabbatTimesEnabled": true,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1791913879226,
-  "exportedAt": "2026-10-13T17:51:19.226Z",
+  "contentVersion": 1791949906269,
+  "exportedAt": "2026-10-14T03:51:46.269Z",
   "jewishContent": {
     "date": "2026-10-14",
     "timezone": "Asia/Tomsk",
@@ -6303,13 +6311,13 @@
       "date": "2026-10-14",
       "timezone": "Asia/Tomsk",
       "chumash": {
-        "label": "Лех Л'ча, Шейни с Раши."
+        "label": "Ноах, 4-я часть"
       },
       "tehillim": {
         "label": "Тегилим 18-22"
       },
       "tanya": {
-        "label": "2 Хешван"
+        "label": "3 Хешван"
       },
       "rambam": {
         "label": "Virgin Maiden 2"
@@ -6347,7 +6355,7 @@
   },
   "sidebarApp": {
     "slug": "tomsk",
-    "publishedVersion": 2,
+    "publishedVersion": 4,
     "title": "Проект памяти наших родных \"Кадиш\"",
     "language": "ru",
     "location": {
@@ -6387,6 +6395,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-13T17:51:19.226Z"
+    "updatedAt": "2026-10-14T03:51:46.269Z"
   }
 }

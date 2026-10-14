@@ -27,6 +27,8 @@
       "boardHeader": 100,
       "sidebar": 100,
       "prayers": 100,
+      "dailyStudy": 100,
+      "hayomYom": 100,
       "prayerOverlay": 100,
       "torahNames": 100,
       "weather": 100,
@@ -42,6 +44,8 @@
       "boardHeader": 89,
       "sidebar": 90,
       "prayers": 124,
+      "dailyStudy": 100,
+      "hayomYom": 100,
       "prayerOverlay": 135,
       "torahNames": 270,
       "weather": 150,
@@ -52,7 +56,11 @@
     "tilesBackground": "1781877654975.jpg",
     "logoBorderRadius": 0,
     "logoBackground": "",
-    "boardFont": "georgia"
+    "boardFont": "georgia",
+    "panelBorderColor": "#604f2f",
+    "panelBorderOpacity": 100,
+    "tileBorderColor": "#60500e",
+    "tileBorderOpacity": 100
   },
   "people": [
     {
@@ -3282,8 +3290,8 @@
       }
     ]
   },
-  "contentVersion": 1791913874503,
-  "exportedAt": "2026-10-13T17:51:14.503Z",
+  "contentVersion": 1791949900873,
+  "exportedAt": "2026-10-14T03:51:40.873Z",
   "jewishContent": {
     "date": "2026-10-14",
     "timezone": "Asia/Novosibirsk",
@@ -3291,13 +3299,13 @@
       "date": "2026-10-14",
       "timezone": "Asia/Novosibirsk",
       "chumash": {
-        "label": "Лех Л'ча, Шейни с Раши."
+        "label": "Ноах, 4-я часть"
       },
       "tehillim": {
         "label": "Тегилим 18-22"
       },
       "tanya": {
-        "label": "2 Хешван"
+        "label": "3 Хешван"
       },
       "rambam": {
         "label": "Virgin Maiden 2"
@@ -3376,6 +3384,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-13T17:51:14.503Z"
+    "updatedAt": "2026-10-14T03:51:40.873Z"
   }
 }
