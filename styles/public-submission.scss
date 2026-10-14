@@ -269,6 +269,18 @@ html[dir='rtl'] .public-bh-badge {
   border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
+.public-form-donation {
+  margin-bottom: 8px;
+
+  .public-intro {
+    margin-bottom: 14px;
+  }
+
+  .public-actions {
+    margin-top: 0;
+  }
+}
+
 .public-charity-title,
 .public-section-title {
   margin: 0 0 10px;

@@ -1,7 +1,7 @@
 const DEFAULT_TILE = { r: 184, g: 154, b: 34 };
 const DEFAULT_PRIMARY = { r: 207, g: 175, b: 31 };
 
-function parseHex(hex, fallback = DEFAULT_TILE) {
+export function parseHex(hex, fallback = DEFAULT_TILE) {
   const match = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(String(hex || '').trim());
 
   if (!match) {
@@ -15,7 +15,7 @@ function parseHex(hex, fallback = DEFAULT_TILE) {
   };
 }
 
-function rgba(rgb, alpha) {
+export function rgba(rgb, alpha) {
   return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
 }
 

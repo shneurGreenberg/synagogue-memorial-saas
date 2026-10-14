@@ -85,6 +85,8 @@ function buildSettingsDashboardContext() {
     boardFontOptions: BOARD_FONTS.map((font) => ({
       id: font.id,
       labelKey: font.labelKey,
+      family: font.family,
+      previewSample: font.previewSample,
       selected: normalizeBoardFont(synagogue.theme.boardFont) === font.id,
     })),
     savedViews: [],
@@ -141,6 +143,9 @@ describe('admin settings dashboard template', () => {
     assert.match(html, /publicSubmissionShowDonationQr/);
     assert.match(html, /name="primaryColor"/);
     assert.match(html, /name="tileOpacity"/);
+    assert.match(html, /name="panelBorderColor"/);
+    assert.match(html, /name="tileBorderColor"/);
+    assert.match(html, /שלום/);
     assert.match(html, /name="titleRu"/);
     assert.match(html, /settings-texts-styling-block/);
     assert.match(html, /settings-texts-content-block/);

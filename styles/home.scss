@@ -589,10 +589,6 @@
           box-shadow:
             0 0 10px var(--accent-color, #ffd54f),
             0 0 22px var(--primary-color, #cfaf1f);
-
-          @media (prefers-reduced-motion: no-preference) {
-            animation: card-yahrzeit-today-glow 2.8s ease-in-out infinite;
-          }
         }
 
         .inner {
@@ -1620,29 +1616,10 @@
   }
 }
 
-@keyframes card-yahrzeit-today-glow {
-  0%,
-  100% {
-    box-shadow:
-      0 0 8px var(--accent-color, #ffd54f),
-      0 0 18px var(--primary-color, #cfaf1f);
-  }
-
-  50% {
-    box-shadow:
-      0 0 14px var(--accent-color, #ffd54f),
-      0 0 28px var(--primary-color, #cfaf1f);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .main-container .cards-grid .card .candle,
   .prayer-reading-candle.candle-fallback,
   .candle-fallback-css {
-    animation: none;
-  }
-
-  .main-container .cards-grid .card.card-yahrzeit-today {
     animation: none;
   }
 
@@ -1656,32 +1633,6 @@
   }
 }
 
-@keyframes candle-soft-flicker {
-  0%,
-  100% {
-    opacity: 1;
-    filter: brightness(1);
-    transform: translate3d(0, calc(-50% + 36px), 0) scale(1);
-  }
-
-  25% {
-    opacity: 0.94;
-    filter: brightness(0.96);
-    transform: translate3d(0.4px, calc(-50% + 35px), 0) scale(0.995);
-  }
-
-  50% {
-    opacity: 0.9;
-    filter: brightness(0.93);
-    transform: translate3d(-0.3px, calc(-50% + 37px), 0) scale(1.005);
-  }
-
-  75% {
-    opacity: 0.96;
-    filter: brightness(1.04);
-    transform: translate3d(0.2px, calc(-50% + 35.5px), 0) scale(0.998);
-  }
-}
 
 @keyframes nearest-dates-scroll {
   from {

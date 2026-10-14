@@ -20,55 +20,61 @@ describe('saved-view export', () => {
     assert.ok(JSON.stringify(payload).includes('Winter theme'));
   });
 
-  it('omits community logo and QR assets from export', () => {
+  it('omits community logo, QR prefs, and copy from export', () => {
     const payload = buildSavedViewExport({
       name: 'Branded',
       snapshot: {
+        titles: { ru: 'Board title' },
         theme: { logo: 'community-logo.png', primaryColor: '#112233' },
         publicSubmission: {
           donationQrImage: 'donate.png',
           registrationQrImage: 'register.png',
           showDonationQr: true,
         },
+        memorialQrPanel: {
+          donationTitles: { ru: 'Donate' },
+          titleScale: 105,
+        },
       },
     });
 
     assert.equal(payload.snapshot.theme.logo, undefined);
-    assert.equal(payload.snapshot.publicSubmission?.donationQrImage, undefined);
+    assert.equal(payload.snapshot.titles, undefined);
+    assert.equal(payload.snapshot.publicSubmission, undefined);
+    assert.equal(payload.snapshot.memorialQrPanel?.donationTitles, undefined);
+    assert.equal(payload.snapshot.memorialQrPanel?.titleScale, 105);
     assert.equal(payload.assets.logo, undefined);
     assert.equal(payload.assets.donationQrImage, undefined);
     assert.equal('registrationQrImage' in payload.assets, false);
   });
 
-  it('ignores imported logo and QR images in favor of synagogue values', () => {
+  it('import keeps only design fields from portable JSON', () => {
     const synagogue = {
       theme: { logo: 'keep-logo.png', primaryColor: '#000000' },
       publicSubmission: {
         donationQrImage: 'keep-donate.png',
-        registrationQrImage: 'keep-register.png',
         showDonationQr: false,
-        showRegistrationQr: true,
       },
+      titles: { ru: 'Community title' },
     };
 
     const snapshot = normalizeImportedSnapshot({
       snapshot: {
+        titles: { ru: 'Imported title' },
         theme: { logo: 'imported-logo.png', primaryColor: '#abcdef' },
         publicSubmission: {
           donationQrImage: 'imported-donate.png',
-          registrationQrImage: 'imported-register.png',
           showDonationQr: true,
-          showRegistrationQr: false,
         },
+        boardFeatures: { weather: false },
       },
     }, synagogue);
 
-    assert.equal(snapshot.theme.logo, 'keep-logo.png');
-    assert.equal(snapshot.publicSubmission.donationQrImage, 'keep-donate.png');
-    assert.equal(snapshot.publicSubmission.registrationQrImage, 'keep-register.png');
-    assert.equal(snapshot.publicSubmission.showDonationQr, false);
-    assert.equal(snapshot.publicSubmission.showRegistrationQr, true);
+    assert.equal(snapshot.theme.logo, undefined);
     assert.equal(snapshot.theme.primaryColor, '#abcdef');
+    assert.equal(snapshot.titles, undefined);
+    assert.equal(snapshot.publicSubmission, undefined);
+    assert.equal(snapshot.boardFeatures, undefined);
   });
 });
 

@@ -35,7 +35,17 @@ export function isLegacyBoardBrowser() {
   return false;
 }
 
-/** Old / TV displays: static candle image only (no video, canvas pool, or retries). */
+/** Old / TV displays: static candle only (no CSS flame animation). */
 export function shouldUseStaticCandleOnly() {
-  return isLegacyBoardBrowser() || isLowPowerBoardBrowser();
+  return isLegacyBoardBrowser();
+}
+
+export function resolveBoardCandleMode() {
+  if (isLegacyBoardBrowser()) {
+    return 'static';
+  }
+  if (isLowPowerBoardBrowser()) {
+    return 'lite';
+  }
+  return 'full';
 }

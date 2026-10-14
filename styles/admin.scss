@@ -1791,6 +1791,14 @@ body.admin-is-busy {
     color: var(--admin-text-muted);
   }
 
+  .board-font-select {
+    option {
+      font-size: 0.95rem;
+      line-height: 1.35;
+      padding: 0.25rem 0;
+    }
+  }
+
   .settings-color-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -3070,6 +3078,42 @@ body.admin-login-page {
       margin-top: 0.5rem;
       padding: 0.75rem;
     }
+  }
+
+  .admin-wrong-community-card {
+    max-width: 480px;
+  }
+
+  .admin-wrong-community-lead {
+    line-height: 1.5;
+  }
+
+  .admin-wrong-community-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .admin-wrong-community-target {
+    margin: 0 0 0.25rem;
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--admin-text);
+  }
+
+  .btn-admin-block {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .admin-wrong-community-back {
+    display: block;
+    margin-top: 0.35rem;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--admin-text-muted);
+    text-decoration: underline;
   }
 }
 

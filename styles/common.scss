@@ -113,7 +113,7 @@ body {
 
 .wooden-panel {
   background-color: #3d3424;
-  border: 7px solid $woodenPanelBorder;
+  border: 7px solid var(--panel-border-color, $woodenPanelBorder);
   box-shadow:
     1px 1px 10px #000,
     2px 2px 2px darken($woodenPanelBorder, 50%),

@@ -31,12 +31,15 @@ const {
   saveViewThumbnail,
   deleteScreenshot,
   buildApplyUpdate,
+  designOnlySnapshot,
   findSavedView,
   normalizeSavedViews,
   repairSavedViewsInDb,
   savedViewsNeedRepair,
   serializeSavedViews,
 } = require('../lib/saved-views');
+const { adminSlugMismatch } = require('../lib/admin-session-slug');
+const { renderAdminWrongCommunity } = require('../lib/admin-wrong-community');
 const { parseMemorialQrPanelFromBody, memorialQrPanelToUpdate } = require('../lib/memorial-qr-panel');
 const { parseSlideshowSettingsBody } = require('../lib/slideshow-admin-settings');
 const {
@@ -122,7 +125,8 @@ const { buildFaviconPath, resolveFaviconLogoFilename } = require('../lib/favicon
 const { OFFICIAL_LOGO_FILENAME } = require('../lib/board-defaults');
 const { CANDLE_PALETTE_KEYS, normalizeCandlePalette } = require('../lib/candle-palette');
 const { normalizeBoardFeatures } = require('../lib/board-features');
-const { BOARD_FONTS, normalizeBoardFont } = require('../lib/board-fonts');
+const { BOARD_FONTS, normalizeBoardFont, buildAllBoardFontsGoogleHref } = require('../lib/board-fonts');
+const { normalizeThemeBorders } = require('../lib/theme-borders');
 const { scanPathForSlug, safeScanReturnPath } = require('../lib/grave-scan');
 
 const BOARD_FEATURE_TOGGLE_META = [
@@ -174,6 +178,8 @@ const FONT_SCALE_SLIDER_META = [
   { key: 'tileDate', labelKey: 'font_scale_tile_date', helpKey: 'font_scale_tile_date_help' },
   { key: 'boardHeader', labelKey: 'font_scale_board_header', helpKey: 'font_scale_board_header_help' },
   { key: 'sidebar', labelKey: 'font_scale_sidebar', helpKey: 'font_scale_sidebar_help' },
+  { key: 'dailyStudy', labelKey: 'font_scale_daily_study', helpKey: 'font_scale_daily_study_help' },
+  { key: 'hayomYom', labelKey: 'font_scale_hayom_yom', helpKey: 'font_scale_hayom_yom_help' },
   { key: 'clock', labelKey: 'font_scale_clock', helpKey: 'font_scale_clock_help' },
   { key: 'prayers', labelKey: 'font_scale_prayers', helpKey: 'font_scale_prayers_help' },
   { key: 'prayerOverlay', labelKey: 'font_scale_prayer_overlay', helpKey: 'font_scale_prayer_overlay_help' },
@@ -192,7 +198,7 @@ const TEXTS_FONT_SCALE_GROUPS = [
   {
     groupKey: 'typography_left_column',
     helpKey: 'typography_left_column_help',
-    keys: ['prayers'],
+    keys: ['prayers', 'dailyStudy', 'hayomYom'],
   },
   {
     groupKey: 'typography_right_column',
@@ -449,8 +455,8 @@ function normalizeInternalNotes(raw) {
 
 function requirePermission(permission) {
     return (req, res, next) => {
-        if (req.params.slug !== req.session.adminSlug) {
-            return res.status(403).send('Forbidden');
+        if (adminSlugMismatch(req)) {
+            return renderAdminWrongCommunity(req, res);
         }
 
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
@@ -464,8 +470,8 @@ function requirePermission(permission) {
 
 function requireAnyPermission(...permissionKeys) {
     return (req, res, next) => {
-        if (req.params.slug !== req.session.adminSlug) {
-            return res.status(403).send('Forbidden');
+        if (adminSlugMismatch(req)) {
+            return renderAdminWrongCommunity(req, res);
         }
 
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
@@ -479,9 +485,11 @@ function requireAnyPermission(...permissionKeys) {
 }
 
 router.get('/login', (req, res) => {
+    const slugPrefill = String(req.query.slug || '').trim();
     res.render('admin/login', {
         layout: false,
         next: safeScanReturnPath(req.query.next),
+        slugPrefill,
     });
 });
 
@@ -541,11 +549,23 @@ router.post('/login', loginRateLimiter, async (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-    req.session.destroy();
-    res.redirect('/admin/login');
+    const nextRaw = String(req.query.next || '').trim();
+    const nextUrl = nextRaw.startsWith('/admin/login')
+        ? nextRaw
+        : (safeScanReturnPath(req.query.next) || '/admin/login');
+    req.session.destroy(() => {
+        res.redirect(nextUrl);
+    });
 });
 
 router.use('/:slug', loadAdminContext);
+
+router.use('/:slug', (req, res, next) => {
+    if (adminSlugMismatch(req)) {
+        return renderAdminWrongCommunity(req, res);
+    }
+    return next();
+});
 
 function invalidateBoardOnMutation(req, res, next) {
     if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
@@ -706,6 +726,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
         const {
             titleRu, titleEn, titleHe, primaryColor, textColor, accentColor, tileColor, tileOpacity,
+            panelBorderColor, panelBorderOpacity, tileBorderColor, tileBorderOpacity,
             language, shabbatTimesEnabled, candlePalette, logoBorderRadius, logoBackground, logoCircle,
         } = req.body;
         const synagogue = await loadAdminSynagogue(req.params.slug, 'settings');
@@ -729,6 +750,16 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             updateData['theme.accentColor'] = sanitizeHexColor(accentColor, BOARD_THEME_DEFAULTS.accentColor);
             updateData['theme.tileColor'] = sanitizeHexColor(tileColor, BOARD_THEME_DEFAULTS.tileColor);
             updateData['theme.tileOpacity'] = normalizeTileOpacity(tileOpacity);
+            const themeBorders = normalizeThemeBorders({
+              panelBorderColor,
+              panelBorderOpacity,
+              tileBorderColor,
+              tileBorderOpacity,
+            });
+            updateData['theme.panelBorderColor'] = themeBorders.panelBorderColor;
+            updateData['theme.panelBorderOpacity'] = themeBorders.panelBorderOpacity;
+            updateData['theme.tileBorderColor'] = themeBorders.tileBorderColor;
+            updateData['theme.tileBorderOpacity'] = themeBorders.tileBorderOpacity;
             updateData['theme.candlePalette'] = normalizeCandlePalette(candlePalette);
             if ('boardFont' in req.body) {
                 updateData['theme.boardFont'] = normalizeBoardFont(req.body.boardFont);
@@ -820,7 +851,7 @@ router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('sett
             return res.status(400).json({ ok: false, error: 'Name is required' });
         }
 
-        const snapshot = normalizeSnapshot({
+        const snapshot = designOnlySnapshot(normalizeSnapshot({
             ...req.body,
             logo: synagogue.theme?.logo || '',
             backgroundImage: synagogue.theme?.backgroundImage || '',
@@ -831,7 +862,7 @@ router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('sett
                 donationQrImage: synagogue.publicSubmission?.donationQrImage || '',
                 registrationQrImage: synagogue.publicSubmission?.registrationQrImage || '',
             },
-        }, synagogue);
+        }, synagogue));
         const screenshot = await saveViewThumbnail(snapshot, req.body.screenshotDataUrl);
         const view = {
             id: require('crypto').randomUUID(),
@@ -878,9 +909,6 @@ router.post('/:slug/settings/saved-views/:viewId/apply', requireAdmin, requirePe
         }
 
         const update = buildApplyUpdate(view.snapshot);
-        if (permissions.settingsLanguages && view.snapshot.language) {
-            update.language = view.snapshot.language;
-        }
 
         await Synagogue.updateOne({ slug: req.params.slug }, { $set: { ...update, activeSavedViewId: req.params.viewId } });
         return res.json({
@@ -914,7 +942,7 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
         }
 
         const existing = normalizedViews[viewIndex];
-        const snapshot = normalizeSnapshot({
+        const snapshot = designOnlySnapshot(normalizeSnapshot({
             ...req.body,
             logo: synagogue.theme?.logo || existing.snapshot?.theme?.logo || '',
             backgroundImage: synagogue.theme?.backgroundImage || existing.snapshot?.theme?.backgroundImage || '',
@@ -929,7 +957,7 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
                     || existing.snapshot?.publicSubmission?.registrationQrImage
                     || '',
             },
-        }, synagogue);
+        }, synagogue));
         const screenshot = await saveViewThumbnail(snapshot, req.body.screenshotDataUrl);
         if (existing.screenshot && existing.screenshot !== screenshot) {
             deleteScreenshot(existing.screenshot);
@@ -1178,9 +1206,12 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             activeSavedViewId: enriched.activeSavedViewId || '',
             activeSavedViewName: activeSavedView ? activeSavedView.name : '',
             memorialQrPanel: enriched.memorialQrPanel,
+            boardFontsGoogleHref: buildAllBoardFontsGoogleHref(),
             boardFontOptions: BOARD_FONTS.map((font) => ({
               id: font.id,
               labelKey: font.labelKey,
+              family: font.family,
+              previewSample: font.previewSample,
               selected: normalizeBoardFont(enriched.theme.boardFont) === font.id,
             })),
             saved: req.query.saved === '1',
