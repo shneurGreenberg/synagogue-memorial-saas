@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="{{lang}}" dir="{{dir}}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark">
+    <title>{{title}}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin.css?v={{@root.cssVersion}}">
+</head>
+
+<body class="admin-login-page admin-wrong-community-page">
+    <div class="admin-login-card admin-wrong-community-card">
+        <div class="admin-login-header">
+            <h1>{{title}}</h1>
+            <p class="admin-wrong-community-lead">{{message}}</p>
+        </div>
+        <div class="admin-login-body admin-wrong-community-actions">
+            <p class="admin-wrong-community-target">
+                <strong>{{targetCommunityName}}</strong>
+            </p>
+            <a href="{{loginUrl}}" class="btn-admin btn-admin-primary btn-admin-block">{{loginButton}}</a>
+            <a href="{{logoutUrl}}" class="btn-admin btn-admin-secondary btn-admin-block">{{logoutButton}}</a>
+            {{#if sessionSlug}}
+            <a href="{{myCommunityUrl}}" class="admin-wrong-community-back">{{backToMyCommunity}}</a>
+            {{/if}}
+        </div>
+    </div>
+</body>
+
+</html>

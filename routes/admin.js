@@ -31,12 +31,15 @@ const {
   saveViewThumbnail,
   deleteScreenshot,
   buildApplyUpdate,
+  designOnlySnapshot,
   findSavedView,
   normalizeSavedViews,
   repairSavedViewsInDb,
   savedViewsNeedRepair,
   serializeSavedViews,
 } = require('../lib/saved-views');
+const { adminSlugMismatch } = require('../lib/admin-session-slug');
+const { renderAdminWrongCommunity } = require('../lib/admin-wrong-community');
 const { parseMemorialQrPanelFromBody, memorialQrPanelToUpdate } = require('../lib/memorial-qr-panel');
 const { parseSlideshowSettingsBody } = require('../lib/slideshow-admin-settings');
 const {
@@ -452,8 +455,8 @@ function normalizeInternalNotes(raw) {
 
 function requirePermission(permission) {
     return (req, res, next) => {
-        if (req.params.slug !== req.session.adminSlug) {
-            return res.status(403).send('Forbidden');
+        if (adminSlugMismatch(req)) {
+            return renderAdminWrongCommunity(req, res);
         }
 
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
@@ -467,8 +470,8 @@ function requirePermission(permission) {
 
 function requireAnyPermission(...permissionKeys) {
     return (req, res, next) => {
-        if (req.params.slug !== req.session.adminSlug) {
-            return res.status(403).send('Forbidden');
+        if (adminSlugMismatch(req)) {
+            return renderAdminWrongCommunity(req, res);
         }
 
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
@@ -482,9 +485,11 @@ function requireAnyPermission(...permissionKeys) {
 }
 
 router.get('/login', (req, res) => {
+    const slugPrefill = String(req.query.slug || '').trim();
     res.render('admin/login', {
         layout: false,
         next: safeScanReturnPath(req.query.next),
+        slugPrefill,
     });
 });
 
@@ -544,11 +549,23 @@ router.post('/login', loginRateLimiter, async (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-    req.session.destroy();
-    res.redirect('/admin/login');
+    const nextRaw = String(req.query.next || '').trim();
+    const nextUrl = nextRaw.startsWith('/admin/login')
+        ? nextRaw
+        : (safeScanReturnPath(req.query.next) || '/admin/login');
+    req.session.destroy(() => {
+        res.redirect(nextUrl);
+    });
 });
 
 router.use('/:slug', loadAdminContext);
+
+router.use('/:slug', (req, res, next) => {
+    if (adminSlugMismatch(req)) {
+        return renderAdminWrongCommunity(req, res);
+    }
+    return next();
+});
 
 function invalidateBoardOnMutation(req, res, next) {
     if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) {
@@ -834,7 +851,7 @@ router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('sett
             return res.status(400).json({ ok: false, error: 'Name is required' });
         }
 
-        const snapshot = normalizeSnapshot({
+        const snapshot = designOnlySnapshot(normalizeSnapshot({
             ...req.body,
             logo: synagogue.theme?.logo || '',
             backgroundImage: synagogue.theme?.backgroundImage || '',
@@ -845,7 +862,7 @@ router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('sett
                 donationQrImage: synagogue.publicSubmission?.donationQrImage || '',
                 registrationQrImage: synagogue.publicSubmission?.registrationQrImage || '',
             },
-        }, synagogue);
+        }, synagogue));
         const screenshot = await saveViewThumbnail(snapshot, req.body.screenshotDataUrl);
         const view = {
             id: require('crypto').randomUUID(),
@@ -892,9 +909,6 @@ router.post('/:slug/settings/saved-views/:viewId/apply', requireAdmin, requirePe
         }
 
         const update = buildApplyUpdate(view.snapshot);
-        if (permissions.settingsLanguages && view.snapshot.language) {
-            update.language = view.snapshot.language;
-        }
 
         await Synagogue.updateOne({ slug: req.params.slug }, { $set: { ...update, activeSavedViewId: req.params.viewId } });
         return res.json({
@@ -928,7 +942,7 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
         }
 
         const existing = normalizedViews[viewIndex];
-        const snapshot = normalizeSnapshot({
+        const snapshot = designOnlySnapshot(normalizeSnapshot({
             ...req.body,
             logo: synagogue.theme?.logo || existing.snapshot?.theme?.logo || '',
             backgroundImage: synagogue.theme?.backgroundImage || existing.snapshot?.theme?.backgroundImage || '',
@@ -943,7 +957,7 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
                     || existing.snapshot?.publicSubmission?.registrationQrImage
                     || '',
             },
-        }, synagogue);
+        }, synagogue));
         const screenshot = await saveViewThumbnail(snapshot, req.body.screenshotDataUrl);
         if (existing.screenshot && existing.screenshot !== screenshot) {
             deleteScreenshot(existing.screenshot);
