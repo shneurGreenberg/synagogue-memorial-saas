@@ -7,6 +7,15 @@ const {
 } = require('../lib/chabad-dates');
 
 describe('chabad-dates', () => {
+  it('returns UTF-8 Russian titles for upcoming dates', () => {
+    const from = new Date(2026, 10, 1);
+    const dates = getUpcomingChabadDates('ru', from, 60);
+    const kislev = dates.find((entry) => entry.title.includes('Кислева'));
+    assert.ok(kislev, 'expected 19 Kislev entry');
+    assert.match(kislev.title, /праздник освобождения/);
+    assert.doesNotMatch(kislev.title, /РљРё/);
+  });
+
   it('limits default range through end of next calendar month', () => {
     const from = new Date(2026, 9, 13);
     const end = endOfNextCalendarMonth(from);
