@@ -587,10 +587,10 @@
         direction: direction,
       }).toString(),
     }).then(readJson).then(function (result) {
-      if (!result.ok || !result.data || !result.data.ok) {
-        throw new Error((result.data && result.data.error) || 'Reorder failed');
+      if (!result.ok) {
+        throw new Error((result && result.error) || 'Reorder failed');
       }
-      renderAllEvents(result.data.events);
+      renderAllEvents(result.events);
       hideBusy();
       showStatus(labels.saved || 'Saved', 'success', null);
     }).catch(function (err) {

@@ -456,7 +456,7 @@ function normalizeInternalNotes(raw) {
 function requirePermission(permission) {
     return (req, res, next) => {
         if (adminSlugMismatch(req)) {
-            return renderAdminWrongCommunity(req, res);
+            return void renderAdminWrongCommunity(req, res).catch(next);
         }
 
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
@@ -471,7 +471,7 @@ function requirePermission(permission) {
 function requireAnyPermission(...permissionKeys) {
     return (req, res, next) => {
         if (adminSlugMismatch(req)) {
-            return renderAdminWrongCommunity(req, res);
+            return void renderAdminWrongCommunity(req, res).catch(next);
         }
 
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
@@ -562,7 +562,7 @@ router.use('/:slug', loadAdminContext);
 
 router.use('/:slug', (req, res, next) => {
     if (adminSlugMismatch(req)) {
-        return renderAdminWrongCommunity(req, res);
+        return void renderAdminWrongCommunity(req, res).catch(next);
     }
     return next();
 });
@@ -2452,6 +2452,29 @@ router.post('/:slug/users/delete', requireAdmin, requireFullAdmin, parseFormBody
     } catch (err) {
         return res.status(500).send(err.message);
     }
+});
+
+router.use((err, req, res, next) => {
+    if (!err) {
+        return next();
+    }
+
+    const status = err.status || err.statusCode || 500;
+    const message = publicErrorMessage(err);
+
+    if (err instanceof multer.MulterError) {
+        if (wantsJson(req)) {
+            return res.status(400).json({ ok: false, error: message });
+        }
+        const slug = req.params.slug || req.session.adminSlug || '';
+        return res.redirect(`/admin/${slug}/dashboard?error=upload`);
+    }
+
+    if (wantsJson(req)) {
+        return res.status(status).json({ ok: false, error: message });
+    }
+
+    return res.status(status).send(message);
 });
 
 module.exports = router;
