@@ -3290,8 +3290,8 @@
       }
     ]
   },
-  "contentVersion": 1792048667805,
-  "exportedAt": "2026-10-15T07:17:47.805Z",
+  "contentVersion": 1792054026932,
+  "exportedAt": "2026-10-15T08:47:06.932Z",
   "jewishContent": {
     "date": "2026-10-15",
     "timezone": "Asia/Novosibirsk",
@@ -3315,18 +3315,18 @@
       },
       "hayomYom": {
         "available": true,
-        "text": "MYMEMORY WARNING: YOU USED ALL AVAILABLE FREE TRANSLATIONS FOR TODAY. NEXT AVAILABLE IN  10 HOURS 18 MINUTES 34 SECONDS VISIT HTTPS://MYMEMORY.TRANSLATED.NET/DOC/USAGELIMITS.PHP TO TRANSLATE MORE",
+        "text": "Torah-study every day is crucial to life itself. This applies not only to the soul of the one studying but also to the souls of his family. For then (through Torah-study), the atmosphere of the home becomes an atmosphere of Torah and piety.",
         "hebrewMonth": 8,
         "hebrewDay": 4,
         "lessons5703": {
           "chumash": {
-            "label": "MYMEMORY WARNING: YOU USED ALL AVAILABLE FREE TRANSLATIONS FOR TODAY. NEXT AVAILABLE IN  10 HOURS 18 MINUTES 34 SECONDS VISIT HTTPS://MYMEMORY.TRANSLATED.NET/DOC/USAGELIMITS.PHP TO TRANSLATE MORE"
+            "label": "Lech L'cha, Shlishi with Rashi."
           },
           "tehillim": {
-            "label": "MYMEMORY WARNING: YOU USED ALL AVAILABLE FREE TRANSLATIONS FOR TODAY. NEXT AVAILABLE IN  10 HOURS 18 MINUTES 34 SECONDS VISIT HTTPS://MYMEMORY.TRANSLATED.NET/DOC/USAGELIMITS.PHP TO TRANSLATE MORE"
+            "label": "23-28."
           },
           "tanya": {
-            "label": "MYMEMORY WARNING: YOU USED ALL AVAILABLE FREE TRANSLATIONS FOR TODAY. NEXT AVAILABLE IN  10 HOURS 18 MINUTES 34 SECONDS VISIT HTTPS://MYMEMORY.TRANSLATED.NET/DOC/USAGELIMITS.PHP TO TRANSLATE MORE"
+            "label": "XXVI. In R'aya (p. 549)... R'aya Mehemna. (p. 551)."
           }
         }
       }
@@ -3384,6 +3384,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-15T07:17:47.805Z"
+    "updatedAt": "2026-10-15T08:47:06.932Z"
   }
 }
