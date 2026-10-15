@@ -32,6 +32,10 @@ const {
 const OnboardingInvite = require('../models/OnboardingInvite');
 const CommunityOnboardingRequest = require('../models/CommunityOnboardingRequest');
 const { createSynagogueFromOnboardingRequest } = require('../lib/onboarding-approve');
+const {
+  mergePresetSavedViews,
+  resolveDefaultActiveSavedViewId,
+} = require('../lib/saved-view-presets');
 const { processCommunityLogoUpload } = require('../lib/community-logo-upload');
 const { MAX_UPLOAD_BYTES } = require('../lib/upload-limits');
 const loginRateLimiter = createLoginRateLimiter();
@@ -400,6 +404,9 @@ router.post('/add', requireMaster, (req, res) => {
                 const logoFile = wizardPayload._logoFile;
                 newSynagogue.theme.logo = await processCommunityLogoUpload(logoFile.path, logoFile.mimetype);
             }
+
+            newSynagogue.savedViews = mergePresetSavedViews(newSynagogue.savedViews);
+            newSynagogue.activeSavedViewId = resolveDefaultActiveSavedViewId(newSynagogue.savedViews);
 
             await newSynagogue.save();
             res.redirect(`/master/communities?saved=1&created=${encodeURIComponent(slug)}`);

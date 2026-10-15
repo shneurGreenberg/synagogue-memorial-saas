@@ -16,14 +16,14 @@
       return;
     }
 
-    var formData = new FormData(form);
     fetch(form.action, {
       method: 'POST',
       headers: {
         'X-Requested-With': 'XMLHttpRequest',
         Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
       },
-      body: formData,
+      body: new URLSearchParams(new FormData(form)),
       credentials: 'same-origin',
     }).then(function (response) {
       if (!response.ok) {

@@ -25,6 +25,30 @@ describe('admin parseFormBody', () => {
     assert.equal(req.body.eventTitle, 'Test');
   });
 
+  it('skips multer for application/json bodies', () => {
+    let multerRan = false;
+    const upload = {
+      none() {
+        return (req, res, next) => {
+          multerRan = true;
+          next();
+        };
+      },
+    };
+    const parseFormBody = createParseFormBody(upload);
+    const req = {
+      headers: { 'content-type': 'application/json; charset=utf-8' },
+      body: { colorMode: 'dark' },
+    };
+    let called = false;
+    parseFormBody(req, {}, () => {
+      called = true;
+    });
+    assert.equal(called, true);
+    assert.equal(multerRan, false);
+    assert.equal(req.body.colorMode, 'dark');
+  });
+
   it('uses multer for multipart requests', () => {
     let multerRan = false;
     const upload = {
