@@ -6302,43 +6302,43 @@
   "shabbatTimesEnabled": true,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1791962850682,
-  "exportedAt": "2026-10-14T07:27:30.682Z",
+  "contentVersion": 1792048675205,
+  "exportedAt": "2026-10-15T07:17:55.205Z",
   "jewishContent": {
-    "date": "2026-10-14",
+    "date": "2026-10-15",
     "timezone": "Asia/Tomsk",
     "dailyLearning": {
-      "date": "2026-10-14",
+      "date": "2026-10-15",
       "timezone": "Asia/Tomsk",
       "chumash": {
-        "label": "Ноах, 4-я часть"
+        "label": "Ноах, 5-я часть"
       },
       "tehillim": {
-        "label": "Тегилим 18-22"
+        "label": "Тегилим 23-28"
       },
       "tanya": {
-        "label": "3 Хешван"
+        "label": "4 Хешван"
       },
       "rambam": {
-        "label": "Virgin Maiden 2"
+        "label": "Virgin Maiden 3"
       },
       "rambam3": {
-        "label": "Robbery and Lost Property 13-15"
+        "label": "Robbery and Lost Property 16-18"
       },
       "hayomYom": {
         "available": true,
-        "text": "(Продолжая вышесказанное Сича:) «Берейшит - веселая Седра, хотя ее конец не так уж приятен. Ноах переживает Потоп, но неделя заканчивается на счастливой ноте с рождением нашего отца Авраама. По-настоящему радостная неделя - это неделя Паршата Леха Л'ча. Мы живем каждый день недели с Авраамом, первым, кто посвятил свою жизнь распространению благодати Б-га в мире. И завещал Авраам свое самопожертвование в наследие всем Иудеям.",
+        "text": "MYMEMORY WARNING: YOU USED ALL AVAILABLE FREE TRANSLATIONS FOR TODAY. NEXT AVAILABLE IN  10 HOURS 18 MINUTES 34 SECONDS VISIT HTTPS://MYMEMORY.TRANSLATED.NET/DOC/USAGELIMITS.PHP TO TRANSLATE MORE",
         "hebrewMonth": 8,
-        "hebrewDay": 3,
+        "hebrewDay": 4,
         "lessons5703": {
           "chumash": {
-            "label": "Лех Л'ча, Шейни с Раши."
+            "label": "MYMEMORY WARNING: YOU USED ALL AVAILABLE FREE TRANSLATIONS FOR TODAY. NEXT AVAILABLE IN  10 HOURS 18 MINUTES 34 SECONDS VISIT HTTPS://MYMEMORY.TRANSLATED.NET/DOC/USAGELIMITS.PHP TO TRANSLATE MORE"
           },
           "tehillim": {
-            "label": "18 – 22"
+            "label": "MYMEMORY WARNING: YOU USED ALL AVAILABLE FREE TRANSLATIONS FOR TODAY. NEXT AVAILABLE IN  10 HOURS 18 MINUTES 34 SECONDS VISIT HTTPS://MYMEMORY.TRANSLATED.NET/DOC/USAGELIMITS.PHP TO TRANSLATE MORE"
           },
           "tanya": {
-            "label": "Казалось бы (с. 545) …рот находит благосклонность. (с. 549)."
+            "label": "MYMEMORY WARNING: YOU USED ALL AVAILABLE FREE TRANSLATIONS FOR TODAY. NEXT AVAILABLE IN  10 HOURS 18 MINUTES 34 SECONDS VISIT HTTPS://MYMEMORY.TRANSLATED.NET/DOC/USAGELIMITS.PHP TO TRANSLATE MORE"
           }
         }
       }
@@ -6395,6 +6395,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-14T07:27:30.682Z"
+    "updatedAt": "2026-10-15T07:17:55.205Z"
   }
 }
