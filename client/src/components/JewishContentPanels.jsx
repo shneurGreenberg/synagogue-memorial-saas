@@ -66,15 +66,11 @@ function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
     || boardFeatures.dailyRambam;
 
   const hayomYom = learning.hayomYom || {};
-  const lessons5703 = hayomYom.lessons5703 || {};
-  const tanyaItem = lessons5703.tanya?.label ? lessons5703.tanya : learning.tanya;
-
-  const chumashItem = lessons5703.chumash?.label ? lessons5703.chumash : learning.chumash;
   const chumashTile = boardFeatures.dailyChumash && (
-    <LearningTile label={t('daily_chumash')} item={chumashItem} />
+    <LearningTile label={t('daily_chumash')} item={learning.chumash} />
   );
   const tanyaTile = boardFeatures.dailyTanya && (
-    <LearningTile label={t('daily_tanya')} item={tanyaItem} />
+    <LearningTile label={t('daily_tanya')} item={learning.tanya} />
   );
 
   return (
@@ -119,16 +115,8 @@ function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
       {boardFeatures.hayomYom && (
         <section className="hayom-yom-panel" aria-label={t('hayom_yom_title')}>
           <h2>{t('hayom_yom_title')}</h2>
-          {hayomYom.text || lessons5703.chumash?.label || lessons5703.tehillim?.label || lessons5703.tanya?.label ? (
-            <HayomYomScroller
-              text={hayomYom.text}
-              lessons5703={lessons5703}
-              lessonLabels={{
-                chumash: t('daily_chumash'),
-                tehillim: t('daily_tehillim'),
-                tanya: t('daily_tanya'),
-              }}
-            />
+          {hayomYom.text ? (
+            <HayomYomScroller text={hayomYom.text} />
           ) : (
             <p className="hayom-yom-note">{t('hayom_yom_loading')}</p>
           )}

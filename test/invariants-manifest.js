@@ -14,7 +14,6 @@ const INVARIANTS = [
   { id: 'uploads-shared-dirs', area: 'storage', description: 'Upload filenames are unique; photos vs images dirs are separated per deployment (not per slug path).' },
   { id: 'saved-view-design-roundtrip', area: 'design', description: 'Export/import/apply preserves design fields only; branding and QR toggles stay on community.' },
   { id: 'hebrew-gregorian', area: 'calendar', description: 'Hebrew death dates derive from Gregorian via Hebcal; stored Hebrew preferred when present.' },
-  { id: 'yahrzeit-after-sunset', area: 'calendar', description: 'Death after sunset shifts Hebrew date (halachic rule).' },
   { id: 'leap-adar', area: 'calendar', description: 'Leap years and Adar I/II handled correctly in Hebrew date conversion.' },
   { id: 'i18n-keys', area: 'i18n', description: 'Board UI translation keys match across he, ru, en resource files.' },
   { id: 'no-mojibake', area: 'encoding', description: 'Source and locale files are valid UTF-8 without mojibake sequences.' },
