@@ -15,6 +15,9 @@
   }
 
   function slugFromName(name) {
+    if (window.communityWebAddress && window.communityWebAddress.webAddressFromCommunityName) {
+      return window.communityWebAddress.webAddressFromCommunityName(name);
+    }
     return normalizeSlugValue(
       String(name || '')
         .toLowerCase()
@@ -189,11 +192,31 @@
   function bindSlugInputs(root) {
     root.querySelectorAll('.master-slug-input').forEach(function (input) {
       input.addEventListener('blur', function () {
-        input.value = normalizeSlugValue(input.value);
+        if (window.communityWebAddress && window.communityWebAddress.normalizeWebAddressInput) {
+          input.value = window.communityWebAddress.normalizeWebAddressInput(input.value);
+        } else {
+          input.value = normalizeSlugValue(input.value);
+        }
       });
     });
 
     window.masterSlugFromName = slugFromName;
+
+    var wizardName = root.querySelector('#wizardName');
+    var wizardSlug = root.querySelector('#wizardSlug');
+    var wizardSlugTouched = false;
+    if (wizardSlug) {
+      wizardSlug.addEventListener('input', function () {
+        wizardSlugTouched = true;
+      });
+    }
+    if (wizardName && wizardSlug) {
+      wizardName.addEventListener('input', function () {
+        if (!wizardSlugTouched || !wizardSlug.value.trim()) {
+          wizardSlug.value = slugFromName(wizardName.value);
+        }
+      });
+    }
 
     var addName = root.querySelector('#addName');
     var addSlug = root.querySelector('#addSlug');

@@ -28,5 +28,29 @@ test('onboarding translator returns strings for all supported languages', () => 
     assert.ok(t('page_title'));
     assert.ok(t('language_label'));
     assert.ok(t('submit'));
+    assert.ok(t('submitting'));
+    assert.ok(t('web_address_label'));
   });
+});
+
+test('onboarding copy avoids slug terminology', () => {
+  const forbidden = [/slug/i, /слаг/i, /סלאג/];
+  const keys = [
+    'web_address_label', 'web_address_help', 'admin_password_help',
+    'error_web_address', 'submitting',
+  ];
+  ['en', 'ru', 'he'].forEach((lang) => {
+    const t = getOnboardingTranslator(lang);
+    keys.forEach((key) => {
+      const text = t(key);
+      forbidden.forEach((pattern) => {
+        assert.equal(pattern.test(text), false, `${lang}:${key} => ${text}`);
+      });
+    });
+  });
+});
+
+test('Hebrew submitting label matches product copy', () => {
+  const t = getOnboardingTranslator('he');
+  assert.equal(t('submitting'), 'שולח את הבקשה…');
 });

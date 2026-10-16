@@ -6,7 +6,13 @@ const crypto = require('crypto');
 const OnboardingInvite = require('../models/OnboardingInvite');
 const CommunityOnboardingRequest = require('../models/CommunityOnboardingRequest');
 const Synagogue = require('../models/Synagogue');
-const { normalizeSlug, isValidSlug } = require('../lib/normalize-slug');
+const { isValidSlug } = require('../lib/normalize-slug');
+const {
+  normalizeWebAddressInput,
+  isValidWebAddress,
+  webAddressFromCommunityName,
+} = require('../lib/community-web-address');
+const { resolveBoardTitles, primaryBoardTitle } = require('../lib/default-board-titles');
 const { resolveTimezone } = require('../lib/normalize-timezone');
 const { normalizeAdminLang } = require('../lib/admin-locale');
 const { hashPassword } = require('../lib/password');
@@ -91,6 +97,23 @@ function renderOnboarding(req, res, view, options = {}) {
   });
 }
 
+function wantsOnboardingJson(req) {
+  return req.get('X-Onboarding-Submit') === '1'
+    || (req.get('Accept') || '').includes('application/json');
+}
+
+function onboardingErrorPayload(code, lang) {
+  const t = getOnboardingTranslator(lang);
+  const keyMap = {
+    missing: 'error_missing',
+    slug: 'error_web_address',
+    upload: 'error_upload',
+    invalid_svg: 'error_invalid_svg',
+  };
+  const messageKey = keyMap[code] || 'error_missing';
+  return { ok: false, error: code, message: t(messageKey) };
+}
+
 async function nominatimFetch(urlPath) {
   const response = await fetch(`${NOMINATIM}${urlPath}`, { headers: NOMINATIM_HEADERS });
   if (!response.ok) {
@@ -157,6 +180,9 @@ router.get('/:token', async (req, res) => {
     onboardingConfigJson: JSON.stringify({
       token: invite.token,
       lang,
+      submitLabel: t('submit'),
+      submittingLabel: t('submitting'),
+      errorFallbackLabel: t('error_missing'),
       stepLabels: {
         basics: t('step_basics'),
         location: t('step_location'),
@@ -166,7 +192,7 @@ router.get('/:token', async (req, res) => {
       },
       reviewLabels: {
         name: t('name_label'),
-        slug: t('slug_label'),
+        webAddress: t('web_address_label'),
         titleHe: t('title_he_label'),
         city: t('city_label'),
         contactName: t('contact_name'),
@@ -190,36 +216,54 @@ router.post('/:token', (req, res) => {
   upload.single('logo')(req, res, async (uploadErr) => {
     const lang = resolveRequestOnboardingLang(req, req.body.lang);
     const redirectBase = `/join/${encodeURIComponent(req.params.token)}`;
+    const jsonResponse = wantsOnboardingJson(req);
 
     if (uploadErr) {
       const code = uploadErr.message === 'image_only' ? 'upload' : 'upload';
+      if (jsonResponse) {
+        return res.status(400).json(onboardingErrorPayload(code, lang));
+      }
       return res.redirect(`${redirectBase}?lang=${lang}&error=${code}`);
     }
 
     try {
       const invite = await loadInvite(req.params.token);
       if (!invite) {
+        if (jsonResponse) {
+          return res.status(403).json(onboardingErrorPayload('missing', lang));
+        }
         return renderOnboarding(req, res, 'onboarding/invalid', { lang });
       }
 
       const name = String(req.body.name || '').trim();
-      const slug = normalizeSlug(req.body.slug);
+      const slugRaw = String(req.body.slug || '').trim();
+      const slug = normalizeWebAddressInput(slugRaw)
+        || webAddressFromCommunityName(name);
       const adminPassword = String(req.body.adminPassword || '');
       const adminEmail = String(req.body.adminEmail || '').trim();
       const contactName = String(req.body.contactName || '').trim();
       const contactPhone = String(req.body.contactPhone || '').trim();
 
       if (!name || !slug || !adminPassword || !adminEmail || !contactName) {
+        if (jsonResponse) {
+          return res.status(400).json(onboardingErrorPayload('missing', lang));
+        }
         return res.redirect(`${redirectBase}?lang=${lang}&error=missing`);
       }
 
-      if (!isValidSlug(slug)) {
+      if (!isValidWebAddress(slug) || !isValidSlug(slug)) {
+        if (jsonResponse) {
+          return res.status(400).json(onboardingErrorPayload('slug', lang));
+        }
         return res.redirect(`${redirectBase}?lang=${lang}&error=slug`);
       }
 
       const slugTaken = await Synagogue.findOne({ slug });
       const pendingSlug = await CommunityOnboardingRequest.findOne({ slug, status: 'pending' });
       if (slugTaken || pendingSlug) {
+        if (jsonResponse) {
+          return res.status(400).json(onboardingErrorPayload('slug', lang));
+        }
         return res.redirect(`${redirectBase}?lang=${lang}&error=slug`);
       }
 
@@ -234,21 +278,26 @@ router.post('/:token', (req, res) => {
           logoFilename = await processCommunityLogoUpload(req.file.path, req.file.mimetype);
         } catch (err) {
           if (err.message === 'invalid_svg') {
+            if (jsonResponse) {
+              return res.status(400).json(onboardingErrorPayload('invalid_svg', lang));
+            }
             return res.redirect(`${redirectBase}?lang=${lang}&error=invalid_svg`);
           }
           throw err;
         }
       }
 
+      const titles = resolveBoardTitles({
+        en: req.body.titleEn,
+        he: req.body.titleHe,
+        ru: req.body.titleRu,
+      });
+
       const request = new CommunityOnboardingRequest({
         inviteToken: invite.token,
         name,
         slug,
-        titles: {
-          en: String(req.body.titleEn || name).trim(),
-          he: String(req.body.titleHe || '').trim(),
-          ru: String(req.body.titleRu || '').trim(),
-        },
+        titles,
         location: {
           lat: Number.isFinite(lat) ? lat : 54.9833,
           long: Number.isFinite(long) ? long : 82.8964,
@@ -267,9 +316,16 @@ router.post('/:token', (req, res) => {
       });
 
       await request.save();
-      return res.redirect(`/join/${encodeURIComponent(invite.token)}/success?lang=${lang}`);
+      const successUrl = `/join/${encodeURIComponent(invite.token)}/success?lang=${lang}`;
+      if (jsonResponse) {
+        return res.json({ ok: true, redirect: successUrl });
+      }
+      return res.redirect(successUrl);
     } catch (err) {
       console.error('Onboarding submit error:', err);
+      if (jsonResponse) {
+        return res.status(500).json(onboardingErrorPayload('missing', lang));
+      }
       return res.redirect(`${redirectBase}?lang=${lang}&error=missing`);
     }
   });
