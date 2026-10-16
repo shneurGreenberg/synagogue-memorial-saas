@@ -1,5 +1,6 @@
 import React from 'react';
-import { getHayomYomDisplayText } from '../../../lib/hayom-yom-display-text';
+
+const getHayomYomDisplayText = (text) => String(text || '').trim();
 
 export class HayomYomScroller extends React.Component {
   constructor(props) {
