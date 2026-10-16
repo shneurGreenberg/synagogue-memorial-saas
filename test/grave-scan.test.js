@@ -203,11 +203,26 @@ describe('grave OCR parsing', () => {
 describe('grave scan http', () => {
   let server;
   let photo;
+  let mongoOk = false;
   const createdIds = [];
   const photoFiles = [];
   const originalScan = graveOcr.scanGraveImage;
+  const { SKIP_REASON, isMongoAvailable } = require('./helpers/mongodb');
+
+  function itHttp(name, fn) {
+    it(name, async (t) => {
+      if (!mongoOk) {
+        return t.skip(SKIP_REASON);
+      }
+      return fn(t);
+    });
+  }
 
   before(async () => {
+    mongoOk = await isMongoAvailable();
+    if (!mongoOk) {
+      return;
+    }
     mongoose.set('strictQuery', false);
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/synagogue', {
       serverSelectionTimeoutMS: 8000,
@@ -227,6 +242,9 @@ describe('grave scan http', () => {
   });
 
   after(async () => {
+    if (!mongoOk) {
+      return;
+    }
     graveOcr.scanGraveImage = originalScan;
     if (createdIds.length) {
       await Synagogue.updateOne(
@@ -241,14 +259,14 @@ describe('grave scan http', () => {
     await mongoose.disconnect();
   });
 
-  it('renders the Russian scan page for staff', async () => {
+  itHttp('renders the Russian scan page for staff', async () => {
     const page = await request(server, 'GET', `/s/${SLUG}/scan`);
     assert.equal(page.status, 200);
     assert.match(page.body, /Сфотографировать/);
     assert.match(page.body, /Из галереи/);
   });
 
-  it('rejects anonymous scan calls', async () => {
+  itHttp('rejects anonymous scan calls', async () => {
     const anon = http.createServer(buildApp({}));
     await new Promise((resolve) => anon.listen(0, '127.0.0.1', resolve));
     try {
@@ -266,7 +284,7 @@ describe('grave scan http', () => {
     }
   });
 
-  it('returns structured fields from a mocked vision response', async () => {
+  itHttp('returns structured fields from a mocked vision response', async () => {
     const name = `Скан Тест ${Date.now()}`;
     graveOcr.scanGraveImage = async () => ({
       name,
@@ -300,7 +318,7 @@ describe('grave scan http', () => {
     }
   });
 
-  it('sends the image to OpenRouter with the configured model', async () => {
+  itHttp('sends the image to OpenRouter with the configured model', async () => {
     let seen = null;
     const result = await originalScan(
       { buffer: photo, mimeType: 'image/jpeg' },
@@ -342,7 +360,7 @@ describe('grave scan http', () => {
     assert.equal(result.gregorianDateOfDeath.year, 2001);
   });
 
-  it('creates and updates a tenant person with the grave photo', async () => {
+  itHttp('creates and updates a tenant person with the grave photo', async () => {
     const name = `Плита ${Date.now()}`;
     const createdPayload = multipart({
       name,

@@ -22,4 +22,10 @@ describe('weekly Chumash (Diaspora Chitas)', () => {
     assert.equal(resolveComputedDailyChumashLabel(TZ, now, 'ru'), 'Ноах, 4-я часть');
     assert.equal(resolveComputedDailyChumashLabel(TZ, now, 'he'), 'נח, רביעי');
   });
+
+  it('Sat 2026-10-17 in Asia/Novosibirsk is Noach Shvii (Shabbat)', () => {
+    const now = atLocalNoonUtc(2026, 10, 17);
+    assert.equal(resolveComputedDailyChumashLabel(TZ, now, 'en'), 'Noach, Shvii');
+    assert.equal(resolveComputedDailyChumashLabel(TZ, now, 'he'), 'נח, שביעי');
+  });
 });

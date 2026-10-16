@@ -74,4 +74,25 @@ describe('mymemory translation guards', () => {
     resetQuotaBackoff();
     assert.equal(isQuotaBackoffActive(), false);
   });
+
+  it('translateWithCache returns stored translation without calling API', async () => {
+    const StoredTranslation = require('../models/StoredTranslation');
+    const originalFind = StoredTranslation.findOne;
+    const originalUpdate = StoredTranslation.findOneAndUpdate;
+    StoredTranslation.findOne = () => ({
+      lean: async () => ({ translatedText: 'שמור' }),
+    });
+    StoredTranslation.findOneAndUpdate = async () => {};
+
+    const { translateWithCache } = require('../lib/mymemory-translate');
+    let fetchCalled = false;
+    const text = await translateWithCache('Genesis', 'en|he', {
+      httpsGet: () => { fetchCalled = true; },
+    });
+    assert.equal(text, 'שמור');
+    assert.equal(fetchCalled, false);
+
+    StoredTranslation.findOne = originalFind;
+    StoredTranslation.findOneAndUpdate = originalUpdate;
+  });
 });
