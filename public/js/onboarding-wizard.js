@@ -27,12 +27,22 @@
     };
   }
 
-  function slugFromName(name) {
+  function webAddressFromName(name) {
+    if (window.communityWebAddress && window.communityWebAddress.webAddressFromCommunityName) {
+      return window.communityWebAddress.webAddressFromCommunityName(name);
+    }
     return String(name || '')
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
       .slice(0, 64);
+  }
+
+  function normalizeWebAddressInput(raw) {
+    if (window.communityWebAddress && window.communityWebAddress.normalizeWebAddressInput) {
+      return window.communityWebAddress.normalizeWebAddressInput(raw);
+    }
+    return webAddressFromName(raw);
   }
 
   function OnboardingLocationPicker(form, token) {
@@ -190,14 +200,18 @@
 
     var nameInput = document.getElementById('onboardingName');
     var slugInput = document.getElementById('onboardingSlug');
+    var webAddressTouched = false;
     if (nameInput && slugInput) {
-      nameInput.addEventListener('blur', function () {
-        if (!slugInput.value.trim()) {
-          slugInput.value = slugFromName(nameInput.value);
+      slugInput.addEventListener('input', function () {
+        webAddressTouched = true;
+      });
+      nameInput.addEventListener('input', function () {
+        if (!webAddressTouched || !slugInput.value.trim()) {
+          slugInput.value = webAddressFromName(nameInput.value);
         }
       });
       slugInput.addEventListener('blur', function () {
-        slugInput.value = slugFromName(slugInput.value);
+        slugInput.value = normalizeWebAddressInput(slugInput.value);
       });
     }
 
@@ -352,7 +366,7 @@
     var labels = (this.config && this.config.reviewLabels) || {};
     var rows = [
       ['name', 'name'],
-      ['slug', 'slug'],
+      ['webAddress', 'slug'],
       ['titleHe', 'titleHe'],
       ['city', 'city'],
       ['contactName', 'contactName'],
@@ -392,12 +406,79 @@
     if (bg === 'black') preview.classList.add('logo-bg-black');
   };
 
+  function showFormError(message) {
+    var el = document.getElementById('onboardingFormError');
+    if (!el) return;
+    if (!message) {
+      el.hidden = true;
+      el.textContent = '';
+      return;
+    }
+    el.textContent = message;
+    el.hidden = false;
+    el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  function bindAjaxSubmit(form, config, wizard) {
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      showFormError('');
+
+      var submitBtn = document.getElementById('onboardingSubmitBtn');
+      var defaultLabel = (config && config.submitLabel) || (submitBtn ? submitBtn.textContent : '');
+      var submittingLabel = (config && config.submittingLabel) || defaultLabel;
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = submittingLabel;
+      }
+
+      var formData = new FormData(form);
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        credentials: 'same-origin',
+        headers: {
+          Accept: 'application/json',
+          'X-Onboarding-Submit': '1',
+        },
+      })
+        .then(function (res) {
+          return res.json().then(function (body) {
+            return { status: res.status, body: body };
+          });
+        })
+        .then(function (result) {
+          if (result.body && result.body.ok && result.body.redirect) {
+            window.location.href = result.body.redirect;
+            return;
+          }
+          var message = (result.body && result.body.message)
+            || (config && config.errorFallbackLabel)
+            || '';
+          showFormError(message);
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = defaultLabel;
+          }
+        })
+        .catch(function () {
+          showFormError((config && config.errorFallbackLabel) || '');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = defaultLabel;
+          }
+        });
+    });
+  }
+
   function init() {
     var form = document.getElementById('onboardingForm');
     if (!form) return;
     var config = getConfig();
     var wizard = new Wizard(form, config);
     wizard.init();
+    bindAjaxSubmit(form, config, wizard);
 
     var bgRadios = form.querySelectorAll('input[name="logoBackground"]');
     Array.prototype.forEach.call(bgRadios, function (radio) {

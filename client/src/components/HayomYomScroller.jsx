@@ -1,24 +1,6 @@
 import React from 'react';
 
-function formatLessons5703(lessons5703, labels) {
-  if (!lessons5703) {
-    return '';
-  }
-
-  const lines = [];
-
-  if (lessons5703.chumash?.label) {
-    lines.push(`${labels.chumash}: ${lessons5703.chumash.label}`);
-  }
-  if (lessons5703.tehillim?.label) {
-    lines.push(`${labels.tehillim}: ${lessons5703.tehillim.label}`);
-  }
-  if (lessons5703.tanya?.label) {
-    lines.push(`${labels.tanya}: ${lessons5703.tanya.label}`);
-  }
-
-  return lines.join('\n');
-}
+const getHayomYomDisplayText = (text) => String(text || '').trim();
 
 export class HayomYomScroller extends React.Component {
   constructor(props) {
@@ -50,7 +32,7 @@ export class HayomYomScroller extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.text !== this.props.text || prevProps.lessons5703 !== this.props.lessons5703) {
+    if (prevProps.text !== this.props.text) {
       this.updateScrollBehavior();
     }
   }
@@ -63,14 +45,7 @@ export class HayomYomScroller extends React.Component {
   }
 
   getDisplayText() {
-    const { text, lessons5703, lessonLabels } = this.props;
-    const lessonsText = formatLessons5703(lessons5703, lessonLabels || {});
-
-    if (text && lessonsText) {
-      return `${text}\n\n${lessonsText}`;
-    }
-
-    return text || lessonsText || '';
+    return getHayomYomDisplayText(this.props.text);
   }
 
   measureContentHeight(track) {

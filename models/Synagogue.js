@@ -241,6 +241,7 @@ const SynagogueSchema = new mongoose.Schema({
   },
   weeklyChapterEnabled: { type: Boolean, default: false },
   shabbatTimesEnabled: { type: Boolean, default: false },
+  boardHideSearchAndPager: { type: Boolean, default: false },
   boardFeatures: {
     sidebarNames: { type: Boolean, default: true },
     dailyChumash: { type: Boolean, default: true },
@@ -368,6 +369,7 @@ const SynagogueSchema = new mongoose.Schema({
   publishedVersion: { type: Number, default: 1 },
   publishedAt: { type: Date, default: null },
   lastRefreshedCodeVersion: { type: String, default: null },
+  weeklyKaddishReminderEnabled: { type: Boolean, default: false },
   weeklyKaddishWhatsapp: { type: String, default: '' },
   weeklyKaddishConfirmation: {
     weekKey: { type: String, default: '' },

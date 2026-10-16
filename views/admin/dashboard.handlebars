@@ -460,6 +460,19 @@
                             </div>
                         </div>
                         {{/if}}
+                        {{#if (eq this.special 'boardFooter')}}
+                        <div class="admin-theme-setting">
+                            <div class="admin-theme-setting-label">{{t 'board_hide_search_pager'}}</div>
+                            <div class="admin-theme-setting-control">
+                                <label class="toggle-switch" for="boardHideSearchAndPager">
+                                    <input type="hidden" name="boardHideSearchAndPager" value="0">
+                                    <input type="checkbox" id="boardHideSearchAndPager" name="boardHideSearchAndPager" value="1" {{#if ../synagogue.boardHideSearchAndPager}}checked{{/if}}>
+                                    <span class="toggle-slider" aria-hidden="true"></span>
+                                </label>
+                            </div>
+                            <p class="field-hint admin-theme-setting-hint">{{t 'board_hide_search_pager_help'}}</p>
+                        </div>
+                        {{/if}}
                         {{#if (eq this.special 'publicSubmission')}}
                         <div class="admin-theme-setting">
                             <div class="admin-theme-setting-label">{{t 'public_submission_enabled'}}</div>

@@ -85,10 +85,6 @@ describe('invariant: saved-view design roundtrip', () => {
   });
 });
 
-describe('invariant: yahrzeit after sunset', () => {
-  it.todo('Death after sunset should shift Hebrew date — not implemented in computeHebrewDateOfDeath yet');
-});
-
 describe('invariant violations ledger', () => {
   it('records open gaps for tracking', () => {
     if (VIOLATIONS.length) {

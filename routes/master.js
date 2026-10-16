@@ -6,6 +6,12 @@ const router = express.Router();
 const Synagogue = require('../models/Synagogue');
 const { hashPassword } = require('../lib/password');
 const { normalizeSlug, isValidSlug } = require('../lib/normalize-slug');
+const {
+    normalizeWebAddressInput,
+    isValidWebAddress,
+    webAddressFromCommunityName,
+} = require('../lib/community-web-address');
+const { resolveBoardTitles, primaryBoardTitle } = require('../lib/default-board-titles');
 const { resolveTimezone } = require('../lib/normalize-timezone');
 const { getAdminLocaleContext, normalizeAdminLang } = require('../lib/admin-locale');
 const { getMasterTranslator } = require('../lib/master-translations');
@@ -344,14 +350,15 @@ router.post('/add', requireMaster, (req, res) => {
 
         try {
             const name = String(req.body.name || '').trim();
-            const slug = normalizeSlug(req.body.slug);
+            const slug = normalizeWebAddressInput(req.body.slug)
+                || webAddressFromCommunityName(name);
             const adminPassword = String(req.body.adminPassword || '');
 
             if (!name || !slug || !adminPassword) {
                 return res.redirect('/master/new?error=missing_fields');
             }
 
-            if (!isValidSlug(slug)) {
+            if (!isValidWebAddress(slug) || !isValidSlug(slug)) {
                 return res.redirect('/master/new?error=invalid_slug');
             }
 
@@ -374,11 +381,13 @@ router.post('/add', requireMaster, (req, res) => {
                 );
             }
 
+            const boardTitles = wizardPayload.titles || resolveBoardTitles({});
+
             const newSynagogue = new Synagogue({
                 name,
                 slug,
                 adminPassword: await hashPassword(adminPassword),
-                title: name,
+                title: primaryBoardTitle(boardTitles),
                 location,
                 language: languages.language,
                 adminLanguage: languages.adminLanguage,
@@ -388,9 +397,7 @@ router.post('/add', requireMaster, (req, res) => {
                 provisioning: wizardPayload.provisioning,
             });
 
-            if (wizardPayload.titles) {
-                newSynagogue.titles = wizardPayload.titles;
-            }
+            newSynagogue.titles = boardTitles;
 
             if (wizardPayload.boardFeatures) {
                 newSynagogue.boardFeatures = wizardPayload.boardFeatures;
@@ -438,6 +445,9 @@ router.post('/edit', requireMaster, async (req, res) => {
             return res.redirect('/master/communities?error=slug_exists');
         }
 
+        const weeklyKaddishReminderEnabled = req.body.weeklyKaddishReminderEnabled === '1'
+            || req.body.weeklyKaddishReminderEnabled === 'on';
+
         const update = {
             name,
             slug,
@@ -445,6 +455,7 @@ router.post('/edit', requireMaster, async (req, res) => {
             location,
             language: languages.language,
             adminLanguage: languages.adminLanguage,
+            weeklyKaddishReminderEnabled,
         };
 
         if (adminPassword) {

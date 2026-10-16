@@ -128,6 +128,7 @@ const { normalizeBoardFeatures } = require('../lib/board-features');
 const { BOARD_FONTS, normalizeBoardFont, buildAllBoardFontsGoogleHref } = require('../lib/board-fonts');
 const { normalizeThemeBorders } = require('../lib/theme-borders');
 const { scanPathForSlug, safeScanReturnPath } = require('../lib/grave-scan');
+const { safeAdminNextPath, safeAdminLogoutNext, adminNextSlug } = require('../lib/admin-session-slug');
 
 const BOARD_FEATURE_TOGGLE_META = [
   { key: 'dailyChumash', labelKey: 'feature_daily_chumash' },
@@ -170,6 +171,12 @@ const BOARD_FEATURE_GROUPS = [
     helpKey: 'board_features_public_submission_group_help',
     keys: [],
     special: 'publicSubmission',
+  },
+  {
+    groupKey: 'board_features_center_group',
+    helpKey: 'board_features_center_group_help',
+    keys: [],
+    special: 'boardFooter',
   },
 ];
 
@@ -239,6 +246,7 @@ function buildBoardFeatureGroups(boardFeatures, theme, synagogue) {
     synagogueSlug: synagogue?.slug || '',
     shabbatTimesEnabled: synagogue?.shabbatTimesEnabled === true,
     publicSubmissionEnabled: synagogue?.publicSubmission?.enabled === true,
+    boardHideSearchAndPager: synagogue?.boardHideSearchAndPager === true,
   })).filter((group) => group.toggles.length > 0 || !!group.special);
 }
 
@@ -488,7 +496,7 @@ router.get('/login', (req, res) => {
     const slugPrefill = String(req.query.slug || '').trim();
     res.render('admin/login', {
         layout: false,
-        next: safeScanReturnPath(req.query.next),
+        next: safeAdminNextPath(req.query.next) || safeScanReturnPath(req.query.next),
         slugPrefill,
     });
 });
@@ -497,6 +505,10 @@ function redirectAfterAdminLogin(res, slug, permissions, nextUrl) {
     const scanPath = scanPathForSlug(nextUrl, slug);
     if (scanPath && permissionAllows(permissions, 'people')) {
         return res.redirect(scanPath);
+    }
+    const adminNext = safeAdminNextPath(nextUrl);
+    if (adminNext && adminNextSlug(adminNext) === slug) {
+        return res.redirect(adminNext.split('?')[0]);
     }
     if (!permissions) {
         return res.redirect(`/admin/${slug}/dashboard`);
@@ -550,9 +562,9 @@ router.post('/login', loginRateLimiter, async (req, res) => {
 
 router.get('/logout', (req, res) => {
     const nextRaw = String(req.query.next || '').trim();
-    const nextUrl = nextRaw.startsWith('/admin/login')
-        ? nextRaw
-        : (safeScanReturnPath(req.query.next) || '/admin/login');
+    const nextUrl = safeAdminLogoutNext(nextRaw)
+        || safeScanReturnPath(req.query.next)
+        || '/admin/login';
     req.session.destroy(() => {
         res.redirect(nextUrl);
     });
@@ -788,6 +800,9 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         if (permissions.settingsFeatures) {
             if ('shabbatTimesEnabled' in req.body) {
                 updateData.shabbatTimesEnabled = parseFormCheckbox(req.body, 'shabbatTimesEnabled') === true;
+            }
+            if ('boardHideSearchAndPager' in req.body) {
+                updateData.boardHideSearchAndPager = parseFormCheckbox(req.body, 'boardHideSearchAndPager') === true;
             }
             Object.assign(updateData, Object.fromEntries(
                 Object.entries(boardFeatures).map(([key, value]) => [`boardFeatures.${key}`, value]),
@@ -1270,10 +1285,12 @@ router.post('/:slug/yahrzeit/settings', requireAdmin, requirePermission('people'
     try {
         const includeHebrew = req.body.yahrzeitRemindersIncludeHebrew === '1'
             || req.body.yahrzeitRemindersIncludeHebrew === 'on';
+        const synagogue = await loadAdminSynagogue(req.params.slug, 'settings');
+        const weeklyEnabled = synagogue && synagogue.weeklyKaddishReminderEnabled === true;
         await Synagogue.updateOne({ slug: req.params.slug }, {
             $set: {
                 'yahrzeitReminders.includeHebrewYahrzeit': includeHebrew,
-                ...('weeklyKaddishWhatsapp' in req.body
+                ...(weeklyEnabled && 'weeklyKaddishWhatsapp' in req.body
                     ? { weeklyKaddishWhatsapp: String(req.body.weeklyKaddishWhatsapp || '').trim().slice(0, 30) }
                     : {}),
             },
@@ -1309,7 +1326,8 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
         const upcomingHolidayNotice = await getUpcomingHolidayNotice(enriched);
         timing.mark('holiday');
         const timezone = resolveSynagogueTimezone(enriched);
-        const weeklyKaddish = weeklyKaddishBase;
+        const weeklyKaddishReminderEnabled = enriched.weeklyKaddishReminderEnabled === true;
+        const weeklyKaddish = weeklyKaddishReminderEnabled ? weeklyKaddishBase : { ...weeklyKaddishBase, entries: [] };
         if (weeklyKaddish.entries.length) {
             const message = buildWeeklyKaddishMessage(weeklyKaddish.entries);
             const confirmation = synagogue.weeklyKaddishConfirmation || {};
@@ -1324,7 +1342,8 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
 
         renderAdmin(res, 'admin/yahrzeit', {
             weeklyKaddish: weeklyKaddish.entries.length ? weeklyKaddish : null,
-            weeklyKaddishWhatsapp: synagogue.weeklyKaddishWhatsapp || '',
+            weeklyKaddishReminderEnabled,
+            weeklyKaddishWhatsapp: weeklyKaddishReminderEnabled ? (synagogue.weeklyKaddishWhatsapp || '') : '',
             synagogue: enriched,
             adminUser: req.adminUser,
             adminPermissions: req.adminPermissions,
@@ -1348,6 +1367,9 @@ router.post('/:slug/yahrzeit/weekly-confirm', requireAdmin, requirePermission('p
     try {
         const synagogue = await loadAdminSynagogue(req.params.slug, 'settings');
         if (!synagogue) return res.status(404).send('Not found');
+        if (synagogue.weeklyKaddishReminderEnabled !== true) {
+            return res.redirect(`/admin/${req.params.slug}/yahrzeit`);
+        }
         const { weekKey } = getWeeklyKaddishEntries(synagogue, new Date());
         const confirmedBy = (req.adminUser && (req.adminUser.displayName || req.adminUser.username))
             || req.session.adminUsername || 'admin';

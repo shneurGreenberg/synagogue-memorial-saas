@@ -229,6 +229,14 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="master-field master-field-wide">
+                                    <label class="master-checkbox-label">
+                                        <input type="hidden" name="weeklyKaddishReminderEnabled" value="0">
+                                        <input type="checkbox" name="weeklyKaddishReminderEnabled" value="1" {{#if this.weeklyKaddishReminderEnabled}}checked{{/if}}>
+                                        {{t 'weekly_kaddish_reminder_enabled'}}
+                                    </label>
+                                    <p class="master-field-hint">{{t 'weekly_kaddish_reminder_enabled_help'}}</p>
+                                </div>
                             </div>
 
                             <div class="master-location-block">

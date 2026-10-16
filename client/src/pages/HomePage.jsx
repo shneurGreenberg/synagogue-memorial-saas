@@ -447,6 +447,7 @@ class HomePageBase extends React.Component {
               </button>
             </header>
             {this.renderCurrentGrid()}
+            {!appData.boardHideSearchAndPager && (
             <div className={`board-footer${this.state.totalPages <= 1 ? ' board-footer-search-only' : ''}`}>
               <div className="search">
                 <button
@@ -483,6 +484,7 @@ class HomePageBase extends React.Component {
                 </button>
               </div>
             </div>
+            )}
           </div>
         </section>
         <aside className="right side-panel">

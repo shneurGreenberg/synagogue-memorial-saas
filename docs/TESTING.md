@@ -39,14 +39,9 @@ Workflow `.github/workflows/test.yml` — `npm ci`, `npm test`, `npm run build:b
 | uploads-shared-dirs | אחסון | תמונות בנתיבי photos/images |
 | saved-view-design-roundtrip | עיצוב | ייצוא/ייבוא עיצוב בלבד |
 | hebrew-gregorian | לוח שנה | המרה עברית־לועזית |
-| yahrzeit-after-sunset | לוח שנה | **פתוח** — `test.todo` (לא מיושם בקוד) |
 | leap-adar | לוח שנה | שנים מעוברות ואדר ב׳ |
 | i18n-keys | i18n | מפתחות he/ru/en |
 | no-mojibake | קידוד | `test/no-mojibake.test.js` |
-
-### Known gaps
-
-- **yahrzeit-after-sunset**: אין עדיין התחשבות בשקיעה ב־`computeHebrewDateOfDeath` — מסומן `it.todo` ב־`test/invariants.test.js`.
 
 ---
 
