@@ -7,10 +7,12 @@
         {{/if}}
     </header>
 
+    <div class="onboarding-alert" id="onboardingFormError" role="alert" hidden></div>
+
     {{#if error}}
     <div class="onboarding-alert" role="alert">
         {{#if (eq error 'missing')}}{{onboardingT 'error_missing'}}
-        {{else}}{{#if (eq error 'slug')}}{{onboardingT 'error_slug'}}
+        {{else}}{{#if (eq error 'slug')}}{{onboardingT 'error_web_address'}}
         {{else}}{{#if (eq error 'upload')}}{{onboardingT 'error_upload'}}
         {{else}}{{#if (eq error 'invalid_svg')}}{{onboardingT 'error_invalid_svg'}}
         {{else}}{{error}}{{/if}}{{/if}}{{/if}}{{/if}}
@@ -35,9 +37,9 @@
                 <input type="text" name="name" id="onboardingName" required maxlength="120">
             </label>
             <label class="onboarding-field">
-                <span>{{onboardingT 'slug_label'}}</span>
-                <input type="text" name="slug" id="onboardingSlug" required maxlength="64" pattern="[a-z0-9-]+" autocomplete="off">
-                <span class="onboarding-hint">{{onboardingT 'slug_help'}}</span>
+                <span>{{onboardingT 'web_address_label'}}</span>
+                <input type="text" name="slug" id="onboardingSlug" required maxlength="64" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" autocomplete="off" autocapitalize="off" spellcheck="false">
+                <span class="onboarding-hint">{{onboardingT 'web_address_help'}}</span>
             </label>
             <label class="onboarding-field">
                 <span>{{onboardingT 'title_he_label'}}</span>
