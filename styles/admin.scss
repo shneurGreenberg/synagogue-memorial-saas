@@ -117,7 +117,8 @@ body.admin-login-page {
 .admin-navbar-beh {
   position: absolute;
   top: 0.35rem;
-  inset-inline-end: clamp(12px, 2vw, 20px);
+  inset-inline-start: clamp(12px, 2vw, 20px);
+  inset-inline-end: auto;
   z-index: 2;
   font-size: clamp(11px, 1vw, 13px);
   line-height: 1.2;

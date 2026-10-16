@@ -16,6 +16,7 @@
 
 
 
+{{#if weeklyKaddishReminderEnabled}}
 {{#if weeklyKaddish}}
 <section id="weekly-kaddish" class="admin-panel weekly-kaddish-panel">
     <details class="weekly-kaddish-details">
@@ -53,6 +54,7 @@
     </details>
 </section>
 {{/if}}
+{{/if}}
 
     <form method="POST" action="/admin/{{synagogue.slug}}/yahrzeit/settings" class="yahrzeit-settings-form board-features-grid">
         <div class="admin-theme-setting">
@@ -65,6 +67,7 @@
             </div>
             <p class="field-hint admin-theme-setting-hint">{{t 'yahrzeit_include_hebrew_help'}}</p>
         </div>
+        {{#if weeklyKaddishReminderEnabled}}
         <div class="admin-theme-setting">
             <label class="admin-theme-setting-label" for="weeklyKaddishWhatsapp">{{t 'weekly_kaddish_whatsapp_setting'}}</label>
             <div class="admin-theme-setting-control">
@@ -72,6 +75,7 @@
             </div>
             <p class="field-hint admin-theme-setting-hint">{{t 'weekly_kaddish_whatsapp_setting_help'}}</p>
         </div>
+        {{/if}}
         <div class="form-actions-inline">
             <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon">{{{adminIcon 'save'}}}{{t 'save'}}</button>
         </div>

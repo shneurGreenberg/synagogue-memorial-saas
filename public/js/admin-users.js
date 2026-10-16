@@ -34,6 +34,10 @@
       if (!payload || !payload.ok) {
         return;
       }
+      if (payload.adminLanguage) {
+        window.location.reload();
+        return;
+      }
       if (payload.colorMode === 'light' || payload.colorMode === 'dark') {
         var isLight = payload.colorMode === 'light';
         document.body.classList.toggle('admin-theme-light', isLight);
@@ -86,7 +90,9 @@
     }
 
     languageSelect.addEventListener('change', function () {
-      window.AdminLocale.apply(languageSelect.value);
+      if (window.AdminLocale) {
+        window.AdminLocale.apply(languageSelect.value);
+      }
       saveMyAdminPreferences();
     });
   }

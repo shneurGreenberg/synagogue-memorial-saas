@@ -22,7 +22,7 @@
     apply: applyAdminLocale,
   };
 
-  var select = document.getElementById('adminLanguage');
+  var select = document.getElementById('adminLanguage') || document.getElementById('sessionAdminLanguage');
   if (select) {
     applyAdminLocale(select.value);
     select.addEventListener('change', function () {

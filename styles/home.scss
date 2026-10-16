@@ -2141,6 +2141,14 @@
 }
 
 
+// Hebrew board UI: ב״ה on the physical top-right (layout stays LTR)
+body.board-lang-he {
+  .baruch-hashem-badge {
+    inset-inline-start: auto;
+    inset-inline-end: clamp(12px, 2vw, 24px);
+  }
+}
+
 // Hebrew UI strings only — keep TV layout (left / middle / right) unchanged
 body.board-lang-he {
   .board-header h1,

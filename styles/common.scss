@@ -243,7 +243,8 @@ body {
 .baruch-hashem-badge {
   position: fixed;
   top: clamp(8px, 1.5vh, 14px);
-  right: clamp(12px, 2vw, 24px);
+  inset-inline-start: clamp(12px, 2vw, 24px);
+  inset-inline-end: auto;
   z-index: 950;
   font-size: clamp(11px, 1vw, 14px);
   line-height: 1.2;

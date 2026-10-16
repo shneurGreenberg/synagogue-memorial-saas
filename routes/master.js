@@ -438,6 +438,9 @@ router.post('/edit', requireMaster, async (req, res) => {
             return res.redirect('/master/communities?error=slug_exists');
         }
 
+        const weeklyKaddishReminderEnabled = req.body.weeklyKaddishReminderEnabled === '1'
+            || req.body.weeklyKaddishReminderEnabled === 'on';
+
         const update = {
             name,
             slug,
@@ -445,6 +448,7 @@ router.post('/edit', requireMaster, async (req, res) => {
             location,
             language: languages.language,
             adminLanguage: languages.adminLanguage,
+            weeklyKaddishReminderEnabled,
         };
 
         if (adminPassword) {
