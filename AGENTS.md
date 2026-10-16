@@ -37,7 +37,8 @@ Run `node scripts/seed.js` to seed the Novosibirsk synagogue (skips if already e
 - **Install deps:** `npm install`
 - **Build board SPA:** `npm run build:board`
 - **Prebuild CSS:** `npm run build:css`
-- **Tests:** `npm test` (unit + HTTP smoke; needs MongoDB and seeded `novosibirsk`)
+- **Tests:** `npm test` (unit + optional HTTP smoke; integration tests skip if MongoDB is unreachable)
+- **Before merge:** `npm run release:check` (tests + `build:board` + `build:css`) must pass; see `docs/TESTING.md`
 
 ### Gotchas
 

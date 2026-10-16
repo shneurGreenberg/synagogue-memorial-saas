@@ -1,4 +1,6 @@
-const { describe, it, before, after } = require('node:test');
+const { describe, it: baseIt, before, after } = require('node:test');
+const { wrapItWithMongoSkip } = require('./helpers/mongodb');
+const it = wrapItWithMongoSkip(baseIt);
 const assert = require('node:assert/strict');
 const { spawn } = require('node:child_process');
 const path = require('node:path');
@@ -76,7 +78,11 @@ function request(method, urlPath, { headers = {}, body = null, redirect = 'manua
   });
 }
 
-before(async () => {
+before(async (t) => {
+  const { isMongoAvailable, SKIP_REASON } = require('./helpers/mongodb');
+  if (!(await isMongoAvailable())) {
+    return t.skip(SKIP_REASON);
+  }
   serverProcess = spawn(process.execPath, ['app.js'], {
     cwd: ROOT,
     env: {
