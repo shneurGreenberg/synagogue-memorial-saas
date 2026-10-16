@@ -6300,10 +6300,11 @@
   },
   "weeklyChapterEnabled": false,
   "shabbatTimesEnabled": true,
+  "boardHideSearchAndPager": false,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1792125862932,
-  "exportedAt": "2026-10-16T04:44:22.932Z",
+  "contentVersion": 1792129554346,
+  "exportedAt": "2026-10-16T05:45:54.346Z",
   "jewishContent": {
     "date": "2026-10-16",
     "timezone": "Asia/Tomsk",
@@ -6314,16 +6315,16 @@
         "label": "Ноах, 6-я часть"
       },
       "tehillim": {
-        "label": "Тегилим 29-34"
+        "label": "Псалтирь 29-34"
       },
       "tanya": {
         "label": "5 Хешван"
       },
       "rambam": {
-        "label": "Woman Suspected of Infidelity 1"
+        "label": "Женщина, подозреваемая в неверности 1"
       },
       "rambam3": {
-        "label": "One Who Injures a Person or Property 1-3"
+        "label": "Тот, кто причиняет вред человеку или имуществу 1-3"
       },
       "hayomYom": {
         "available": true,
@@ -6395,6 +6396,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-16T04:44:22.932Z"
+    "updatedAt": "2026-10-16T05:45:54.346Z"
   }
 }
