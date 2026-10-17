@@ -37,15 +37,17 @@ export function isLegacyBoardBrowser() {
 
 /** Old / TV displays: static candle only (no CSS flame animation). */
 export function shouldUseStaticCandleOnly() {
-  return isLegacyBoardBrowser();
+  return isLegacyBoardBrowser() || isLowPowerBoardBrowser();
+}
+
+/** TV / weak Chromium: avoid backdrop-filter stacks and fixed-bg compositor bugs. */
+export function shouldReduceBoardCompositorLoad() {
+  return isLowPowerBoardBrowser();
 }
 
 export function resolveBoardCandleMode() {
-  if (isLegacyBoardBrowser()) {
+  if (shouldUseStaticCandleOnly()) {
     return 'static';
-  }
-  if (isLowPowerBoardBrowser()) {
-    return 'lite';
   }
   return 'full';
 }

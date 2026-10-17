@@ -11,6 +11,7 @@ import {
 } from '../lib/board-backgrounds';
 import { normalizeBoardFont, resolveBoardFontFamily } from '../lib/board-fonts';
 import { resolvePanelBorderCss, resolveTileBorderCss } from '../lib/theme-borders';
+import { shouldReduceBoardCompositorLoad } from '../lib/legacy-browser';
 
 function tileGlassNoise(transparency) {
   if (transparency <= 0.01) {
@@ -61,7 +62,9 @@ export function ThemeStyles() {
   const scale = (key) => effectiveFontScaleCss(fontScales, fontScaleBaselines, key);
   const tileVars = buildTileThemeVars(theme.tileColor, primary, resolveTileOpacity(theme.tileOpacity));
   const tileTransparency = tileVars.tileTransparency;
-  const useBackdropBlur = tileTransparency > 0.01;
+  const reduceCompositorLoad = shouldReduceBoardCompositorLoad();
+  const useBackdropBlur = tileTransparency > 0.01 && !reduceCompositorLoad;
+  const bodyBackgroundAttachment = reduceCompositorLoad ? 'scroll' : 'fixed';
   const candlePalette = normalizeCandlePalette(theme.candlePalette);
   const candlePaletteCss = buildCandlePaletteCssVars(resolveCandlePalette(candlePalette));
   const backgroundImage = resolveBoardBackgroundImage(theme);
@@ -301,7 +304,7 @@ export function ThemeStyles() {
       background-image: url('${assetUrl(`images/${backgroundImage}`)}') !important;
       background-size: cover;
       background-position: center;
-      background-attachment: fixed;
+      background-attachment: ${bodyBackgroundAttachment};
     }
     .main-container .left .wooden-panel,
     .main-container .middle .wooden-panel,
