@@ -127,7 +127,11 @@ export function PresentationImageOverlay() {
     }
 
     const showSlides = () => {
-      if (cancelled || document.hidden) {
+      if (cancelled) {
+        return;
+      }
+      if (document.hidden) {
+        setVisible(false);
         schedule(showSlides, 1000);
         return;
       }
