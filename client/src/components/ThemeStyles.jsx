@@ -217,6 +217,9 @@ export function ThemeStyles() {
     .main-container .daily-gate-tile {
       font-size: calc(clamp(11px, 0.95vw, 14px) * var(--font-scale-daily-study)) !important;
     }
+    .main-container .daily-gate-heading {
+      display: flex !important;
+    }
     .main-container .daily-gate-label {
       font-size: calc(clamp(10px, 0.85vw, 12px) * var(--font-scale-daily-study)) !important;
     }
