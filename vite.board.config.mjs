@@ -25,6 +25,7 @@ export default defineConfig({
         /lib\/death-date\.js/,
         /lib\/memorial-qr-panel\.js/,
         /lib\/board-yahrzeit-layout\.js/,
+        /lib\/daily-gates-layout\.js/,
       ],
     },
     rollupOptions: {

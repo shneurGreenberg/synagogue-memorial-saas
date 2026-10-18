@@ -68,6 +68,18 @@ export function mergePreviewPatch(data, patch) {
   if (patch.tileBorderOpacity !== undefined && patch.tileBorderOpacity !== '') {
     next.theme.tileBorderOpacity = Number(patch.tileBorderOpacity);
   }
+  if (patch.panelBorderRadius !== undefined && patch.panelBorderRadius !== '') {
+    next.theme.panelBorderRadius = Number(patch.panelBorderRadius);
+  }
+  if (patch.panelBorderWidth !== undefined && patch.panelBorderWidth !== '') {
+    next.theme.panelBorderWidth = Number(patch.panelBorderWidth);
+  }
+  if (patch.tileBorderRadius !== undefined && patch.tileBorderRadius !== '') {
+    next.theme.tileBorderRadius = Number(patch.tileBorderRadius);
+  }
+  if (patch.tileBorderWidth !== undefined && patch.tileBorderWidth !== '') {
+    next.theme.tileBorderWidth = Number(patch.tileBorderWidth);
+  }
   if (patch.candlePalette) {
     next.theme.candlePalette = normalizeCandlePalette(patch.candlePalette);
   }
@@ -121,6 +133,10 @@ export function previewPatchFromSearchParams(params) {
     || params.has('panelBorderOpacity')
     || params.has('tileBorderColor')
     || params.has('tileBorderOpacity')
+    || params.has('panelBorderRadius')
+    || params.has('panelBorderWidth')
+    || params.has('tileBorderRadius')
+    || params.has('tileBorderWidth')
     || params.has('candlePalette')
     || params.has('boardFont')
     || params.has('logoBorderRadius')
@@ -149,6 +165,10 @@ export function previewPatchFromSearchParams(params) {
   if (params.has('panelBorderOpacity')) patch.panelBorderOpacity = params.get('panelBorderOpacity');
   if (params.has('tileBorderColor')) patch.tileBorderColor = params.get('tileBorderColor');
   if (params.has('tileBorderOpacity')) patch.tileBorderOpacity = params.get('tileBorderOpacity');
+  if (params.has('panelBorderRadius')) patch.panelBorderRadius = params.get('panelBorderRadius');
+  if (params.has('panelBorderWidth')) patch.panelBorderWidth = params.get('panelBorderWidth');
+  if (params.has('tileBorderRadius')) patch.tileBorderRadius = params.get('tileBorderRadius');
+  if (params.has('tileBorderWidth')) patch.tileBorderWidth = params.get('tileBorderWidth');
   if (params.has('candlePalette')) patch.candlePalette = params.get('candlePalette');
   if (params.has('boardFont')) patch.boardFont = params.get('boardFont');
   if (params.has('logoBorderRadius')) patch.logoBorderRadius = params.get('logoBorderRadius');

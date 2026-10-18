@@ -3023,10 +3023,26 @@ body.admin-is-busy {
 
 // Login page
 body.admin-login-page {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
+
+  .baruch-hashem-badge {
+    position: fixed;
+    top: clamp(8px, 1.5vh, 14px);
+    inset-inline-start: clamp(12px, 2vw, 24px);
+    inset-inline-end: auto;
+    z-index: 950;
+    font-size: clamp(11px, 1vw, 14px);
+    line-height: 1.2;
+    color: rgba(207, 175, 31, 0.72);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+    letter-spacing: 0.04em;
+    pointer-events: none;
+    user-select: none;
+  }
 
   .admin-login-card {
     width: 100%;
@@ -3104,8 +3120,21 @@ body.admin-login-page {
 
   .btn-admin-block {
     width: 100%;
+    min-height: 3rem;
+    padding: 0.75rem 1rem;
+    box-sizing: border-box;
     justify-content: center;
     text-align: center;
+  }
+
+  &.admin-wrong-community-page {
+    .admin-wrong-community-card {
+      margin-inline: auto;
+    }
+
+    .admin-wrong-community-actions .btn-admin-block + .btn-admin-block {
+      margin-top: 0;
+    }
   }
 
   .admin-wrong-community-back {
@@ -3116,6 +3145,12 @@ body.admin-login-page {
     color: var(--admin-text-muted);
     text-decoration: underline;
   }
+}
+
+html[dir='rtl'] body.admin-login-page {
+  direction: rtl;
+  text-align: right;
+  font-family: 'Heebo', 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 // --- RTL admin (Hebrew) ---

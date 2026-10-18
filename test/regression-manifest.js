@@ -14,7 +14,7 @@ const REGRESSION_AREAS = [
   { topic: 'MyMemory warning filter', tests: ['test/mymemory-translate.test.js'] },
   { topic: 'ב״ה gershayim in templates', tests: ['test/templates-beh.test.js'] },
   { topic: 'preset saved views idempotent', tests: ['test/saved-view-presets.test.js'] },
-  { topic: 'wrong community page', tests: ['test/admin-wrong-community.test.js', 'test/admin-tenant-isolation.test.js'] },
+  { topic: 'wrong community page', tests: ['test/admin-wrong-community.test.js', 'test/admin-wrong-community-layout.test.js', 'test/admin-tenant-isolation.test.js'] },
   { topic: 'QR toggles unchecked -> false', tests: ['test/saved-view-portable.test.js'] },
   { topic: 'CSS ?v= cache bust', tests: ['test/layout-cache-bust.test.js'] },
   { topic: 'CHANGELOG validity', tests: ['test/changelog.test.js'] },
