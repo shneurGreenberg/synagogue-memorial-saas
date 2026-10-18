@@ -1,3 +1,5 @@
+> **Current production:** https://synagogue-kadish-waw-shneur.waw0.amvera.tech (Amvera Warsaw). `<project>.amvera.io` URLs below are generic templates; the old msk0 domain is dead since 2026-10-11.
+
 # Развёртывание для пользователей из России
 
 **Бесплатный хостинг + опция с бэкендом:** см. **[FREE-RU-PROVIDER.md](./FREE-RU-PROVIDER.md)** (GitHub Pages — только лист; Amvera + Atlas M0 — полный сервер).
