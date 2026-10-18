@@ -59,8 +59,12 @@
     "boardFont": "tinos",
     "panelBorderColor": "#604f2f",
     "panelBorderOpacity": 100,
+    "panelBorderRadius": 0,
+    "panelBorderWidth": 7,
     "tileBorderColor": "#60500e",
-    "tileBorderOpacity": 100
+    "tileBorderOpacity": 100,
+    "tileBorderRadius": 12,
+    "tileBorderWidth": 1
   },
   "people": [
     {
@@ -6303,8 +6307,8 @@
   "boardHideSearchAndPager": false,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1792307999170,
-  "exportedAt": "2026-10-18T07:19:59.170Z",
+  "contentVersion": 1792312977098,
+  "exportedAt": "2026-10-18T08:42:57.098Z",
   "jewishContent": {
     "date": "2026-10-18",
     "timezone": "Asia/Tomsk",
@@ -6396,6 +6400,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-18T07:19:59.170Z"
+    "updatedAt": "2026-10-18T08:42:57.097Z"
   }
 }

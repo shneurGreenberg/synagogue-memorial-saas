@@ -60,7 +60,11 @@
     "panelBorderColor": "#604f2f",
     "panelBorderOpacity": 100,
     "tileBorderColor": "#60500e",
-    "tileBorderOpacity": 100
+    "tileBorderOpacity": 100,
+    "panelBorderRadius": 0,
+    "panelBorderWidth": 7,
+    "tileBorderRadius": 12,
+    "tileBorderWidth": 1
   },
   "people": [
     {
@@ -3291,8 +3295,8 @@
       }
     ]
   },
-  "contentVersion": 1792307724760,
-  "exportedAt": "2026-10-18T07:15:24.760Z",
+  "contentVersion": 1792312969033,
+  "exportedAt": "2026-10-18T08:42:49.033Z",
   "jewishContent": {
     "date": "2026-10-18",
     "timezone": "Asia/Novosibirsk",
@@ -3385,6 +3389,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-18T07:15:24.760Z"
+    "updatedAt": "2026-10-18T08:42:49.033Z"
   }
 }
