@@ -21,13 +21,13 @@
     "logo": "1791774465289-opt.webp",
     "tileColor": "#8c7418",
     "fontScales": {
-      "tileTitle": 100,
+      "tileTitle": 110,
       "tileDate": 100,
       "clock": 100,
-      "boardHeader": 100,
+      "boardHeader": 90,
       "sidebar": 100,
       "prayers": 100,
-      "dailyStudy": 100,
+      "dailyStudy": 90,
       "hayomYom": 100,
       "prayerOverlay": 100,
       "torahNames": 100,
@@ -55,8 +55,8 @@
     "backgroundImage": "1781871495467.jpg",
     "tilesBackground": "1781877654975.jpg",
     "logoBorderRadius": 0,
-    "logoBackground": "",
     "boardFont": "georgia",
+    "logoBackground": "",
     "panelBorderColor": "#604f2f",
     "panelBorderOpacity": 100,
     "tileBorderColor": "#60500e",
@@ -3263,14 +3263,14 @@
     },
     "titleScale": 100,
     "textScale": 100,
-    "qrScale": 100,
+    "qrScale": 80,
     "titleScaleBaseline": 100,
     "textScaleBaseline": 100,
     "qrScaleBaseline": 205
   },
   "weeklyChapterEnabled": false,
   "shabbatTimesEnabled": true,
-  "boardHideSearchAndPager": false,
+  "boardHideSearchAndPager": true,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/novosibirsk",
   "presentationOverlay": {
@@ -3291,43 +3291,43 @@
       }
     ]
   },
-  "contentVersion": 1792244482174,
-  "exportedAt": "2026-10-17T13:41:22.174Z",
+  "contentVersion": 1792307724760,
+  "exportedAt": "2026-10-18T07:15:24.760Z",
   "jewishContent": {
-    "date": "2026-10-17",
+    "date": "2026-10-18",
     "timezone": "Asia/Novosibirsk",
     "dailyLearning": {
-      "date": "2026-10-17",
+      "date": "2026-10-18",
       "timezone": "Asia/Novosibirsk",
       "chumash": {
-        "label": "Ноах, 7-я часть"
+        "label": "Лех Леха, 1-я часть"
       },
       "tehillim": {
-        "label": "Псалмы 35-38"
+        "label": "Псалтирь 39-43"
       },
       "tanya": {
-        "label": "6 Хешван"
+        "label": "7 Хешван"
       },
       "rambam": {
-        "label": "Женщина, подозреваемая в измене 2"
+        "label": "Женщина, подозреваемая в неверности 3"
       },
       "rambam3": {
-        "label": "Тот, кто причиняет вред человеку или имуществу 4-6"
+        "label": "Тот, кто причиняет вред человеку или имуществу 7-8, убийца и сохранение жизни 1"
       },
       "hayomYom": {
         "available": true,
-        "text": "Когда альтер-ребе пожелал благословить Р. Йекусиэля Липлера богатством, последний сказал, что не хочет этого; он не хотел, чтобы богатство отвлекало его от изучения Хасида и от его участия в Аводе. Когда Ребе пожелал благословить его долголетием, он ответил: «Но не« крестьянские годы »- люди, у которых есть глаза, но они не видят, у которых есть уши, но они не слышат, которые не воспринимают Б-жественность и не слышат Б-жественность. Т.е. жизнь норов.",
+        "text": "Поскольку Тора была дана, правильная последовательность такова: сначала удаление Орлы тела, затем языка, затем сердца - дела, речи, затем мысли. Однако наш отец Авраам, живший до дарования Торы, сначала узнал своего Создателя - мысль; затем он распространил Б-жественность - речь; и, наконец, обрезание - дело. Человеческой Аводы. ( Вернуться к тексту ) Букв. \"крайняя плоть.« Слой тупости, нечувствительности. Сравните Devarim 10:",
         "hebrewMonth": 8,
-        "hebrewDay": 6,
+        "hebrewDay": 7,
         "lessons5703": {
           "chumash": {
-            "label": "Лех Л'ча, Чамиши с Раши."
+            "label": "Лех Л'ча, Шиши с Раши."
           },
           "tehillim": {
-            "label": "35-38"
+            "label": "10:37"
           },
           "tanya": {
-            "label": "Есть еще (с. 553)...было в тайне... (с. 555)."
+            "label": "Но, по правде говоря, (стр. 555)... полностью едины. (стр. 557)."
           }
         }
       }
@@ -3385,6 +3385,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-17T13:41:22.174Z"
+    "updatedAt": "2026-10-18T07:15:24.760Z"
   }
 }
