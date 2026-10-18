@@ -5,28 +5,64 @@ import { useBoardData } from '../context/BoardDataContext';
 import { fetchJewishFeed } from '../lib/jewish-feed-client';
 import { HayomYomScroller } from './HayomYomScroller';
 import {
-  DAILY_GATE_RAMBAM3_SPAN_CLASS,
-  chumashTanyaRowClassName,
-  shouldShowRambam3Row,
-  shouldShowTehillimRambamRow,
+  buildDailyGateRows,
+  dailyGateRowClassName,
+  getEnabledDailyGateKeys,
 } from '../../../lib/daily-gates-layout';
 
 const REFRESH_MS = 15 * 60 * 1000;
 
-function LearningTile({ label, item, sublabel, className }) {
+function LearningTile({ label, item, sublabel }) {
   if (!item || !item.label) {
     return null;
   }
 
-  const tileClass = ['daily-gate-tile', className].filter(Boolean).join(' ');
-
   return (
-    <div className={tileClass}>
-      <span className="daily-gate-label">{label}</span>
-      {sublabel && <span className="daily-gate-sublabel">{sublabel}</span>}
+    <div className="daily-gate-tile">
+      <span className="daily-gate-heading">
+        <span className="daily-gate-label">{label}</span>
+        {sublabel && <span className="daily-gate-sublabel">{sublabel}</span>}
+      </span>
       <span className="daily-gate-value">{item.label}</span>
     </div>
   );
+}
+
+function renderDailyGateTile(key, t, learning) {
+  switch (key) {
+    case 'chumash':
+      return (
+        <LearningTile key={key} label={t('daily_chumash')} item={learning.chumash} />
+      );
+    case 'tanya':
+      return (
+        <LearningTile key={key} label={t('daily_tanya')} item={learning.tanya} />
+      );
+    case 'tehillim':
+      return (
+        <LearningTile key={key} label={t('daily_tehillim')} item={learning.tehillim} />
+      );
+    case 'rambam1':
+      return (
+        <LearningTile
+          key={key}
+          label={t('daily_rambam')}
+          sublabel={t('daily_rambam_one')}
+          item={learning.rambam}
+        />
+      );
+    case 'rambam3':
+      return (
+        <LearningTile
+          key={key}
+          label={t('daily_rambam')}
+          sublabel={t('daily_rambam_three')}
+          item={learning.rambam3}
+        />
+      );
+    default:
+      return null;
+  }
 }
 
 function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
@@ -74,53 +110,22 @@ function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
     || boardFeatures.dailyRambam;
 
   const hayomYom = learning.hayomYom || {};
-  const chumashTile = boardFeatures.dailyChumash && (
-    <LearningTile label={t('daily_chumash')} item={learning.chumash} />
-  );
-  const tanyaTile = boardFeatures.dailyTanya && (
-    <LearningTile label={t('daily_tanya')} item={learning.tanya} />
-  );
-  const tehillimTile = boardFeatures.dailyTehillim && (
-    <LearningTile label={t('daily_tehillim')} item={learning.tehillim} />
-  );
-  const rambam1Tile = boardFeatures.dailyRambam && learning.rambam && (
-    <LearningTile
-      label={t('daily_rambam')}
-      sublabel={t('daily_rambam_one')}
-      item={learning.rambam}
-    />
-  );
-  const showTehillimRambamRow = shouldShowTehillimRambamRow(boardFeatures, learning);
-  const showRambam3Row = shouldShowRambam3Row(boardFeatures, learning);
+  const dailyGateRows = buildDailyGateRows(getEnabledDailyGateKeys(boardFeatures, learning));
 
   return (
     <div className="jewish-sidebar-panels">
-      {showGates && (
+      {showGates && dailyGateRows.length > 0 && (
         <section className="daily-gates-panel" aria-label={t('daily_gates_title')}>
           <h2>{t('daily_gates_title')}</h2>
           <ul className="daily-gates-grid">
-            {(chumashTile || tanyaTile) && (
-              <li className={chumashTanyaRowClassName(Boolean(chumashTile), Boolean(tanyaTile))}>
-                {chumashTile}
-                {tanyaTile}
+            {dailyGateRows.map((row) => (
+              <li
+                key={row.keys.join('-')}
+                className={dailyGateRowClassName(row.single)}
+              >
+                {row.keys.map((key) => renderDailyGateTile(key, t, learning))}
               </li>
-            )}
-            {showTehillimRambamRow && (
-              <li className="daily-gates-row">
-                {tehillimTile}
-                {rambam1Tile}
-              </li>
-            )}
-            {showRambam3Row && (
-              <li className="daily-gates-row">
-                <LearningTile
-                  label={t('daily_rambam')}
-                  sublabel={t('daily_rambam_three')}
-                  item={learning.rambam3}
-                  className={DAILY_GATE_RAMBAM3_SPAN_CLASS}
-                />
-              </li>
-            )}
+            ))}
           </ul>
         </section>
       )}
