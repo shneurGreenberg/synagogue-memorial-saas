@@ -189,3 +189,15 @@ describe('daily gates UI structure', () => {
     assert.match(scss, /\.daily-gate-heading/);
   });
 });
+
+describe('daily gates heading alignment (RTL)', () => {
+  it('heading row is a block-level flex row so it aligns to the start side in Hebrew', () => {
+    const scss = fs.readFileSync(path.join(__dirname, '..', 'styles', 'home.scss'), 'utf8');
+    const block = scss.match(/\.daily-gate-heading\s*\{([^}]*)\}/);
+    assert.ok(block, 'daily-gate-heading rule exists');
+    assert.match(block[1], /display:\s*flex;/);
+    assert.doesNotMatch(block[1], /inline-flex/);
+    const theme = fs.readFileSync(path.join(__dirname, '..', 'client', 'src', 'components', 'ThemeStyles.jsx'), 'utf8');
+    assert.doesNotMatch(theme, /daily-gate-heading\s*\{\s*display:\s*inline-flex/);
+  });
+});
