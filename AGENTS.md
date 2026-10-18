@@ -63,3 +63,9 @@ Every code change (feature, fix, or behavior change) **must** add an entry to `C
 - When the deployed code version is newer than a community's `lastRefreshedCodeVersion`, the tenant admin dashboard shows a "new version" banner with details (this changelog) and a refresh button. Pressing refresh ("רענן מסך תצוגה") force-reloads that community's screens and records the version.
 - Admin design/settings changes are not code versions and must not be added here.
 - `test/changelog.test.js` validates the file format.
+
+## Production URL
+
+- Production is **Amvera Warsaw**: https://synagogue-kadish-waw-shneur.waw0.amvera.tech (auto-deploys from `main`).
+- Post-deploy checks: `/`, `/admin/login`, `/s/novosibirsk`, `/s/tomsk` must return 200, and `/s/<slug>` must reference the new `memorial.js?v=` from `board-version.json`.
+- The old Moscow domain `synagogue-kadish-shneur.amvera.io` (msk0) is **dead since 2026-10-11**. Never use it for checks. It appears only as `LEGACY_HOST` in the Android app, which rewrites saved old URLs to Warsaw.
