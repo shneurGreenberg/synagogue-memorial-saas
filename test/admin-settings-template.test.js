@@ -144,7 +144,11 @@ describe('admin settings dashboard template', () => {
     assert.match(html, /name="primaryColor"/);
     assert.match(html, /name="tileOpacity"/);
     assert.match(html, /name="panelBorderColor"/);
+    assert.match(html, /name="panelBorderRadius"/);
+    assert.match(html, /name="panelBorderWidth"/);
     assert.match(html, /name="tileBorderColor"/);
+    assert.match(html, /name="tileBorderRadius"/);
+    assert.match(html, /name="tileBorderWidth"/);
     assert.match(html, /שלום/);
     assert.match(html, /name="titleRu"/);
     assert.match(html, /settings-texts-styling-block/);

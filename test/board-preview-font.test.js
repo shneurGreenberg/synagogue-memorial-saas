@@ -13,8 +13,12 @@ describe('board preview font', () => {
       boardFont: 'heebo',
       panelBorderColor: '#112233',
       panelBorderOpacity: '25',
+      panelBorderRadius: '8',
+      panelBorderWidth: '4',
       tileBorderColor: '#445566',
       tileBorderOpacity: '75',
+      tileBorderRadius: '16',
+      tileBorderWidth: '3',
       fontScale_dailyStudy: '120',
       fontScale_hayomYom: '90',
     });
@@ -22,6 +26,8 @@ describe('board preview font', () => {
     assert.equal(next.theme.boardFont, 'heebo');
     assert.equal(next.theme.panelBorderColor, '#112233');
     assert.equal(next.theme.panelBorderOpacity, 25);
+    assert.equal(next.theme.panelBorderRadius, 8);
+    assert.equal(next.theme.tileBorderWidth, 3);
     assert.equal(next.theme.fontScales.dailyStudy, 120);
     assert.equal(next.theme.fontScales.hayomYom, 90);
   });

@@ -738,7 +738,8 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
         const {
             titleRu, titleEn, titleHe, primaryColor, textColor, accentColor, tileColor, tileOpacity,
-            panelBorderColor, panelBorderOpacity, tileBorderColor, tileBorderOpacity,
+            panelBorderColor, panelBorderOpacity, panelBorderRadius, panelBorderWidth,
+            tileBorderColor, tileBorderOpacity, tileBorderRadius, tileBorderWidth,
             language, shabbatTimesEnabled, candlePalette, logoBorderRadius, logoBackground, logoCircle,
         } = req.body;
         const synagogue = await loadAdminSynagogue(req.params.slug, 'settings');
@@ -765,13 +766,21 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             const themeBorders = normalizeThemeBorders({
               panelBorderColor,
               panelBorderOpacity,
+              panelBorderRadius,
+              panelBorderWidth,
               tileBorderColor,
               tileBorderOpacity,
+              tileBorderRadius,
+              tileBorderWidth,
             });
             updateData['theme.panelBorderColor'] = themeBorders.panelBorderColor;
             updateData['theme.panelBorderOpacity'] = themeBorders.panelBorderOpacity;
+            updateData['theme.panelBorderRadius'] = themeBorders.panelBorderRadius;
+            updateData['theme.panelBorderWidth'] = themeBorders.panelBorderWidth;
             updateData['theme.tileBorderColor'] = themeBorders.tileBorderColor;
             updateData['theme.tileBorderOpacity'] = themeBorders.tileBorderOpacity;
+            updateData['theme.tileBorderRadius'] = themeBorders.tileBorderRadius;
+            updateData['theme.tileBorderWidth'] = themeBorders.tileBorderWidth;
             updateData['theme.candlePalette'] = normalizeCandlePalette(candlePalette);
             if ('boardFont' in req.body) {
                 updateData['theme.boardFont'] = normalizeBoardFont(req.body.boardFont);

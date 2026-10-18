@@ -42,7 +42,7 @@ $tileGlassNoise: repeating-linear-gradient(
 }
 
 @mixin memorial-tile-glass {
-  border: 1px solid var(--tile-glass-border, $goldenPanelBorder);
+  border: var(--tile-border-width, 1px) solid var(--tile-border-color, var(--tile-glass-border, $goldenPanelBorder));
   background-color: var(--tile-glass-legacy-base, $goldenPanelLegacyBase);
   @include memorial-tile-glass-gradient(
     var(--tile-glass-legacy-mid, $goldenPanelLegacyMid),
@@ -113,7 +113,8 @@ body {
 
 .wooden-panel {
   background-color: #3d3424;
-  border: 7px solid var(--panel-border-color, $woodenPanelBorder);
+  border: var(--panel-border-width, 7px) solid var(--panel-border-color, $woodenPanelBorder);
+  border-radius: var(--panel-border-radius, 0px);
   box-shadow:
     1px 1px 10px #000,
     2px 2px 2px darken($woodenPanelBorder, 50%),
@@ -129,7 +130,7 @@ body {
 
 .golden-panel {
   @include memorial-tile-glass;
-  border-radius: 12px;
+  border-radius: var(--tile-border-radius, 12px);
   padding: 10px;
   box-shadow: 1px 1px 10px #000;
   overflow: hidden;
