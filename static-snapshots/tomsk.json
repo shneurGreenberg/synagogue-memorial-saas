@@ -6307,8 +6307,8 @@
   "boardHideSearchAndPager": false,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1792312977098,
-  "exportedAt": "2026-10-18T08:42:57.098Z",
+  "contentVersion": 1792337904179,
+  "exportedAt": "2026-10-18T15:38:24.179Z",
   "jewishContent": {
     "date": "2026-10-18",
     "timezone": "Asia/Tomsk",
@@ -6322,7 +6322,7 @@
         "label": "Псалтирь 39-43"
       },
       "tanya": {
-        "label": "7 Хешван"
+        "label": "Игерет а-Кодеш, гл. 26"
       },
       "rambam": {
         "label": "Женщина, подозреваемая в неверности 3"
@@ -6400,6 +6400,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-18T08:42:57.097Z"
+    "updatedAt": "2026-10-18T15:38:24.179Z"
   }
 }
