@@ -224,6 +224,14 @@
                                 <span class="settings-embedded-slider-label" id="panelBorderOpacityLabel">{{t 'panel_border_opacity'}}</span>
                                 {{> admin-settings-number-stepper name="panelBorderOpacity" id="panelBorderOpacity" min="0" max="100" step="1" value=synagogue.theme.panelBorderOpacity suffix="%" compact=true ariaLabelledby="panelBorderOpacityLabel"}}
                             </div>
+                            <div class="settings-embedded-slider">
+                                <span class="settings-embedded-slider-label" id="panelBorderRadiusLabel">{{t 'panel_border_radius'}}</span>
+                                {{> admin-settings-number-stepper name="panelBorderRadius" id="panelBorderRadius" min="0" max="48" step="1" value=synagogue.theme.panelBorderRadius suffix="px" compact=true ariaLabelledby="panelBorderRadiusLabel"}}
+                            </div>
+                            <div class="settings-embedded-slider">
+                                <span class="settings-embedded-slider-label" id="panelBorderWidthLabel">{{t 'panel_border_width'}}</span>
+                                {{> admin-settings-number-stepper name="panelBorderWidth" id="panelBorderWidth" min="0" max="48" step="1" value=synagogue.theme.panelBorderWidth suffix="px" compact=true ariaLabelledby="panelBorderWidthLabel"}}
+                            </div>
                         </div>
                         <div class="settings-color-tile settings-color-tile--with-slider color-field-modern">
                             <label class="settings-color-label" for="tileBorderColor">{{t 'tile_border_color'}}</label>
@@ -234,6 +242,14 @@
                             <div class="settings-embedded-slider">
                                 <span class="settings-embedded-slider-label" id="tileBorderOpacityLabel">{{t 'tile_border_opacity'}}</span>
                                 {{> admin-settings-number-stepper name="tileBorderOpacity" id="tileBorderOpacity" min="0" max="100" step="1" value=synagogue.theme.tileBorderOpacity suffix="%" compact=true ariaLabelledby="tileBorderOpacityLabel"}}
+                            </div>
+                            <div class="settings-embedded-slider">
+                                <span class="settings-embedded-slider-label" id="tileBorderRadiusLabel">{{t 'tile_border_radius'}}</span>
+                                {{> admin-settings-number-stepper name="tileBorderRadius" id="tileBorderRadius" min="0" max="48" step="1" value=synagogue.theme.tileBorderRadius suffix="px" compact=true ariaLabelledby="tileBorderRadiusLabel"}}
+                            </div>
+                            <div class="settings-embedded-slider">
+                                <span class="settings-embedded-slider-label" id="tileBorderWidthLabel">{{t 'tile_border_width'}}</span>
+                                {{> admin-settings-number-stepper name="tileBorderWidth" id="tileBorderWidth" min="0" max="48" step="1" value=synagogue.theme.tileBorderWidth suffix="px" compact=true ariaLabelledby="tileBorderWidthLabel"}}
                             </div>
                         </div>
                     </div>
@@ -609,8 +625,12 @@
             var tileOpacity = document.getElementById('tileOpacity');
             var panelBorderColor = document.getElementById('panelBorderColor');
             var panelBorderOpacity = document.getElementById('panelBorderOpacity');
+            var panelBorderRadius = document.getElementById('panelBorderRadius');
+            var panelBorderWidth = document.getElementById('panelBorderWidth');
             var tileBorderColor = document.getElementById('tileBorderColor');
             var tileBorderOpacity = document.getElementById('tileBorderOpacity');
+            var tileBorderRadius = document.getElementById('tileBorderRadius');
+            var tileBorderWidth = document.getElementById('tileBorderWidth');
             var boardFont = document.getElementById('boardFont');
             var titleRu = document.getElementById('titleRu');
             var titleEn = document.getElementById('titleEn');
@@ -629,8 +649,12 @@
                 tileOpacity: tileOpacity ? tileOpacity.value : '100',
                 panelBorderColor: panelBorderColor ? panelBorderColor.value : '',
                 panelBorderOpacity: panelBorderOpacity ? panelBorderOpacity.value : '100',
+                panelBorderRadius: panelBorderRadius ? panelBorderRadius.value : '0',
+                panelBorderWidth: panelBorderWidth ? panelBorderWidth.value : '7',
                 tileBorderColor: tileBorderColor ? tileBorderColor.value : '',
                 tileBorderOpacity: tileBorderOpacity ? tileBorderOpacity.value : '100',
+                tileBorderRadius: tileBorderRadius ? tileBorderRadius.value : '12',
+                tileBorderWidth: tileBorderWidth ? tileBorderWidth.value : '1',
                 boardFont: boardFont ? boardFont.value : '',
                 candlePalette: (function () {
                     var el = document.getElementById('candlePalette');
@@ -667,7 +691,7 @@
         bindColorPair('panelBorderColor', 'panelBorderColorHex');
         bindColorPair('tileBorderColor', 'tileBorderColorHex');
 
-        ['tileOpacity', 'panelBorderOpacity', 'tileBorderOpacity'].forEach(function (id) {
+        ['tileOpacity', 'panelBorderOpacity', 'panelBorderRadius', 'panelBorderWidth', 'tileBorderOpacity', 'tileBorderRadius', 'tileBorderWidth'].forEach(function (id) {
             var input = document.getElementById(id);
             if (input) {
                 input.addEventListener('input', schedulePreview);
@@ -800,8 +824,12 @@
             params.set('tileOpacity', patch.tileOpacity || '100');
             params.set('panelBorderColor', patch.panelBorderColor || '');
             params.set('panelBorderOpacity', patch.panelBorderOpacity || '100');
+            params.set('panelBorderRadius', patch.panelBorderRadius || '0');
+            params.set('panelBorderWidth', patch.panelBorderWidth || '7');
             params.set('tileBorderColor', patch.tileBorderColor || '');
             params.set('tileBorderOpacity', patch.tileBorderOpacity || '100');
+            params.set('tileBorderRadius', patch.tileBorderRadius || '12');
+            params.set('tileBorderWidth', patch.tileBorderWidth || '1');
             if (patch.boardFont) {
                 params.set('boardFont', patch.boardFont);
             }

@@ -4,16 +4,24 @@ import { hasJewishContentPanels, resolveBoardFeatures } from '../lib/board-featu
 import { useBoardData } from '../context/BoardDataContext';
 import { fetchJewishFeed } from '../lib/jewish-feed-client';
 import { HayomYomScroller } from './HayomYomScroller';
+import {
+  DAILY_GATE_RAMBAM3_SPAN_CLASS,
+  chumashTanyaRowClassName,
+  shouldShowRambam3Row,
+  shouldShowTehillimRambamRow,
+} from '../../../lib/daily-gates-layout';
 
 const REFRESH_MS = 15 * 60 * 1000;
 
-function LearningTile({ label, item, sublabel }) {
+function LearningTile({ label, item, sublabel, className }) {
   if (!item || !item.label) {
     return null;
   }
 
+  const tileClass = ['daily-gate-tile', className].filter(Boolean).join(' ');
+
   return (
-    <div className="daily-gate-tile">
+    <div className={tileClass}>
       <span className="daily-gate-label">{label}</span>
       {sublabel && <span className="daily-gate-sublabel">{sublabel}</span>}
       <span className="daily-gate-value">{item.label}</span>
@@ -72,6 +80,18 @@ function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
   const tanyaTile = boardFeatures.dailyTanya && (
     <LearningTile label={t('daily_tanya')} item={learning.tanya} />
   );
+  const tehillimTile = boardFeatures.dailyTehillim && (
+    <LearningTile label={t('daily_tehillim')} item={learning.tehillim} />
+  );
+  const rambam1Tile = boardFeatures.dailyRambam && learning.rambam && (
+    <LearningTile
+      label={t('daily_rambam')}
+      sublabel={t('daily_rambam_one')}
+      item={learning.rambam}
+    />
+  );
+  const showTehillimRambamRow = shouldShowTehillimRambamRow(boardFeatures, learning);
+  const showRambam3Row = shouldShowRambam3Row(boardFeatures, learning);
 
   return (
     <div className="jewish-sidebar-panels">
@@ -80,32 +100,25 @@ function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
           <h2>{t('daily_gates_title')}</h2>
           <ul className="daily-gates-grid">
             {(chumashTile || tanyaTile) && (
-              <li className={`daily-gates-row${chumashTile && tanyaTile ? '' : ' daily-gates-row--single'}`}>
+              <li className={chumashTanyaRowClassName(Boolean(chumashTile), Boolean(tanyaTile))}>
                 {chumashTile}
                 {tanyaTile}
               </li>
             )}
-            {boardFeatures.dailyTehillim && (
-              <li className="daily-gates-row daily-gates-row--single">
-                <LearningTile label={t('daily_tehillim')} item={learning.tehillim} />
+            {showTehillimRambamRow && (
+              <li className="daily-gates-row">
+                {tehillimTile}
+                {rambam1Tile}
               </li>
             )}
-            {boardFeatures.dailyRambam && (learning.rambam || learning.rambam3) && (
+            {showRambam3Row && (
               <li className="daily-gates-row">
-                {learning.rambam && (
-                  <LearningTile
-                    label={t('daily_rambam')}
-                    sublabel={t('daily_rambam_one')}
-                    item={learning.rambam}
-                  />
-                )}
-                {learning.rambam3 && (
-                  <LearningTile
-                    label={t('daily_rambam')}
-                    sublabel={t('daily_rambam_three')}
-                    item={learning.rambam3}
-                  />
-                )}
+                <LearningTile
+                  label={t('daily_rambam')}
+                  sublabel={t('daily_rambam_three')}
+                  item={learning.rambam3}
+                  className={DAILY_GATE_RAMBAM3_SPAN_CLASS}
+                />
               </li>
             )}
           </ul>

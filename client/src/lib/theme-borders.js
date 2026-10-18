@@ -2,6 +2,12 @@ import { parseHex, rgba } from './tile-theme-colors';
 
 const PANEL_BORDER_DEFAULT_COLOR = '#604f2f';
 const TILE_BORDER_DEFAULT_COLOR = '#60500e';
+const PANEL_BORDER_DEFAULT_WIDTH = 7;
+const PANEL_BORDER_DEFAULT_RADIUS = 0;
+const TILE_BORDER_DEFAULT_WIDTH = 1;
+const TILE_BORDER_DEFAULT_RADIUS = 12;
+const BORDER_PX_MIN = 0;
+const BORDER_PX_MAX = 48;
 
 function sanitizeHexColor(value, fallback) {
   const candidate = String(value || '').trim();
@@ -24,6 +30,14 @@ function normalizeOptionalBorderColor(value, fallback = '') {
   return /^#[0-9A-Fa-f]{6}$/.test(candidate) ? candidate : fallback;
 }
 
+function normalizeBorderPx(value, fallback, min = BORDER_PX_MIN, max = BORDER_PX_MAX) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) {
+    return fallback;
+  }
+  return Math.min(max, Math.max(min, Math.round(parsed)));
+}
+
 export function normalizeThemeBorders(theme = {}) {
   const source = theme || {};
   const tileBorderColor = normalizeOptionalBorderColor(
@@ -34,8 +48,12 @@ export function normalizeThemeBorders(theme = {}) {
   return {
     panelBorderColor: sanitizeHexColor(source.panelBorderColor, PANEL_BORDER_DEFAULT_COLOR),
     panelBorderOpacity: normalizeBorderOpacity(source.panelBorderOpacity, 100),
+    panelBorderRadius: normalizeBorderPx(source.panelBorderRadius, PANEL_BORDER_DEFAULT_RADIUS),
+    panelBorderWidth: normalizeBorderPx(source.panelBorderWidth, PANEL_BORDER_DEFAULT_WIDTH),
     tileBorderColor,
     tileBorderOpacity: normalizeBorderOpacity(source.tileBorderOpacity, 100),
+    tileBorderRadius: normalizeBorderPx(source.tileBorderRadius, TILE_BORDER_DEFAULT_RADIUS),
+    tileBorderWidth: normalizeBorderPx(source.tileBorderWidth, TILE_BORDER_DEFAULT_WIDTH),
   };
 }
 

@@ -10,7 +10,7 @@ import {
   resolveTilesBackgroundImage,
 } from '../lib/board-backgrounds';
 import { normalizeBoardFont, resolveBoardFontFamily } from '../lib/board-fonts';
-import { resolvePanelBorderCss, resolveTileBorderCss } from '../lib/theme-borders';
+import { normalizeThemeBorders, resolvePanelBorderCss, resolveTileBorderCss } from '../lib/theme-borders';
 import { shouldReduceBoardCompositorLoad } from '../lib/legacy-browser';
 
 function tileGlassNoise(transparency) {
@@ -70,6 +70,7 @@ export function ThemeStyles() {
   const backgroundImage = resolveBoardBackgroundImage(theme);
   const tilesBackground = resolveTilesBackgroundImage(theme);
   const boardFontFamily = resolveBoardFontFamily(normalizeBoardFont(theme.boardFont));
+  const themeBorders = normalizeThemeBorders(theme);
   const panelBorderCss = resolvePanelBorderCss(theme);
   const tileBorderCss = resolveTileBorderCss(theme, tileVars.tileGlassBorder);
   const logoRadius = Number(theme.logoBorderRadius) >= 50 ? '50%' : '0';
@@ -98,7 +99,11 @@ export function ThemeStyles() {
     ${headingFontRule}
     :root {
       --panel-border-color: ${panelBorderCss};
+      --panel-border-width: ${themeBorders.panelBorderWidth}px;
+      --panel-border-radius: ${themeBorders.panelBorderRadius}px;
       --tile-border-color: ${tileBorderCss};
+      --tile-border-width: ${themeBorders.tileBorderWidth}px;
+      --tile-border-radius: ${themeBorders.tileBorderRadius}px;
       --primary-color: ${primary};
       --text-color: ${text};
       --accent-color: ${accent};
@@ -314,6 +319,8 @@ export function ThemeStyles() {
       background-image: url('${assetUrl(`images/${tilesBackground}`)}') !important;
       background-size: cover;
       border-color: var(--panel-border-color) !important;
+      border-width: var(--panel-border-width, 7px) !important;
+      border-radius: var(--panel-border-radius, 0px) !important;
     }
     ${GLASS_SELECTORS} {
       background-color: var(--tile-glass-legacy-base) !important;
@@ -324,6 +331,8 @@ export function ThemeStyles() {
         tileTransparency,
       )} !important;
       border-color: var(--tile-border-color, var(--tile-glass-border)) !important;
+      border-width: var(--tile-border-width, 1px) !important;
+      border-radius: var(--tile-border-radius, 12px) !important;
       box-shadow:
         inset 0 1px 0 var(--tile-glass-legacy-highlight),
         inset 0 0 22px var(--tile-glass-legacy-glow),
@@ -349,7 +358,7 @@ export function ThemeStyles() {
 
   return (
     <style
-      key={`theme-${primary}-${text}-${accent}-${tileVars.tileColor}-${tileTransparency}-${candlePalette}-${theme.boardFont}-${panelBorderCss}-${tileBorderCss}`}
+      key={`theme-${primary}-${text}-${accent}-${tileVars.tileColor}-${tileTransparency}-${candlePalette}-${theme.boardFont}-${panelBorderCss}-${tileBorderCss}-${themeBorders.panelBorderWidth}-${themeBorders.panelBorderRadius}-${themeBorders.tileBorderWidth}-${themeBorders.tileBorderRadius}`}
       dangerouslySetInnerHTML={{ __html: css }}
     />
   );

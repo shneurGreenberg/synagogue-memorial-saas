@@ -237,21 +237,20 @@
       list-style: none;
       margin: 0;
       padding: 0;
-      display: flex;
-      flex-wrap: nowrap;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       border-bottom: 1px solid rgba(207, 175, 31, 0.28);
 
       &:last-child {
         border-bottom: none;
       }
 
-      &--single .daily-gate-tile {
-        flex: 1 1 100%;
+      &--single .daily-gate-tile:not(.daily-gate-tile--span-2) {
+        grid-column: 1 / -1;
       }
     }
 
     .daily-gate-tile {
-      flex: 1 1 50%;
       min-width: 0;
       margin: 0;
       padding: 5px 4px;
@@ -263,6 +262,11 @@
       border-radius: 0;
 
       &:last-child {
+        border-right: none;
+      }
+
+      &--span-2 {
+        grid-column: 1 / -1;
         border-right: none;
       }
     }
@@ -534,7 +538,7 @@
         margin: 0;
         min-height: 0;
         box-sizing: border-box;
-        border-radius: 12px;
+        border-radius: var(--tile-border-radius, 12px);
         overflow: visible;
         contain: layout;
         content-visibility: auto;
@@ -543,7 +547,7 @@
         flex-direction: column;
         padding: 0;
         @include memorial-tile-glass;
-        border-radius: 12px;
+        border-radius: var(--tile-border-radius, 12px);
 
         &:active {
           transform: scale(0.995);

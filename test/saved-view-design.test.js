@@ -48,6 +48,34 @@ describe('saved-view design whitelist', () => {
     assert.equal(design.memorialQrPanel.donationTitles, undefined);
   });
 
+  it('carries border radius and width in design whitelist', () => {
+    const design = pickDesignFromSnapshot({
+      theme: {
+        primaryColor: '#112233',
+        panelBorderRadius: 6,
+        panelBorderWidth: 5,
+        tileBorderRadius: 10,
+        tileBorderWidth: 2,
+      },
+    });
+    assert.equal(design.theme.panelBorderRadius, 6);
+    assert.equal(design.theme.tileBorderWidth, 2);
+
+    const update = buildDesignApplyUpdate({
+      theme: {
+        panelBorderColor: '#112233',
+        panelBorderRadius: 6,
+        panelBorderWidth: 5,
+        tileBorderRadius: 10,
+        tileBorderWidth: 2,
+      },
+    });
+    assert.equal(update['theme.panelBorderRadius'], 6);
+    assert.equal(update['theme.panelBorderWidth'], 5);
+    assert.equal(update['theme.tileBorderRadius'], 10);
+    assert.equal(update['theme.tileBorderWidth'], 2);
+  });
+
   it('apply update touches theme and QR scales only', () => {
     const update = buildDesignApplyUpdate(richSnapshot);
     assert.equal(update['titles.ru'], undefined);

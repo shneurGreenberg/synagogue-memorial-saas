@@ -23,4 +23,16 @@ describe('theme-borders', () => {
     assert.equal(resolveTileBorderCss(borders, 'rgba(0, 0, 0, 1)'), 'rgba(170, 187, 204, 0.8)');
   });
 
+  it('normalizes panel and tile border radius and width in px', () => {
+    const borders = normalizeThemeBorders({
+      panelBorderRadius: '4.6',
+      panelBorderWidth: 99,
+      tileBorderRadius: -3,
+      tileBorderWidth: '2',
+    });
+    assert.equal(borders.panelBorderRadius, 5);
+    assert.equal(borders.panelBorderWidth, 48);
+    assert.equal(borders.tileBorderRadius, 0);
+    assert.equal(borders.tileBorderWidth, 2);
+  });
 });
