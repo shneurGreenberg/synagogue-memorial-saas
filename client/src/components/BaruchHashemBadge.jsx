@@ -1,8 +1,12 @@
 import React from 'react';
 
-export function BaruchHashemBadge() {
+export function BaruchHashemBadge({ placement = 'fixed' }) {
+  const className = placement === 'column'
+    ? 'baruch-hashem-badge baruch-hashem-badge--column'
+    : 'baruch-hashem-badge';
+
   return (
-    <div className="baruch-hashem-badge" aria-hidden="true">
+    <div className={className} aria-hidden="true">
       ב״ה
     </div>
   );

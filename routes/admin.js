@@ -41,6 +41,12 @@ const {
 const { adminSlugMismatch } = require('../lib/admin-session-slug');
 const { renderAdminWrongCommunity } = require('../lib/admin-wrong-community');
 const { parseMemorialQrPanelFromBody, memorialQrPanelToUpdate } = require('../lib/memorial-qr-panel');
+const {
+  parseBoardSubtitleFromBody,
+  boardSubtitleToUpdate,
+  parseBoardSubtitleThemeFromBody,
+  boardSubtitleThemeToUpdate,
+} = require('../lib/board-subtitle');
 const { parseSlideshowSettingsBody } = require('../lib/slideshow-admin-settings');
 const {
   parseFontScalesFromBody,
@@ -185,6 +191,7 @@ const FONT_SCALE_SLIDER_META = [
   { key: 'tileTitle', labelKey: 'font_scale_tile_title', helpKey: 'font_scale_tile_title_help' },
   { key: 'tileDate', labelKey: 'font_scale_tile_date', helpKey: 'font_scale_tile_date_help' },
   { key: 'boardHeader', labelKey: 'font_scale_board_header', helpKey: 'font_scale_board_header_help' },
+  { key: 'boardSubtitle', labelKey: 'font_scale_board_subtitle', helpKey: 'font_scale_board_subtitle_help' },
   { key: 'sidebar', labelKey: 'font_scale_sidebar', helpKey: 'font_scale_sidebar_help' },
   { key: 'dailyStudy', labelKey: 'font_scale_daily_study', helpKey: 'font_scale_daily_study_help' },
   { key: 'hayomYom', labelKey: 'font_scale_hayom_yom', helpKey: 'font_scale_hayom_yom_help' },
@@ -201,7 +208,7 @@ const TEXTS_FONT_SCALE_GROUPS = [
   {
     groupKey: 'typography_center_column',
     helpKey: 'typography_center_column_help',
-    keys: ['tileTitle', 'tileDate', 'boardHeader', 'torahNames', 'prayerOverlay'],
+    keys: ['tileTitle', 'tileDate', 'boardHeader', 'boardSubtitle', 'torahNames', 'prayerOverlay'],
   },
   {
     groupKey: 'typography_left_column',
@@ -738,7 +745,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
     try {
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
         const {
-            titleRu, titleEn, titleHe, primaryColor, textColor, accentColor, tileColor, tileOpacity,
+            boardTitleText, primaryColor, textColor, accentColor, tileColor, tileOpacity,
             panelBorderColor, panelBorderOpacity, panelBorderRadius, panelBorderWidth,
             tileBorderColor, tileBorderOpacity, tileBorderRadius, tileBorderWidth,
             language, shabbatTimesEnabled, candlePalette, logoBorderRadius, logoBackground, logoCircle,
@@ -750,15 +757,15 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         const updateData = {};
 
         if (permissions.settingsAppearance) {
-            const titles = {
-                ru: String(titleRu ?? '').trim(),
-                en: String(titleEn ?? '').trim(),
-                he: String(titleHe ?? '').trim(),
-            };
-            updateData['titles.ru'] = titles.ru;
-            updateData['titles.en'] = titles.en;
-            updateData['titles.he'] = titles.he;
-            updateData.title = titles.ru;
+            updateData.boardTitleText = String(boardTitleText ?? '').trim();
+            Object.assign(
+              updateData,
+              boardSubtitleToUpdate(parseBoardSubtitleFromBody(req.body, synagogue?.boardSubtitle)),
+            );
+            Object.assign(
+              updateData,
+              boardSubtitleThemeToUpdate(parseBoardSubtitleThemeFromBody(req.body, synagogue?.theme)),
+            );
             updateData['theme.primaryColor'] = sanitizeHexColor(primaryColor, BOARD_THEME_DEFAULTS.primaryColor);
             updateData['theme.textColor'] = sanitizeHexColor(textColor, BOARD_THEME_DEFAULTS.textColor);
             updateData['theme.accentColor'] = sanitizeHexColor(accentColor, BOARD_THEME_DEFAULTS.accentColor);
@@ -1219,7 +1226,8 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             adminUser: req.adminUser,
             adminPermissions: req.adminPermissions,
             canSaveBoardSettings: canSaveBoardSettings(req.adminPermissions),
-            boardTitles: enriched.titles,
+            boardTitleText: enriched.boardTitleText,
+            boardSubtitle: enriched.boardSubtitle,
             boardFeatureGroups: buildBoardFeatureGroups(enriched.boardFeatures, enriched.theme, enriched),
             textsFontScaleGroups: buildTextsFontScaleGroups(enriched.theme.fontScales),
             candlePaletteOptions: buildCandlePaletteOptions(),

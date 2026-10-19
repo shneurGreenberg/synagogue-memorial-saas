@@ -16,23 +16,15 @@ function resolveQrSrc(customPath, defaultRelativePath) {
   return assetUrl(defaultRelativePath);
 }
 
-function resolvePanelLang(i18n) {
-  const lang = String(i18n?.language || 'ru').split('-')[0];
-  return lang === 'en' || lang === 'he' ? lang : 'ru';
-}
-
-function MemorialSubmissionPanelBase({ t, i18n }) {
+function MemorialSubmissionPanelBase({ t }) {
   const { data } = useBoardData();
   const panel = data.memorialQrPanel || {};
   const publicSubmission = data.publicSubmission || {};
   if (publicSubmission.showRegistrationQr === false) {
     return null;
   }
-  const lang = resolvePanelLang(i18n);
-  const titles = panel.titles || {};
-  const texts = panel.texts || {};
-  const title = titles[lang] || titles.ru || t('memorial_submission_title');
-  const text = texts[lang] || texts.ru || t('memorial_submission_scan');
+  const title = String(panel.titleText || '').trim() || t('memorial_submission_title');
+  const text = String(panel.textText || '').trim() || t('memorial_submission_scan');
   const titleScale = effectiveMemorialQrScale(panel, 'titleScale');
   const textScale = effectiveMemorialQrScale(panel, 'textScale');
   const qrScale = effectiveMemorialQrScale(panel, 'qrScale');

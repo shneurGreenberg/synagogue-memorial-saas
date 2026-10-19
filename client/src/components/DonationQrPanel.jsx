@@ -15,12 +15,7 @@ function resolveQrSrc(customPath, defaultRelativePath) {
   return assetUrl(defaultRelativePath);
 }
 
-function resolvePanelLang(i18n) {
-  const lang = String(i18n?.language || 'ru').split('-')[0];
-  return lang === 'en' || lang === 'he' ? lang : 'ru';
-}
-
-function DonationQrPanelBase({ t, i18n }) {
+function DonationQrPanelBase({ t }) {
   const { data } = useBoardData();
   const panel = data.memorialQrPanel || {};
   const publicSubmission = data.publicSubmission || {};
@@ -30,11 +25,8 @@ function DonationQrPanelBase({ t, i18n }) {
     return null;
   }
 
-  const lang = resolvePanelLang(i18n);
-  const titles = panel.donationTitles || {};
-  const texts = panel.donationTexts || {};
-  const title = titles[lang] || titles.ru || t('donation_qr_title');
-  const text = texts[lang] || texts.ru || t('donation_qr_scan');
+  const title = String(panel.donationTitleText || '').trim() || t('donation_qr_title');
+  const text = String(panel.donationTextText || '').trim() || t('donation_qr_scan');
   const titleScale = effectiveMemorialQrScale(panel, 'titleScale');
   const textScale = effectiveMemorialQrScale(panel, 'textScale');
   const qrScale = effectiveMemorialQrScale(panel, 'qrScale');

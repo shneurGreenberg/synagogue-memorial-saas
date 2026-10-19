@@ -5,19 +5,18 @@ import {
 import { normalizeBoardFont } from './board-fonts';
 import { normalizeCandlePalette } from './candle-palette';
 import { normalizeThemeBorders } from './theme-borders';
+import { parseBoardSubtitleFromBody } from '../../../lib/board-subtitle';
 
 const PREVIEW_LANGS = ['ru', 'en', 'he'];
 
 const MEMORIAL_QR_PREVIEW_KEYS = [
-  'memorialQrTitleRu', 'memorialQrTitleEn', 'memorialQrTitleHe',
-  'memorialQrTextRu', 'memorialQrTextEn', 'memorialQrTextHe',
-  'donationQrTitleRu', 'donationQrTitleEn', 'donationQrTitleHe',
-  'donationQrTextRu', 'donationQrTextEn', 'donationQrTextHe',
+  'memorialQrTitle', 'memorialQrText',
+  'donationQrTitle', 'donationQrText',
   'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale',
 ];
 
 const FONT_SCALE_PREVIEW_KEYS = [
-  'tileTitle', 'tileDate', 'clock', 'boardHeader', 'sidebar', 'prayers',
+  'tileTitle', 'tileDate', 'clock', 'boardHeader', 'boardSubtitle', 'sidebar', 'prayers',
   'dailyStudy', 'hayomYom', 'prayerOverlay', 'torahNames', 'weather', 'shabbat', 'candle',
 ];
 
@@ -29,17 +28,24 @@ export function mergePreviewPatch(data, patch) {
   const next = {
     ...data,
     theme: { ...(data.theme || {}) },
-    titles: { ...(data.titles || {}) },
+    boardSubtitle: { ...(data.boardSubtitle || {}) },
   };
 
-  if (patch.titleRu !== undefined) {
-    next.titles.ru = patch.titleRu;
+  if (patch.boardTitleText !== undefined) {
+    next.boardTitleText = patch.boardTitleText;
+    next.title = patch.boardTitleText;
   }
-  if (patch.titleEn !== undefined) {
-    next.titles.en = patch.titleEn;
+  if (patch.boardSubtitleEnabled !== undefined || patch.boardSubtitleText !== undefined) {
+    next.boardSubtitle = parseBoardSubtitleFromBody(patch, next.boardSubtitle);
   }
-  if (patch.titleHe !== undefined) {
-    next.titles.he = patch.titleHe;
+  if (patch.boardSubtitleFont) {
+    next.theme.boardSubtitleFont = normalizeBoardFont(patch.boardSubtitleFont);
+  }
+  if (patch.boardSubtitleColor) {
+    next.theme.boardSubtitleColor = patch.boardSubtitleColor;
+  }
+  if (patch.boardSubtitleWeight) {
+    next.theme.boardSubtitleWeight = patch.boardSubtitleWeight;
   }
   if (patch.primaryColor) {
     next.theme.primaryColor = patch.primaryColor;
@@ -110,6 +116,7 @@ export function mergePreviewPatch(data, patch) {
   if (hasMemorialQr) {
     next.memorialQrPanel = memorialQrPanelForBoard(
       parseMemorialQrPanelFromBody(patch, next.memorialQrPanel),
+      next.language || 'ru',
     );
   }
 
@@ -142,9 +149,8 @@ export function previewPatchFromSearchParams(params) {
     || params.has('logoBorderRadius')
     || params.has('logoBackground')
     || params.has('fontScale_tileTitle')
-    || params.has('titleRu')
-    || params.has('titleEn')
-    || params.has('titleHe')
+    || params.has('boardTitleText')
+    || params.has('boardSubtitleText')
     || params.has('previewLang')
     || params.has('memorialQrTitleScale');
 
@@ -153,9 +159,12 @@ export function previewPatchFromSearchParams(params) {
   }
 
   const patch = {};
-  if (params.has('titleRu')) patch.titleRu = params.get('titleRu');
-  if (params.has('titleEn')) patch.titleEn = params.get('titleEn');
-  if (params.has('titleHe')) patch.titleHe = params.get('titleHe');
+  if (params.has('boardTitleText')) patch.boardTitleText = params.get('boardTitleText');
+  if (params.has('boardSubtitleEnabled')) patch.boardSubtitleEnabled = params.get('boardSubtitleEnabled');
+  if (params.has('boardSubtitleText')) patch.boardSubtitleText = params.get('boardSubtitleText');
+  if (params.has('boardSubtitleFont')) patch.boardSubtitleFont = params.get('boardSubtitleFont');
+  if (params.has('boardSubtitleColor')) patch.boardSubtitleColor = params.get('boardSubtitleColor');
+  if (params.has('boardSubtitleWeight')) patch.boardSubtitleWeight = params.get('boardSubtitleWeight');
   if (params.has('primaryColor')) patch.primaryColor = params.get('primaryColor');
   if (params.has('textColor')) patch.textColor = params.get('textColor');
   if (params.has('accentColor')) patch.accentColor = params.get('accentColor');
@@ -180,6 +189,7 @@ export function previewPatchFromSearchParams(params) {
   });
   if (params.has('previewLang')) patch.previewLang = params.get('previewLang');
   [
+    'memorialQrTitle', 'memorialQrText', 'donationQrTitle', 'donationQrText',
     'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale',
   ].forEach((key) => {
     if (params.has(key)) {
