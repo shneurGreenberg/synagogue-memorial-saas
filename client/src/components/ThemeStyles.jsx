@@ -133,7 +133,6 @@ export function ThemeStyles() {
       --font-scale-tile-date: ${scale('tileDate')};
       --font-scale-clock: ${scale('clock')};
       --font-scale-board-header: ${scale('boardHeader')};
-      --font-scale-board-subtitle: ${scale('boardSubtitle')};
       --font-scale-sidebar: ${scale('sidebar')};
       --font-scale-daily-study: ${scale('dailyStudy')};
       --font-scale-hayom-yom: ${scale('hayomYom')};
@@ -159,12 +158,6 @@ export function ThemeStyles() {
     .main-container .board-header h1 {
       color: var(--primary-color) !important;
       font-size: calc(clamp(28px, 3.8vw, 58px) * var(--font-scale-board-header)) !important;
-    }
-    .main-container .board-header-subtitle {
-      color: var(--text-color) !important;
-      font-size: calc(clamp(14px, 1.6vw, 26px) * var(--font-scale-board-subtitle)) !important;
-      margin: 0.15em 0 0;
-      line-height: 1.25;
     }
     .main-container .cards-grid .card .inner h3,
     .main-container .cards-grid-kadish .card .inner h3 {

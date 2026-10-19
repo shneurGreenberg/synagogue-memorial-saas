@@ -61,9 +61,8 @@ export function normalizeCommunityEvent(event) {
 
 export function resolveCommunityEventCopy(event, boardLang) {
   const normalized = normalizeCommunityEvent(event);
-  const title = String(normalized.title || '').trim()
-    || pickLocalizedCopy(normalized.titles, boardLang);
-  const text = String(normalized.text || '').trim()
-    || pickLocalizedCopy(normalized.texts, boardLang);
-  return { title, text };
+  return {
+    title: pickLocalizedCopy(normalized.titles, boardLang),
+    text: pickLocalizedCopy(normalized.texts, boardLang),
+  };
 }

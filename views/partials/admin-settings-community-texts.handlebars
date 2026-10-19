@@ -1,88 +1,92 @@
 <div class="settings-copy-group">
-    <h4 class="settings-copy-group-title">{{t 'board_title_single'}}</h4>
-    <div class="settings-copy-grid settings-copy-grid--single">
+    <h4 class="settings-copy-group-title">{{t 'font_scale_board_header'}}</h4>
+    <div class="board-titles-grid settings-copy-grid">
         <div class="form-field">
-            <label for="boardTitleText">{{t 'board_title_single'}}</label>
-            <input type="text" name="boardTitleText" id="boardTitleText" class="form-control admin-input-modern"
-                value="{{boardTitleText}}">
-            <span class="field-hint">{{t 'board_title_single_help'}}</span>
-        </div>
-    </div>
-</div>
-<div class="settings-copy-group">
-    <h4 class="settings-copy-group-title">{{t 'board_subtitle_section'}}</h4>
-    <div class="settings-copy-grid settings-copy-grid--single">
-        <div class="form-field form-field-checkbox">
-            <label class="admin-checkbox-label">
-                <input type="checkbox" name="boardSubtitleEnabled" id="boardSubtitleEnabled" value="1"
-                    class="admin-checkbox memorial-qr-preview-input" {{#if boardSubtitle.enabled}}checked{{/if}}>
-                <span>{{t 'board_subtitle_enabled'}}</span>
-            </label>
+            <label for="titleRu">{{t 'board_title_ru'}}</label>
+            <input type="text" name="titleRu" id="titleRu" class="form-control admin-input-modern"
+                value="{{boardTitles.ru}}">
         </div>
         <div class="form-field">
-            <label for="boardSubtitleText">{{t 'board_subtitle_text'}}</label>
-            <input type="text" name="boardSubtitleText" id="boardSubtitleText"
-                class="form-control admin-input-modern memorial-qr-preview-input"
-                value="{{boardSubtitle.text}}">
-        </div>
-        <div class="form-field board-font-field">
-            <label for="boardSubtitleFont">{{t 'board_subtitle_font'}}</label>
-            <select name="boardSubtitleFont" id="boardSubtitleFont"
-                class="form-control admin-select-modern board-font-select memorial-qr-preview-input">
-                <option value="" {{#unless synagogue.theme.boardSubtitleFont}}selected{{/unless}}>{{t 'board_subtitle_font_inherit'}}</option>
-                {{#each boardFontOptions}}
-                <option value="{{this.id}}" {{#if (eq synagogue.theme.boardSubtitleFont this.id)}}selected{{/if}}
-                    style="font-family: {{this.family}};">{{t this.labelKey}}</option>
-                {{/each}}
-            </select>
+            <label for="titleEn">{{t 'board_title_en'}}</label>
+            <input type="text" name="titleEn" id="titleEn" class="form-control admin-input-modern"
+                value="{{boardTitles.en}}">
         </div>
         <div class="form-field">
-            <label for="boardSubtitleColor">{{t 'board_subtitle_color'}}</label>
-            <input type="color" name="boardSubtitleColor" id="boardSubtitleColor"
-                class="form-control admin-input-modern memorial-qr-preview-input"
-                value="{{synagogue.theme.boardSubtitleColor}}">
-        </div>
-        <div class="form-field">
-            <label for="boardSubtitleWeight">{{t 'board_subtitle_weight'}}</label>
-            <select name="boardSubtitleWeight" id="boardSubtitleWeight"
-                class="form-control admin-select-modern memorial-qr-preview-input">
-                <option value="400" {{#if (eq synagogue.theme.boardSubtitleWeight '400')}}selected{{/if}}>400</option>
-                <option value="500" {{#if (eq synagogue.theme.boardSubtitleWeight '500')}}selected{{/if}}>500</option>
-                <option value="600" {{#if (eq synagogue.theme.boardSubtitleWeight '600')}}selected{{/if}}>600</option>
-                <option value="700" {{#if (eq synagogue.theme.boardSubtitleWeight '700')}}selected{{/if}}>700</option>
-            </select>
+            <label for="titleHe">{{t 'board_title_he'}}</label>
+            <input type="text" name="titleHe" id="titleHe" class="form-control admin-input-modern"
+                value="{{boardTitles.he}}">
         </div>
     </div>
 </div>
 <div class="settings-copy-group">
     <h4 class="settings-copy-group-title">{{t 'donation_qr_texts_title'}}</h4>
     <p class="field-hint">{{t 'donation_qr_texts_help'}}</p>
-    <div class="settings-copy-grid settings-copy-grid--single">
+    <div class="board-titles-grid settings-copy-grid">
         <div class="form-field">
-            <label for="donationQrTitle">{{t 'donation_qr_title_single'}}</label>
-            <input type="text" name="donationQrTitle" id="donationQrTitle" class="form-control admin-input-modern memorial-qr-preview-input"
-                value="{{memorialQrPanel.donationTitleText}}">
+            <label for="donationQrTitleRu">{{t 'donation_qr_title_ru'}}</label>
+            <input type="text" name="donationQrTitleRu" id="donationQrTitleRu" class="form-control admin-input-modern memorial-qr-preview-input"
+                value="{{memorialQrPanel.donationTitles.ru}}">
         </div>
         <div class="form-field">
-            <label for="donationQrText">{{t 'donation_qr_text_single'}}</label>
-            <input type="text" name="donationQrText" id="donationQrText" class="form-control admin-input-modern memorial-qr-preview-input"
-                value="{{memorialQrPanel.donationTextText}}">
+            <label for="donationQrTitleEn">{{t 'donation_qr_title_en'}}</label>
+            <input type="text" name="donationQrTitleEn" id="donationQrTitleEn" class="form-control admin-input-modern memorial-qr-preview-input"
+                value="{{memorialQrPanel.donationTitles.en}}">
+        </div>
+        <div class="form-field">
+            <label for="donationQrTitleHe">{{t 'donation_qr_title_he'}}</label>
+            <input type="text" name="donationQrTitleHe" id="donationQrTitleHe" class="form-control admin-input-modern memorial-qr-preview-input"
+                value="{{memorialQrPanel.donationTitles.he}}">
+        </div>
+        <div class="form-field">
+            <label for="donationQrTextRu">{{t 'donation_qr_text_ru'}}</label>
+            <input type="text" name="donationQrTextRu" id="donationQrTextRu" class="form-control admin-input-modern memorial-qr-preview-input"
+                value="{{memorialQrPanel.donationTexts.ru}}">
+        </div>
+        <div class="form-field">
+            <label for="donationQrTextEn">{{t 'donation_qr_text_en'}}</label>
+            <input type="text" name="donationQrTextEn" id="donationQrTextEn" class="form-control admin-input-modern memorial-qr-preview-input"
+                value="{{memorialQrPanel.donationTexts.en}}">
+        </div>
+        <div class="form-field">
+            <label for="donationQrTextHe">{{t 'donation_qr_text_he'}}</label>
+            <input type="text" name="donationQrTextHe" id="donationQrTextHe" class="form-control admin-input-modern memorial-qr-preview-input"
+                value="{{memorialQrPanel.donationTexts.he}}">
         </div>
     </div>
 </div>
 <div class="settings-copy-group">
     <h4 class="settings-copy-group-title">{{t 'registration_qr_texts_title'}}</h4>
     <p class="field-hint">{{t 'registration_qr_texts_help'}}</p>
-    <div class="settings-copy-grid settings-copy-grid--single">
+    <div class="board-titles-grid settings-copy-grid">
         <div class="form-field">
-            <label for="memorialQrTitle">{{t 'memorial_qr_title_single'}}</label>
-            <input type="text" name="memorialQrTitle" id="memorialQrTitle" class="form-control admin-input-modern memorial-qr-preview-input"
-                value="{{memorialQrPanel.titleText}}">
+            <label for="memorialQrTitleRu">{{t 'memorial_qr_title_ru'}}</label>
+            <input type="text" name="memorialQrTitleRu" id="memorialQrTitleRu" class="form-control admin-input-modern memorial-qr-preview-input"
+                value="{{memorialQrPanel.titles.ru}}">
         </div>
         <div class="form-field">
-            <label for="memorialQrText">{{t 'memorial_qr_text_single'}}</label>
-            <input type="text" name="memorialQrText" id="memorialQrText" class="form-control admin-input-modern memorial-qr-preview-input"
-                value="{{memorialQrPanel.textText}}">
+            <label for="memorialQrTitleEn">{{t 'memorial_qr_title_en'}}</label>
+            <input type="text" name="memorialQrTitleEn" id="memorialQrTitleEn" class="form-control admin-input-modern memorial-qr-preview-input"
+                value="{{memorialQrPanel.titles.en}}">
+        </div>
+        <div class="form-field">
+            <label for="memorialQrTitleHe">{{t 'memorial_qr_title_he'}}</label>
+            <input type="text" name="memorialQrTitleHe" id="memorialQrTitleHe" class="form-control admin-input-modern memorial-qr-preview-input"
+                value="{{memorialQrPanel.titles.he}}">
+        </div>
+        <div class="form-field">
+            <label for="memorialQrTextRu">{{t 'memorial_qr_text_ru'}}</label>
+            <input type="text" name="memorialQrTextRu" id="memorialQrTextRu" class="form-control admin-input-modern memorial-qr-preview-input"
+                value="{{memorialQrPanel.texts.ru}}">
+        </div>
+        <div class="form-field">
+            <label for="memorialQrTextEn">{{t 'memorial_qr_text_en'}}</label>
+            <input type="text" name="memorialQrTextEn" id="memorialQrTextEn" class="form-control admin-input-modern memorial-qr-preview-input"
+                value="{{memorialQrPanel.texts.en}}">
+        </div>
+        <div class="form-field">
+            <label for="memorialQrTextHe">{{t 'memorial_qr_text_he'}}</label>
+            <input type="text" name="memorialQrTextHe" id="memorialQrTextHe" class="form-control admin-input-modern memorial-qr-preview-input"
+                value="{{memorialQrPanel.texts.he}}">
         </div>
     </div>
 </div>

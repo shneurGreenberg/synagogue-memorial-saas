@@ -8,11 +8,7 @@
     <p class="public-name">{{submittedName}}</p>
     {{/if}}
     {{#if (eq successKind 'request')}}
-    {{#if isMultiRequest}}
-    <p class="public-intro">{{publicT 'request_success_multi'}}</p>
-    {{else}}
     <p class="public-intro">{{publicT 'request_success_message'}}</p>
-    {{/if}}
     {{else}}
     <p class="public-intro">{{publicT 'success_message'}}</p>
     {{/if}}

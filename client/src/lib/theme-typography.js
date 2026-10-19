@@ -3,7 +3,6 @@ export const FONT_SCALE_DEFAULTS = {
   tileDate: 100,
   clock: 100,
   boardHeader: 100,
-  boardSubtitle: 100,
   sidebar: 100,
   prayers: 100,
   dailyStudy: 100,

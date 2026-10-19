@@ -43,8 +43,7 @@ function buildSettingsDashboardContext() {
 
   return {
     synagogue,
-    boardTitleText: synagogue.boardTitleText,
-    boardSubtitle: synagogue.boardSubtitle,
+    boardTitles: synagogue.titles,
     memorialQrPanel: synagogue.memorialQrPanel,
     adminPermissions: FULL_ADMIN_PERMISSIONS,
     canSaveBoardSettings: true,
@@ -151,12 +150,11 @@ describe('admin settings dashboard template', () => {
     assert.match(html, /name="tileBorderRadius"/);
     assert.match(html, /name="tileBorderWidth"/);
     assert.match(html, /שלום/);
-    assert.match(html, /name="boardTitleText"/);
-    assert.match(html, /name="boardSubtitleText"/);
+    assert.match(html, /name="titleRu"/);
     assert.match(html, /settings-texts-styling-block/);
     assert.match(html, /settings-texts-content-block/);
     assert.match(html, /settings-copy-details/);
-    assert.match(html, /name="donationQrTitle"/);
+    assert.match(html, /name="donationQrTitleRu"/);
     assert.match(html, /admin-number-stepper/);
     assert.doesNotMatch(html, /type="range"/);
     assert.doesNotMatch(html, /<details[^>]*\sopen[\s=>]/i);

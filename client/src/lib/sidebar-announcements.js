@@ -122,7 +122,7 @@ export function buildSidebarAnnouncements(communityEvents, holidays, chabadDates
     ? buildHolidaySidebarItems(holidays)
     : [];
 
-  const chabadItems = boardFeatures.chabadDates !== false
+  const chabadItems = boardFeatures.upcomingHolidays !== false
     ? buildChabadSidebarItems(chabadDates)
     : [];
 

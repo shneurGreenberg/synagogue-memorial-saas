@@ -125,7 +125,7 @@ export function buildAnnouncementItems({
   boardFeatures = {},
 }) {
   const holidayItems = boardFeatures.upcomingHolidays !== false ? buildHolidayItems(holidays) : [];
-  const chabadItems = boardFeatures.chabadDates !== false ? buildChabadItems(chabadDates) : [];
+  const chabadItems = boardFeatures.upcomingHolidays !== false ? buildChabadItems(chabadDates) : [];
   const eventItems = boardFeatures.communityEvents !== false ? communityEvents : [];
   const announcements = selectNearestUpcoming([...holidayItems, ...chabadItems]);
   return [...announcements, ...sortEventsByManualOrder(eventItems)];
