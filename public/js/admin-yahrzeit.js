@@ -73,14 +73,25 @@
     },
   });
 
+  function openPersonById(personId) {
+    const person = peopleById[personId];
+    if (person && personCard) {
+      personCard.openPersonCard(person);
+    }
+  }
+
   document.querySelectorAll('.yahrzeit-card-clickable .yahrzeit-card-open').forEach(function (target) {
     target.addEventListener('click', function () {
       const card = target.closest('.yahrzeit-card-clickable');
       const personId = Number(card && card.getAttribute('data-person-id'));
-      const person = peopleById[personId];
-      if (person && personCard) {
-        personCard.openPersonCard(person);
-      }
+      openPersonById(personId);
+    });
+  });
+
+  document.querySelectorAll('.yahrzeit-upcoming-name-link').forEach(function (button) {
+    button.addEventListener('click', function () {
+      const personId = Number(button.getAttribute('data-person-id'));
+      openPersonById(personId);
     });
   });
 })();

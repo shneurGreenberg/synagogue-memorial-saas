@@ -14,56 +14,64 @@
 </section>
 {{/if}}
 
-<section class="admin-panel yahrzeit-upcoming-section" aria-labelledby="yahrzeit-upcoming-week-title">
-    <h2 id="yahrzeit-upcoming-week-title" class="yahrzeit-upcoming-heading">{{t 'yahrzeit_upcoming_week_title'}}</h2>
-    {{#if upcomingWeek.length}}
-    <table class="yahrzeit-upcoming-table">
-        <thead>
-            <tr>
-                <th scope="col">{{t 'name'}}</th>
-                <th scope="col">{{t 'yahrzeit_upcoming_hebrew_col'}}</th>
-                <th scope="col">{{t 'yahrzeit_upcoming_gregorian_col'}}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{#each upcomingWeek}}
-            <tr>
-                <td>{{this.name}}</td>
-                <td>{{this.hebrewDateLabel}}</td>
-                <td dir="ltr">{{this.gregorianDateLabel}}</td>
-            </tr>
-            {{/each}}
-        </tbody>
-    </table>
-    {{else}}
-    <p class="seed-notice">{{t 'yahrzeit_upcoming_empty'}}</p>
-    {{/if}}
+<section class="admin-panel yahrzeit-upcoming-section">
+    <details class="yahrzeit-upcoming-details">
+        <summary class="yahrzeit-upcoming-heading" id="yahrzeit-upcoming-week-title">{{t 'yahrzeit_upcoming_week_title'}}</summary>
+        {{#if upcomingWeek.length}}
+        <table class="yahrzeit-upcoming-table">
+            <thead>
+                <tr>
+                    <th scope="col">{{t 'name'}}</th>
+                    <th scope="col">{{t 'yahrzeit_upcoming_hebrew_col'}}</th>
+                    <th scope="col">{{t 'yahrzeit_upcoming_gregorian_col'}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each upcomingWeek}}
+                <tr>
+                    <td>
+                        <button type="button" class="yahrzeit-upcoming-name-link" data-person-id="{{this.id}}">{{this.name}}</button>
+                    </td>
+                    <td>{{this.hebrewDateLabel}}</td>
+                    <td dir="ltr">{{this.gregorianDateLabel}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        {{else}}
+        <p class="seed-notice">{{t 'yahrzeit_upcoming_empty'}}</p>
+        {{/if}}
+    </details>
 </section>
 
-<section class="admin-panel yahrzeit-upcoming-section" aria-labelledby="yahrzeit-upcoming-month-title">
-    <h2 id="yahrzeit-upcoming-month-title" class="yahrzeit-upcoming-heading">{{t 'yahrzeit_upcoming_month_title'}}</h2>
-    {{#if upcomingMonth.length}}
-    <table class="yahrzeit-upcoming-table">
-        <thead>
-            <tr>
-                <th scope="col">{{t 'name'}}</th>
-                <th scope="col">{{t 'yahrzeit_upcoming_hebrew_col'}}</th>
-                <th scope="col">{{t 'yahrzeit_upcoming_gregorian_col'}}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{#each upcomingMonth}}
-            <tr>
-                <td>{{this.name}}</td>
-                <td>{{this.hebrewDateLabel}}</td>
-                <td dir="ltr">{{this.gregorianDateLabel}}</td>
-            </tr>
-            {{/each}}
-        </tbody>
-    </table>
-    {{else}}
-    <p class="seed-notice">{{t 'yahrzeit_upcoming_empty'}}</p>
-    {{/if}}
+<section class="admin-panel yahrzeit-upcoming-section">
+    <details class="yahrzeit-upcoming-details">
+        <summary class="yahrzeit-upcoming-heading" id="yahrzeit-upcoming-month-title">{{t 'yahrzeit_upcoming_month_title'}}</summary>
+        {{#if upcomingMonth.length}}
+        <table class="yahrzeit-upcoming-table">
+            <thead>
+                <tr>
+                    <th scope="col">{{t 'name'}}</th>
+                    <th scope="col">{{t 'yahrzeit_upcoming_hebrew_col'}}</th>
+                    <th scope="col">{{t 'yahrzeit_upcoming_gregorian_col'}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each upcomingMonth}}
+                <tr>
+                    <td>
+                        <button type="button" class="yahrzeit-upcoming-name-link" data-person-id="{{this.id}}">{{this.name}}</button>
+                    </td>
+                    <td>{{this.hebrewDateLabel}}</td>
+                    <td dir="ltr">{{this.gregorianDateLabel}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        {{else}}
+        <p class="seed-notice">{{t 'yahrzeit_upcoming_empty'}}</p>
+        {{/if}}
+    </details>
 </section>
 
 {{#if weeklyKaddishReminderEnabled}}

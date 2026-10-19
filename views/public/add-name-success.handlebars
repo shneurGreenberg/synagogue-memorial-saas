@@ -4,9 +4,7 @@
     {{else}}
     <h1>{{publicT 'success_title'}}</h1>
     {{/if}}
-    {{#if submittedName}}
-    <p class="public-name">{{submittedName}}</p>
-    {{/if}}
+
     {{#if (eq successKind 'request')}}
     {{#if isMultiRequest}}
     <p class="public-intro">{{publicT 'request_success_multi'}}</p>
@@ -15,6 +13,21 @@
     {{/if}}
     {{else}}
     <p class="public-intro">{{publicT 'success_message'}}</p>
+    {{/if}}
+
+    {{#if submittedNames.length}}
+    <div class="public-success-summary">
+        <h2 class="public-section-title">{{publicT 'success_summary_title'}}</h2>
+        <ul class="public-success-names">
+            {{#each submittedNames}}
+            <li>{{this}}</li>
+            {{/each}}
+        </ul>
+    </div>
+    {{else}}
+    {{#if submittedName}}
+    <p class="public-name">{{submittedName}}</p>
+    {{/if}}
     {{/if}}
 
     {{#unless (eq successKind 'request')}}
@@ -32,6 +45,44 @@
     {{/unless}}
 
     <div class="public-actions">
+        <a href="{{formUrl}}" class="public-button public-button-primary">{{publicT 'success_add_another'}}</a>
+        <button type="button" class="public-button public-button-secondary" id="publicShareLinkBtn" data-share-url="{{shareUrl}}" data-share-label="{{publicT 'success_share_link'}}" data-copied-label="{{publicT 'success_link_copied'}}">{{publicT 'success_share_link'}}</button>
         <a href="{{boardUrl}}" class="public-button public-button-secondary">{{publicT 'back_to_board'}}</a>
     </div>
 </section>
+
+<script>
+(function () {
+  var btn = document.getElementById('publicShareLinkBtn');
+  if (!btn) {
+    return;
+  }
+  var url = btn.getAttribute('data-share-url') || '';
+  var shareLabel = btn.getAttribute('data-share-label') || 'Share';
+  var copiedLabel = btn.getAttribute('data-copied-label') || 'Copied';
+
+  btn.addEventListener('click', async function () {
+    if (!url) {
+      return;
+    }
+    if (navigator.share) {
+      try {
+        await navigator.share({ url, title: document.title });
+        return;
+      } catch (err) {
+        /* fall through to copy */
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      var original = btn.textContent;
+      btn.textContent = copiedLabel;
+      window.setTimeout(function () {
+        btn.textContent = original || shareLabel;
+      }, 2000);
+    } catch (err) {
+      window.prompt(shareLabel, url);
+    }
+  });
+})();
+</script>

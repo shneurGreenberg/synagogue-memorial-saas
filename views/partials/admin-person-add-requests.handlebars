@@ -10,11 +10,19 @@
                 <p><strong>{{deceasedName}}</strong>{{#if deceasedFatherName}} <span class="admin-person-request-meta">({{t 'person_add_request_father'}}: {{deceasedFatherName}})</span>{{/if}}{{#if gregorianDateOfDeath}} — {{gregorianDateOfDeath.date}}/{{gregorianDateOfDeath.month}}/{{gregorianDateOfDeath.year}}{{/if}}{{#if diedAfterSunset}} · {{t 'person_add_request_after_sunset'}}{{/if}}</p>
                 {{#if relation}}<p class="admin-person-request-meta">{{t 'person_add_request_relation'}}: {{relation}}</p>{{/if}}
                 {{#if deceasedNotes}}<p class="admin-person-request-notes">{{deceasedNotes}}</p>{{/if}}
+                {{#if similarPeople.length}}
+                <p class="admin-person-request-similar" role="status">{{t 'person_add_request_similar'}}: {{#each similarPeople}}<a href="/admin/{{@root.synagogue.slug}}/people?q={{this.searchQuery}}">{{this.name}}</a>{{#unless @last}}, {{/unless}}{{/each}}</p>
+                {{/if}}
                 <p class="admin-person-request-meta">{{t 'person_add_request_submitter'}}: {{submitter.name}}{{#if submitter.phone}} · {{submitter.phone}}{{/if}}{{#if submitter.email}} · {{submitter.email}}{{/if}}</p>
             </div>
-            <form method="POST" action="/admin/{{synagogue.slug}}/person-add-requests/{{id}}/dismiss" class="admin-person-request-actions">
-                <button type="submit" class="btn-admin btn-admin-secondary btn-admin-sm">{{t 'person_add_request_dismiss'}}</button>
-            </form>
+            <div class="admin-person-request-actions">
+                <form method="POST" action="/admin/{{synagogue.slug}}/person-add-requests/{{id}}/approve">
+                    <button type="submit" class="btn-admin btn-admin-primary btn-admin-sm">{{t 'person_add_request_approve'}}</button>
+                </form>
+                <form method="POST" action="/admin/{{synagogue.slug}}/person-add-requests/{{id}}/dismiss">
+                    <button type="submit" class="btn-admin btn-admin-secondary btn-admin-sm">{{t 'person_add_request_dismiss'}}</button>
+                </form>
+            </div>
         </li>
         {{/each}}
     </ul>

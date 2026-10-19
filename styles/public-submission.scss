@@ -434,12 +434,54 @@ html[dir='rtl'] .public-bh-badge {
 
 .public-form {
   display: grid;
-  gap: 14px;
+  gap: 0;
+}
+
+.public-field-group {
+  display: grid;
+  gap: 0;
+  margin-bottom: 20px;
+}
+
+.public-field-group .public-field {
+  margin-top: 16px;
+}
+
+.public-field-group .public-field:first-child {
+  margin-top: 0;
+}
+
+.public-field-notes,
+.public-field-consent {
+  margin-top: 20px;
+}
+
+.public-field-consent .public-consent-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: start;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.public-honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.public-form [hidden],
+.public-deceased-block [hidden] {
+  display: none !important;
 }
 
 .public-field {
   display: grid;
-  gap: 6px;
+  gap: 4px;
+  margin-top: 16px;
 
   span {
     font-size: 14px;
@@ -569,6 +611,65 @@ html[dir='rtl'] .public-bh-badge {
   color: var(--text-color, #f0f0f0);
 }
 
+.public-lang-switch-top {
+  margin-top: 0;
+  margin-bottom: 14px;
+}
+
+.public-gender-field {
+  margin: 16px 0 0;
+  padding: 0;
+  border: none;
+
+  legend {
+    font-size: 14px;
+    color: var(--accent-color, #ffd54f);
+    margin-bottom: 8px;
+    padding: 0;
+  }
+}
+
+.public-gender-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.public-gender-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.public-date-part {
+  display: grid;
+  gap: 4px;
+}
+
+.public-date-part-label {
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.public-success-summary {
+  margin: 16px 0;
+  text-align: center;
+}
+
+.public-success-names {
+  margin: 8px auto 0;
+  padding: 0;
+  list-style: none;
+  line-height: 1.5;
+}
+
 .public-lang-switch {
   display: flex;
   justify-content: center;
@@ -601,6 +702,10 @@ html[dir='rtl'] .public-bh-badge {
 .public-intro,
 .public-note,
 .public-approval-notice,
+.public-section-title {
+  margin-top: 24px;
+}
+
 .public-section-title,
 .public-section-intro,
 .public-card h1 {

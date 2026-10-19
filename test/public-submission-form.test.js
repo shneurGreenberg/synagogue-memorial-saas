@@ -22,7 +22,10 @@ describe('public-submission-form', () => {
           name: 'A',
           fatherName: 'B',
           relationKey: 'ben',
-          deathDate: '2020-01-02',
+          deceasedGender: 'male',
+          deathDay: '2',
+          deathMonth: '1',
+          deathYear: '2020',
           diedAfterSunset: 'after',
         },
         1: {
@@ -30,7 +33,10 @@ describe('public-submission-form', () => {
           fatherName: 'D',
           relationKey: 'other',
           relationOther: 'אחיין',
-          deathDate: '2021-05-10',
+          deceasedGender: 'female',
+          deathDay: '10',
+          deathMonth: '5',
+          deathYear: '2021',
           diedAfterSunset: 'before',
         },
       },
@@ -46,6 +52,7 @@ describe('public-submission-form', () => {
       name: 'X',
       fatherName: '',
       relationKey: 'ben',
+      deceasedGender: 'male',
       gregorianDateOfDeath: { year: 2020, month: 1, date: 1 },
     }]);
     assert.equal(err, 'father');

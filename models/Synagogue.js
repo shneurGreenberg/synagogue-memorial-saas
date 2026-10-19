@@ -29,7 +29,10 @@ const PersonAddRequestSchema = new mongoose.Schema({
   relationOther: { type: String, default: '' },
   deceasedName: { type: String, default: '' },
   deceasedFatherName: { type: String, default: '' },
+  deceasedGender: { type: String, enum: ['male', 'female', ''], default: '' },
   deceasedNotes: { type: String, default: '' },
+  dataConsent: { type: Boolean, default: false },
+  consentAt: { type: Date },
   diedAfterSunset: { type: Boolean, default: false },
   photo: { type: String, default: '' },
   photoCrop: {
