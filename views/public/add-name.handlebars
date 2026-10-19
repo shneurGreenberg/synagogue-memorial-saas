@@ -54,6 +54,8 @@
             </div>
         </div>
 
+        <h2 class="public-section-title public-deceased-section-heading">{{publicT 'deceased_section_title'}}</h2>
+
         <div id="publicDeceasedList" class="public-deceased-list">
             {{#each deceasedList}}
             {{> public-add-name-deceased-block index=this.index block=this inviteMode=false relationOptions=../relationOptions monthOptions=../monthOptions}}
