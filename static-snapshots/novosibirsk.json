@@ -2,6 +2,11 @@
   "slug": "novosibirsk",
   "name": "Novosibirsk",
   "title": "Проект памяти наших родных \"Кадиш\"",
+  "boardTitleText": "Проект памяти наших родных \"Кадиш\"",
+  "boardSubtitle": {
+    "enabled": false,
+    "text": ""
+  },
   "titles": {
     "ru": "Проект памяти наших родных \"Кадиш\"",
     "en": "\"Kaddish\": A Project in Memory of Our Loved Ones",
@@ -25,6 +30,7 @@
       "tileDate": 100,
       "clock": 100,
       "boardHeader": 90,
+      "boardSubtitle": 100,
       "sidebar": 100,
       "prayers": 100,
       "dailyStudy": 90,
@@ -42,6 +48,7 @@
       "tileDate": 131,
       "clock": 135,
       "boardHeader": 89,
+      "boardSubtitle": 100,
       "sidebar": 90,
       "prayers": 124,
       "dailyStudy": 100,
@@ -64,7 +71,10 @@
     "panelBorderRadius": 0,
     "panelBorderWidth": 7,
     "tileBorderRadius": 12,
-    "tileBorderWidth": 1
+    "tileBorderWidth": 1,
+    "boardSubtitleColor": "#f0f0f0",
+    "boardSubtitleFont": "",
+    "boardSubtitleWeight": "400"
   },
   "people": [
     {
@@ -3230,6 +3240,7 @@
     "dailyTanya": false,
     "hayomYom": false,
     "upcomingHolidays": true,
+    "chabadDates": true,
     "communityEvents": true,
     "kelMaleRachamim": true,
     "izkor": false,
@@ -3265,6 +3276,10 @@
       "en": "Scan the QR code to make a donation in memory of loved ones",
       "he": "סרקו את הברקוד לתרומה לזכר יקירים"
     },
+    "titleText": "Добавить имя близкого",
+    "textText": "Сканируйте QR-код для регистрации близких",
+    "donationTitleText": "Цдака — пожертвование",
+    "donationTextText": "Отсканируйте QR-код, чтобы сделать пожертвование в память о близких",
     "titleScale": 100,
     "textScale": 100,
     "qrScale": 80,
@@ -3295,8 +3310,8 @@
       }
     ]
   },
-  "contentVersion": 1792407209546,
-  "exportedAt": "2026-10-19T10:53:29.546Z",
+  "contentVersion": 1792412598072,
+  "exportedAt": "2026-10-19T12:23:18.072Z",
   "jewishContent": {
     "date": "2026-10-19",
     "timezone": "Asia/Novosibirsk",
@@ -3339,9 +3354,38 @@
     "upcomingHolidays": [],
     "chabadDates": [
       {
+        "date": "2026-10-31",
+        "title": "20 Хешвана — день рождения Рашаба",
+        "hebrew": "כ' חשוון – יום הולדת הרי\"צ",
+        "description": "День рождения Рашаба",
+        "category": "chabad"
+      },
+      {
+        "date": "2026-11-19",
+        "title": "9 Кислева — день исцеления Мителер Ребе",
+        "hebrew": "ט' כסלו – יום ההילולא של האמצעי",
+        "description": "Ярцайт Мителер Ребе",
+        "category": "chabad"
+      },
+      {
+        "date": "2026-11-20",
+        "title": "10 Кислева — праздник освобождения Мителер Ребе",
+        "hebrew": "י' כסלו – חג הגאולה של האמצעי",
+        "description": "День освобождения Мителер Ребе из заключения",
+        "category": "chabad"
+      },
+      {
         "date": "2026-11-29",
         "title": "19 Кислева — праздник освобождения",
         "hebrew": "י\"ט כסלו – חג הגאולה",
+        "description": "Освобождение Алтер Ребе; ярцайт Магида",
+        "category": "chabad"
+      },
+      {
+        "date": "2026-11-30",
+        "title": "20 Кислева — продолжение праздника освобождения",
+        "hebrew": "כ' כסלו – המשך חג הגאולה",
+        "description": "Второй день праздника освобождения",
         "category": "chabad"
       }
     ]
@@ -3350,6 +3394,7 @@
     "slug": "novosibirsk",
     "publishedVersion": 5,
     "title": "Проект памяти наших родных \"Кадиш\"",
+    "boardTitleText": "Проект памяти наших родных \"Кадиш\"",
     "language": "ru",
     "location": {
       "lat": 54.9833,
@@ -3361,6 +3406,7 @@
     "boardFeatures": {
       "officialLogo": false,
       "upcomingHolidays": true,
+      "chabadDates": true,
       "communityEvents": true,
       "weather": true
     },
@@ -3383,12 +3429,41 @@
     "upcomingHolidays": [],
     "chabadDates": [
       {
+        "date": "2026-10-31",
+        "title": "20 Хешвана — день рождения Рашаба",
+        "hebrew": "כ' חשוון – יום הולדת הרי\"צ",
+        "description": "День рождения Рашаба",
+        "category": "chabad"
+      },
+      {
+        "date": "2026-11-19",
+        "title": "9 Кислева — день исцеления Мителер Ребе",
+        "hebrew": "ט' כסלו – יום ההילולא של האמצעי",
+        "description": "Ярцайт Мителер Ребе",
+        "category": "chabad"
+      },
+      {
+        "date": "2026-11-20",
+        "title": "10 Кислева — праздник освобождения Мителер Ребе",
+        "hebrew": "י' כסלו – חג הגאולה של האמצעי",
+        "description": "День освобождения Мителер Ребе из заключения",
+        "category": "chabad"
+      },
+      {
         "date": "2026-11-29",
         "title": "19 Кислева — праздник освобождения",
         "hebrew": "י\"ט כסלו – חג הגאולה",
+        "description": "Освобождение Алтер Ребе; ярцайт Магида",
+        "category": "chabad"
+      },
+      {
+        "date": "2026-11-30",
+        "title": "20 Кислева — продолжение праздника освобождения",
+        "hebrew": "כ' כסלו – המשך חג הגאולה",
+        "description": "Второй день праздника освобождения",
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-19T10:53:29.546Z"
+    "updatedAt": "2026-10-19T12:23:18.072Z"
   }
 }
