@@ -1096,6 +1096,13 @@
     document.getElementById('editDate').value = death.date || '';
     document.getElementById('editMonth').value = death.month || '';
     document.getElementById('editYear').value = death.year || '';
+    var diedAfterSunset = !!person.diedAfterSunset;
+    var editBeforeSunset = document.getElementById('editDiedBeforeSunset');
+    var editAfterSunset = document.getElementById('editDiedAfterSunset');
+    if (editBeforeSunset && editAfterSunset) {
+      editBeforeSunset.checked = !diedAfterSunset;
+      editAfterSunset.checked = diedAfterSunset;
+    }
     document.getElementById('editText').value = person.text || '';
     const editInternalNotes = document.getElementById('editInternalNotes');
     if (editInternalNotes) {

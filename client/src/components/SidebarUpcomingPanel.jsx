@@ -217,22 +217,31 @@ function SidebarUpcomingPanelBase({
   const [chabadDates, setChabadDates] = useState([]);
 
   useEffect(() => {
-    if (!slug || (!boardFeatures.upcomingHolidays && !boardFeatures.communityEvents)) {
+    const needsJewishFeed = boardFeatures.upcomingHolidays || boardFeatures.chabadDates;
+    if (!slug || (!needsJewishFeed && !boardFeatures.communityEvents)) {
       return undefined;
     }
 
     let cancelled = false;
 
     const load = async () => {
-      if (!boardFeatures.upcomingHolidays) {
+      if (!needsJewishFeed) {
         return;
       }
 
       try {
         const payload = await fetchJewishFeed(slug, uiLang);
         if (!cancelled && payload) {
-          setHolidays(Array.isArray(payload.upcomingHolidays) ? payload.upcomingHolidays : []);
-          setChabadDates(Array.isArray(payload.chabadDates) ? payload.chabadDates : []);
+          setHolidays(
+            boardFeatures.upcomingHolidays
+              ? (Array.isArray(payload.upcomingHolidays) ? payload.upcomingHolidays : [])
+              : [],
+          );
+          setChabadDates(
+            boardFeatures.chabadDates
+              ? (Array.isArray(payload.chabadDates) ? payload.chabadDates : [])
+              : [],
+          );
         }
       } catch {
         /* ignore transient network errors */
@@ -246,7 +255,7 @@ function SidebarUpcomingPanelBase({
       cancelled = true;
       window.clearInterval(timer);
     };
-  }, [slug, uiLang, boardFeatures.upcomingHolidays, boardFeatures.communityEvents]);
+  }, [slug, uiLang, boardFeatures.upcomingHolidays, boardFeatures.chabadDates, boardFeatures.communityEvents]);
 
   const items = useMemo(
     () => buildSidebarAnnouncements(communityEvents, holidays, chabadDates, boardFeatures),

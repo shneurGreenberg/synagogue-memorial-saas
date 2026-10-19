@@ -211,6 +211,7 @@ export default function App() {
   const boardFeatures = remotePayload?.boardFeatures || {
     officialLogo: true,
     upcomingHolidays: true,
+    chabadDates: true,
     communityEvents: true,
     weather: true,
   };

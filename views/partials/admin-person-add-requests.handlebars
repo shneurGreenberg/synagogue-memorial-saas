@@ -7,7 +7,7 @@
         <li class="admin-person-request-card">
             <div class="admin-person-request-badge">{{t 'person_add_request_type'}}</div>
             <div class="admin-person-request-body">
-                <p><strong>{{deceasedName}}</strong>{{#if gregorianDateOfDeath}} — {{gregorianDateOfDeath.date}}/{{gregorianDateOfDeath.month}}/{{gregorianDateOfDeath.year}}{{/if}}</p>
+                <p><strong>{{deceasedName}}</strong>{{#if deceasedFatherName}} <span class="admin-person-request-meta">({{t 'person_add_request_father'}}: {{deceasedFatherName}})</span>{{/if}}{{#if gregorianDateOfDeath}} — {{gregorianDateOfDeath.date}}/{{gregorianDateOfDeath.month}}/{{gregorianDateOfDeath.year}}{{/if}}{{#if diedAfterSunset}} · {{t 'person_add_request_after_sunset'}}{{/if}}</p>
                 {{#if relation}}<p class="admin-person-request-meta">{{t 'person_add_request_relation'}}: {{relation}}</p>{{/if}}
                 {{#if deceasedNotes}}<p class="admin-person-request-notes">{{deceasedNotes}}</p>{{/if}}
                 <p class="admin-person-request-meta">{{t 'person_add_request_submitter'}}: {{submitter.name}}{{#if submitter.phone}} · {{submitter.phone}}{{/if}}{{#if submitter.email}} · {{submitter.email}}{{/if}}</p>
