@@ -19,17 +19,10 @@ export default defineConfig({
     emptyOutDir: true,
     // Shared lib/*.js modules are CommonJS outside the client root; include them so
     // named imports survive the production bundle.
+    // Any CommonJS under lib/ pulled in by the client must be transformed (including
+    // transitive requires, e.g. board-subtitle → board-defaults → theme-borders).
     commonjsOptions: {
-      include: [
-        /node_modules/,
-        /lib\/death-date\.js/,
-        /lib\/memorial-qr-panel\.js/,
-        /lib\/board-yahrzeit-layout\.js/,
-        /lib\/daily-gates-layout\.js/,
-        /lib\/community-unified-copy\.js/,
-        /lib\/board-subtitle\.js/,
-        /lib\/default-board-titles\.js/,
-      ],
+      include: [/node_modules/, /[/\\]lib[/\\][^/\\]+\.js$/],
     },
     rollupOptions: {
       output: {

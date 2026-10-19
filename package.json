@@ -22,7 +22,7 @@
     "export:snapshots": "node scripts/export-static-snapshot.js",
     "dev:board": "vite build --config vite.board.config.mjs --watch",
     "test": "node --test test/*.test.js",
-    "release:check": "npm test && npm run build:board && npm run build:css",
+    "release:check": "npm test && npm run build:board && node scripts/check-board-built-bundle.js && npm run build:css",
     "test:unit": "node --test test/public-board.test.js test/http-security.test.js test/http-etag.test.js",
     "test:smoke": "node --test test/smoke.test.js"
   },
