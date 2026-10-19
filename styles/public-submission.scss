@@ -597,9 +597,12 @@ html[dir='rtl'] .public-bh-badge {
   }
 }
 
-html[dir='rtl'] .public-field,
-html[dir='rtl'] .public-intro,
-html[dir='rtl'] .public-note,
-html[dir='rtl'] .public-card h1 {
+.public-field,
+.public-intro,
+.public-note,
+.public-approval-notice,
+.public-section-title,
+.public-section-intro,
+.public-card h1 {
   text-align: center;
 }

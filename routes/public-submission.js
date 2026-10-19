@@ -1,15 +1,9 @@
 const express = require('express');
-const path = require('path');
-const fs = require('fs');
-const multer = require('multer');
 const Synagogue = require('../models/Synagogue');
-const MemorialPersonInvite = require('../models/MemorialPersonInvite');
-const { PHOTOS_DIR } = require('../lib/storage-paths');
 const { normalizePublicSubmission } = require('../lib/public-submission');
 const {
   getPublicSubmissionTranslator,
   resolvePublicSubmissionLang,
-  getContactPlatformOptions,
 } = require('../lib/public-submission-i18n');
 const { getRelationOptions } = require('../lib/submission-relation');
 const {
@@ -22,11 +16,7 @@ const {
   validateDeceasedEntries,
 } = require('../lib/public-submission-form');
 const { pushPersonAddRequests } = require('../lib/public-submission-persist');
-const {
-  createPublicSubmissionRateLimiter,
-  isAllowedImageUpload,
-} = require('../lib/http-security');
-const { MAX_UPLOAD_BYTES } = require('../lib/upload-limits');
+const { createPublicSubmissionRateLimiter } = require('../lib/http-security');
 
 const router = express.Router();
 const OFFICIAL_LOGO_FILENAME = 'kaddish-official-logo.svg';
@@ -41,60 +31,6 @@ const EMPTY_DECEASED_BLOCK = {
   diedAfterSunset: false,
 };
 
-const MIME_EXT = {
-  'image/jpeg': '.jpg',
-  'image/png': '.png',
-  'image/webp': '.webp',
-  'image/gif': '.gif',
-};
-
-function ensureDir(dir) {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-}
-
-const upload = multer({
-  storage: multer.diskStorage({
-    destination(req, file, cb) {
-      ensureDir(PHOTOS_DIR);
-      cb(null, PHOTOS_DIR);
-    },
-    filename(req, file, cb) {
-      let ext = path.extname(file.originalname).toLowerCase();
-      if (!ext && file.mimetype && MIME_EXT[file.mimetype]) {
-        ext = MIME_EXT[file.mimetype];
-      }
-      cb(null, `${Date.now()}-${Math.random().toString(36).slice(2)}${ext || '.jpg'}`);
-    },
-  }),
-  limits: { fileSize: MAX_UPLOAD_BYTES },
-  fileFilter(req, file, cb) {
-    if (!isAllowedImageUpload(file)) {
-      return cb(new Error('image_only'));
-    }
-    cb(null, true);
-  },
-});
-
-function handlePublicPhotoUpload(req, res, next) {
-  upload.any()(req, res, (err) => {
-    if (!err) {
-      return next();
-    }
-
-    const lang = resolvePublicSubmissionLang(req.body && req.body.lang, 'ru');
-    const inviteToken = req.params.token || '';
-    const base = inviteToken
-      ? `/s/${req.params.slug}/add-name/invite/${inviteToken}`
-      : `/s/${req.params.slug}/add-name`;
-    if (err.code === 'LIMIT_FILE_SIZE' || err.message === 'image_only') {
-      return res.redirect(`${base}?lang=${lang}&error=upload`);
-    }
-    return res.status(400).send(err.message);
-  });
-}
-
 function renderPublicPage(res, view, data) {
   return res.render(view, {
     layout: 'public',
@@ -104,6 +40,12 @@ function renderPublicPage(res, view, data) {
 
 async function loadSynagogue(slug) {
   return Synagogue.findOne({ slug }).lean();
+}
+
+function redirectLegacyInviteToAddName(req, res) {
+  const slug = req.params.slug;
+  const query = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+  return res.redirect(302, `/s/${slug}/add-name${query}`);
 }
 
 function buildPageContext(synagogue, lang, options = {}) {
@@ -125,7 +67,7 @@ function buildPageContext(synagogue, lang, options = {}) {
     officialLogoUrl: `/images/${OFFICIAL_LOGO_FILENAME}`,
     communityLogoUrl: communityLogo ? `/images/${communityLogo}` : '',
     communityLogoBackground: logoBackground || '',
-    inviteMode: !!options.inviteMode,
+    inviteMode: false,
     relationOptions: getRelationOptions(lang),
     emptyDeceasedBlock: EMPTY_DECEASED_BLOCK,
   };
@@ -238,14 +180,14 @@ function redirectWithFormError(res, baseUrl, lang, errorCode, body) {
 }
 
 async function processPublicSubmissionPost(req, res, options) {
-  const { slug, baseUrl, successBaseUrl, requireInviteContact } = options;
+  const { slug, baseUrl, successBaseUrl } = options;
   const synagogue = await Synagogue.findOne({ slug });
   if (!synagogue) {
     return res.status(404).send('Synagogue not found');
   }
 
   const publicSubmission = normalizePublicSubmission(synagogue.publicSubmission, synagogue.provisioning);
-  if (!publicSubmission.enabled && !options.inviteMode) {
+  if (!publicSubmission.enabled) {
     return res.redirect(`/s/${slug}/add-name?error=disabled`);
   }
 
@@ -258,14 +200,7 @@ async function processPublicSubmissionPost(req, res, options) {
     return redirectWithFormError(res, baseUrl, lang, entryError, req.body);
   }
 
-  if (requireInviteContact) {
-    if (!String(contact.name || '').trim()) {
-      return redirectWithFormError(res, baseUrl, lang, 'required', req.body);
-    }
-    if (!validatePublicSubmissionContact(contact)) {
-      return redirectWithFormError(res, baseUrl, lang, 'contact', req.body);
-    }
-  } else if (!validateRequestSubmitter(contact)) {
+  if (!validateRequestSubmitter(contact)) {
     return redirectWithFormError(res, baseUrl, lang, 'required', req.body);
   }
 
@@ -297,17 +232,6 @@ async function processPublicSubmissionPost(req, res, options) {
   return res.redirect(`${successBaseUrl}?${params.toString()}`);
 }
 
-async function loadPersonInvite(slug, token) {
-  const invite = await MemorialPersonInvite.findOne({
-    token: String(token || '').trim(),
-    synagogueSlug: String(slug || '').trim(),
-  });
-  if (!invite || !invite.isUsable()) {
-    return null;
-  }
-  return invite;
-}
-
 router.get('/:slug/add-name', async (req, res) => {
   try {
     const synagogue = await loadSynagogue(req.params.slug);
@@ -334,92 +258,17 @@ router.post('/:slug/add-name', publicSubmissionRateLimiter, async (req, res) => 
       slug: req.params.slug,
       baseUrl: `/s/${req.params.slug}/add-name`,
       successBaseUrl: `/s/${req.params.slug}/add-name/success`,
-      requireInviteContact: false,
     });
   } catch (err) {
     return res.status(500).send(err.message);
   }
 });
 
-router.get('/:slug/add-name/invite/:token', async (req, res) => {
-  try {
-    const synagogue = await loadSynagogue(req.params.slug);
-    if (!synagogue) {
-      return res.status(404).send('Synagogue not found');
-    }
+router.get('/:slug/add-name/invite/:token', redirectLegacyInviteToAddName);
 
-    const invite = await loadPersonInvite(req.params.slug, req.params.token);
-    const lang = resolvePublicSubmissionLang(req.query.lang, synagogue.language);
-    const formUrl = `/s/${synagogue.slug}/add-name/invite/${req.params.token}`;
-    const context = buildPageContext(synagogue, lang, {
-      formUrl,
-      successUrl: `${formUrl}/success`,
-      inviteMode: true,
-    });
+router.post('/:slug/add-name/invite/:token', publicSubmissionRateLimiter, redirectLegacyInviteToAddName);
 
-    if (!invite) {
-      return renderPublicPage(res, 'public/add-name-invite-invalid', {
-        ...context,
-        inviteInvalid: true,
-      });
-    }
-
-    return renderPublicPage(res, 'public/add-name-invite', {
-      ...enrichFormRenderContext(context, req.query),
-      inviteToken: invite.token,
-      contactPlatformOptions: getContactPlatformOptions(lang, { excludeEmail: true }),
-    });
-  } catch (err) {
-    return res.status(500).send(err.message);
-  }
-});
-
-router.post('/:slug/add-name/invite/:token', publicSubmissionRateLimiter, handlePublicPhotoUpload, async (req, res) => {
-  try {
-    const invite = await loadPersonInvite(req.params.slug, req.params.token);
-    if (!invite) {
-      return res.status(403).send('Invite link is not valid');
-    }
-
-    const formUrl = `/s/${req.params.slug}/add-name/invite/${req.params.token}`;
-    return processPublicSubmissionPost(req, res, {
-      slug: req.params.slug,
-      baseUrl: formUrl,
-      successBaseUrl: `${formUrl}/success`,
-      requireInviteContact: true,
-      inviteMode: true,
-    });
-  } catch (err) {
-    return res.status(500).send(err.message);
-  }
-});
-
-router.get('/:slug/add-name/invite/:token/success', async (req, res) => {
-  try {
-    const synagogue = await loadSynagogue(req.params.slug);
-    if (!synagogue) {
-      return res.status(404).send('Synagogue not found');
-    }
-
-    const lang = resolvePublicSubmissionLang(req.query.lang, synagogue.language);
-    const formUrl = `/s/${synagogue.slug}/add-name/invite/${req.params.token}`;
-    const context = buildPageContext(synagogue, lang, {
-      formUrl,
-      successUrl: `${formUrl}/success`,
-      inviteMode: true,
-    });
-
-    return renderPublicPage(res, 'public/add-name-success', {
-      ...context,
-      submittedName: String(req.query.name || '').trim(),
-      successKind: 'request',
-      submittedCount: parseInt(req.query.count, 10) || 1,
-      isMultiRequest: (parseInt(req.query.count, 10) || 1) > 1,
-    });
-  } catch (err) {
-    return res.status(500).send(err.message);
-  }
-});
+router.get('/:slug/add-name/invite/:token/success', redirectLegacyInviteToAddName);
 
 router.get('/:slug/add-name/success', async (req, res) => {
   try {
@@ -462,3 +311,4 @@ router.get('/:slug/add-name/charity', async (req, res) => {
 module.exports = router;
 module.exports.processPublicSubmissionPost = processPublicSubmissionPost;
 module.exports.pushPersonAddRequests = pushPersonAddRequests;
+module.exports.redirectLegacyInviteToAddName = redirectLegacyInviteToAddName;

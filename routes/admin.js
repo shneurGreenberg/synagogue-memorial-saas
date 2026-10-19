@@ -98,7 +98,6 @@ const {
   normalizeImportedSnapshot,
   readImportName,
 } = require('../lib/saved-view-portable');
-const MemorialPersonInvite = require('../models/MemorialPersonInvite');
 const { listPendingPersonAddRequests } = require('../lib/person-add-request');
 const { parsePersonContactsFromBody, normalizePersonContact, personContactsToLegacyFields, getPersonContacts, hasContactDetails } = require('../lib/person-contact');
 const { parseContactImportFile } = require('../lib/google-contacts-import');
@@ -629,7 +628,7 @@ const getInitials = (name) => {
 
 const ADMIN_PAGE_SCRIPTS = {
     'admin/dashboard': [],
-    'admin/people': ['admin-people.js', 'admin-person-card.js', 'contact-platform-ui.js', 'admin-person-invites.js'],
+    'admin/people': ['admin-people.js', 'admin-person-card.js', 'contact-platform-ui.js'],
     'admin/contacts': ['admin-contact-directory.js', 'contact-platform-ui.js'],
     'admin/events': ['admin-events.js', 'admin-slideshow.js'],
     'admin/users': ['admin-users.js'],
@@ -1336,7 +1335,14 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
             now,
             adminLanguage: displaySynagogue.adminLanguage,
         });
-        const { entries, weekEntries, weeklyKaddish: weeklyKaddishBase, dayKey: todayLabel } = bundle;
+        const {
+            entries,
+            weekEntries,
+            upcomingWeek,
+            upcomingMonth,
+            weeklyKaddish: weeklyKaddishBase,
+            dayKey: todayLabel,
+        } = bundle;
         timing.mark('compute');
         const entryIds = new Set(entries.map((entry) => entry.id));
         const weekIds = new Set(weekEntries.map((entry) => entry.id));
@@ -1370,6 +1376,8 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
             adminPermissions: req.adminPermissions,
             entries,
             weekEntries,
+            upcomingWeek,
+            upcomingMonth,
             yahrzeitPeople,
             todayLabel,
             upcomingHolidayNotice,
@@ -1517,31 +1525,6 @@ router.get('/:slug/people/list', requireAdmin, requirePermission('people'), asyn
     }
 });
 
-function buildMemorialPersonInviteUrl(req, slug, token) {
-    const host = req.get('host');
-    return `${req.protocol}://${host}/s/${encodeURIComponent(slug)}/add-name/invite/${encodeURIComponent(token)}`;
-}
-
-async function loadMemorialPersonInvitesForAdmin(req, slug) {
-    const invites = await MemorialPersonInvite.find({ synagogueSlug: slug })
-        .sort({ createdAt: -1 })
-        .limit(40)
-        .lean();
-
-    return invites.map((invite) => {
-        const doc = new MemorialPersonInvite(invite);
-        return {
-            id: String(invite._id),
-            label: invite.label || '',
-            createdAt: invite.createdAt,
-            expiresAt: invite.expiresAt,
-            revoked: !!invite.revoked,
-            active: doc.isUsable(),
-            inviteUrl: buildMemorialPersonInviteUrl(req, slug, invite.token),
-        };
-    });
-}
-
 router.get('/:slug/people', requireAdmin, requirePermission('people'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
@@ -1549,7 +1532,6 @@ router.get('/:slug/people', requireAdmin, requirePermission('people'), async (re
         const enriched = enrichSynagogueForAdmin(synagogue);
         enriched.contactDirectoryCount = normalizeContactDirectory(enriched.contactDirectory).length;
         const pendingPersonAddRequests = listPendingPersonAddRequests(enriched.personAddRequests);
-        const personInvites = await loadMemorialPersonInvitesForAdmin(req, req.params.slug);
         renderAdmin(res, 'admin/people', {
             synagogue: enriched,
             adminUser: req.adminUser,
@@ -1560,8 +1542,6 @@ router.get('/:slug/people', requireAdmin, requirePermission('people'), async (re
             undatedOnly: req.query.undated === '1',
             peopleSearchQuery: parsePeopleListSearchParam(req.query.q),
             pendingPersonAddRequests,
-            personInvites,
-            inviteCreated: req.query.inviteCreated === '1',
         });
     } catch (err) {
         res.status(500).send(err.message);
@@ -1583,46 +1563,6 @@ router.post('/:slug/person-add-requests/:requestId/dismiss', requireAdmin, requi
         }
         invalidateAdminSynagogueCache(req.params.slug);
         return res.redirect(`/admin/${req.params.slug}/people`);
-    } catch (err) {
-        return res.status(500).send(err.message);
-    }
-});
-
-router.post('/:slug/person-invites', requireAdmin, requirePermission('people'), async (req, res) => {
-    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
-    try {
-        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).select('slug').lean();
-        if (!synagogue) {
-            return res.status(404).send('Not found');
-        }
-
-        const label = String(req.body.label || '').trim().slice(0, 120);
-        const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-        const token = MemorialPersonInvite.generateToken();
-        await new MemorialPersonInvite({
-            synagogueSlug: req.params.slug,
-            token,
-            label,
-            expiresAt,
-        }).save();
-
-        return res.redirect(`/admin/${req.params.slug}/people?inviteCreated=1#person-invites`);
-    } catch (err) {
-        return res.status(500).send(err.message);
-    }
-});
-
-router.post('/:slug/person-invites/:inviteId/revoke', requireAdmin, requirePermission('people'), async (req, res) => {
-    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
-    try {
-        const result = await MemorialPersonInvite.updateOne(
-            { _id: req.params.inviteId, synagogueSlug: req.params.slug },
-            { $set: { revoked: true } },
-        );
-        if (!result.matchedCount) {
-            return res.status(404).send('Not found');
-        }
-        return res.redirect(`/admin/${req.params.slug}/people#person-invites`);
     } catch (err) {
         return res.status(500).send(err.message);
     }
