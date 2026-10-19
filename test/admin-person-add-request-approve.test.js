@@ -150,6 +150,29 @@ describe('admin person-add-request approve and dismiss', () => {
     }
   });
 
+  it('does not show wrong-community page for malformed approve URL (missing slug)', async () => {
+    harness.resetState();
+    const res = await request(
+      server,
+      'POST',
+      '/admin//person-add-requests/req-new-1/approve',
+    );
+    assert.equal(res.status, 404);
+    assert.doesNotMatch(res.body, /admin-wrong-community-page/);
+    assert.doesNotMatch(res.body, /wrong_community/);
+  });
+
+  it('does not show wrong-community page when route segment is person-add-requests', async () => {
+    harness.resetState();
+    const res = await request(
+      server,
+      'POST',
+      '/admin/person-add-requests/req-new-1/approve',
+    );
+    assert.equal(res.status, 404);
+    assert.doesNotMatch(res.body, /admin-wrong-community-page/);
+  });
+
   it('approves legacy pending without stored id or status', async () => {
     harness.resetState();
     const {
