@@ -6322,8 +6322,8 @@
   "boardHideSearchAndPager": false,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1792421942258,
-  "exportedAt": "2026-10-19T14:59:02.258Z",
+  "contentVersion": 1792422720776,
+  "exportedAt": "2026-10-19T15:12:00.776Z",
   "jewishContent": {
     "date": "2026-10-19",
     "timezone": "Asia/Tomsk",
@@ -6475,6 +6475,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-19T14:59:02.258Z"
+    "updatedAt": "2026-10-19T15:12:00.776Z"
   }
 }
