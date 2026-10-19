@@ -599,18 +599,16 @@
             }
 
             return {
-                memorialQrTitleRu: value('memorialQrTitleRu'),
-                memorialQrTitleEn: value('memorialQrTitleEn'),
-                memorialQrTitleHe: value('memorialQrTitleHe'),
-                memorialQrTextRu: value('memorialQrTextRu'),
-                memorialQrTextEn: value('memorialQrTextEn'),
-                memorialQrTextHe: value('memorialQrTextHe'),
-                donationQrTitleRu: value('donationQrTitleRu'),
-                donationQrTitleEn: value('donationQrTitleEn'),
-                donationQrTitleHe: value('donationQrTitleHe'),
-                donationQrTextRu: value('donationQrTextRu'),
-                donationQrTextEn: value('donationQrTextEn'),
-                donationQrTextHe: value('donationQrTextHe'),
+                memorialQrTitle: value('memorialQrTitle'),
+                memorialQrText: value('memorialQrText'),
+                donationQrTitle: value('donationQrTitle'),
+                donationQrText: value('donationQrText'),
+                boardTitleText: value('boardTitleText'),
+                boardSubtitleEnabled: document.getElementById('boardSubtitleEnabled') && document.getElementById('boardSubtitleEnabled').checked ? '1' : '',
+                boardSubtitleText: value('boardSubtitleText'),
+                boardSubtitleFont: value('boardSubtitleFont'),
+                boardSubtitleColor: value('boardSubtitleColor'),
+                boardSubtitleWeight: value('boardSubtitleWeight'),
                 memorialQrTitleScale: value('memorialQrTitleScale'),
                 memorialQrTextScale: value('memorialQrTextScale'),
                 memorialQrQrScale: value('memorialQrQrScale'),
@@ -632,16 +630,12 @@
             var tileBorderRadius = document.getElementById('tileBorderRadius');
             var tileBorderWidth = document.getElementById('tileBorderWidth');
             var boardFont = document.getElementById('boardFont');
-            var titleRu = document.getElementById('titleRu');
-            var titleEn = document.getElementById('titleEn');
-            var titleHe = document.getElementById('titleHe');
+            var boardTitleText = document.getElementById('boardTitleText');
             var languageSelect = document.getElementById('language');
 
             return Object.assign({
                 type: PREVIEW_MESSAGE,
-                titleRu: titleRu ? titleRu.value.trim() : '',
-                titleEn: titleEn ? titleEn.value.trim() : '',
-                titleHe: titleHe ? titleHe.value.trim() : '',
+                boardTitleText: boardTitleText ? boardTitleText.value.trim() : '',
                 primaryColor: primary ? primary.value : '',
                 textColor: text ? text.value : '',
                 accentColor: accent ? accent.value : '',
@@ -707,12 +701,17 @@
             input.addEventListener('input', schedulePreview);
         });
 
-        ['titleRu', 'titleEn', 'titleHe'].forEach(function (id) {
+        ['boardTitleText', 'boardSubtitleText', 'boardSubtitleFont', 'boardSubtitleColor', 'boardSubtitleWeight'].forEach(function (id) {
             var el = document.getElementById(id);
             if (el) {
                 el.addEventListener('input', schedulePreview);
+                el.addEventListener('change', schedulePreview);
             }
         });
+        var boardSubtitleEnabled = document.getElementById('boardSubtitleEnabled');
+        if (boardSubtitleEnabled) {
+            boardSubtitleEnabled.addEventListener('change', schedulePreview);
+        }
 
         var languageSelect = document.getElementById('language');
         if (languageSelect) {
@@ -814,9 +813,25 @@
         function buildPreviewSearchParams(patch) {
             var params = new URLSearchParams();
             params.set('preview', '1');
-            params.set('titleRu', patch.titleRu || '');
-            params.set('titleEn', patch.titleEn || '');
-            params.set('titleHe', patch.titleHe || '');
+            params.set('boardTitleText', patch.boardTitleText || '');
+            if (patch.boardSubtitleEnabled) {
+                params.set('boardSubtitleEnabled', patch.boardSubtitleEnabled);
+            }
+            params.set('boardSubtitleText', patch.boardSubtitleText || '');
+            if (patch.boardSubtitleFont) {
+                params.set('boardSubtitleFont', patch.boardSubtitleFont);
+            }
+            if (patch.boardSubtitleColor) {
+                params.set('boardSubtitleColor', patch.boardSubtitleColor);
+            }
+            if (patch.boardSubtitleWeight) {
+                params.set('boardSubtitleWeight', patch.boardSubtitleWeight);
+            }
+            ['memorialQrTitle', 'memorialQrText', 'donationQrTitle', 'donationQrText'].forEach(function (key) {
+                if (patch[key] !== undefined) {
+                    params.set(key, patch[key] || '');
+                }
+            });
             params.set('primaryColor', patch.primaryColor || '');
             params.set('textColor', patch.textColor || '');
             params.set('accentColor', patch.accentColor || '');

@@ -8,7 +8,7 @@ const REGRESSION_AREAS = [
   { topic: 'weekly Chumash parsha/aliyah (Oct 2026)', tests: ['test/weekly-chumash.test.js', 'test/jewish-feed-chumash.test.js'] },
   { topic: 'mojibake scan', tests: ['test/no-mojibake.test.js'] },
   { topic: 'upcoming holidays window / Sigd / ranges', tests: ['test/upcoming-holidays.test.js', 'test/regression-holidays.test.js'] },
-  { topic: 'Chabad dates through next month', tests: ['test/chabad-dates.test.js'] },
+  { topic: 'Chabad dates through next month', tests: ['test/chabad-dates.test.js', 'test/chabad-dates-data.test.js', 'test/jewish-feed-chabad-toggle.test.js'] },
   { topic: 'Hebrew gematria dates', tests: ['test/hebrew-date-format.test.js'] },
   { topic: 'saved-view design-only portable', tests: ['test/saved-view-design.test.js', 'test/saved-view-export.test.js'] },
   { topic: 'MyMemory warning filter', tests: ['test/mymemory-translate.test.js'] },

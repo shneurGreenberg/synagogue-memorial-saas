@@ -10,7 +10,7 @@ describe('chabad-dates', () => {
   it('returns UTF-8 Russian titles for upcoming dates', () => {
     const from = new Date(2026, 10, 1);
     const dates = getUpcomingChabadDates('ru', from, 60);
-    const kislev = dates.find((entry) => entry.title.includes('Кислева'));
+    const kislev = dates.find((entry) => entry.title.includes('19 Кислева'));
     assert.ok(kislev, 'expected 19 Kislev entry');
     assert.match(kislev.title, /праздник освобождения/);
     assert.doesNotMatch(kislev.title, /РљРё/);
