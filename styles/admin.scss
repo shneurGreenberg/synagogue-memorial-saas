@@ -3726,6 +3726,13 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
   gap: 1.5rem;
 }
 
+.yahrzeit-settings-saved {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  color: var(--admin-success, #3dd68c);
+  font-weight: 600;
+}
+
 .yahrzeit-upcoming-section {
   margin-bottom: 1.5rem;
 

@@ -634,7 +634,7 @@ const ADMIN_PAGE_SCRIPTS = {
     'admin/contacts': ['admin-contact-directory.js', 'contact-platform-ui.js'],
     'admin/events': ['admin-events.js', 'admin-slideshow.js'],
     'admin/users': ['admin-users.js'],
-    'admin/yahrzeit': ['admin-yahrzeit.js', 'admin-tile-capture.js'],
+    'admin/yahrzeit': ['admin-person-card.js', 'admin-yahrzeit.js', 'admin-tile-capture.js'],
 };
 
 const ADMIN_NAV_BY_VIEW = {
@@ -826,9 +826,6 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
             Object.assign(updateData, Object.fromEntries(
                 Object.entries(boardFeatures).map(([key, value]) => [`boardFeatures.${key}`, value]),
             ));
-            if ('publicSubmissionEnabled' in req.body) {
-                updateData['publicSubmission.enabled'] = !!publicSubmission.enabled;
-            }
         }
 
         if (permissions.settingsBranding) {
@@ -1317,6 +1314,10 @@ router.post('/:slug/yahrzeit/settings', requireAdmin, requirePermission('people'
                     : {}),
             },
         });
+        invalidateAdminSynagogueCache(req.params.slug);
+        if (req.get('X-Requested-With') === 'fetch') {
+            return res.json({ ok: true });
+        }
         return res.redirect(`/admin/${req.params.slug}/yahrzeit?saved=1`);
     } catch (err) {
         return res.status(500).send(err.message);
@@ -1346,12 +1347,13 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
             dayKey: todayLabel,
         } = bundle;
         timing.mark('compute');
-        const entryIds = new Set(entries.map((entry) => entry.id));
-        const weekIds = new Set(weekEntries.map((entry) => entry.id));
-        upcomingWeek.forEach((row) => entryIds.add(row.id));
-        upcomingMonth.forEach((row) => entryIds.add(row.id));
+        const personIdKey = (id) => String(id);
+        const entryIds = new Set(entries.map((entry) => personIdKey(entry.id)));
+        const weekIds = new Set(weekEntries.map((entry) => personIdKey(entry.id)));
+        upcomingWeek.forEach((row) => entryIds.add(personIdKey(row.id)));
+        upcomingMonth.forEach((row) => entryIds.add(personIdKey(row.id)));
         const yahrzeitPeople = (enriched.people || []).filter((person) => (
-            entryIds.has(person.id) || weekIds.has(person.id)
+            entryIds.has(personIdKey(person.id)) || weekIds.has(personIdKey(person.id))
         ));
 
         const upcomingHolidayNotice = await getUpcomingHolidayNotice(enriched);

@@ -7,7 +7,7 @@
     <div class="public-deceased-row-relation">
         <label class="public-field public-field-relation">
             <span>{{publicT 'relation_label'}}</span>
-            <select name="deceased[{{index}}][relationKey]" class="public-relation-select" required>
+            <select name="deceased[{{index}}][relationKey]" class="public-relation-select public-select-field" required>
                 <option value="" disabled {{#unless block.relationKey}}selected{{/unless}}>{{publicT 'relation_select_placeholder'}}</option>
                 {{#each relationOptions}}
                 <option value="{{this.value}}" {{#if (eq ../block.relationKey this.value)}}selected{{/if}}>{{this.label}}</option>
@@ -41,32 +41,13 @@
 
     <label class="public-field">
         <span>{{publicT 'father_name_label'}}</span>
-        <span class="public-field-hint">{{publicT 'father_name_hint'}}</span>
         <input type="text" name="deceased[{{index}}][fatherName]" maxlength="120" required value="{{block.fatherName}}" placeholder="{{publicT 'father_name_placeholder'}}">
     </label>
 
-    <div class="public-field public-field-death-date">
+    <label class="public-field public-field-death-date">
         <span>{{publicT 'death_date_label'}}</span>
-        <div class="public-date-grid">
-            <label class="public-date-part">
-                <span class="public-date-part-label">{{publicT 'death_day_label'}}</span>
-                <input type="number" name="deceased[{{index}}][deathDay]" class="public-death-day" min="1" max="31" required value="{{block.deathDay}}" inputmode="numeric" placeholder="DD">
-            </label>
-            <label class="public-date-part">
-                <span class="public-date-part-label">{{publicT 'death_month_label'}}</span>
-                <select name="deceased[{{index}}][deathMonth]" class="public-death-month" required>
-                    <option value="" disabled {{#unless block.deathMonth}}selected{{/unless}}>—</option>
-                    {{#each monthOptions}}
-                    <option value="{{this.value}}" {{#if (eq ../block.deathMonth this.value)}}selected{{/if}}>{{this.label}}</option>
-                    {{/each}}
-                </select>
-            </label>
-            <label class="public-date-part">
-                <span class="public-date-part-label">{{publicT 'death_year_label'}}</span>
-                <input type="number" name="deceased[{{index}}][deathYear]" class="public-death-year" min="1800" max="2100" required value="{{block.deathYear}}" inputmode="numeric" placeholder="YYYY">
-            </label>
-        </div>
-    </div>
+        <input type="text" name="deceased[{{index}}][deathDate]" class="public-death-date-input public-select-field" required value="{{block.deathDateDisplay}}" placeholder="{{publicT 'death_date_placeholder'}}" dir="ltr" autocomplete="off" maxlength="10">
+    </label>
 
     <fieldset class="public-sunset-field">
         <legend>{{publicT 'sunset_legend'}}</legend>
