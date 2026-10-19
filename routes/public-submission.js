@@ -31,6 +31,10 @@ const {
 const { pushPersonAddRequests } = require('../lib/public-submission-persist');
 const { createPublicSubmissionRateLimiter } = require('../lib/http-security');
 const { formatDdMmYyyy, formatDdMmYyyyFromIso } = require('../lib/dd-mm-yyyy-date');
+const {
+  formatDeceasedCardBadge,
+  formatPublicSubmitLabel,
+} = require('../lib/public-add-name-labels');
 
 const router = express.Router();
 const OFFICIAL_LOGO_FILENAME = 'kaddish-official-logo.svg';
@@ -162,24 +166,32 @@ function buildFormValuesFromQuery(query, synagogue) {
   };
 }
 
-function buildDeceasedRenderList(query) {
+function buildDeceasedRenderList(query, lang) {
   const blocks = deceasedBlocksFromQuery(query);
   return blocks.map((block, index) => ({
     ...block,
     index: String(index),
     displayIndex: index + 1,
-    showDeceasedNumber: blocks.length > 1 && index > 0,
+    deceasedBadgeLabel: formatDeceasedCardBadge(lang, index + 1),
   }));
 }
 
 function enrichFormRenderContext(context, query) {
-  const deceasedList = buildDeceasedRenderList(query);
+  const lang = context.lang;
+  const deceasedList = buildDeceasedRenderList(query, lang);
+  const submitVariant = context.inviteMode ? { submitKey: 'submit_invite' } : {};
   return {
     ...context,
     values: buildFormValuesFromQuery(query, context.synagogue),
     phoneDialOptions: buildPhoneFieldContext(context.synagogue, query).phoneDialOptions,
     deceasedList,
-    showDeceasedIndex: deceasedList.length > 1,
+    submitButtonLabel: formatPublicSubmitLabel(lang, deceasedList.length, submitVariant),
+    deceasedBadgePrefix: context.pt('deceased_block_title'),
+    deceasedCountUnit: context.pt('deceased_count_unit'),
+    emptyDeceasedTemplateBlock: {
+      ...EMPTY_DECEASED_BLOCK,
+      deceasedBadgeLabel: formatDeceasedCardBadge(lang, 1),
+    },
     error: query.error || '',
     errorMessage: resolveErrorMessage(context.pt, query.error),
   };

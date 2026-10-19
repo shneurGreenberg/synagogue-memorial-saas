@@ -1,8 +1,8 @@
 <div class="public-deceased-block" data-deceased-index="{{index}}">
     <div class="public-deceased-block-head">
-        {{#if block.showDeceasedNumber}}
-        <h3 class="public-deceased-block-title"><span class="public-deceased-index">{{block.displayIndex}}</span></h3>
-        {{/if}}
+        <h3 class="public-deceased-block-title">
+            <span class="public-deceased-badge">{{block.deceasedBadgeLabel}}</span>
+        </h3>
         <button type="button" class="public-remove-deceased" data-action="remove-deceased" hidden>{{publicT 'remove_deceased'}}</button>
     </div>
 

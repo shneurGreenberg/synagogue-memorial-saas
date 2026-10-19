@@ -6,6 +6,10 @@ const { getPublicSubmissionTranslator } = require('../lib/public-submission-i18n
 const { buildPublicBoardThemeCss } = require('../lib/public-board-theme');
 const { formatPhoneE164, parsePhoneE164, resolvePhoneFromBody } = require('../lib/public-submission-phone');
 const { combineDeceasedDisplayName } = require('../lib/public-deceased-name');
+const {
+  formatDeceasedCardBadge,
+  formatPublicSubmitLabel,
+} = require('../lib/public-add-name-labels');
 const { parseDeceasedEntriesFromBody } = require('../lib/public-submission-form');
 
 const SUCCESS_VIEW = path.join(__dirname, '..', 'views', 'public', 'add-name-success.handlebars');
@@ -50,6 +54,17 @@ describe('release 1.22 public submission', () => {
     const parsed = parsePhoneE164('+380501234567');
     assert.equal(parsed.dial, '+380');
     assert.equal(parsed.e164, '+380501234567');
+  });
+
+  it('Z15 deceased badges and multi submit labels (he/ru/en)', () => {
+    assert.equal(formatDeceasedCardBadge('he', 1), 'נפטר/ת 1');
+    assert.equal(formatDeceasedCardBadge('he', 2), 'נפטר/ת 2');
+    assert.equal(formatDeceasedCardBadge('ru', 1), 'Усопший 1');
+    assert.equal(formatDeceasedCardBadge('en', 2), 'Deceased 2');
+    assert.equal(formatPublicSubmitLabel('he', 1), 'שליחת בקשה');
+    assert.equal(formatPublicSubmitLabel('he', 2), 'שליחת בקשה (2 נפטרים)');
+    assert.equal(formatPublicSubmitLabel('ru', 3), 'Отправить заявку (3 усопших)');
+    assert.equal(formatPublicSubmitLabel('en', 2), 'Send request (2 deceased)');
   });
 
   it('Z6 combines surname and first name on save', () => {

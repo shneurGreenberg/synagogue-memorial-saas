@@ -19,7 +19,10 @@
     <p class="public-error" role="alert">{{errorMessage}}</p>
     {{/if}}
 
-    <form method="POST" action="{{formUrl}}" class="public-form" id="publicAddNameForm">
+    <form method="POST" action="{{formUrl}}" class="public-form" id="publicAddNameForm"
+        data-deceased-badge-prefix="{{deceasedBadgePrefix}}"
+        data-deceased-count-unit="{{deceasedCountUnit}}"
+        data-submit-single="{{publicT 'submit'}}">
         <input type="hidden" name="lang" value="{{lang}}">
         <div class="public-honeypot" aria-hidden="true">
             <label>
@@ -51,16 +54,17 @@
             </div>
         </div>
 
-        <h2 class="public-section-title public-deceased-section-heading">{{publicT 'deceased_section_title'}}</h2>
-
         <div id="publicDeceasedList" class="public-deceased-list">
             {{#each deceasedList}}
-            {{> public-add-name-deceased-block index=this.index block=this showIndex=../showDeceasedIndex inviteMode=false relationOptions=../relationOptions monthOptions=../monthOptions}}
+            {{> public-add-name-deceased-block index=this.index block=this inviteMode=false relationOptions=../relationOptions monthOptions=../monthOptions}}
             {{/each}}
         </div>
 
         <p class="public-add-deceased-wrap">
-            <button type="button" class="public-button public-button-secondary" id="publicAddDeceasedBtn">{{publicT 'add_another_deceased'}}</button>
+            <button type="button" class="public-button public-button-secondary public-add-deceased-btn" id="publicAddDeceasedBtn">
+                <span class="public-add-deceased-icon" aria-hidden="true">+</span>
+                <span class="public-add-deceased-label">{{publicT 'add_another_deceased'}}</span>
+            </button>
         </p>
 
         <label class="public-field public-field-notes">
@@ -77,7 +81,7 @@
 
         <div class="public-actions">
             <button type="submit" class="public-button public-button-primary" id="publicSubmitBtn">
-                <span class="public-submit-label">{{publicT 'submit'}}</span>
+                <span class="public-submit-label">{{submitButtonLabel}}</span>
                 <span class="public-submit-spinner" hidden aria-hidden="true"></span>
             </button>
         </div>
@@ -85,7 +89,7 @@
     </form>
 
     <template id="publicDeceasedTemplate">
-        {{> public-add-name-deceased-block index="0" block=emptyDeceasedBlock showIndex=true inviteMode=false relationOptions=relationOptions monthOptions=monthOptions}}
+        {{> public-add-name-deceased-block index="0" block=emptyDeceasedTemplateBlock inviteMode=false relationOptions=relationOptions monthOptions=monthOptions}}
     </template>
 
     <div class="public-submit-overlay" id="publicSubmitOverlay" hidden aria-hidden="true">

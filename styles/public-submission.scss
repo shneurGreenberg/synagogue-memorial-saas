@@ -169,6 +169,18 @@ html[dir='rtl'] .public-bh-badge {
   color: var(--primary-color, #cfaf1f);
 }
 
+.public-deceased-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--primary-color, #cfaf1f);
+  background: rgba(207, 175, 31, 0.14);
+  border: 1px solid rgba(207, 175, 31, 0.45);
+}
+
 .public-remove-deceased {
   border: none;
   background: transparent;
@@ -218,6 +230,28 @@ html[dir='rtl'] .public-bh-badge {
 
 .public-add-deceased-wrap {
   margin: 8px 0 16px;
+}
+
+.public-add-deceased-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.public-add-deceased-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--primary-color, #cfaf1f);
+  border: 1.5px solid var(--primary-color, #cfaf1f);
+  background: rgba(207, 175, 31, 0.12);
 }
 
 .public-charity-section-end {
