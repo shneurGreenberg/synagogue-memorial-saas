@@ -137,6 +137,7 @@ const BOARD_FEATURE_TOGGLE_META = [
   { key: 'dailyRambam', labelKey: 'feature_daily_rambam' },
   { key: 'hayomYom', labelKey: 'feature_hayom_yom' },
   { key: 'upcomingHolidays', labelKey: 'feature_upcoming_holidays' },
+  { key: 'chabadDates', labelKey: 'feature_chabad_dates' },
   { key: 'communityEvents', labelKey: 'feature_community_events' },
   { key: 'kelMaleRachamim', labelKey: 'feature_kel_male_rachamim' },
   { key: 'izkor', labelKey: 'feature_izkor' },
@@ -159,7 +160,7 @@ const BOARD_FEATURE_GROUPS = [
   {
     groupKey: 'board_features_sidebar_group',
     helpKey: 'board_features_sidebar_group_help',
-    keys: ['officialLogo', 'upcomingHolidays', 'communityEvents', 'weather'],
+    keys: ['officialLogo', 'upcomingHolidays', 'chabadDates', 'communityEvents', 'weather'],
   },
   {
     groupKey: 'board_features_learning_group',
