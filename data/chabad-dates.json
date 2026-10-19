@@ -1,0 +1,340 @@
+{
+  "dates": [
+    {
+      "hMonth": 1,
+      "hDay": 2,
+      "title": {
+        "he": "ב' ניסן – יום ההילולא של הרי\"צ",
+        "ru": "2 Нисана — день исцеления Рашаба",
+        "en": "2 Nissan — Rashab's yahrzeit"
+      },
+      "description": {
+        "he": "יום פטירת רבי שלום דובער, המיטער רבי",
+        "ru": "Ярцайт Рашаба (Ребе Шалом ДовБер)",
+        "en": "Yahrzeit of the Rashab (R. Shalom DovBer)"
+      }
+    },
+    {
+      "hMonth": 1,
+      "hDay": 11,
+      "title": {
+        "he": "י\"א ניסן – יום הולדת הרבי",
+        "ru": "11 Нисана — день рождения Ребе",
+        "en": "11 Nissan — the Rebbe's birthday"
+      },
+      "description": {
+        "he": "יום הולדת כ\"ק אדמו\"ר מליובאוויטש",
+        "ru": "День рождения Ребе из Любавич",
+        "en": "Birthday of the Lubavitcher Rebbe"
+      }
+    },
+    {
+      "hMonth": 1,
+      "hDay": 13,
+      "title": {
+        "he": "י\"ג ניסן – יום ההילולא של הצמח צדק",
+        "ru": "13 Нисана — день исцеления Цемах Цедека",
+        "en": "13 Nissan — Tzemach Tzedek's yahrzeit"
+      },
+      "description": {
+        "he": "יום פטירת רבי מנחם מענדל מלובביץ' (הצמח צדק)",
+        "ru": "Ярцайт Цемах Цедека",
+        "en": "Yahrzeit of the Tzemach Tzedek"
+      }
+    },
+    {
+      "hMonth": 2,
+      "hDay": 2,
+      "title": {
+        "he": "ב' אייר – יום הולדת הרה\"מ",
+        "ru": "2 Ияра — день рождения Ребе Махараша",
+        "en": "2 Iyar — Rebbe Maharash's birthday"
+      },
+      "description": {
+        "he": "יום הולדת רבי שמואל מלובביץ'",
+        "ru": "День рождения Ребе Махараша",
+        "en": "Birthday of the Rebbe Maharash"
+      }
+    },
+    {
+      "hMonth": 2,
+      "hDay": 18,
+      "title": {
+        "he": "ל\"ג בעומר",
+        "ru": "Лаг ба-Омер",
+        "en": "Lag BaOmer"
+      },
+      "description": {
+        "he": "יום הילולא של רבי שמעון בר יוחאי",
+        "ru": "День исцеления Рашби",
+        "en": "Yahrzeit of Rabbi Shimon bar Yochai"
+      }
+    },
+    {
+      "hMonth": 3,
+      "hDay": 6,
+      "title": {
+        "he": "ו' סיון – יום ההילולא של הבעש\"ט",
+        "ru": "6 Сивана — день исцеления Бааль Шем Това",
+        "en": "6 Sivan — Baal Shem Tov's yahrzeit"
+      },
+      "description": {
+        "he": "יום פטירת רבי ישראל בעל שם טוב",
+        "ru": "Ярцайт основателя хасидизма",
+        "en": "Yahrzeit of the Baal Shem Tov"
+      }
+    },
+    {
+      "hMonth": 3,
+      "hDay": 28,
+      "title": {
+        "he": "כ\"ח סיון – יום הגאולה",
+        "ru": "28 Сивана — день освобождения",
+        "en": "28 Sivan — liberation day"
+      },
+      "description": {
+        "he": "יום הגאולה של כ\"ק אדמו\"ר ורבנית חי' מושקא באמריקה",
+        "ru": "Прибытие Ребе и Реббецин в Америку (5701)",
+        "en": "The Rebbe and Rebbetzin's arrival in America"
+      }
+    },
+    {
+      "hMonth": 4,
+      "hDay": 3,
+      "title": {
+        "he": "ג' תמוז – יום ההילולא",
+        "ru": "3 Таммуз — день исцеления",
+        "en": "3 Tammuz — yahrzeit"
+      },
+      "description": {
+        "he": "יום פטירת כ\"ק אדמו\"ר מליובאוויטש",
+        "ru": "Ярцайт Ребе из Любавич",
+        "en": "Yahrzeit of the Lubavitcher Rebbe"
+      }
+    },
+    {
+      "hMonth": 4,
+      "hDay": 12,
+      "title": {
+        "he": "י\"ב תמוז – יום הגאולה",
+        "ru": "12 Таммуз — день освобождения",
+        "en": "12 Tammuz — liberation day"
+      },
+      "description": {
+        "he": "יום הגאולה ויום הולדת של הרי\"נ",
+        "ru": "Освобождение и день рождения Райяца",
+        "en": "Rayatz's liberation and birthday"
+      }
+    },
+    {
+      "hMonth": 4,
+      "hDay": 13,
+      "title": {
+        "he": "י\"ג תמוז – יום הגאולה",
+        "ru": "13 Таммуз — день освобождения",
+        "en": "13 Tammuz — liberation day"
+      },
+      "description": {
+        "he": "המשך חגיגות יום הגאולה של הרי\"נ",
+        "ru": "Продолжение праздника освобождения Райяца",
+        "en": "Continuation of Rayatz's liberation celebration"
+      }
+    },
+    {
+      "hMonth": 5,
+      "hDay": 20,
+      "title": {
+        "he": "כ' מנחם אב – יום ההילולא של הרל\"י",
+        "ru": "20 Менахем Ав — день исцеления РЛЙ",
+        "en": "20 Menachem Av — Rabbi Levi Yitzchak's yahrzeit"
+      },
+      "description": {
+        "he": "יום פטירת רבי לוי יצחק שניאורסאהן, אבי כ\"ק אדמו\"ר",
+        "ru": "Ярцайт отца Ребе, раввина Леви Ицхака",
+        "en": "Yahrzeit of the Rebbe's father, R. Levi Yitzchak"
+      }
+    },
+    {
+      "hMonth": 6,
+      "hDay": 15,
+      "title": {
+        "he": "ט\"ו אלול – ייסוד תומכי תמימים",
+        "ru": "15 Элула — основание Томхей Тмимим",
+        "en": "15 Elul — founding of Tomchei Tmimim"
+      },
+      "description": {
+        "he": "ייסוד ישיבת תומכי תמימים על ידי הרי\"נ",
+        "ru": "Основание иешивы Томхей Тмимим Райяцем",
+        "en": "Founding of the Tomchei Tmimim yeshiva by the Rayatz"
+      }
+    },
+    {
+      "hMonth": 6,
+      "hDay": 18,
+      "title": {
+        "he": "י\"ח אלול – יום הולדת הבעש\"ט והאדמו\"ר הזקן",
+        "ru": "18 Элула — дни рождения Бааль Шем Това и Алтер Ребе",
+        "en": "18 Elul — birthdays of the Baal Shem Tov and Alter Rebbe"
+      },
+      "description": {
+        "he": "יום הולדת רבי ישראל בעל שם טוב ורבי שניאור זלמן מליאדי",
+        "ru": "Общий день рождения основателя хасидизма и Алтер Ребе",
+        "en": "Shared birthday of the Besht and the Alter Rebbe"
+      }
+    },
+    {
+      "hMonth": 7,
+      "hDay": 6,
+      "title": {
+        "he": "ו' תשרי – יום ההילולא של הרבנית חנה",
+        "ru": "6 Тишрея — день исцеления Реббецин Ханы",
+        "en": "6 Tishrei — Rebbetzin Chana's yahrzeit"
+      },
+      "description": {
+        "he": "יום פטירת רבנית חנה, אם כ\"ק אדמו\"ר",
+        "ru": "Ярцайт матери Ребе",
+        "en": "Yahrzeit of the Rebbe's mother, Rebbetzin Chana"
+      }
+    },
+    {
+      "hMonth": 7,
+      "hDay": 13,
+      "title": {
+        "he": "י\"ג תשרי – יום ההילולא של הרה\"מ",
+        "ru": "13 Тишрея — день исцеления Ребе Махараша",
+        "en": "13 Tishrei — Rebbe Maharash's yahrzeit"
+      },
+      "description": {
+        "he": "יום פטירת רבי שמואל מלובביץ'",
+        "ru": "Ярцайт Ребе Махараша",
+        "en": "Yahrzeit of the Rebbe Maharash"
+      }
+    },
+    {
+      "hMonth": 8,
+      "hDay": 20,
+      "title": {
+        "he": "כ' חשוון – יום הולדת הרי\"צ",
+        "ru": "20 Хешвана — день рождения Рашаба",
+        "en": "20 Cheshvan — Rashab's birthday"
+      },
+      "description": {
+        "he": "יום הולדת רבי שלום דובער, המיטער רבי",
+        "ru": "День рождения Рашаба",
+        "en": "Birthday of the Rashab"
+      }
+    },
+    {
+      "hMonth": 9,
+      "hDay": 9,
+      "title": {
+        "he": "ט' כסלו – יום ההילולא של האמצעי",
+        "ru": "9 Кислева — день исцеления Мителер Ребе",
+        "en": "9 Kislev — Mitteler Rebbe's yahrzeit"
+      },
+      "description": {
+        "he": "יום פטירת רבי דובער מלובביץ'",
+        "ru": "Ярцайт Мителер Ребе",
+        "en": "Yahrzeit of the Mitteler Rebbe"
+      }
+    },
+    {
+      "hMonth": 9,
+      "hDay": 10,
+      "title": {
+        "he": "י' כסלו – חג הגאולה של האמצעי",
+        "ru": "10 Кислева — праздник освобождения Мителер Ребе",
+        "en": "10 Kislev — Mitteler Rebbe's festival of liberation"
+      },
+      "description": {
+        "he": "יום שחרור האמצעי ממעצר",
+        "ru": "День освобождения Мителер Ребе из заключения",
+        "en": "Liberation of the Mitteler Rebbe from imprisonment"
+      }
+    },
+    {
+      "hMonth": 9,
+      "hDay": 19,
+      "title": {
+        "he": "י\"ט כסלו – חג הגאולה",
+        "ru": "19 Кислева — праздник освобождения",
+        "en": "19 Kislev — Festival of Liberation"
+      },
+      "description": {
+        "he": "יום הגאולה של האדמו\"ר הזקן; הילולא של המגיד ממעזריטש",
+        "ru": "Освобождение Алтер Ребе; ярцайт Магида",
+        "en": "Alter Rebbe's liberation; Maggid's yahrzeit"
+      }
+    },
+    {
+      "hMonth": 9,
+      "hDay": 20,
+      "title": {
+        "he": "כ' כסלו – המשך חג הגאולה",
+        "ru": "20 Кислева — продолжение праздника освобождения",
+        "en": "20 Kislev — continuation of the Festival of Liberation"
+      },
+      "description": {
+        "he": "יום שני של חג הגאולה",
+        "ru": "Второй день праздника освобождения",
+        "en": "Second day of the Festival of Liberation"
+      }
+    },
+    {
+      "hMonth": 10,
+      "hDay": 5,
+      "title": {
+        "he": "ה' טבת – דידן נצח",
+        "ru": "5 Тевета — Дидан Нецах",
+        "en": "5 Teves — Didan Notzach"
+      },
+      "description": {
+        "he": "ניצחון ספרי חב\"ד בבית המשפט",
+        "ru": "Победа в суде за книги Хабада",
+        "en": "Victory in the court case over Chabad library books"
+      }
+    },
+    {
+      "hMonth": 10,
+      "hDay": 24,
+      "title": {
+        "he": "כ\"ד טבת – יום ההילולא של האדמו\"ר הזקן",
+        "ru": "24 Тевета — день исцеления Алтер Ребе",
+        "en": "24 Tevet — Alter Rebbe's yahrzeit"
+      },
+      "description": {
+        "he": "יום פטירת רבי שניאור זלמן מליאדי",
+        "ru": "Ярцайт основателя Хабада",
+        "en": "Yahrzeit of the Alter Rebbe"
+      }
+    },
+    {
+      "hMonth": 11,
+      "hDay": 10,
+      "title": {
+        "he": "י' שבט – יום ההילולא",
+        "ru": "10 Шват — день исцеления",
+        "en": "10 Shevat — yahrzeit"
+      },
+      "description": {
+        "he": "יום פטירת הרי\"נ; הכנסת מלכות כ\"ק אדמו\"ר",
+        "ru": "Ярцайт Райяца; начало нешамот Ребе",
+        "en": "Rayatz's yahrzeit; start of the Rebbe's leadership"
+      }
+    },
+    {
+      "hMonth": 11,
+      "hDay": 22,
+      "title": {
+        "he": "כ\"ב שבט – יום הולדת הרבנית",
+        "ru": "22 Шват — день рождения Реббецин",
+        "en": "22 Shevat — Rebbetzin's birthday"
+      },
+      "description": {
+        "he": "יום הולדת רבנית חי' מושקא",
+        "ru": "День рождения Реббецин Хае Мушке",
+        "en": "Birthday of Rebbetzin Chaya Mushka"
+      }
+    }
+  ]
+}

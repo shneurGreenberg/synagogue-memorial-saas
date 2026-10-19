@@ -26,6 +26,9 @@ export default defineConfig({
         /lib\/memorial-qr-panel\.js/,
         /lib\/board-yahrzeit-layout\.js/,
         /lib\/daily-gates-layout\.js/,
+        /lib\/community-unified-copy\.js/,
+        /lib\/board-subtitle\.js/,
+        /lib\/default-board-titles\.js/,
       ],
     },
     rollupOptions: {

@@ -5,6 +5,7 @@ export const BOARD_FEATURE_DEFAULTS = {
   dailyRambam: true,
   hayomYom: false,
   upcomingHolidays: true,
+  chabadDates: true,
   communityEvents: true,
   kelMaleRachamim: true,
   izkor: true,
