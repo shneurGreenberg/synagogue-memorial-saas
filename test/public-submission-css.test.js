@@ -5,6 +5,14 @@ const path = require('path');
 
 const SCSS_PATH = path.join(__dirname, '..', 'styles', 'public-submission.scss');
 const ADD_NAME_VIEW = path.join(__dirname, '..', 'views', 'public', 'add-name.handlebars');
+const DECEASED_BLOCK_PARTIAL = path.join(
+  __dirname,
+  '..',
+  'views',
+  'partials',
+  'public-add-name-deceased-block.handlebars',
+);
+const { getPublicSubmissionTranslator } = require('../lib/public-submission-i18n');
 
 const LARGE_NEGATIVE_OFFSET = /(?:^|[^-\w])(?:left|right)\s*:\s*(-\d+(?:\.\d+)?)(px|rem|em)?/gi;
 
@@ -56,6 +64,32 @@ describe('public-submission CSS (RTL-safe layout)', () => {
     assert.match(html, /class="public-consent-label"/);
     assert.match(html, /class="public-choice-checkbox"/);
     assert.match(html, /class="public-consent-text"/);
+  });
+
+  it('Z17 deceased block order: father name, gender pills, then death date', () => {
+    const html = fs.readFileSync(DECEASED_BLOCK_PARTIAL, 'utf8');
+    const fatherIdx = html.indexOf('[fatherName]');
+    const genderIdx = html.indexOf('[deceasedGender]');
+    const deathIdx = html.indexOf('[deathDate]');
+    assert.ok(fatherIdx >= 0 && genderIdx >= 0 && deathIdx >= 0);
+    assert.ok(fatherIdx < genderIdx, 'gender must follow father name');
+    assert.ok(genderIdx < deathIdx, 'death date must follow gender');
+  });
+
+  it('Z16 consent wraps at 390px; ru label present in add-name flow (he/ru/en)', () => {
+    const scss = fs.readFileSync(SCSS_PATH, 'utf8');
+    const narrow = scss.match(/@media \(max-width: 390px\)\s*\{([\s\S]*?)\n\}/);
+    assert.ok(narrow, '390px consent breakpoint missing');
+    assert.match(narrow[1], /\.public-consent-label/);
+    assert.match(narrow[1], /\.public-consent-text/);
+
+    for (const lang of ['he', 'ru', 'en']) {
+      const t = getPublicSubmissionTranslator(lang);
+      const label = t('consent_label');
+      assert.ok(label.length > 10, `consent_label missing for ${lang}`);
+    }
+    const ru = getPublicSubmissionTranslator('ru')('consent_label');
+    assert.ok(ru.length < 120, 'ru consent_label unexpectedly long for narrow cards');
   });
 
   it('public cards and sections use board tile color variables', () => {
