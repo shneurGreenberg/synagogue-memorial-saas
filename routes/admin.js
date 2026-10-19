@@ -98,7 +98,11 @@ const {
   normalizeImportedSnapshot,
   readImportName,
 } = require('../lib/saved-view-portable');
-const { listPendingPersonAddRequests, normalizePersonAddRequest } = require('../lib/person-add-request');
+const {
+    listPendingPersonAddRequests,
+    normalizePersonAddRequest,
+    findPendingPersonAddRequestIndex,
+} = require('../lib/person-add-request');
 const { findSimilarPeopleForSubmission } = require('../lib/person-name-similarity');
 const { buildPersonFromAddRequest } = require('../lib/person-add-request-approve');
 const { parsePersonContactsFromBody, normalizePersonContact, personContactsToLegacyFields, getPersonContacts, hasContactDetails } = require('../lib/person-contact');
@@ -1615,12 +1619,24 @@ router.get('/:slug/people', requireAdmin, requirePermission('people'), async (re
 router.post('/:slug/person-add-requests/:requestId/dismiss', requireAdmin, requirePermission('people'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        if (!synagogue) {
+            return res.status(404).send('Not found');
+        }
+        const requests = synagogue.personAddRequests || [];
+        const index = findPendingPersonAddRequestIndex(requests, req.params.requestId);
+        if (index < 0) {
+            return res.status(404).send('Not found');
+        }
+        const publicId = normalizePersonAddRequest(requests[index], { index }).id;
         const result = await Synagogue.updateOne(
+            { slug: req.params.slug },
             {
-                slug: req.params.slug,
-                'personAddRequests.id': req.params.requestId,
+                $set: {
+                    [`personAddRequests.${index}.status`]: 'dismissed',
+                    [`personAddRequests.${index}.id`]: publicId,
+                },
             },
-            { $set: { 'personAddRequests.$.status': 'dismissed' } },
         );
         if (!result.matchedCount) {
             return res.status(404).send('Not found');
@@ -1639,13 +1655,13 @@ router.post('/:slug/person-add-requests/:requestId/approve', requireAdmin, requi
         if (!synagogue) {
             return res.status(404).send('Not found');
         }
-        const rawRequest = (synagogue.personAddRequests || []).find((entry) => (
-            entry.id === req.params.requestId && entry.status === 'pending'
-        ));
-        if (!rawRequest) {
+        const requests = synagogue.personAddRequests || [];
+        const index = findPendingPersonAddRequestIndex(requests, req.params.requestId);
+        if (index < 0) {
             return res.status(404).send('Not found');
         }
-        const request = normalizePersonAddRequest(rawRequest);
+        const rawRequest = requests[index];
+        const request = normalizePersonAddRequest(rawRequest, { index });
         const lang = synagogue.language || 'ru';
         const personPayload = buildPersonFromAddRequest(request, lang);
         const maxId = (synagogue.people || []).reduce((max, person) => (
@@ -1654,13 +1670,13 @@ router.post('/:slug/person-add-requests/:requestId/approve', requireAdmin, requi
         const newPerson = { id: maxId + 1, ...personPayload };
 
         await Synagogue.updateOne(
-            {
-                slug: req.params.slug,
-                'personAddRequests.id': req.params.requestId,
-            },
+            { slug: req.params.slug },
             {
                 $push: { people: newPerson },
-                $set: { 'personAddRequests.$.status': 'dismissed' },
+                $set: {
+                    [`personAddRequests.${index}.status`]: 'dismissed',
+                    [`personAddRequests.${index}.id`]: request.id,
+                },
             },
         );
         invalidateAdminSynagogueCache(req.params.slug);
