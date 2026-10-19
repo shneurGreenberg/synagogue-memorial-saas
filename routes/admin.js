@@ -176,12 +176,6 @@ const BOARD_FEATURE_GROUPS = [
     keys: ['dailyChumash', 'dailyTehillim', 'dailyTanya', 'dailyRambam', 'hayomYom'],
   },
   {
-    groupKey: 'board_features_public_submission_group',
-    helpKey: 'board_features_public_submission_group_help',
-    keys: [],
-    special: 'publicSubmission',
-  },
-  {
     groupKey: 'board_features_center_group',
     helpKey: 'board_features_center_group_help',
     keys: [],
@@ -894,7 +888,7 @@ router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('sett
                 registrationQrImage: synagogue.publicSubmission?.registrationQrImage || '',
             },
         }, synagogue));
-        const screenshot = await saveViewThumbnail(snapshot, req.body.screenshotDataUrl);
+        const screenshot = await saveViewThumbnail(req.body.screenshotDataUrl, '');
         const view = {
             id: require('crypto').randomUUID(),
             name,
@@ -989,7 +983,7 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
                     || '',
             },
         }, synagogue));
-        const screenshot = await saveViewThumbnail(snapshot, req.body.screenshotDataUrl);
+        const screenshot = await saveViewThumbnail(req.body.screenshotDataUrl, existing.screenshot || '');
         if (existing.screenshot && existing.screenshot !== screenshot) {
             deleteScreenshot(existing.screenshot);
         }
@@ -1096,7 +1090,7 @@ router.post('/:slug/settings/saved-views/import', requireAdmin, requirePermissio
         }
 
         const snapshot = normalizeImportedSnapshot(imported, synagogue);
-        const screenshot = await saveViewThumbnail(snapshot, '');
+        const screenshot = await saveViewThumbnail('', '');
         const view = {
             id: require('crypto').randomUUID(),
             name,
@@ -1116,6 +1110,59 @@ router.post('/:slug/settings/saved-views/import', requireAdmin, requirePermissio
         invalidateAdminSynagogueCache(req.params.slug);
 
         return res.json({ ok: true, view });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: err.message });
+    }
+});
+
+router.post('/:slug/settings/saved-views/:viewId/preview-image', requireAdmin, requirePermission('settings'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false, error: 'Forbidden' });
+    const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
+    if (!canManageSavedViews(permissions)) {
+        return res.status(403).json({ ok: false, error: 'Forbidden' });
+    }
+
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        if (!synagogue) {
+            return res.status(404).json({ ok: false, error: 'Not found' });
+        }
+
+        const normalizedViews = normalizeSavedViews(synagogue.savedViews);
+        const viewIndex = normalizedViews.findIndex((entry) => entry.id === req.params.viewId);
+        if (viewIndex === -1) {
+            return res.status(404).json({ ok: false, error: 'View not found' });
+        }
+
+        const { saveSavedViewPreviewFromDataUrl } = require('../lib/saved-view-preview-upload');
+        const upload = await saveSavedViewPreviewFromDataUrl(req.body && req.body.imageDataUrl);
+        if (!upload.ok) {
+            return res.status(400).json(upload);
+        }
+
+        const existing = normalizedViews[viewIndex];
+        if (existing.screenshot && existing.screenshot !== upload.screenshot) {
+            deleteScreenshot(existing.screenshot);
+        }
+
+        normalizedViews[viewIndex] = {
+            ...existing,
+            screenshot: upload.screenshot,
+            savedAt: new Date(),
+        };
+
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            { $set: { savedViews: normalizedViews } },
+            { runValidators: false },
+        );
+        invalidateAdminSynagogueCache(req.params.slug);
+
+        return res.json({
+            ok: true,
+            screenshot: upload.screenshot,
+            view: normalizedViews[viewIndex],
+        });
     } catch (err) {
         return res.status(500).json({ ok: false, error: err.message });
     }

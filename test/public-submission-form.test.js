@@ -13,6 +13,24 @@ describe('public-submission-form', () => {
     assert.equal(parseIsoDeathDate('2020-02-30'), null);
   });
 
+  it('combines surname and first name fields', () => {
+    const entries = parseDeceasedEntriesFromBody({
+      lang: 'en',
+      deceased: {
+        0: {
+          surname: 'Smith',
+          firstName: 'Ann',
+          fatherName: 'John',
+          relationKey: 'ben',
+          deceasedGender: 'female',
+          deathDate: '15.03.2020',
+          diedAfterSunset: 'before',
+        },
+      },
+    });
+    assert.equal(entries[0].name, 'Smith Ann');
+  });
+
   it('parses dd.mm.yyyy deathDate field', () => {
     const entries = parseDeceasedEntriesFromBody({
       lang: 'he',

@@ -2,17 +2,48 @@
   var list = document.getElementById('publicDeceasedList');
   var addBtn = document.getElementById('publicAddDeceasedBtn');
   var template = document.getElementById('publicDeceasedTemplate');
+  var form = document.getElementById('publicAddNameForm');
   if (!list || !addBtn || !template) {
     return;
+  }
+
+  var badgePrefix = (form && form.getAttribute('data-deceased-badge-prefix')) || '';
+  var countUnit = (form && form.getAttribute('data-deceased-count-unit')) || '';
+  var submitSingle = (form && form.getAttribute('data-submit-single')) || '';
+
+  function formatDeceasedBadge(index) {
+    return badgePrefix ? badgePrefix + ' ' + String(index) : String(index);
+  }
+
+  function formatSubmitLabel(count) {
+    if (!submitSingle || count <= 1) {
+      return submitSingle || '';
+    }
+    if (!countUnit) {
+      return submitSingle;
+    }
+    return submitSingle + ' (' + count + ' ' + countUnit + ')';
+  }
+
+  function updateSubmitLabel() {
+    if (!form) {
+      return;
+    }
+    var submitLabel = form.querySelector('.public-submit-label');
+    if (!submitLabel) {
+      return;
+    }
+    var count = list.querySelectorAll('.public-deceased-block').length;
+    submitLabel.textContent = formatSubmitLabel(count);
   }
 
   function reindexBlocks() {
     var blocks = list.querySelectorAll('.public-deceased-block');
     blocks.forEach(function (block, index) {
       block.setAttribute('data-deceased-index', String(index));
-      var titleIndex = block.querySelector('.public-deceased-index');
-      if (titleIndex) {
-        titleIndex.textContent = String(index + 1);
+      var badge = block.querySelector('.public-deceased-badge');
+      if (badge) {
+        badge.textContent = formatDeceasedBadge(index + 1);
       }
       block.querySelectorAll('[name]').forEach(function (el) {
         var name = el.getAttribute('name');
@@ -25,11 +56,8 @@
       if (removeBtn) {
         removeBtn.hidden = blocks.length <= 1;
       }
-      var showIndex = block.querySelector('.public-deceased-block-title .public-deceased-index');
-      if (showIndex && blocks.length <= 1) {
-        showIndex.parentElement.querySelector('.public-deceased-index');
-      }
     });
+    updateSubmitLabel();
   }
 
   function bindRelationSelect(block) {

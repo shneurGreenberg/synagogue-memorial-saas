@@ -15,6 +15,7 @@ const {
   getDefaultLandingPath,
 } = require('../lib/admin-users');
 const { isAllowedImageUpload, publicErrorMessage } = require('../lib/http-security');
+const { buildPublicBoardThemeRender } = require('../lib/public-board-theme');
 
 const router = express.Router();
 
@@ -151,7 +152,9 @@ router.get('/:slug/scan', requireScanStaff, (req, res) => {
   return res.render('public/scan-grave', {
     layout: 'scan',
     lang: 'ru',
+    dir: 'ltr',
     synagogue,
+    ...buildPublicBoardThemeRender(synagogue),
     scanUrl: `/s/${synagogue.slug}/api/scan-grave`,
     confirmUrl: `/s/${synagogue.slug}/api/scan-grave/confirm`,
     loginUrl: `/admin/login?next=${encodeURIComponent(`/s/${synagogue.slug}/scan`)}`,

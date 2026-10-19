@@ -10,6 +10,7 @@ const handlebars = require('express-handlebars');
 const { getPublicSubmissionTranslator } = require('../lib/public-submission-i18n');
 const { getRelationOptions } = require('../lib/submission-relation');
 const { normalizePublicSubmission } = require('../lib/public-submission');
+const { formatDeceasedCardBadge, formatPublicSubmitLabel } = require('../lib/public-add-name-labels');
 
 const ROOT = path.join(__dirname, '..');
 const outDir = path.resolve(ROOT, '..', 'v119-render');
@@ -85,8 +86,19 @@ function sampleContext(lang) {
     relationOptions: getRelationOptions(lang),
     emptyDeceasedBlock,
     values: { contactName: '', contactPhone: '', deceasedNotes: '' },
-    deceasedList: [{ ...emptyDeceasedBlock, index: '0', displayIndex: 1 }],
-    showDeceasedIndex: false,
+    deceasedList: [{
+      ...emptyDeceasedBlock,
+      index: '0',
+      displayIndex: 1,
+      deceasedBadgeLabel: formatDeceasedCardBadge(lang, 1),
+    }],
+    submitButtonLabel: formatPublicSubmitLabel(lang, 1),
+    deceasedBadgePrefix: pt('deceased_block_title'),
+    deceasedCountUnit: pt('deceased_count_unit'),
+    emptyDeceasedTemplateBlock: {
+      ...emptyDeceasedBlock,
+      deceasedBadgeLabel: formatDeceasedCardBadge(lang, 1),
+    },
     error: '',
     errorMessage: '',
     cssVersion: 'static',
