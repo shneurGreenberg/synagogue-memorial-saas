@@ -1,12 +1,18 @@
-import { DEFAULT_BOARD_TITLES } from '../../../lib/default-board-titles';
-import { normalizeDisplayLang, resolveBoardTitleText } from '../../../lib/community-unified-copy';
-
 export function resolveBoardTitle(synagogue, lang) {
-  const resolved = resolveBoardTitleText(synagogue);
-  if (resolved) {
-    return resolved;
+  if (!synagogue) {
+    return '';
   }
 
-  const displayLang = normalizeDisplayLang(lang || synagogue?.language || 'ru');
-  return DEFAULT_BOARD_TITLES[displayLang] || DEFAULT_BOARD_TITLES.ru;
+  const titles = synagogue.titles || {};
+  const custom = titles[lang] && String(titles[lang]).trim();
+
+  if (custom) {
+    return custom;
+  }
+
+  if (lang === 'ru') {
+    return String(synagogue.title || synagogue.name || '').trim();
+  }
+
+  return '';
 }

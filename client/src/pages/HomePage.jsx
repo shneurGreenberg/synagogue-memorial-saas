@@ -29,8 +29,6 @@ import { CommunityLogo } from '../components/CommunityLogo';
 import { useBoardNavigation } from '../context/BoardNavigationContext';
 import { useBoardData } from '../context/BoardDataContext';
 import { resolveBoardTitle } from '../lib/board-title';
-import { BaruchHashemBadge } from '../components/BaruchHashemBadge';
-import { BoardTitleSubtitle } from '../components/BoardTitleSubtitle';
 import { getSidebarCommunityEvents, hasEventDate } from '../lib/community-events';
 import { normalizeCommunityEvent } from '../lib/community-event-copy';
 import { hasDailyStudyFeatures, resolveBoardFeatures } from '../lib/board-features';
@@ -446,7 +444,6 @@ class HomePageBase extends React.Component {
             <header className="board-header">
               <button type="button" className="board-header-button" onClick={this.toggleNamesReading} aria-label={this.props.t('torah_reading_names')}>
                 <h1>{this.props.boardTitle}</h1>
-                <BoardTitleSubtitle subtitle={this.props.boardSubtitle} theme={this.props.boardTheme} />
               </button>
             </header>
             {this.renderCurrentGrid()}
@@ -494,7 +491,6 @@ class HomePageBase extends React.Component {
           <div className="wooden-panel">
             <div className="inner">
               <div className="board-right-header">
-                <BaruchHashemBadge placement="column" />
                 {showOfficialLogo && (
                   <div className="board-official-logo-wrap">
                     <img
@@ -548,8 +544,6 @@ function HomePageConnected(props) {
   const { goToCard } = useBoardNavigation();
   const { revision, calendarDayKey, uiLang, data } = useBoardData();
   const boardTitle = resolveBoardTitle(data, uiLang);
-  const boardSubtitle = data.boardSubtitle || {};
-  const boardTheme = data.theme || {};
   const visiblePeople = (data.people || []).slice(0, 32);
   usePhotoPrefetch(visiblePeople);
 
@@ -560,8 +554,6 @@ function HomePageConnected(props) {
       uiLang={uiLang}
       calendarDayKey={calendarDayKey}
       boardTitle={boardTitle}
-      boardSubtitle={boardSubtitle}
-      boardTheme={boardTheme}
       revision={revision}
     />
   );

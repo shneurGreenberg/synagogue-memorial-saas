@@ -10,50 +10,49 @@ const {
 } = require('../lib/memorial-qr-panel');
 
 describe('memorial-qr-panel', () => {
-  it('keeps unified text fields in storage normalization', () => {
+  it('keeps empty custom strings in storage normalization', () => {
     const panel = normalizeMemorialQrPanel({
-      titleText: 'Unified title',
-      donationTitleText: 'Donate',
+      titles: { ru: '', en: 'Custom', he: '' },
+      texts: { ru: '', en: '', he: '' },
     });
 
-    assert.equal(panel.titleText, 'Unified title');
-    assert.equal(panel.donationTitleText, 'Donate');
+    assert.equal(panel.titles.ru, '');
+    assert.equal(panel.titles.en, 'Custom');
+    assert.equal(panel.donationTitles.ru, '');
   });
 
-  it('prefills admin edit from legacy triplets without system defaults', () => {
-    const panel = memorialQrPanelForAdminEdit({
-      titles: { ru: '', en: '', he: 'Legacy HE' },
-    }, 'he');
-    assert.equal(panel.titleText, 'Legacy HE');
-    assert.equal(panel.donationTitles.en, '');
+  it('prefills admin edit fields with board default copy', () => {
+    const panel = memorialQrPanelForAdminEdit({});
+    assert.equal(panel.donationTitles.en, DONATION_QR_DEFAULTS.titles.en);
+    assert.equal(panel.titles.he, MEMORIAL_QR_DEFAULTS.titles.he);
   });
 
-  it('applies defaults for board display when unified and legacy fields are empty', () => {
+  it('applies defaults for board display when fields are empty', () => {
     const panel = memorialQrPanelForBoard({
       titles: { ru: '', en: '', he: '' },
       texts: { ru: '', en: '', he: '' },
       donationTitles: { ru: 'My donation title', en: '', he: '' },
       donationTexts: { ru: '', en: '', he: '' },
-    }, 'ru');
+    });
 
-    assert.equal(panel.titleText, MEMORIAL_QR_DEFAULTS.titles.ru);
-    assert.equal(panel.donationTitleText, 'My donation title');
-    assert.equal(panel.donationTextText, DONATION_QR_DEFAULTS.texts.ru);
+    assert.equal(panel.titles.ru, MEMORIAL_QR_DEFAULTS.titles.ru);
+    assert.equal(panel.donationTitles.ru, 'My donation title');
+    assert.equal(panel.donationTexts.en, DONATION_QR_DEFAULTS.texts.en);
   });
 
-  it('parses registration and donation unified fields from admin form body', () => {
+  it('parses registration and donation text fields from admin form body', () => {
     const panel = parseMemorialQrPanelFromBody({
-      memorialQrTitle: 'Reg unified',
-      memorialQrText: 'Reg body',
-      donationQrTitle: 'Don EN',
-      donationQrText: 'Don RU',
+      memorialQrTitleRu: 'Reg RU',
+      memorialQrTextHe: 'Reg HE',
+      donationQrTitleEn: 'Don EN',
+      donationQrTextRu: 'Don RU',
       memorialQrTitleScale: '110',
     }, {});
 
-    assert.equal(panel.titleText, 'Reg unified');
-    assert.equal(panel.textText, 'Reg body');
-    assert.equal(panel.donationTitleText, 'Don EN');
-    assert.equal(panel.donationTextText, 'Don RU');
+    assert.equal(panel.titles.ru, 'Reg RU');
+    assert.equal(panel.texts.he, 'Reg HE');
+    assert.equal(panel.donationTitles.en, 'Don EN');
+    assert.equal(panel.donationTexts.ru, 'Don RU');
     assert.equal(panel.titleScale, 110);
   });
 });

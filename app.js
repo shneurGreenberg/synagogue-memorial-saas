@@ -546,7 +546,7 @@ app.get('/s/:slug/api/jewish-content', apiRateLimiter, async (req, res) => {
     }
 
     const lang = ['ru', 'en', 'he'].includes(req.query.lang) ? req.query.lang : lite.language;
-    const feed = await getJewishFeed(lang, lite);
+    const feed = await getJewishFeed(lang, { location: lite.location });
 
     res.setHeader('Cache-Control', 'public, max-age=3600');
     return res.json(feed);

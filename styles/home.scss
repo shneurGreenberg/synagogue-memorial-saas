@@ -2150,21 +2150,9 @@
 }
 
 
-.main-container .board-right-header {
-  .baruch-hashem-badge--column {
-    position: static;
-    inset: auto;
-    align-self: flex-end;
-    width: 100%;
-    text-align: end;
-    margin: 0 0 clamp(4px, 0.6vh, 8px);
-    z-index: auto;
-  }
-}
-
-// Hebrew board UI: fixed ב״ה on admin/login shells only (column badge uses flow above)
+// Hebrew board UI: ב״ה on the physical top-right (layout stays LTR)
 body.board-lang-he {
-  .baruch-hashem-badge:not(.baruch-hashem-badge--column) {
+  .baruch-hashem-badge {
     inset-inline-start: auto;
     inset-inline-end: clamp(12px, 2vw, 24px);
   }

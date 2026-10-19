@@ -5,6 +5,7 @@ import { BoardDataProvider } from './context/BoardDataContext';
 import { ThemeStyles } from './components/ThemeStyles';
 import { IdleReload } from './components/IdleReload';
 import { BoardVersionBadge } from './components/BoardVersionBadge';
+import { BaruchHashemBadge } from './components/BaruchHashemBadge';
 import { BoardFontLoader } from './components/BoardFontLoader';
 import { StaticSiteBanner } from './components/StaticSiteBanner';
 import HomePage from './pages/HomePage';
@@ -47,6 +48,7 @@ function BoardLayoutInner() {
       <BoardFontLoader />
       <IdleReload />
       <BoardVersionBadge />
+      <BaruchHashemBadge />
       <StaticSiteBanner />
       <div id="main-entry">
         <HomePage />

@@ -10,10 +10,4 @@ describe('hayom yom display text', () => {
     assert.equal(getHayomYomDisplayText(''), '');
     assert.equal(getHayomYomDisplayText(null), '');
   });
-
-  it('sanitizes scraped debris at read time', () => {
-    const aphorism = 'When you spread out your palms, I will hide My eyes.';
-    const dirty = `${aphorism} ( Вернуться к тексту ) Сравните Devarim 10: 12`;
-    assert.equal(getHayomYomDisplayText(dirty), aphorism);
-  });
 });

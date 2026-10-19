@@ -62,9 +62,9 @@ describe('admin shell & board layout', () => {
     assert.doesNotMatch(css, /\.baruch-hashem-badge[\s\S]*\n\s*right:/);
   });
 
-  it('Hebrew board moves fixed ב״ה to inline end via board-lang-he', () => {
+  it('Hebrew board moves ב״ה to inline end via board-lang-he', () => {
     const scss = fs.readFileSync(path.join(ROOT, 'styles', 'home.scss'), 'utf8');
-    assert.match(scss, /body\.board-lang-he[\s\S]*\.baruch-hashem-badge:not\(\.baruch-hashem-badge--column\)[\s\S]*inset-inline-end:/);
+    assert.match(scss, /body\.board-lang-he[\s\S]*\.baruch-hashem-badge[\s\S]*inset-inline-end:/);
   });
 
   it('wrong-community page includes beh-badge partial', () => {
