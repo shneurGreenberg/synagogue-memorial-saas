@@ -25,8 +25,18 @@ const PersonAddRequestSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   submitter: { type: PersonContactSchema, default: () => ({}) },
   relation: { type: String, default: '' },
+  relationKey: { type: String, default: '' },
+  relationOther: { type: String, default: '' },
   deceasedName: { type: String, default: '' },
+  deceasedFatherName: { type: String, default: '' },
   deceasedNotes: { type: String, default: '' },
+  diedAfterSunset: { type: Boolean, default: false },
+  photo: { type: String, default: '' },
+  photoCrop: {
+    x: { type: Number, default: 50 },
+    y: { type: Number, default: 50 },
+    zoom: { type: Number, default: 1 },
+  },
   gregorianDateOfDeath: {
     month: { type: Number, default: undefined },
     date: { type: Number, default: undefined },
@@ -57,6 +67,7 @@ const PersonSchema = new mongoose.Schema({
     date: { type: Number, default: undefined },
     year: { type: Number, default: undefined },
   },
+  diedAfterSunset: { type: Boolean, default: false },
   internalNotes: { type: String, default: '' },
 });
 
