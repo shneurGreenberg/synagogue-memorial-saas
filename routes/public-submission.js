@@ -25,6 +25,7 @@ const {
 } = require('../lib/public-submission-form');
 const { pushPersonAddRequests } = require('../lib/public-submission-persist');
 const { createPublicSubmissionRateLimiter } = require('../lib/http-security');
+const { formatDdMmYyyy, formatDdMmYyyyFromIso } = require('../lib/dd-mm-yyyy-date');
 
 const router = express.Router();
 const OFFICIAL_LOGO_FILENAME = 'kaddish-official-logo.svg';
@@ -34,6 +35,7 @@ const EMPTY_DECEASED_BLOCK = {
   name: '',
   fatherName: '',
   deathDate: '',
+  deathDateDisplay: '',
   deathDay: '',
   deathMonth: '',
   deathYear: '',
@@ -102,10 +104,22 @@ function deceasedBlocksFromQuery(query) {
   if (query.deceased || query.name) {
     const entries = parseDeceasedEntriesFromBody(body);
     if (entries.length) {
-      return entries.map((entry) => ({
+      return entries.map((entry) => {
+        const iso = entry.deathDateIso || deathDateIsoFromParts(entry.gregorianDateOfDeath);
+        const deathDateDisplay = formatDdMmYyyy(entry.gregorianDateOfDeath)
+          || formatDdMmYyyyFromIso(iso)
+          || (entry.deathDay && entry.deathMonth && entry.deathYear
+            ? formatDdMmYyyy({
+              date: Number(entry.deathDay),
+              month: Number(entry.deathMonth),
+              year: Number(entry.deathYear),
+            })
+            : '');
+        return {
         name: entry.name || '',
         fatherName: entry.fatherName || '',
-        deathDate: entry.deathDateIso || deathDateIsoFromParts(entry.gregorianDateOfDeath),
+        deathDate: iso,
+        deathDateDisplay,
         deathDay: entry.deathDay || (entry.gregorianDateOfDeath ? String(entry.gregorianDateOfDeath.date) : ''),
         deathMonth: entry.deathMonth || (entry.gregorianDateOfDeath ? String(entry.gregorianDateOfDeath.month) : ''),
         deathYear: entry.deathYear || (entry.gregorianDateOfDeath ? String(entry.gregorianDateOfDeath.year) : ''),
@@ -113,7 +127,8 @@ function deceasedBlocksFromQuery(query) {
         relationOther: entry.relationOther || '',
         deceasedGender: entry.deceasedGender || 'male',
         diedAfterSunset: entry.diedAfterSunset,
-      }));
+      };
+      });
     }
   }
   return [{ ...EMPTY_DECEASED_BLOCK }];
@@ -178,14 +193,10 @@ function appendDeceasedToSearchParams(params, body) {
     params.set(`deceased[${index}][fatherName]`, entry.fatherName || '');
     params.set(`deceased[${index}][relationKey]`, entry.relationKey || '');
     params.set(`deceased[${index}][relationOther]`, entry.relationOther || '');
-    if (entry.deathDay) {
-      params.set(`deceased[${index}][deathDay]`, entry.deathDay);
-    }
-    if (entry.deathMonth) {
-      params.set(`deceased[${index}][deathMonth]`, entry.deathMonth);
-    }
-    if (entry.deathYear) {
-      params.set(`deceased[${index}][deathYear]`, entry.deathYear);
+    const displayDate = formatDdMmYyyy(entry.gregorianDateOfDeath)
+      || formatDdMmYyyyFromIso(entry.deathDateIso);
+    if (displayDate) {
+      params.set(`deceased[${index}][deathDate]`, displayDate);
     }
     if (entry.deceasedGender) {
       params.set(`deceased[${index}][deceasedGender]`, entry.deceasedGender);
@@ -233,11 +244,6 @@ async function processPublicSubmissionPost(req, res, options) {
   const synagogue = await Synagogue.findOne({ slug });
   if (!synagogue) {
     return res.status(404).send('Synagogue not found');
-  }
-
-  const publicSubmission = normalizePublicSubmission(synagogue.publicSubmission, synagogue.provisioning);
-  if (!publicSubmission.enabled) {
-    return res.redirect(`/s/${slug}/add-name?error=disabled`);
   }
 
   const lang = resolvePublicSubmissionLang(req.body.lang, synagogue.language);
@@ -295,10 +301,6 @@ router.get('/:slug/add-name', async (req, res) => {
 
     const lang = resolvePublicSubmissionLang(req.query.lang, synagogue.language);
     const context = buildPageContext(synagogue, lang);
-
-    if (!context.publicSubmission.enabled) {
-      return renderPublicPage(res, 'public/add-name-disabled', context);
-    }
 
     return renderPublicPage(res, 'public/add-name', enrichFormRenderContext(context, req.query));
   } catch (err) {

@@ -115,6 +115,7 @@
 {{/if}}
 
     <form method="POST" action="/admin/{{synagogue.slug}}/yahrzeit/settings" class="yahrzeit-settings-form board-features-grid">
+        <p class="yahrzeit-settings-saved" id="yahrzeitSettingsSaved" data-saved-label="{{t 'saved_settings'}}" hidden role="status">{{t 'saved_settings'}}</p>
         <div class="admin-theme-setting">
             <div class="admin-theme-setting-label">{{t 'yahrzeit_include_hebrew'}}</div>
             <div class="admin-theme-setting-control">
@@ -123,7 +124,6 @@
                     <span class="toggle-slider" aria-hidden="true"></span>
                 </label>
             </div>
-            <p class="field-hint admin-theme-setting-hint">{{t 'yahrzeit_include_hebrew_help'}}</p>
         </div>
         {{#if weeklyKaddishReminderEnabled}}
         <div class="admin-theme-setting">
@@ -131,17 +131,9 @@
             <div class="admin-theme-setting-control">
                 <input type="tel" id="weeklyKaddishWhatsapp" name="weeklyKaddishWhatsapp" value="{{weeklyKaddishWhatsapp}}" placeholder="972501234567" dir="ltr" class="form-control">
             </div>
-            <p class="field-hint admin-theme-setting-hint">{{t 'weekly_kaddish_whatsapp_setting_help'}}</p>
         </div>
         {{/if}}
-        <div class="form-actions-inline">
-            <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon">{{{adminIcon 'save'}}}{{t 'save'}}</button>
-        </div>
     </form>
-
-    {{#if saved}}
-    <div class="alert alert-success admin-alert" role="alert">{{t 'saved_settings'}}</div>
-    {{/if}}
 
     {{#if entries.length}}
     <div class="yahrzeit-list">

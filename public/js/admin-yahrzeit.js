@@ -88,10 +88,110 @@
     });
   });
 
-  document.querySelectorAll('.yahrzeit-upcoming-name-link').forEach(function (button) {
-    button.addEventListener('click', function () {
+  function bindUpcomingNameLink(button) {
+    function openFromButton(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
       const personId = Number(button.getAttribute('data-person-id'));
       openPersonById(personId);
+    }
+    button.addEventListener('click', openFromButton);
+    button.addEventListener('pointerdown', function (event) {
+      event.stopPropagation();
+    });
+  }
+
+  document.querySelectorAll('.yahrzeit-upcoming-name-link').forEach(bindUpcomingNameLink);
+})();
+
+(function yahrzeitSettingsAutoSave() {
+  const form = document.querySelector('.yahrzeit-settings-form');
+  const page = document.querySelector('.yahrzeit-page');
+  if (!form || !page) {
+    return;
+  }
+  const indicator = document.getElementById('yahrzeitSettingsSaved');
+  const slug = page.getAttribute('data-synagogue-slug');
+  if (!slug) {
+    return;
+  }
+
+  let saveTimer = null;
+  let flashTimer = null;
+
+  function showSaved() {
+    if (!indicator) {
+      return;
+    }
+    indicator.hidden = false;
+    indicator.textContent = indicator.getAttribute('data-saved-label') || 'Saved';
+    if (flashTimer) {
+      window.clearTimeout(flashTimer);
+    }
+    flashTimer = window.setTimeout(function () {
+      indicator.hidden = true;
+    }, 2200);
+  }
+
+  function revertInput(input, previous) {
+    if (!input) {
+      return;
+    }
+    if (input.type === 'checkbox') {
+      input.checked = previous;
+      return;
+    }
+    input.value = previous;
+  }
+
+  async function persistSetting(input, previousValue) {
+    const body = new URLSearchParams(new FormData(form));
+    try {
+      const response = await fetch(form.getAttribute('action') || ('/admin/' + slug + '/yahrzeit/settings'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-Requested-With': 'fetch',
+        },
+        body: body.toString(),
+        credentials: 'same-origin',
+      });
+      if (!response.ok) {
+        throw new Error('save_failed');
+      }
+      const payload = await response.json();
+      if (!payload || payload.ok !== true) {
+        throw new Error('save_failed');
+      }
+      showSaved();
+    } catch (err) {
+      revertInput(input, previousValue);
+    }
+  }
+
+  function scheduleSave(input, previousValue) {
+    if (saveTimer) {
+      window.clearTimeout(saveTimer);
+    }
+    saveTimer = window.setTimeout(function () {
+      persistSetting(input, previousValue);
+    }, 120);
+  }
+
+  form.querySelectorAll('input, select, textarea').forEach(function (input) {
+    if (input.type === 'checkbox') {
+      input.addEventListener('change', function () {
+        scheduleSave(input, !input.checked);
+      });
+      return;
+    }
+    input.addEventListener('focus', function () {
+      input.dataset.prevValue = input.value;
+    });
+    input.addEventListener('change', function () {
+      scheduleSave(input, input.dataset.prevValue);
     });
   });
 })();

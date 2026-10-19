@@ -1,8 +1,26 @@
 .onboarding-body {
   min-height: 100vh;
-  background: linear-gradient(160deg, #0f1419 0%, #1a2332 55%, #121820 100%);
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+    url('/images/brickwall.jpg') center / cover fixed;
   color: #e8ecf1;
   font-family: 'DM Sans', 'Heebo', system-ui, sans-serif;
+}
+
+.public-form-onboarding {
+  .master-wizard-card.public-deceased-block {
+    margin-bottom: 1.25rem;
+  }
+
+  .public-field span {
+    color: var(--accent-color, #ffd54f);
+  }
+
+  .public-field input,
+  .public-field select,
+  .public-field textarea {
+    color: #f0f0f0;
+  }
 }
 
 .onboarding-rtl {

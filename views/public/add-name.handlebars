@@ -1,8 +1,8 @@
 <section class="public-card">
-    <div class="public-lang-switch public-lang-switch-top">
-        <a href="{{formUrl}}?lang=he" class="{{#if (eq lang 'he')}}is-active{{/if}}">HE</a>
-        <a href="{{formUrl}}?lang=en" class="{{#if (eq lang 'en')}}is-active{{/if}}">EN</a>
-        <a href="{{formUrl}}?lang=ru" class="{{#if (eq lang 'ru')}}is-active{{/if}}">RU</a>
+    <div class="public-lang-switch public-lang-switch-pills public-lang-switch-top" role="navigation" aria-label="{{publicT 'language_label'}}">
+        <a href="{{formUrl}}?lang=he" class="public-lang-pill{{#if (eq lang 'he')}} is-active{{/if}}" aria-current="{{#if (eq lang 'he')}}true{{else}}false{{/if}}">עברית</a>
+        <a href="{{formUrl}}?lang=ru" class="public-lang-pill{{#if (eq lang 'ru')}} is-active{{/if}}" aria-current="{{#if (eq lang 'ru')}}true{{else}}false{{/if}}">Русский</a>
+        <a href="{{formUrl}}?lang=en" class="public-lang-pill{{#if (eq lang 'en')}} is-active{{/if}}" aria-current="{{#if (eq lang 'en')}}true{{else}}false{{/if}}">English</a>
     </div>
 
     <div class="public-brand">
@@ -15,8 +15,6 @@
     </div>
 
     <h1>{{publicT 'page_title'}}</h1>
-    <p class="public-intro">{{publicT 'intro'}}</p>
-
     {{#if errorMessage}}
     <p class="public-error" role="alert">{{errorMessage}}</p>
     {{/if}}
@@ -30,22 +28,19 @@
             </label>
         </div>
 
-        <h2 class="public-section-title">{{publicT 'contact_section_title'}}</h2>
-        <p class="public-section-intro">{{publicT 'contact_section_intro'}}</p>
-
-        <div class="public-field-group">
+        <div class="public-deceased-block public-contact-block">
+            <h2 class="public-deceased-block-title">{{publicT 'contact_section_title'}}</h2>
             <label class="public-field">
                 <span>{{publicT 'contact_name_label'}}</span>
                 <input type="text" name="contactName" maxlength="120" required value="{{values.contactName}}" placeholder="{{publicT 'contact_name_placeholder'}}">
             </label>
-
             <label class="public-field public-field-phone">
                 <span>{{publicT 'contact_phone_label'}}</span>
-                <input type="tel" name="contactPhone" maxlength="30" required value="{{values.contactPhone}}" placeholder="{{phonePlaceholder}}">
+                <input type="tel" name="contactPhone" maxlength="30" required value="{{values.contactPhone}}" placeholder="{{phonePlaceholder}}" dir="ltr">
             </label>
         </div>
 
-        <h2 class="public-section-title">{{publicT 'deceased_section_title'}}</h2>
+        <h2 class="public-section-title public-deceased-section-heading">{{publicT 'deceased_section_title'}}</h2>
 
         <div id="publicDeceasedList" class="public-deceased-list">
             {{#each deceasedList}}
@@ -76,15 +71,6 @@
             </button>
         </div>
 
-        {{#if publicSubmission.donationUrl}}
-        <div class="public-charity-section public-form-donation public-charity-section-end">
-            <h2 class="public-charity-title">{{publicT 'charity_title'}}</h2>
-            <p class="public-intro">{{publicT 'charity_message'}}</p>
-            <div class="public-actions">
-                <a href="{{publicSubmission.donationUrl}}" class="public-button public-button-secondary" target="_blank" rel="noopener noreferrer">{{publicT 'charity_button'}}</a>
-            </div>
-        </div>
-        {{/if}}
     </form>
 
     <template id="publicDeceasedTemplate">
@@ -99,6 +85,7 @@
     </div>
 </section>
 
+<script src="/js/public-add-name-death-date.js"></script>
 <script src="/js/public-add-name-deceased.js"></script>
 <script>
 (function () {

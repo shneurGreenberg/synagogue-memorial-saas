@@ -64,6 +64,9 @@
     }
   }
 
+  if (window.PublicDeathDateInput) {
+    window.PublicDeathDateInput.bindAll(list);
+  }
   list.querySelectorAll('.public-deceased-block').forEach(bindBlock);
   reindexBlocks();
 
@@ -72,6 +75,9 @@
     clone.querySelectorAll('input[type="text"], input[type="number"]').forEach(function (input) {
       input.value = '';
     });
+    if (window.PublicDeathDateInput) {
+      window.PublicDeathDateInput.bindAll(clone);
+    }
     clone.querySelectorAll('select').forEach(function (select) {
       select.selectedIndex = 0;
     });

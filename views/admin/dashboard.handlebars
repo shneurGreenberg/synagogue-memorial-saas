@@ -490,16 +490,6 @@
                         </div>
                         {{/if}}
                         {{#if (eq this.special 'publicSubmission')}}
-                        <div class="admin-theme-setting">
-                            <div class="admin-theme-setting-label">{{t 'public_submission_enabled'}}</div>
-                            <div class="admin-theme-setting-control">
-                                <label class="toggle-switch" for="publicSubmissionEnabled">
-                                    <input type="hidden" name="publicSubmissionEnabled" value="0">
-                                    <input type="checkbox" id="publicSubmissionEnabled" name="publicSubmissionEnabled" value="1" {{#if ../synagogue.publicSubmission.enabled}}checked{{/if}}>
-                                    <span class="toggle-slider" aria-hidden="true"></span>
-                                </label>
-                            </div>
-                        </div>
                         <div class="form-field admin-theme-setting admin-theme-setting-wide">
                             <label>{{t 'public_submission_url_hint'}}</label>
                             <p class="admin-copy-link"><code>/s/{{../synagogue.slug}}/add-name</code></p>
@@ -989,14 +979,12 @@
 
         function readFeatureSettingsPatch() {
             var shabbat = document.getElementById('shabbatTimesEnabled');
-            var publicSubmission = document.getElementById('publicSubmissionEnabled');
             var donationUrl = document.getElementById('publicSubmissionDonationUrl');
             var showDonationQr = document.getElementById('publicSubmissionShowDonationQr');
             var showRegistrationQr = document.getElementById('publicSubmissionShowRegistrationQr');
             var boardFont = document.getElementById('boardFont');
             return {
                 shabbatTimesEnabled: shabbat && shabbat.checked ? '1' : '',
-                publicSubmissionEnabled: publicSubmission && publicSubmission.checked ? '1' : '',
                 publicSubmissionDonationUrl: donationUrl ? donationUrl.value.trim() : '',
                 publicSubmissionShowDonationQr: showDonationQr && showDonationQr.checked ? '1' : '',
                 publicSubmissionShowRegistrationQr: showRegistrationQr && showRegistrationQr.checked ? '1' : '',

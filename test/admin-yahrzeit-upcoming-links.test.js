@@ -1,0 +1,24 @@
+const { describe, it } = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('fs');
+const path = require('path');
+
+describe('admin upcoming yahrzeit name links (Y12)', () => {
+  it('includes admin-person-card.js so upcoming names can open the modal', () => {
+    const adminRoutes = fs.readFileSync(path.join(__dirname, '..', 'routes', 'admin.js'), 'utf8');
+    assert.match(adminRoutes, /'admin\/yahrzeit': \['admin-person-card\.js'/);
+  });
+
+  it('normalizes person ids when building yahrzeitPeople JSON', () => {
+    const source = fs.readFileSync(path.join(__dirname, '..', 'routes', 'admin.js'), 'utf8');
+    const block = source.slice(source.indexOf('const personIdKey'));
+    assert.match(block, /personIdKey\(row\.id\)/);
+    assert.match(block, /entryIds\.has\(personIdKey\(person\.id\)\)/);
+  });
+
+  it('stops event propagation on upcoming name buttons inside details', () => {
+    const js = fs.readFileSync(path.join(__dirname, '..', 'public', 'js', 'admin-yahrzeit.js'), 'utf8');
+    assert.match(js, /yahrzeit-upcoming-name-link/);
+    assert.match(js, /stopPropagation/);
+  });
+});

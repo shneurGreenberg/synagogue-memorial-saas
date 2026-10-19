@@ -1,4 +1,4 @@
-<div class="onboarding-shell master-wizard-shell">
+<div class="onboarding-shell master-wizard-shell public-form-onboarding">
     <header class="onboarding-header">
         <h1>{{onboardingT 'page_title'}}</h1>
         <p class="onboarding-lead">{{onboardingT 'intro'}}</p>
@@ -30,48 +30,47 @@
         <input type="hidden" name="long" id="onboardingLong" value="">
         <input type="hidden" name="timezone" id="onboardingTimezone" value="">
 
-        <section class="master-wizard-card" data-step="basics" data-required="true">
-            <h2>{{onboardingT 'step_basics'}}</h2>
-            <label class="onboarding-field">
+        <section class="master-wizard-card public-deceased-block" data-step="basics" data-required="true">
+            <h2 class="public-deceased-block-title">{{onboardingT 'step_basics'}}</h2>
+            <label class="onboarding-field public-field">
                 <span>{{onboardingT 'name_label'}}</span>
                 <input type="text" name="name" id="onboardingName" required maxlength="120">
             </label>
-            <label class="onboarding-field">
+            <label class="onboarding-field public-field">
                 <span>{{onboardingT 'web_address_label'}}</span>
                 <input type="text" name="slug" id="onboardingSlug" required maxlength="64" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" autocomplete="off" autocapitalize="off" spellcheck="false">
-                <span class="onboarding-hint">{{onboardingT 'web_address_help'}}</span>
             </label>
-            <label class="onboarding-field">
+            <label class="onboarding-field public-field">
                 <span>{{onboardingT 'title_he_label'}}</span>
                 <input type="text" name="titleHe" maxlength="120">
             </label>
-            <label class="onboarding-field">
+            <label class="onboarding-field public-field">
                 <span>{{onboardingT 'title_en_label'}}</span>
                 <input type="text" name="titleEn" maxlength="120">
             </label>
         </section>
 
-        <section class="master-wizard-card" data-step="location" hidden>
-            <h2>{{onboardingT 'step_location'}}</h2>
-            <label class="onboarding-field">
+        <section class="master-wizard-card public-deceased-block" data-step="location" hidden>
+            <h2 class="public-deceased-block-title">{{onboardingT 'step_location'}}</h2>
+            <label class="onboarding-field public-field">
                 <span>{{onboardingT 'search_place'}}</span>
                 <input type="search" id="onboardingPlaceSearch" autocomplete="off">
             </label>
             <ul class="onboarding-place-results" id="onboardingPlaceResults" hidden></ul>
             <div id="onboardingMap" class="onboarding-map" aria-label="Map"></div>
-            <label class="onboarding-field">
+            <label class="onboarding-field public-field">
                 <span>{{onboardingT 'city_label'}}</span>
                 <input type="text" name="city" id="onboardingCity" required>
             </label>
-            <label class="onboarding-field">
+            <label class="onboarding-field public-field">
                 <span>{{onboardingT 'timezone_label'}}</span>
                 <input type="text" name="timezoneDisplay" id="onboardingTimezoneDisplay" readonly>
             </label>
         </section>
 
-        <section class="master-wizard-card" data-step="logo" hidden>
-            <h2>{{onboardingT 'step_logo'}}</h2>
-            <label class="onboarding-field">
+        <section class="master-wizard-card public-deceased-block" data-step="logo" hidden>
+            <h2 class="public-deceased-block-title">{{onboardingT 'step_logo'}}</h2>
+            <label class="onboarding-field public-field">
                 <span>{{onboardingT 'logo_label'}}</span>
                 <input type="file" name="logo" id="onboardingLogo" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml">
             </label>
@@ -79,52 +78,50 @@
                 <img class="master-wizard-preview-image community-logo-preview-img" id="onboardingLogoPreviewImg" alt="">
             </div>
             {{> onboarding-logo-bg-swatches}}
-            <p class="onboarding-hint">{{onboardingT 'step_import_hint'}}</p>
         </section>
 
-        <section class="master-wizard-card" data-step="contact" hidden>
-            <h2>{{onboardingT 'step_contact'}}</h2>
-            <label class="onboarding-field">
+        <section class="master-wizard-card public-deceased-block" data-step="contact" hidden>
+            <h2 class="public-deceased-block-title">{{onboardingT 'step_contact'}}</h2>
+            <label class="onboarding-field public-field">
                 <span>{{onboardingT 'contact_name'}}</span>
                 <input type="text" name="contactName" required maxlength="120">
             </label>
-            <label class="onboarding-field">
+            <label class="onboarding-field public-field">
                 <span>{{onboardingT 'contact_phone'}}</span>
-                <input type="tel" name="contactPhone" maxlength="40">
+                <input type="tel" name="contactPhone" maxlength="40" dir="ltr">
             </label>
-            <label class="onboarding-field">
+            <label class="onboarding-field public-field">
                 <span>{{onboardingT 'admin_email'}}</span>
-                <input type="email" name="adminEmail" required maxlength="160">
+                <input type="email" name="adminEmail" required maxlength="160" dir="ltr">
             </label>
-            <label class="onboarding-field">
+            <label class="onboarding-field public-field">
                 <span>{{onboardingT 'admin_password'}}</span>
                 <input type="password" name="adminPassword" required minlength="6" autocomplete="new-password">
-                <span class="onboarding-hint">{{onboardingT 'admin_password_help'}}</span>
             </label>
-            <label class="onboarding-field">
+            <label class="onboarding-field public-field">
                 <span>{{onboardingT 'board_language'}}</span>
-                <select name="boardLanguage">
+                <select name="boardLanguage" class="public-select-field">
                     <option value="en">English</option>
                     <option value="ru">Русский</option>
                     <option value="he">עברית</option>
                 </select>
             </label>
-            <label class="onboarding-field">
+            <label class="onboarding-field public-field">
                 <span>{{onboardingT 'admin_language'}}</span>
-                <select name="adminLanguage">
+                <select name="adminLanguage" class="public-select-field">
                     <option value="en">English</option>
                     <option value="ru">Русский</option>
                     <option value="he">עברית</option>
                 </select>
             </label>
-            <label class="onboarding-field">
+            <label class="onboarding-field public-field">
                 <span>{{onboardingT 'notes_label'}}</span>
                 <textarea name="notes" rows="3" maxlength="2000"></textarea>
             </label>
         </section>
 
-        <section class="master-wizard-card" data-step="review" hidden>
-            <h2>{{onboardingT 'step_review'}}</h2>
+        <section class="master-wizard-card public-deceased-block" data-step="review" hidden>
+            <h2 class="public-deceased-block-title">{{onboardingT 'step_review'}}</h2>
             <div class="onboarding-review" id="onboardingReview"></div>
         </section>
 
