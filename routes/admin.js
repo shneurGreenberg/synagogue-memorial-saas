@@ -120,6 +120,7 @@ const {
 } = require('../lib/yahrzeit-reminders');
 const { resolveSynagogueTimezone } = require('../lib/yahrzeit');
 const { computeHebrewDateOfDeath } = require('../lib/person-hebrew-death');
+const { parseDiedAfterSunset } = require('../lib/died-after-sunset');
 const { backfillPeopleHebrewDeathDates } = require('../lib/person-hebrew-backfill');
 const { getCachedUpcomingHolidayNotice } = require('../lib/admin-holiday-notice-cache');
 const { getCachedAdminYahrzeitBundle, getCachedYahrzeitTodayCount } = require('../lib/admin-yahrzeit-cache');
@@ -1290,7 +1291,9 @@ function normalizeImportedPerson(raw, fallbackId) {
     );
     person.contact = legacy.contact;
     person.contacts = legacy.contacts;
-    const hebrew = computeHebrewDateOfDeath(person.gregorianDateOfDeath);
+    const hebrew = computeHebrewDateOfDeath(person.gregorianDateOfDeath, {
+      diedAfterSunset: person.diedAfterSunset,
+    });
     if (hebrew) {
         person.hebrewDateOfDeath = hebrew;
     }
@@ -1941,9 +1944,11 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
             contact: legacy.contact,
             contacts: legacy.contacts,
         };
+        const diedAfterSunset = parseDiedAfterSunset(req.body.diedAfterSunset);
         if (deathDate) {
             newPerson.gregorianDateOfDeath = deathDate;
-            const hebrew = computeHebrewDateOfDeath(deathDate);
+            newPerson.diedAfterSunset = diedAfterSunset;
+            const hebrew = computeHebrewDateOfDeath(deathDate, { diedAfterSunset });
             if (hebrew) {
                 newPerson.hebrewDateOfDeath = hebrew;
             }
@@ -1984,14 +1989,20 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
             'people.$.contacts': legacy.contacts,
         };
         const update = { $set: updateFields };
+        const diedAfterSunset = parseDiedAfterSunset(req.body.diedAfterSunset);
         if (deathDate) {
             updateFields['people.$.gregorianDateOfDeath'] = deathDate;
-            const hebrew = computeHebrewDateOfDeath(deathDate);
+            updateFields['people.$.diedAfterSunset'] = diedAfterSunset;
+            const hebrew = computeHebrewDateOfDeath(deathDate, { diedAfterSunset });
             if (hebrew) {
                 updateFields['people.$.hebrewDateOfDeath'] = hebrew;
             }
         } else {
-            update.$unset = { 'people.$.gregorianDateOfDeath': '', 'people.$.hebrewDateOfDeath': '' };
+            update.$unset = {
+                'people.$.gregorianDateOfDeath': '',
+                'people.$.hebrewDateOfDeath': '',
+                'people.$.diedAfterSunset': '',
+            };
         }
 
         if (req.file) {
