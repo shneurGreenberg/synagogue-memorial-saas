@@ -28,5 +28,8 @@ jobs:
       - name: Build board SPA
         run: npm run build:board
 
+      - name: Verify board bundle
+        run: node scripts/check-board-built-bundle.js
+
       - name: Build admin CSS
         run: npm run build:css

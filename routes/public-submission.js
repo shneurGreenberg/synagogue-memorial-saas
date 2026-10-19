@@ -4,7 +4,15 @@ const { normalizePublicSubmission } = require('../lib/public-submission');
 const {
   getPublicSubmissionTranslator,
   resolvePublicSubmissionLang,
+  getMonthOptions,
 } = require('../lib/public-submission-i18n');
+const { resolvePublicSubmissionPhonePlaceholder } = require('../lib/public-submission-phone');
+const {
+  parseDataConsentFromBody,
+  validateDataConsent,
+  consentTimestamp,
+} = require('../lib/public-submission-consent');
+const { isHoneypotTripped, HONEYPOT_FIELD } = require('../lib/public-submission-honeypot');
 const { getRelationOptions } = require('../lib/submission-relation');
 const {
   parsePersonContactFromBody,
@@ -26,8 +34,12 @@ const EMPTY_DECEASED_BLOCK = {
   name: '',
   fatherName: '',
   deathDate: '',
+  deathDay: '',
+  deathMonth: '',
+  deathYear: '',
   relationKey: '',
   relationOther: '',
+  deceasedGender: 'male',
   diedAfterSunset: false,
 };
 
@@ -69,6 +81,9 @@ function buildPageContext(synagogue, lang, options = {}) {
     communityLogoBackground: logoBackground || '',
     inviteMode: false,
     relationOptions: getRelationOptions(lang),
+    monthOptions: getMonthOptions(lang),
+    phonePlaceholder: resolvePublicSubmissionPhonePlaceholder(synagogue.language, lang),
+    honeypotField: HONEYPOT_FIELD,
     emptyDeceasedBlock: EMPTY_DECEASED_BLOCK,
   };
 }
@@ -91,8 +106,12 @@ function deceasedBlocksFromQuery(query) {
         name: entry.name || '',
         fatherName: entry.fatherName || '',
         deathDate: entry.deathDateIso || deathDateIsoFromParts(entry.gregorianDateOfDeath),
+        deathDay: entry.deathDay || (entry.gregorianDateOfDeath ? String(entry.gregorianDateOfDeath.date) : ''),
+        deathMonth: entry.deathMonth || (entry.gregorianDateOfDeath ? String(entry.gregorianDateOfDeath.month) : ''),
+        deathYear: entry.deathYear || (entry.gregorianDateOfDeath ? String(entry.gregorianDateOfDeath.year) : ''),
         relationKey: entry.relationKey || '',
         relationOther: entry.relationOther || '',
+        deceasedGender: entry.deceasedGender || 'male',
         diedAfterSunset: entry.diedAfterSunset,
       }));
     }
@@ -146,6 +165,9 @@ function resolveErrorMessage(pt, errorCode) {
   if (errorCode === 'upload') {
     return pt('upload_error');
   }
+  if (errorCode === 'consent') {
+    return pt('consent_required_error');
+  }
   return '';
 }
 
@@ -156,8 +178,17 @@ function appendDeceasedToSearchParams(params, body) {
     params.set(`deceased[${index}][fatherName]`, entry.fatherName || '');
     params.set(`deceased[${index}][relationKey]`, entry.relationKey || '');
     params.set(`deceased[${index}][relationOther]`, entry.relationOther || '');
-    if (entry.deathDateIso) {
-      params.set(`deceased[${index}][deathDate]`, entry.deathDateIso);
+    if (entry.deathDay) {
+      params.set(`deceased[${index}][deathDay]`, entry.deathDay);
+    }
+    if (entry.deathMonth) {
+      params.set(`deceased[${index}][deathMonth]`, entry.deathMonth);
+    }
+    if (entry.deathYear) {
+      params.set(`deceased[${index}][deathYear]`, entry.deathYear);
+    }
+    if (entry.deceasedGender) {
+      params.set(`deceased[${index}][deceasedGender]`, entry.deceasedGender);
     }
     params.set(
       `deceased[${index}][diedAfterSunset]`,
@@ -179,6 +210,24 @@ function redirectWithFormError(res, baseUrl, lang, errorCode, body) {
   return res.redirect(`${baseUrl}?${params.toString()}`);
 }
 
+function redirectToThankYou(res, successBaseUrl, lang, entries) {
+  const count = entries.length;
+  const params = new URLSearchParams({
+    lang,
+    sent: 'request',
+    count: String(count),
+  });
+  if (count === 1 && entries[0].name) {
+    params.set('name', entries[0].name);
+  }
+  entries.forEach((entry, index) => {
+    if (entry.name) {
+      params.set(`n${index}`, entry.name);
+    }
+  });
+  return res.redirect(`${successBaseUrl}?${params.toString()}`);
+}
+
 async function processPublicSubmissionPost(req, res, options) {
   const { slug, baseUrl, successBaseUrl } = options;
   const synagogue = await Synagogue.findOne({ slug });
@@ -192,6 +241,12 @@ async function processPublicSubmissionPost(req, res, options) {
   }
 
   const lang = resolvePublicSubmissionLang(req.body.lang, synagogue.language);
+
+  if (isHoneypotTripped(req.body)) {
+    const entries = parseDeceasedEntriesFromBody({ ...req.body, lang });
+    return redirectToThankYou(res, successBaseUrl, lang, entries.length ? entries : [{ name: '' }]);
+  }
+
   const contact = parsePersonContactFromBody(req.body);
   const entries = parseDeceasedEntriesFromBody({ ...req.body, lang });
   const entryError = validateDeceasedEntries(entries);
@@ -204,10 +259,18 @@ async function processPublicSubmissionPost(req, res, options) {
     return redirectWithFormError(res, baseUrl, lang, 'required', req.body);
   }
 
+  const dataConsent = parseDataConsentFromBody(req.body);
+  if (!validateDataConsent(dataConsent)) {
+    return redirectWithFormError(res, baseUrl, lang, 'consent', req.body);
+  }
+
   const beforeCount = (synagogue.personAddRequests || []).length;
   const beforePeople = (synagogue.people || []).length;
 
-  await pushPersonAddRequests(slug, entries, contact, req.files || []);
+  await pushPersonAddRequests(slug, entries, contact, req.files || [], {
+    dataConsent: true,
+    consentAt: consentTimestamp(),
+  });
 
   const after = await Synagogue.findOne({ slug }).lean();
   const addedRequests = (after.personAddRequests || []).length - beforeCount;
@@ -220,16 +283,7 @@ async function processPublicSubmissionPost(req, res, options) {
     throw new Error('person_add_request_count_mismatch');
   }
 
-  const count = entries.length;
-  const params = new URLSearchParams({
-    lang,
-    sent: 'request',
-    count: String(count),
-  });
-  if (count === 1 && entries[0].name) {
-    params.set('name', entries[0].name);
-  }
-  return res.redirect(`${successBaseUrl}?${params.toString()}`);
+  return redirectToThankYou(res, successBaseUrl, lang, entries);
 }
 
 router.get('/:slug/add-name', async (req, res) => {
@@ -280,12 +334,26 @@ router.get('/:slug/add-name/success', async (req, res) => {
     const lang = resolvePublicSubmissionLang(req.query.lang, synagogue.language);
     const context = buildPageContext(synagogue, lang);
 
+    const submittedCount = parseInt(req.query.count, 10) || 1;
+    const submittedNames = [];
+    for (let index = 0; index < submittedCount; index += 1) {
+      const value = String(req.query[`n${index}`] || '').trim();
+      if (value) {
+        submittedNames.push(value);
+      }
+    }
+    if (!submittedNames.length && req.query.name) {
+      submittedNames.push(String(req.query.name).trim());
+    }
+
     return renderPublicPage(res, 'public/add-name-success', {
       ...context,
       submittedName: String(req.query.name || '').trim(),
+      submittedNames,
       successKind: req.query.sent === 'request' ? 'request' : 'added',
-      submittedCount: parseInt(req.query.count, 10) || 1,
-      isMultiRequest: (parseInt(req.query.count, 10) || 1) > 1,
+      submittedCount,
+      isMultiRequest: submittedCount > 1,
+      shareUrl: `${req.protocol}://${req.get('host')}/s/${synagogue.slug}/add-name?lang=${lang}`,
     });
   } catch (err) {
     return res.status(500).send(err.message);

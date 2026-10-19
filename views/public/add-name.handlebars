@@ -1,4 +1,10 @@
 <section class="public-card">
+    <div class="public-lang-switch public-lang-switch-top">
+        <a href="{{formUrl}}?lang=he" class="{{#if (eq lang 'he')}}is-active{{/if}}">HE</a>
+        <a href="{{formUrl}}?lang=en" class="{{#if (eq lang 'en')}}is-active{{/if}}">EN</a>
+        <a href="{{formUrl}}?lang=ru" class="{{#if (eq lang 'ru')}}is-active{{/if}}">RU</a>
+    </div>
+
     <div class="public-brand">
         <img class="public-brand-logo" src="{{officialLogoUrl}}" alt="">
         {{#if communityLogoUrl}}
@@ -10,7 +16,6 @@
 
     <h1>{{publicT 'page_title'}}</h1>
     <p class="public-intro">{{publicT 'intro'}}</p>
-    <p class="public-approval-notice">{{publicT 'approval_notice'}}</p>
 
     {{#if errorMessage}}
     <p class="public-error" role="alert">{{errorMessage}}</p>
@@ -18,25 +23,33 @@
 
     <form method="POST" action="{{formUrl}}" class="public-form" id="publicAddNameForm">
         <input type="hidden" name="lang" value="{{lang}}">
+        <div class="public-honeypot" aria-hidden="true">
+            <label>
+                <span>Website</span>
+                <input type="text" name="{{honeypotField}}" tabindex="-1" autocomplete="off">
+            </label>
+        </div>
 
         <h2 class="public-section-title">{{publicT 'contact_section_title'}}</h2>
         <p class="public-section-intro">{{publicT 'contact_section_intro'}}</p>
 
-        <label class="public-field">
-            <span>{{publicT 'contact_name_label'}}</span>
-            <input type="text" name="contactName" maxlength="120" required value="{{values.contactName}}" placeholder="{{publicT 'contact_name_placeholder'}}">
-        </label>
+        <div class="public-field-group">
+            <label class="public-field">
+                <span>{{publicT 'contact_name_label'}}</span>
+                <input type="text" name="contactName" maxlength="120" required value="{{values.contactName}}" placeholder="{{publicT 'contact_name_placeholder'}}">
+            </label>
 
-        <label class="public-field public-field-phone">
-            <span>{{publicT 'contact_phone_label'}}</span>
-            <input type="tel" name="contactPhone" maxlength="30" required value="{{values.contactPhone}}" placeholder="{{publicT 'contact_phone_placeholder'}}">
-        </label>
+            <label class="public-field public-field-phone">
+                <span>{{publicT 'contact_phone_label'}}</span>
+                <input type="tel" name="contactPhone" maxlength="30" required value="{{values.contactPhone}}" placeholder="{{phonePlaceholder}}">
+            </label>
+        </div>
 
         <h2 class="public-section-title">{{publicT 'deceased_section_title'}}</h2>
 
         <div id="publicDeceasedList" class="public-deceased-list">
             {{#each deceasedList}}
-            {{> public-add-name-deceased-block index=this.index block=this showIndex=../showDeceasedIndex inviteMode=false relationOptions=../relationOptions}}
+            {{> public-add-name-deceased-block index=this.index block=this showIndex=../showDeceasedIndex inviteMode=false relationOptions=../relationOptions monthOptions=../monthOptions}}
             {{/each}}
         </div>
 
@@ -44,9 +57,16 @@
             <button type="button" class="public-button public-button-secondary" id="publicAddDeceasedBtn">{{publicT 'add_another_deceased'}}</button>
         </p>
 
-        <label class="public-field">
+        <label class="public-field public-field-notes">
             <span>{{publicT 'deceased_notes_label'}}</span>
             <textarea name="deceasedNotes" rows="3" maxlength="2000" placeholder="{{publicT 'deceased_notes_placeholder'}}">{{values.deceasedNotes}}</textarea>
+        </label>
+
+        <label class="public-field public-field-consent">
+            <span class="public-consent-wrap">
+                <input type="checkbox" name="dataConsent" value="1" required>
+                <span>{{publicT 'consent_label'}}</span>
+            </span>
         </label>
 
         <div class="public-actions">
@@ -68,7 +88,7 @@
     </form>
 
     <template id="publicDeceasedTemplate">
-        {{> public-add-name-deceased-block index="0" block=emptyDeceasedBlock showIndex=true inviteMode=false relationOptions=relationOptions}}
+        {{> public-add-name-deceased-block index="0" block=emptyDeceasedBlock showIndex=true inviteMode=false relationOptions=relationOptions monthOptions=monthOptions}}
     </template>
 
     <div class="public-submit-overlay" id="publicSubmitOverlay" hidden aria-hidden="true">
@@ -76,12 +96,6 @@
             <div class="public-submit-overlay-spinner" aria-hidden="true"></div>
             <p class="public-submit-overlay-text">{{publicT 'submitting'}}</p>
         </div>
-    </div>
-
-    <div class="public-lang-switch">
-        <a href="{{formUrl}}?lang=ru" class="{{#if (eq lang 'ru')}}is-active{{/if}}">RU</a>
-        <a href="{{formUrl}}?lang=en" class="{{#if (eq lang 'en')}}is-active{{/if}}">EN</a>
-        <a href="{{formUrl}}?lang=he" class="{{#if (eq lang 'he')}}is-active{{/if}}">HE</a>
     </div>
 </section>
 

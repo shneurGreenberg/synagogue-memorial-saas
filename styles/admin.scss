@@ -3736,6 +3736,29 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
   }
 }
 
+.yahrzeit-upcoming-details {
+  .yahrzeit-upcoming-heading {
+    cursor: pointer;
+    list-style: none;
+    margin-bottom: 0.75rem;
+  }
+
+  &[open] .yahrzeit-upcoming-heading {
+    margin-bottom: 0.75rem;
+  }
+}
+
+.yahrzeit-upcoming-name-link {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  color: var(--admin-link, #4a9eff);
+  cursor: pointer;
+  text-decoration: underline;
+  text-align: start;
+}
+
 .yahrzeit-upcoming-table {
   width: 100%;
   border-collapse: collapse;

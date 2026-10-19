@@ -69,9 +69,16 @@
 
   addBtn.addEventListener('click', function () {
     var clone = template.content.firstElementChild.cloneNode(true);
-    clone.querySelectorAll('input[type="text"], input[type="date"]').forEach(function (input) {
+    clone.querySelectorAll('input[type="text"], input[type="number"]').forEach(function (input) {
       input.value = '';
     });
+    clone.querySelectorAll('select').forEach(function (select) {
+      select.selectedIndex = 0;
+    });
+    var maleRadio = clone.querySelector('input[value="male"][name*="deceasedGender"]');
+    if (maleRadio) {
+      maleRadio.checked = true;
+    }
     var beforeRadio = clone.querySelector('input[value="before"]');
     if (beforeRadio) {
       beforeRadio.checked = true;

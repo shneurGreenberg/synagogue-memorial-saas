@@ -98,7 +98,9 @@ const {
   normalizeImportedSnapshot,
   readImportName,
 } = require('../lib/saved-view-portable');
-const { listPendingPersonAddRequests } = require('../lib/person-add-request');
+const { listPendingPersonAddRequests, normalizePersonAddRequest } = require('../lib/person-add-request');
+const { findSimilarPeopleForSubmission } = require('../lib/person-name-similarity');
+const { buildPersonFromAddRequest } = require('../lib/person-add-request-approve');
 const { parsePersonContactsFromBody, normalizePersonContact, personContactsToLegacyFields, getPersonContacts, hasContactDetails } = require('../lib/person-contact');
 const { parseContactImportFile } = require('../lib/google-contacts-import');
 const {
@@ -1346,6 +1348,8 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
         timing.mark('compute');
         const entryIds = new Set(entries.map((entry) => entry.id));
         const weekIds = new Set(weekEntries.map((entry) => entry.id));
+        upcomingWeek.forEach((row) => entryIds.add(row.id));
+        upcomingMonth.forEach((row) => entryIds.add(row.id));
         const yahrzeitPeople = (enriched.people || []).filter((person) => (
             entryIds.has(person.id) || weekIds.has(person.id)
         ));
@@ -1531,7 +1535,18 @@ router.get('/:slug/people', requireAdmin, requirePermission('people'), async (re
         const synagogue = await loadAdminSynagogue(req.params.slug, 'people');
         const enriched = enrichSynagogueForAdmin(synagogue);
         enriched.contactDirectoryCount = normalizeContactDirectory(enriched.contactDirectory).length;
-        const pendingPersonAddRequests = listPendingPersonAddRequests(enriched.personAddRequests);
+        const pendingBase = listPendingPersonAddRequests(enriched.personAddRequests);
+        const pendingPersonAddRequests = await Promise.all(pendingBase.map(async (request) => {
+            const similarPeople = (await findSimilarPeopleForSubmission(
+                Synagogue,
+                req.params.slug,
+                request.deceasedName,
+            )).map((person) => ({
+                ...person,
+                searchQuery: encodeURIComponent(person.name || ''),
+            }));
+            return { ...request, similarPeople };
+        }));
         renderAdmin(res, 'admin/people', {
             synagogue: enriched,
             adminUser: req.adminUser,
@@ -1562,6 +1577,45 @@ router.post('/:slug/person-add-requests/:requestId/dismiss', requireAdmin, requi
             return res.status(404).send('Not found');
         }
         invalidateAdminSynagogueCache(req.params.slug);
+        return res.redirect(`/admin/${req.params.slug}/people`);
+    } catch (err) {
+        return res.status(500).send(err.message);
+    }
+});
+
+router.post('/:slug/person-add-requests/:requestId/approve', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        if (!synagogue) {
+            return res.status(404).send('Not found');
+        }
+        const rawRequest = (synagogue.personAddRequests || []).find((entry) => (
+            entry.id === req.params.requestId && entry.status === 'pending'
+        ));
+        if (!rawRequest) {
+            return res.status(404).send('Not found');
+        }
+        const request = normalizePersonAddRequest(rawRequest);
+        const lang = synagogue.language || 'ru';
+        const personPayload = buildPersonFromAddRequest(request, lang);
+        const maxId = (synagogue.people || []).reduce((max, person) => (
+            person.id > max ? person.id : max
+        ), 0);
+        const newPerson = { id: maxId + 1, ...personPayload };
+
+        await Synagogue.updateOne(
+            {
+                slug: req.params.slug,
+                'personAddRequests.id': req.params.requestId,
+            },
+            {
+                $push: { people: newPerson },
+                $set: { 'personAddRequests.$.status': 'dismissed' },
+            },
+        );
+        invalidateAdminSynagogueCache(req.params.slug);
+        invalidateBoardCache(req.params.slug);
         return res.redirect(`/admin/${req.params.slug}/people`);
     } catch (err) {
         return res.status(500).send(err.message);
