@@ -16,10 +16,10 @@
                 <p class="admin-person-request-meta">{{t 'person_add_request_submitter'}}: {{submitter.name}}{{#if submitter.phone}} · {{submitter.phone}}{{/if}}{{#if submitter.email}} · {{submitter.email}}{{/if}}</p>
             </div>
             <div class="admin-person-request-actions">
-                <form method="POST" action="/admin/{{synagogue.slug}}/person-add-requests/{{id}}/approve">
+                <form method="POST" action="/admin/{{@root.synagogue.slug}}/person-add-requests/{{id}}/approve">
                     <button type="submit" class="btn-admin btn-admin-primary btn-admin-sm">{{t 'person_add_request_approve'}}</button>
                 </form>
-                <form method="POST" action="/admin/{{synagogue.slug}}/person-add-requests/{{id}}/dismiss">
+                <form method="POST" action="/admin/{{@root.synagogue.slug}}/person-add-requests/{{id}}/dismiss">
                     <button type="submit" class="btn-admin btn-admin-secondary btn-admin-sm">{{t 'person_add_request_dismiss'}}</button>
                 </form>
             </div>

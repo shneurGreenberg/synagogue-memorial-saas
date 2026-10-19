@@ -208,4 +208,53 @@ describe('admin person-add-request approve and dismiss', () => {
     assert.equal(after.personAddRequests[2].status, 'dismissed');
     assert.equal(after.people.length, 1);
   });
+
+  it('approves production-shaped pending request (Oct 19 2026, male, בן)', async () => {
+    const PROD_ID = '63ae778c1660311e452ad5b8';
+    harness.resetState();
+    const state = harness.getState();
+    state.language = 'he';
+    state.personAddRequests = [
+      {
+        id: PROD_ID,
+        status: 'pending',
+        submitter: {
+          name: 'מגיש',
+          phone: '+79001234567',
+          email: 'sub@example.com',
+          gender: '',
+          platform: 'max',
+        },
+        relation: 'אחר',
+        relationKey: 'other',
+        relationOther: 'פרט',
+        deceasedName: 'גג דד',
+        deceasedFatherName: 'הה',
+        deceasedGender: 'male',
+        dataConsent: true,
+        consentAt: new Date('2026-10-19T10:00:00.000Z'),
+        diedAfterSunset: false,
+        photo: '',
+        photoCrop: { x: 50, y: 50, zoom: 1 },
+        gregorianDateOfDeath: { month: 10, date: 19, year: 2026 },
+      },
+    ];
+
+    const res = await request(
+      server,
+      'POST',
+      `/admin/${SLUG}/person-add-requests/${PROD_ID}/approve`,
+    );
+    assert.equal(res.status, 302);
+    assert.equal(res.headers.location, `/admin/${SLUG}/people`);
+    const after = harness.getState();
+    assert.equal(after.personAddRequests[0].status, 'dismissed');
+    assert.equal(after.people.length, 2);
+    const added = after.people[1];
+    assert.match(added.name, /גג דד/);
+    assert.match(added.name, /בן/);
+    assert.match(added.name, /הה/);
+    assert.equal(added.diedAfterSunset, false);
+    assert.deepEqual(added.gregorianDateOfDeath, { month: 10, date: 19, year: 2026 });
+  });
 });
