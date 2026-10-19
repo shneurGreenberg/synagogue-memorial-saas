@@ -48,8 +48,8 @@ html[dir='rtl'] .public-bh-badge {
   min-height: 88px;
   resize: vertical;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--tile-glass-border, rgba(255, 255, 255, 0.18));
+  background-color: var(--tile-glass-base, rgba(0, 0, 0, 0.25));
   color: inherit;
   padding: 10px 12px;
   font: inherit;
@@ -149,10 +149,11 @@ html[dir='rtl'] .public-bh-badge {
 }
 
 .public-deceased-block {
+  @include tile-glass-control;
   padding: 16px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(0, 0, 0, 0.15);
+  border-radius: var(--tile-border-radius, 12px);
+  border-width: var(--tile-border-width, 1px);
+  border-color: var(--tile-border-color, var(--tile-glass-border));
 }
 
 .public-deceased-block-head {
@@ -491,6 +492,11 @@ html[dir='rtl'] .public-bh-badge {
   margin-top: 24px;
 }
 
+.public-field-consent {
+  display: block;
+  min-width: 0;
+}
+
 .public-consent-label {
   display: flex;
   align-items: flex-start;
@@ -500,13 +506,18 @@ html[dir='rtl'] .public-bh-badge {
   font-size: 0.92rem;
   line-height: 1.5;
   padding: 12px 14px;
-  border-radius: 12px;
-  border: 1px solid var(--tile-glass-border, rgba(207, 175, 31, 0.35));
-  background: rgba(0, 0, 0, 0.18);
+  border-radius: var(--tile-border-radius, 12px);
+  border: var(--tile-border-width, 1px) solid var(--tile-border-color, var(--tile-glass-border));
+  background-color: var(--tile-glass-base, rgba(0, 0, 0, 0.18));
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .public-consent-text {
   flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
   color: var(--text-color, #f0f0f0);
 }
 
@@ -700,13 +711,13 @@ html[dir='rtl'] .public-bh-badge {
     color: var(--accent-color, #ffd54f);
   }
 
-  input,
+  input:not([type='checkbox']),
   select {
     width: 100%;
     box-sizing: border-box;
     border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid var(--tile-glass-border, rgba(255, 255, 255, 0.18));
+    background-color: var(--tile-glass-base, rgba(0, 0, 0, 0.28));
     color: var(--text-color, #f0f0f0);
     padding: 10px 12px;
     font: inherit;
@@ -939,8 +950,8 @@ html[dir='rtl'] .public-bh-badge {
 
 .public-select-field,
 .public-field select.public-select-field {
-  border-color: rgba(207, 175, 31, 0.45);
-  background-color: rgba(0, 0, 0, 0.38);
+  border-color: var(--tile-glass-border, rgba(207, 175, 31, 0.45));
+  background-color: var(--tile-glass-base, rgba(0, 0, 0, 0.38));
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23cfaf1f' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.85rem center;
@@ -957,7 +968,6 @@ html[dir='rtl'] .public-field select.public-select-field {
 @media (max-width: 560px) {
   .public-date-grid,
   .public-contact-row,
-  .public-phone-row,
   .public-name-row {
     grid-template-columns: 1fr;
   }
