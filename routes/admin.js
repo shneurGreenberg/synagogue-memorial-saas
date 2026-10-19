@@ -39,7 +39,7 @@ const {
   serializeSavedViews,
 } = require('../lib/saved-views');
 const { adminSlugMismatch } = require('../lib/admin-session-slug');
-const { renderAdminWrongCommunity } = require('../lib/admin-wrong-community');
+const { handleAdminCommunitySlugGuard, renderAdminWrongCommunity } = require('../lib/admin-wrong-community');
 const { parseMemorialQrPanelFromBody, memorialQrPanelToUpdate } = require('../lib/memorial-qr-panel');
 const {
   parseBoardSubtitleFromBody,
@@ -581,10 +581,7 @@ router.get('/logout', (req, res) => {
 router.use('/:slug', loadAdminContext);
 
 router.use('/:slug', (req, res, next) => {
-    if (adminSlugMismatch(req)) {
-        return void renderAdminWrongCommunity(req, res).catch(next);
-    }
-    return next();
+    void handleAdminCommunitySlugGuard(req, res, next);
 });
 
 function invalidateBoardOnMutation(req, res, next) {

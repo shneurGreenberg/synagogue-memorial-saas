@@ -5,6 +5,10 @@ const {
   loginUrlForSlug,
   safeAdminLogoutNext,
 } = require('../lib/admin-session-slug');
+const {
+  isRoutableAdminCommunitySlug,
+  isReservedAdminRouteSegment,
+} = require('../lib/admin-community-slug');
 
 describe('admin wrong community', () => {
   it('detects slug mismatch when session is for another community', () => {
@@ -13,6 +17,24 @@ describe('admin wrong community', () => {
       params: { slug: 'beta' },
     };
     assert.equal(adminSlugMismatch(req), true);
+  });
+
+  it('does not treat reserved admin route segments as a community slug', () => {
+    const req = {
+      session: { adminSlug: 'kaliningrad' },
+      params: { slug: 'person-add-requests' },
+    };
+    assert.equal(isReservedAdminRouteSegment('person-add-requests'), true);
+    assert.equal(isRoutableAdminCommunitySlug('person-add-requests'), false);
+    assert.equal(adminSlugMismatch(req), false);
+  });
+
+  it('ignores empty slug segments', () => {
+    const req = {
+      session: { adminSlug: 'kaliningrad' },
+      params: { slug: '   ' },
+    };
+    assert.equal(adminSlugMismatch(req), false);
   });
 
   it('builds login URL with slug prefill and dashboard next', () => {
