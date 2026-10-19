@@ -16,7 +16,13 @@
 
 <section class="admin-panel yahrzeit-upcoming-section">
     <details class="yahrzeit-upcoming-details">
-        <summary class="yahrzeit-upcoming-heading" id="yahrzeit-upcoming-week-title">{{t 'yahrzeit_upcoming_week_title'}}</summary>
+        <summary class="yahrzeit-upcoming-heading" id="yahrzeit-upcoming-week-title">
+            <span class="yahrzeit-upcoming-summary-row">
+                <span class="yahrzeit-upcoming-chevron" aria-hidden="true"></span>
+                <span class="yahrzeit-upcoming-title-text">{{t 'yahrzeit_upcoming_week_title'}}</span>
+                <span class="yahrzeit-upcoming-count-badge{{#unless upcomingWeek.length}} is-zero{{/unless}}">{{upcomingWeek.length}}</span>
+            </span>
+        </summary>
         {{#if upcomingWeek.length}}
         <table class="yahrzeit-upcoming-table">
             <thead>
@@ -46,7 +52,13 @@
 
 <section class="admin-panel yahrzeit-upcoming-section">
     <details class="yahrzeit-upcoming-details">
-        <summary class="yahrzeit-upcoming-heading" id="yahrzeit-upcoming-month-title">{{t 'yahrzeit_upcoming_month_title'}}</summary>
+        <summary class="yahrzeit-upcoming-heading" id="yahrzeit-upcoming-month-title">
+            <span class="yahrzeit-upcoming-summary-row">
+                <span class="yahrzeit-upcoming-chevron" aria-hidden="true"></span>
+                <span class="yahrzeit-upcoming-title-text">{{t 'yahrzeit_upcoming_month_title'}}</span>
+                <span class="yahrzeit-upcoming-count-badge{{#unless upcomingMonth.length}} is-zero{{/unless}}">{{upcomingMonth.length}}</span>
+            </span>
+        </summary>
         {{#if upcomingMonth.length}}
         <table class="yahrzeit-upcoming-table">
             <thead>

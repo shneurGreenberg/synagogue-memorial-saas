@@ -95,14 +95,38 @@
     }));
   }
 
+  var PREVIEW_MAX_WIDTH = 800;
+
+  function canvasToPreviewDataUrl(canvas) {
+    if (!canvas) {
+      return '';
+    }
+
+    var out = canvas;
+    if (canvas.width > PREVIEW_MAX_WIDTH) {
+      out = document.createElement('canvas');
+      out.width = PREVIEW_MAX_WIDTH;
+      out.height = Math.max(1, Math.round(canvas.height * (PREVIEW_MAX_WIDTH / canvas.width)));
+      var resizeCtx = out.getContext('2d');
+      if (!resizeCtx) {
+        return '';
+      }
+      resizeCtx.drawImage(canvas, 0, 0, out.width, out.height);
+    }
+
+    var webp = out.toDataURL('image/webp', 0.82);
+    if (webp.indexOf('data:image/webp') === 0) {
+      return webp;
+    }
+
+    return out.toDataURL('image/jpeg', 0.85);
+  }
+
   function capturePreviewScreenshot() {
     var frame = document.getElementById('boardPreviewFrame');
     if (!frame) {
       return Promise.resolve('');
     }
-
-    var TARGET_W = 480;
-    var TARGET_H = 270;
 
     return waitForPreviewFrameReady(frame).then(function () {
       return delay(120);
@@ -115,7 +139,7 @@
 
       var boardW = Math.max(root.scrollWidth || 0, root.clientWidth || 0, 960);
       var boardH = Math.max(root.scrollHeight || 0, root.clientHeight || 0, 540);
-      var scale = Math.min(TARGET_W / boardW, TARGET_H / boardH);
+      var scale = Math.min(1, PREVIEW_MAX_WIDTH / boardW);
 
       return waitForImages(root).then(function () {
         return loadHtml2Canvas();
@@ -132,45 +156,29 @@
           logging: false,
           imageTimeout: 15000,
         });
-      }).then(function (canvas) {
-        if (!canvas) {
-          return '';
-        }
-      var thumb = document.createElement('canvas');
-      thumb.width = TARGET_W;
-      thumb.height = TARGET_H;
-      var ctx = thumb.getContext('2d');
-      if (!ctx) {
-        return '';
-      }
-
-      ctx.fillStyle = '#2a2118';
-      ctx.fillRect(0, 0, thumb.width, thumb.height);
-
-      var sourceW = canvas.width;
-      var sourceH = canvas.height;
-      var sourceRatio = sourceW / sourceH;
-      var targetRatio = TARGET_W / TARGET_H;
-      var drawW;
-      var drawH;
-      var offsetX = 0;
-      var offsetY = 0;
-
-      if (sourceRatio > targetRatio) {
-        drawH = TARGET_H;
-        drawW = Math.round(TARGET_H * sourceRatio);
-        offsetX = Math.round((TARGET_W - drawW) / 2);
-      } else {
-        drawW = TARGET_W;
-        drawH = Math.round(TARGET_W / sourceRatio);
-        offsetY = Math.round((TARGET_H - drawH) / 2);
-      }
-
-        ctx.drawImage(canvas, 0, 0, sourceW, sourceH, offsetX, offsetY, drawW, drawH);
-        return thumb.toDataURL('image/jpeg', 0.85);
-      });
+      }).then(canvasToPreviewDataUrl);
     }).catch(function () {
       return '';
+    });
+  }
+
+  function uploadSavedViewPreview(slug, viewId, imageDataUrl) {
+    if (!slug || !viewId || !imageDataUrl) {
+      return Promise.resolve({ ok: false });
+    }
+
+    return fetch('/admin/' + slug + '/settings/saved-views/' + encodeURIComponent(viewId) + '/preview-image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+      body: JSON.stringify({ imageDataUrl: imageDataUrl }),
+    }).then(parseJsonResponse).then(function (result) {
+      if (result.ok && result.data && result.data.ok) {
+        return { ok: true, view: result.data.view, screenshot: result.data.screenshot };
+      }
+      return { ok: false };
     });
   }
 
@@ -517,6 +525,7 @@
   window.AdminSettingsPanel = {
     initCollapsiblePanels: initCollapsiblePanels,
     capturePreviewScreenshot: capturePreviewScreenshot,
+    uploadSavedViewPreview: uploadSavedViewPreview,
     updateActiveViewBadge: updateActiveViewBadge,
     applySnapshotToSettingsForm: applySnapshotToSettingsForm,
     initSavedViewsGrid: initSavedViewsGrid,

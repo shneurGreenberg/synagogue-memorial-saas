@@ -12,8 +12,13 @@ describe('public submission always enabled (Y10)', () => {
 
   it('admin dashboard template omits publicSubmissionEnabled toggle', () => {
     const html = fs.readFileSync(path.join(__dirname, '..', 'views', 'admin', 'dashboard.handlebars'), 'utf8');
+    const qrPartial = fs.readFileSync(
+      path.join(__dirname, '..', 'views', 'partials', 'admin-settings-qr-codes.handlebars'),
+      'utf8',
+    );
     assert.doesNotMatch(html, /id="publicSubmissionEnabled"/);
-    assert.match(html, /\/add-name/);
+    assert.doesNotMatch(html, /\{\{\.\.\/synagogue\.slug\}\}\/add-name/);
+    assert.match(qrPartial, /add-name/);
   });
 
   it('admin settings POST no longer updates publicSubmission.enabled', () => {
