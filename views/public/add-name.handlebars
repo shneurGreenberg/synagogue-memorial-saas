@@ -34,10 +34,21 @@
                 <span>{{publicT 'contact_name_label'}}</span>
                 <input type="text" name="contactName" maxlength="120" required value="{{values.contactName}}" placeholder="{{publicT 'contact_name_placeholder'}}">
             </label>
-            <label class="public-field public-field-phone">
-                <span>{{publicT 'contact_phone_label'}}</span>
-                <input type="tel" name="contactPhone" maxlength="30" required value="{{values.contactPhone}}" placeholder="{{phonePlaceholder}}" dir="ltr">
-            </label>
+            <div class="public-phone-row">
+                <label class="public-field public-field-phone-dial">
+                    <span>{{publicT 'contact_phone_label'}}</span>
+                    <select name="contactPhoneDial" class="public-select-field public-phone-dial" dir="ltr" required>
+                        {{#each phoneDialOptions}}
+                        <option value="{{this.dial}}" {{#if (eq ../values.contactPhoneDial this.dial)}}selected{{/if}}>{{this.label}} {{this.country}}</option>
+                        {{/each}}
+                    </select>
+                </label>
+                <label class="public-field public-field-phone-national">
+                    <span class="public-visually-hidden">{{publicT 'contact_phone_label'}}</span>
+                    <input type="tel" name="contactPhoneNational" class="public-phone-national" maxlength="20" required value="{{values.contactPhoneNational}}" placeholder="{{phonePlaceholder}}" dir="ltr" inputmode="tel" autocomplete="tel-national">
+                    <input type="hidden" name="contactPhone" value="{{values.contactPhone}}">
+                </label>
+            </div>
         </div>
 
         <h2 class="public-section-title public-deceased-section-heading">{{publicT 'deceased_section_title'}}</h2>
@@ -57,12 +68,12 @@
             <textarea name="deceasedNotes" rows="3" maxlength="2000" placeholder="{{publicT 'deceased_notes_placeholder'}}">{{values.deceasedNotes}}</textarea>
         </label>
 
-        <label class="public-field public-field-consent">
-            <span class="public-consent-wrap">
-                <input type="checkbox" name="dataConsent" value="1" required>
-                <span>{{publicT 'consent_label'}}</span>
-            </span>
-        </label>
+        <div class="public-field public-field-consent">
+            <label class="public-consent-label">
+                <input type="checkbox" name="dataConsent" value="1" class="public-choice-checkbox" required>
+                <span class="public-consent-text">{{publicT 'consent_label'}}</span>
+            </label>
+        </div>
 
         <div class="public-actions">
             <button type="submit" class="public-button public-button-primary" id="publicSubmitBtn">
@@ -87,6 +98,7 @@
 
 <script src="/js/public-add-name-death-date.js"></script>
 <script src="/js/public-add-name-deceased.js"></script>
+<script src="/js/public-add-name-phone.js"></script>
 <script>
 (function () {
   var form = document.querySelector('.public-form');

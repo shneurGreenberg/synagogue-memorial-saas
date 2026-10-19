@@ -6,7 +6,12 @@ const {
   resolvePublicSubmissionLang,
   getMonthOptions,
 } = require('../lib/public-submission-i18n');
-const { resolvePublicSubmissionPhonePlaceholder } = require('../lib/public-submission-phone');
+const {
+  resolvePublicSubmissionPhonePlaceholder,
+  buildPhoneFieldContext,
+} = require('../lib/public-submission-phone');
+const { buildPublicBoardThemeRender } = require('../lib/public-board-theme');
+const { splitDeceasedDisplayName } = require('../lib/public-deceased-name');
 const {
   parseDataConsentFromBody,
   validateDataConsent,
@@ -33,6 +38,8 @@ const publicSubmissionRateLimiter = createPublicSubmissionRateLimiter();
 
 const EMPTY_DECEASED_BLOCK = {
   name: '',
+  surname: '',
+  firstName: '',
   fatherName: '',
   deathDate: '',
   deathDateDisplay: '',
@@ -67,6 +74,7 @@ function buildPageContext(synagogue, lang, options = {}) {
   const publicSubmission = normalizePublicSubmission(synagogue.publicSubmission, synagogue.provisioning);
   const communityLogo = synagogue.theme && synagogue.theme.logo;
   const logoBackground = synagogue.theme && synagogue.theme.logoBackground;
+  const themeRender = buildPublicBoardThemeRender(synagogue);
 
   return {
     synagogue,
@@ -74,6 +82,7 @@ function buildPageContext(synagogue, lang, options = {}) {
     dir: lang === 'he' ? 'rtl' : 'ltr',
     pt,
     publicSubmission,
+    ...themeRender,
     boardUrl: `/s/${synagogue.slug}`,
     formUrl: options.formUrl || `/s/${synagogue.slug}/add-name`,
     successUrl: options.successUrl || `/s/${synagogue.slug}/add-name/success`,
@@ -115,8 +124,15 @@ function deceasedBlocksFromQuery(query) {
               year: Number(entry.deathYear),
             })
             : '');
+        const nameParts = splitDeceasedDisplayName(entry.name || '');
         return {
         name: entry.name || '',
+        surname: entry.rawFields && entry.rawFields.surname
+          ? String(entry.rawFields.surname).trim()
+          : nameParts.surname,
+        firstName: entry.rawFields && entry.rawFields.firstName
+          ? String(entry.rawFields.firstName).trim()
+          : nameParts.firstName,
         fatherName: entry.fatherName || '',
         deathDate: iso,
         deathDateDisplay,
@@ -134,10 +150,13 @@ function deceasedBlocksFromQuery(query) {
   return [{ ...EMPTY_DECEASED_BLOCK }];
 }
 
-function buildFormValuesFromQuery(query) {
+function buildFormValuesFromQuery(query, synagogue) {
+  const phoneFields = buildPhoneFieldContext(synagogue, query);
   return {
     contactName: query.contactName || '',
-    contactPhone: query.contactPhone || '',
+    contactPhone: phoneFields.contactPhoneE164 || query.contactPhone || '',
+    contactPhoneDial: phoneFields.contactPhoneDial,
+    contactPhoneNational: phoneFields.contactPhoneNational,
     contactPlatform: query.contactPlatform || '',
     deceasedNotes: query.deceasedNotes || '',
   };
@@ -149,6 +168,7 @@ function buildDeceasedRenderList(query) {
     ...block,
     index: String(index),
     displayIndex: index + 1,
+    showDeceasedNumber: blocks.length > 1 && index > 0,
   }));
 }
 
@@ -156,7 +176,8 @@ function enrichFormRenderContext(context, query) {
   const deceasedList = buildDeceasedRenderList(query);
   return {
     ...context,
-    values: buildFormValuesFromQuery(query),
+    values: buildFormValuesFromQuery(query, context.synagogue),
+    phoneDialOptions: buildPhoneFieldContext(context.synagogue, query).phoneDialOptions,
     deceasedList,
     showDeceasedIndex: deceasedList.length > 1,
     error: query.error || '',
@@ -189,6 +210,9 @@ function resolveErrorMessage(pt, errorCode) {
 function appendDeceasedToSearchParams(params, body) {
   const entries = parseDeceasedEntriesFromBody(body);
   entries.forEach((entry, index) => {
+    const parts = splitDeceasedDisplayName(entry.name || '');
+    params.set(`deceased[${index}][surname]`, parts.surname);
+    params.set(`deceased[${index}][firstName]`, parts.firstName);
     params.set(`deceased[${index}][name]`, entry.name || '');
     params.set(`deceased[${index}][fatherName]`, entry.fatherName || '');
     params.set(`deceased[${index}][relationKey]`, entry.relationKey || '');
@@ -213,6 +237,12 @@ function redirectWithFormError(res, baseUrl, lang, errorCode, body) {
   const contact = parsePersonContactFromBody(body);
   params.set('contactName', contact.name || '');
   params.set('contactPhone', contact.phone || '');
+  if (body.contactPhoneDial) {
+    params.set('contactPhoneDial', String(body.contactPhoneDial));
+  }
+  if (body.contactPhoneNational) {
+    params.set('contactPhoneNational', String(body.contactPhoneNational));
+  }
   params.set('contactPlatform', contact.platform || '');
   if (body.deceasedNotes) {
     params.set('deceasedNotes', String(body.deceasedNotes).slice(0, 2000));
@@ -352,7 +382,7 @@ router.get('/:slug/add-name/success', async (req, res) => {
       ...context,
       submittedName: String(req.query.name || '').trim(),
       submittedNames,
-      successKind: req.query.sent === 'request' ? 'request' : 'added',
+      successKind: 'request',
       submittedCount,
       isMultiRequest: submittedCount > 1,
       shareUrl: `${req.protocol}://${req.get('host')}/s/${synagogue.slug}/add-name?lang=${lang}`,

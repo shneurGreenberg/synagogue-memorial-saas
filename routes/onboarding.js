@@ -30,6 +30,7 @@ const {
   getOnboardingTranslator,
 } = require('../lib/onboarding-i18n');
 const { OFFICIAL_LOGO_FILENAME } = require('../lib/board-defaults');
+const { buildPublicBoardThemeRender } = require('../lib/public-board-theme');
 const { MAX_UPLOAD_BYTES } = require('../lib/upload-limits');
 
 const router = express.Router();
@@ -93,6 +94,7 @@ function renderOnboarding(req, res, view, options = {}) {
     lang,
     onboardingT: t,
     officialLogoUrl: `/images/${OFFICIAL_LOGO_FILENAME}`,
+    ...buildPublicBoardThemeRender(null),
     ...options,
   });
 }

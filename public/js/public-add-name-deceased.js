@@ -25,9 +25,25 @@
       if (removeBtn) {
         removeBtn.hidden = blocks.length <= 1;
       }
-      var showIndex = block.querySelector('.public-deceased-block-title .public-deceased-index');
-      if (showIndex && blocks.length <= 1) {
-        showIndex.parentElement.querySelector('.public-deceased-index');
+      var head = block.querySelector('.public-deceased-block-head');
+      var title = block.querySelector('.public-deceased-block-title');
+      var shouldShowNumber = blocks.length > 1 && index > 0;
+      if (shouldShowNumber && !title && head) {
+        title = document.createElement('h3');
+        title.className = 'public-deceased-block-title';
+        var span = document.createElement('span');
+        span.className = 'public-deceased-index';
+        span.textContent = String(index + 1);
+        title.appendChild(span);
+        head.insertBefore(title, head.firstChild);
+      } else if (title) {
+        title.hidden = !shouldShowNumber;
+        if (shouldShowNumber) {
+          var indexEl = title.querySelector('.public-deceased-index');
+          if (indexEl) {
+            indexEl.textContent = String(index + 1);
+          }
+        }
       }
     });
   }

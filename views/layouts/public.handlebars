@@ -5,6 +5,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{#if inviteInvalid}}{{publicT 'invite_invalid_title'}}{{else}}{{#if inviteMode}}{{publicT 'invite_page_title'}}{{else}}{{publicT 'page_title'}}{{/if}}{{/if}} — {{synagogue.name}}</title>
+    {{#if publicBoardFontHref}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="{{publicBoardFontHref}}">
+    {{/if}}
+    {{{publicBoardThemeStyle}}}
     <link rel="stylesheet" href="/css/public-submission.css?v={{@root.cssVersion}}">
 </head>
 

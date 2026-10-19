@@ -1,6 +1,8 @@
 <div class="public-deceased-block" data-deceased-index="{{index}}">
     <div class="public-deceased-block-head">
-        <h3 class="public-deceased-block-title">{{publicT 'deceased_block_title'}}{{#if showIndex}} <span class="public-deceased-index">{{displayIndex}}</span>{{/if}}</h3>
+        {{#if block.showDeceasedNumber}}
+        <h3 class="public-deceased-block-title"><span class="public-deceased-index">{{block.displayIndex}}</span></h3>
+        {{/if}}
         <button type="button" class="public-remove-deceased" data-action="remove-deceased" hidden>{{publicT 'remove_deceased'}}</button>
     </div>
 
@@ -22,22 +24,28 @@
 
     <fieldset class="public-gender-field">
         <legend>{{publicT 'deceased_gender_label'}}</legend>
-        <div class="public-gender-toggle">
-            <label class="public-gender-option">
+        <div class="public-pill-group public-gender-pills" role="radiogroup">
+            <label class="public-pill-option">
                 <input type="radio" name="deceased[{{index}}][deceasedGender]" value="male" {{#unless (eq block.deceasedGender 'female')}}checked{{/unless}} required>
-                <span>{{publicT 'deceased_gender_male'}}</span>
+                <span>{{publicT 'deceased_gender_short_male'}}</span>
             </label>
-            <label class="public-gender-option">
+            <label class="public-pill-option">
                 <input type="radio" name="deceased[{{index}}][deceasedGender]" value="female" {{#if (eq block.deceasedGender 'female')}}checked{{/if}}>
-                <span>{{publicT 'deceased_gender_female'}}</span>
+                <span>{{publicT 'deceased_gender_short_female'}}</span>
             </label>
         </div>
     </fieldset>
 
-    <label class="public-field">
-        <span>{{publicT 'name_label'}}</span>
-        <input type="text" name="deceased[{{index}}][name]" maxlength="120" required value="{{block.name}}" placeholder="{{publicT 'name_placeholder'}}">
-    </label>
+    <div class="public-name-row">
+        <label class="public-field">
+            <span>{{publicT 'deceased_surname_label'}}</span>
+            <input type="text" name="deceased[{{index}}][surname]" maxlength="120" required value="{{block.surname}}" placeholder="{{publicT 'deceased_surname_placeholder'}}">
+        </label>
+        <label class="public-field">
+            <span>{{publicT 'deceased_first_name_label'}}</span>
+            <input type="text" name="deceased[{{index}}][firstName]" maxlength="120" required value="{{block.firstName}}" placeholder="{{publicT 'deceased_first_name_placeholder'}}">
+        </label>
+    </div>
 
     <label class="public-field">
         <span>{{publicT 'father_name_label'}}</span>
@@ -51,14 +59,17 @@
 
     <fieldset class="public-sunset-field">
         <legend>{{publicT 'sunset_legend'}}</legend>
-        <label class="public-sunset-option">
-            <input type="radio" name="deceased[{{index}}][diedAfterSunset]" value="before" {{#unless block.diedAfterSunset}}checked{{/unless}}>
-            <span>{{publicT 'sunset_before'}}</span>
-        </label>
-        <label class="public-sunset-option">
-            <input type="radio" name="deceased[{{index}}][diedAfterSunset]" value="after" {{#if block.diedAfterSunset}}checked{{/if}}>
-            <span>{{publicT 'sunset_after'}}</span>
-        </label>
+        <div class="public-pill-group public-sunset-pills" role="radiogroup">
+            <label class="public-pill-option">
+                <input type="radio" name="deceased[{{index}}][diedAfterSunset]" value="before" {{#unless block.diedAfterSunset}}checked{{/unless}}>
+                <span>{{publicT 'sunset_before_short'}}</span>
+            </label>
+            <label class="public-pill-option">
+                <input type="radio" name="deceased[{{index}}][diedAfterSunset]" value="after" {{#if block.diedAfterSunset}}checked{{/if}}>
+                <span>{{publicT 'sunset_after_short'}}</span>
+            </label>
+        </div>
+        <p class="public-sunset-hint">{{publicT 'sunset_field_hint'}}</p>
     </fieldset>
 
     {{#if inviteMode}}
