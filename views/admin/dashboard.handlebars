@@ -330,7 +330,6 @@
             </button>
             <div class="admin-panel-body settings-panel-body" hidden>
                 <div class="settings-block settings-texts-styling-block">
-                    <h3 class="settings-block-title">{{t 'texts_styling_section'}}</h3>
                     {{#if (or adminPermissions.settingsAppearance adminPermissions.settingsLanguages)}}
                     <div class="form-field board-language-field">
                         <label for="language">{{t 'language'}}</label>
@@ -487,12 +486,6 @@
                                 </label>
                             </div>
                             <p class="field-hint admin-theme-setting-hint">{{t 'board_hide_search_pager_help'}}</p>
-                        </div>
-                        {{/if}}
-                        {{#if (eq this.special 'publicSubmission')}}
-                        <div class="form-field admin-theme-setting admin-theme-setting-wide">
-                            <label>{{t 'public_submission_url_hint'}}</label>
-                            <p class="admin-copy-link"><code>/s/{{../synagogue.slug}}/add-name</code></p>
                         </div>
                         {{/if}}
                         {{#each this.toggles}}
@@ -1145,18 +1138,30 @@
                 updateCurrentViewBtn.textContent = '{{t 'saving_view'}}';
 
                 captureScreenshotDataUrl().then(function (screenshotDataUrl) {
-                    var payload = readCurrentDesignPatch();
-                    if (screenshotDataUrl) {
-                        payload.screenshotDataUrl = screenshotDataUrl;
+                    var previewUpload = Promise.resolve(null);
+                    if (screenshotDataUrl && window.AdminSettingsPanel
+                        && typeof window.AdminSettingsPanel.uploadSavedViewPreview === 'function') {
+                        previewUpload = window.AdminSettingsPanel.uploadSavedViewPreview(
+                            slug,
+                            activeSavedViewId,
+                            screenshotDataUrl,
+                        );
                     }
 
-                    return fetch('/admin/' + slug + '/settings/saved-views/' + encodeURIComponent(activeSavedViewId), {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest',
-                        },
-                        body: JSON.stringify(payload),
+                    return previewUpload.then(function (previewResult) {
+                        var payload = readCurrentDesignPatch();
+                        if (screenshotDataUrl && (!previewResult || !previewResult.ok)) {
+                            payload.screenshotDataUrl = screenshotDataUrl;
+                        }
+
+                        return fetch('/admin/' + slug + '/settings/saved-views/' + encodeURIComponent(activeSavedViewId), {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest',
+                            },
+                            body: JSON.stringify(payload),
+                        });
                     });
                 }).then(function (response) {
                     return response.json();

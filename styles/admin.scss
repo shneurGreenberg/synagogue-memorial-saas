@@ -3735,23 +3735,76 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
 
 .yahrzeit-upcoming-section {
   margin-bottom: 1.5rem;
-
-  .yahrzeit-upcoming-heading {
-    margin: 0 0 0.75rem;
-    font-size: 1.15rem;
-    font-weight: 700;
-  }
 }
 
 .yahrzeit-upcoming-details {
+  border: 1px solid var(--admin-border);
+  border-radius: 12px;
+  background: var(--admin-surface-elevated);
+  padding: 0.65rem 0.85rem;
+
+  @media (max-width: 640px) {
+    padding: 0.75rem 0.65rem;
+  }
+
   .yahrzeit-upcoming-heading {
     cursor: pointer;
     list-style: none;
-    margin-bottom: 0.75rem;
+    margin: 0;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
   }
 
   &[open] .yahrzeit-upcoming-heading {
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.65rem;
+  }
+}
+
+.yahrzeit-upcoming-summary-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.65rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.yahrzeit-upcoming-chevron {
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-inline-end: 2px solid var(--admin-text-muted);
+  border-block-end: 2px solid var(--admin-text-muted);
+  transform: rotate(-45deg);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  margin-inline-end: 0.1rem;
+}
+
+.yahrzeit-upcoming-details[open] .yahrzeit-upcoming-chevron {
+  transform: rotate(45deg);
+}
+
+.yahrzeit-upcoming-count-badge {
+  min-width: 1.45rem;
+  height: 1.45rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-inline-start: auto;
+
+  &.is-zero {
+    background: var(--admin-border);
+    color: var(--admin-text-muted);
   }
 }
 
