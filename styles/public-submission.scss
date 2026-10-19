@@ -467,6 +467,8 @@ html[dir='rtl'] .public-bh-badge {
 .public-form {
   display: grid;
   gap: 0;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .public-field-group {
@@ -970,6 +972,19 @@ html[dir='rtl'] .public-field select.public-select-field {
   .public-contact-row,
   .public-name-row {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 390px) {
+  .public-consent-label {
+    padding: 10px 12px;
+    gap: 10px;
+    font-size: 0.88rem;
+  }
+
+  .public-consent-text {
+    word-break: break-word;
+    hyphens: auto;
   }
 }
 

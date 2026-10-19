@@ -22,20 +22,6 @@
         </label>
     </div>
 
-    <fieldset class="public-gender-field">
-        <legend>{{publicT 'deceased_gender_label'}}</legend>
-        <div class="public-pill-group public-gender-pills" role="radiogroup">
-            <label class="public-pill-option">
-                <input type="radio" name="deceased[{{index}}][deceasedGender]" value="male" {{#unless (eq block.deceasedGender 'female')}}checked{{/unless}} required>
-                <span>{{publicT 'deceased_gender_short_male'}}</span>
-            </label>
-            <label class="public-pill-option">
-                <input type="radio" name="deceased[{{index}}][deceasedGender]" value="female" {{#if (eq block.deceasedGender 'female')}}checked{{/if}}>
-                <span>{{publicT 'deceased_gender_short_female'}}</span>
-            </label>
-        </div>
-    </fieldset>
-
     <div class="public-name-row">
         <label class="public-field">
             <span>{{publicT 'deceased_surname_label'}}</span>
@@ -51,6 +37,20 @@
         <span>{{publicT 'father_name_label'}}</span>
         <input type="text" name="deceased[{{index}}][fatherName]" maxlength="120" required value="{{block.fatherName}}" placeholder="{{publicT 'father_name_placeholder'}}">
     </label>
+
+    <fieldset class="public-gender-field">
+        <legend>{{publicT 'deceased_gender_label'}}</legend>
+        <div class="public-pill-group public-gender-pills" role="radiogroup">
+            <label class="public-pill-option">
+                <input type="radio" name="deceased[{{index}}][deceasedGender]" value="male" {{#unless (eq block.deceasedGender 'female')}}checked{{/unless}} required>
+                <span>{{publicT 'deceased_gender_short_male'}}</span>
+            </label>
+            <label class="public-pill-option">
+                <input type="radio" name="deceased[{{index}}][deceasedGender]" value="female" {{#if (eq block.deceasedGender 'female')}}checked{{/if}}>
+                <span>{{publicT 'deceased_gender_short_female'}}</span>
+            </label>
+        </div>
+    </fieldset>
 
     <label class="public-field public-field-death-date">
         <span>{{publicT 'death_date_label'}}</span>
