@@ -50,60 +50,79 @@
     });
   });
 
-  const dataEl = document.getElementById('yahrzeit-people-data');
-  if (!page || !dataEl || !window.AdminPersonCard) {
-    return;
+  function personIdKey(id) {
+    return String(id);
   }
 
-  const peopleById = {};
-  try {
-    JSON.parse(dataEl.textContent).forEach(function (person) {
-      peopleById[person.id] = person;
-    });
-  } catch (err) {
-    return;
-  }
-
-  const personCard = window.AdminPersonCard.init({
-    onEdit: function (personId) {
-      const slug = page.getAttribute('data-synagogue-slug');
-      if (slug && personId != null) {
-        window.location.href = '/admin/' + slug + '/people?edit=' + personId;
-      }
-    },
-  });
-
-  function openPersonById(personId) {
-    const person = peopleById[personId];
-    if (person && personCard) {
-      personCard.openPersonCard(person);
+  function initYahrzeitPersonCards() {
+    const dataEl = document.getElementById('yahrzeit-people-data');
+    if (!page || !dataEl || !window.AdminPersonCard) {
+      return null;
     }
-  }
 
-  document.querySelectorAll('.yahrzeit-card-clickable .yahrzeit-card-open').forEach(function (target) {
-    target.addEventListener('click', function () {
-      const card = target.closest('.yahrzeit-card-clickable');
-      const personId = Number(card && card.getAttribute('data-person-id'));
-      openPersonById(personId);
-    });
-  });
-
-  function bindUpcomingNameLink(button) {
-    function openFromButton(event) {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      const personId = Number(button.getAttribute('data-person-id'));
-      openPersonById(personId);
+    const peopleById = {};
+    try {
+      JSON.parse(dataEl.textContent).forEach(function (person) {
+        peopleById[personIdKey(person.id)] = person;
+      });
+    } catch (err) {
+      return null;
     }
-    button.addEventListener('click', openFromButton);
-    button.addEventListener('pointerdown', function (event) {
-      event.stopPropagation();
+
+    const personCard = window.AdminPersonCard.init({
+      onEdit: function (personId) {
+        const slug = page.getAttribute('data-synagogue-slug');
+        if (slug && personId != null) {
+          window.location.href = '/admin/' + slug + '/people?edit=' + personId;
+        }
+      },
     });
+
+    if (!personCard) {
+      return null;
+    }
+
+    function openPersonById(personId) {
+      const person = peopleById[personIdKey(personId)];
+      if (person) {
+        personCard.openPersonCard(person);
+      }
+    }
+
+    document.querySelectorAll('.yahrzeit-card-clickable .yahrzeit-card-open').forEach(function (target) {
+      target.addEventListener('click', function () {
+        const card = target.closest('.yahrzeit-card-clickable');
+        const personId = card && card.getAttribute('data-person-id');
+        openPersonById(personId);
+      });
+    });
+
+    function bindUpcomingNameLink(button) {
+      function openFromButton(event) {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        openPersonById(button.getAttribute('data-person-id'));
+      }
+      button.addEventListener('click', openFromButton);
+      button.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter' || event.key === ' ') {
+          openFromButton(event);
+        }
+      });
+    }
+
+    document.querySelectorAll('.yahrzeit-upcoming-name-link').forEach(bindUpcomingNameLink);
+
+    return { openPersonById: openPersonById };
   }
 
-  document.querySelectorAll('.yahrzeit-upcoming-name-link').forEach(bindUpcomingNameLink);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initYahrzeitPersonCards);
+  } else {
+    initYahrzeitPersonCards();
+  }
 })();
 
 (function yahrzeitSettingsAutoSave() {

@@ -298,9 +298,8 @@
                                     <div class="css-candle-bottom"></div>
                                 </div>
                             </div>
-                            <span class="saved-view-thumb-label settings-media-thumb-label">{{t 'candle_palette'}}</span>
                             <div class="form-field settings-candle-palette-field">
-                                <label class="sr-only" for="candlePalette">{{t 'candle_palette'}}</label>
+                                <label class="settings-candle-scale-label" for="candlePalette">{{t 'candle_palette'}}</label>
                                 <select name="candlePalette" id="candlePalette" class="form-control admin-select-modern">
                                     {{#each candlePaletteOptions}}
                                     <option value="{{this.key}}" {{#if (eq ../synagogue.theme.candlePalette this.key)}}selected{{else}}{{#unless ../synagogue.theme.candlePalette}}{{#if (eq this.key 'classic')}}selected{{/if}}{{/unless}}{{/if}}>{{t this.labelKey}}</option>
@@ -457,6 +456,7 @@
                 <span class="admin-panel-chevron" aria-hidden="true"></span>
             </button>
             <div class="admin-panel-body board-features-layout" hidden>
+                <input type="hidden" name="boardFeaturesSection" value="1">
                 {{#if yahrzeitTodayCount}}
                 <p class="public-submission-yahrzeit-notice">{{t 'public_submission_yahrzeit_alert'}}</p>
                 {{/if}}
@@ -692,8 +692,19 @@
             }
         });
         var boardSubtitleEnabled = document.getElementById('boardSubtitleEnabled');
+        var boardSubtitleDesignFields = document.getElementById('boardSubtitleDesignFields');
+        function syncBoardSubtitleDesignVisibility() {
+            if (!boardSubtitleDesignFields || !boardSubtitleEnabled) {
+                return;
+            }
+            var show = boardSubtitleEnabled.checked;
+            boardSubtitleDesignFields.hidden = !show;
+            boardSubtitleDesignFields.classList.toggle('is-hidden', !show);
+        }
         if (boardSubtitleEnabled) {
             boardSubtitleEnabled.addEventListener('change', schedulePreview);
+            boardSubtitleEnabled.addEventListener('change', syncBoardSubtitleDesignVisibility);
+            syncBoardSubtitleDesignVisibility();
         }
 
         var languageSelect = document.getElementById('language');

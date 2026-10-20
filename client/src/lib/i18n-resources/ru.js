@@ -37,7 +37,7 @@ export default {
   hayom_yom_title: 'Айом Йом',
   hayom_yom_loading: 'Загрузка Айом Йом...',
   upcoming_holidays_title: 'Ближайшие праздники',
-  sidebar_upcoming_title: 'Ближайшие даты и объявления',
+  sidebar_upcoming_title: 'Объявления',
   community_announcements: 'Объявления',
   weather_title: 'Погода',
   weather_loading: 'Загрузка погоды…',

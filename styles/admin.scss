@@ -209,6 +209,19 @@ body.admin-login-page {
     color: var(--admin-text);
   }
 
+  .admin-page-title-with-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .admin-page-title-icon {
+    width: 1.65rem;
+    height: 1.65rem;
+    flex-shrink: 0;
+    opacity: 0.92;
+  }
+
   .admin-subtitle {
     color: var(--admin-text-muted);
     margin: 0.35rem 0 0;

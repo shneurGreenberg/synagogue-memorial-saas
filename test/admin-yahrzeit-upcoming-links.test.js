@@ -21,4 +21,15 @@ describe('admin upcoming yahrzeit name links (Y12)', () => {
     assert.match(js, /yahrzeit-upcoming-name-link/);
     assert.match(js, /stopPropagation/);
   });
+
+  it('does not load admin-yahrzeit.js inline in the template (layout scripts only)', () => {
+    const template = fs.readFileSync(path.join(__dirname, '..', 'views', 'admin', 'yahrzeit.handlebars'), 'utf8');
+    assert.doesNotMatch(template, /<script src="\/js\/admin-yahrzeit\.js"><\/script>/);
+  });
+
+  it('looks up people by string id keys', () => {
+    const js = fs.readFileSync(path.join(__dirname, '..', 'public', 'js', 'admin-yahrzeit.js'), 'utf8');
+    assert.match(js, /personIdKey/);
+    assert.doesNotMatch(js, /Number\(button\.getAttribute\('data-person-id'\)\)/);
+  });
 });
