@@ -12,6 +12,7 @@ const { getAdminLocaleContext, normalizeAdminLang } = require('../lib/admin-loca
 const { BOARD_THEME_DEFAULTS } = require('../lib/board-defaults');
 const { parsePhotoCropFromBody } = require('../lib/photo-crop');
 const { parseBoardFeaturesFromBody } = require('../lib/board-features');
+const { buildBoardSettingsUpdate } = require('../lib/admin-board-settings-save');
 const { invalidateBoardCache } = require('../lib/board-cache');
 const { loadAdminSynagogue, invalidateAdminSynagogueCache } = require('../lib/admin-synagogue-load');
 const {
@@ -741,97 +742,10 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const permissions = req.adminPermissions || FULL_ADMIN_PERMISSIONS;
-        const {
-            boardTitleText, primaryColor, textColor, accentColor, tileColor, tileOpacity,
-            panelBorderColor, panelBorderOpacity, panelBorderRadius, panelBorderWidth,
-            tileBorderColor, tileBorderOpacity, tileBorderRadius, tileBorderWidth,
-            language, shabbatTimesEnabled, candlePalette, logoBorderRadius, logoBackground, logoCircle,
-        } = req.body;
         const synagogue = await loadAdminSynagogue(req.params.slug, 'settings');
-        const boardFeatures = parseBoardFeaturesFromBody(req.body);
-        const publicSubmission = parsePublicSubmissionFromBody(req.body);
-        const fontScales = parseFontScalesFromBody(req.body, synagogue?.theme?.fontScales);
-        const updateData = {};
-
-        if (permissions.settingsAppearance) {
-            updateData.boardTitleText = String(boardTitleText ?? '').trim();
-            Object.assign(
-              updateData,
-              boardSubtitleToUpdate(parseBoardSubtitleFromBody(req.body, synagogue?.boardSubtitle)),
-            );
-            Object.assign(
-              updateData,
-              boardSubtitleThemeToUpdate(parseBoardSubtitleThemeFromBody(req.body, synagogue?.theme)),
-            );
-            updateData['theme.primaryColor'] = sanitizeHexColor(primaryColor, BOARD_THEME_DEFAULTS.primaryColor);
-            updateData['theme.textColor'] = sanitizeHexColor(textColor, BOARD_THEME_DEFAULTS.textColor);
-            updateData['theme.accentColor'] = sanitizeHexColor(accentColor, BOARD_THEME_DEFAULTS.accentColor);
-            updateData['theme.tileColor'] = sanitizeHexColor(tileColor, BOARD_THEME_DEFAULTS.tileColor);
-            updateData['theme.tileOpacity'] = normalizeTileOpacity(tileOpacity);
-            const themeBorders = normalizeThemeBorders({
-              panelBorderColor,
-              panelBorderOpacity,
-              panelBorderRadius,
-              panelBorderWidth,
-              tileBorderColor,
-              tileBorderOpacity,
-              tileBorderRadius,
-              tileBorderWidth,
-            });
-            updateData['theme.panelBorderColor'] = themeBorders.panelBorderColor;
-            updateData['theme.panelBorderOpacity'] = themeBorders.panelBorderOpacity;
-            updateData['theme.panelBorderRadius'] = themeBorders.panelBorderRadius;
-            updateData['theme.panelBorderWidth'] = themeBorders.panelBorderWidth;
-            updateData['theme.tileBorderColor'] = themeBorders.tileBorderColor;
-            updateData['theme.tileBorderOpacity'] = themeBorders.tileBorderOpacity;
-            updateData['theme.tileBorderRadius'] = themeBorders.tileBorderRadius;
-            updateData['theme.tileBorderWidth'] = themeBorders.tileBorderWidth;
-            updateData['theme.candlePalette'] = normalizeCandlePalette(candlePalette);
-            if ('boardFont' in req.body) {
-                updateData['theme.boardFont'] = normalizeBoardFont(req.body.boardFont);
-            }
-            Object.entries(fontScales).forEach(([key, value]) => {
-                updateData[`theme.fontScales.${key}`] = value;
-            });
-            Object.assign(updateData, memorialQrPanelToUpdate(
-              parseMemorialQrPanelFromBody(req.body, synagogue?.memorialQrPanel),
-            ));
-            if ('publicSubmissionDonationUrl' in req.body) {
-                updateData['publicSubmission.donationUrl'] = publicSubmission.donationUrl || '';
-            }
-            if ('publicSubmissionShowDonationQr' in req.body) {
-                updateData['publicSubmission.showDonationQr'] = parseFormCheckbox(req.body, 'publicSubmissionShowDonationQr') === true;
-            }
-            if ('publicSubmissionShowRegistrationQr' in req.body) {
-                updateData['publicSubmission.showRegistrationQr'] = parseFormCheckbox(req.body, 'publicSubmissionShowRegistrationQr') === true;
-            }
-        }
-
-        if (permissions.settingsLanguages || permissions.settingsAppearance) {
-            updateData.language = language;
-        }
-
-        if (permissions.settingsFeatures) {
-            if ('shabbatTimesEnabled' in req.body) {
-                updateData.shabbatTimesEnabled = parseFormCheckbox(req.body, 'shabbatTimesEnabled') === true;
-            }
-            if ('boardHideSearchAndPager' in req.body) {
-                updateData.boardHideSearchAndPager = parseFormCheckbox(req.body, 'boardHideSearchAndPager') === true;
-            }
-            Object.assign(updateData, Object.fromEntries(
-                Object.entries(boardFeatures).map(([key, value]) => [`boardFeatures.${key}`, value]),
-            ));
-        }
+        const updateData = buildBoardSettingsUpdate(req.body, synagogue, permissions);
 
         if (permissions.settingsBranding) {
-            if ('logoCircle' in req.body || 'logoBorderRadius' in req.body) {
-                const circleOn = parseFormCheckbox(req.body, 'logoCircle') === true
-                    || Number(logoBorderRadius) >= 50;
-                updateData['theme.logoBorderRadius'] = circleOn ? 100 : 0;
-            }
-            if (logoBackground !== undefined) {
-                updateData['theme.logoBackground'] = normalizeLogoBackground(logoBackground);
-            }
             if (req.files['logo']) {
                 const logoFile = req.files['logo'][0];
                 updateData['theme.logo'] = await processCommunityLogoUpload(logoFile.path, logoFile.mimetype);

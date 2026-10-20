@@ -212,6 +212,16 @@ export function ThemeStyles() {
     .main-container .nearest-dates h2 {
       font-size: calc(clamp(15px, 1.35vw, 22px) * var(--font-scale-sidebar)) !important;
     }
+    .main-container .nearest-dates h2.sidebar-announcements-title {
+      display: flex !important;
+      align-items: center;
+      gap: 0.45em;
+    }
+    .main-container .sidebar-announcements-icon {
+      width: 1.15em;
+      height: 1.15em;
+      flex-shrink: 0;
+    }
     .main-container .daily-gates-panel h2 {
       font-size: calc(clamp(15px, 1.35vw, 22px) * var(--font-scale-daily-study)) !important;
     }

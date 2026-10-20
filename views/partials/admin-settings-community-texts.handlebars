@@ -15,10 +15,11 @@
         <div class="form-field form-field-checkbox">
             <label class="admin-checkbox-label">
                 <input type="checkbox" name="boardSubtitleEnabled" id="boardSubtitleEnabled" value="1"
-                    class="admin-checkbox memorial-qr-preview-input" {{#if boardSubtitle.enabled}}checked{{/if}}>
+                    class="admin-checkbox memorial-qr-preview-input board-subtitle-enabled-toggle" {{#if boardSubtitle.enabled}}checked{{/if}}>
                 <span>{{t 'board_subtitle_enabled'}}</span>
             </label>
         </div>
+        <div class="board-subtitle-design-fields{{#unless boardSubtitle.enabled}} is-hidden{{/unless}}" id="boardSubtitleDesignFields" {{#unless boardSubtitle.enabled}}hidden{{/unless}}>
         <div class="form-field">
             <label for="boardSubtitleText">{{t 'board_subtitle_text'}}</label>
             <input type="text" name="boardSubtitleText" id="boardSubtitleText"
@@ -51,6 +52,7 @@
                 <option value="600" {{#if (eq synagogue.theme.boardSubtitleWeight '600')}}selected{{/if}}>600</option>
                 <option value="700" {{#if (eq synagogue.theme.boardSubtitleWeight '700')}}selected{{/if}}>700</option>
             </select>
+        </div>
         </div>
     </div>
 </div>

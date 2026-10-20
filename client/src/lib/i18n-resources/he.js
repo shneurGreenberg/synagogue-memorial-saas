@@ -33,7 +33,7 @@ export default {
   hayom_yom_title: 'היום יום',
   hayom_yom_loading: 'טוען היום יום...',
   upcoming_holidays_title: 'חגים קרובים',
-  sidebar_upcoming_title: 'תאריכים קרובים והודעות',
+  sidebar_upcoming_title: 'הודעות',
   community_announcements: 'הודעות',
   weather_title: 'מזג אוויר',
   weather_loading: 'טוען מזג אוויר…',

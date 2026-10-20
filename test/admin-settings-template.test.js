@@ -153,6 +153,12 @@ describe('admin settings dashboard template', () => {
     assert.match(html, /שלום/);
     assert.match(html, /name="boardTitleText"/);
     assert.match(html, /name="boardSubtitleText"/);
+    assert.match(html, /id="boardSubtitleDesignFields"/);
+    assert.match(html, /name="boardFeaturesSection"/);
+    assert.match(html, /settings-candle-palette-field[\s\S]*settings-candle-scale-label/);
+    const candleTile = html.match(/<article class="settings-media-tile settings-candle-preview-tile">[\s\S]*?<\/article>/);
+    assert.ok(candleTile, 'candle preview tile');
+    assert.doesNotMatch(candleTile[0], /saved-view-thumb-label/);
     assert.match(html, /settings-texts-styling-block/);
     assert.match(html, /settings-texts-content-block/);
     assert.match(html, /settings-copy-details/);

@@ -56,15 +56,9 @@ function DonationQrPanelBase({ t }) {
         <p className="memorial-submission-text">{text}</p>
       </div>
       <div className="memorial-submission-qr-body">
-        <a
-          href={donationUrl}
-          className="memorial-submission-qr-link"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={t('donation_qr_alt')}
-        >
+        <div className="memorial-submission-qr-frame" aria-hidden="true">
           {qrImage}
-        </a>
+        </div>
       </div>
     </section>
   );

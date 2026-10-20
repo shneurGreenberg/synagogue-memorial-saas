@@ -38,7 +38,7 @@ export default {
   hayom_yom_title: 'Hayom Yom',
   hayom_yom_loading: 'Loading Hayom Yom...',
   upcoming_holidays_title: 'Upcoming holidays',
-  sidebar_upcoming_title: 'Upcoming dates & announcements',
+  sidebar_upcoming_title: 'Announcements',
   community_announcements: 'Announcements',
   weather_title: 'Weather',
   weather_loading: 'Loading weather…',
