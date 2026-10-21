@@ -1,5 +1,15 @@
 [
   {
+    "version": "1.25.2",
+    "date": "2026-10-22",
+    "items": [
+      {
+        "type": "fixed",
+        "text": "סקריפט backfill ברקודים: ייצוא ensureRegistrationQrImage ו-ensureDonationQrImage — תיקון קריסה ב־--apply"
+      }
+    ]
+  },
+  {
     "version": "1.25.1",
     "date": "2026-10-22",
     "items": [

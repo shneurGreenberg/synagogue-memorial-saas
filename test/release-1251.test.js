@@ -116,10 +116,10 @@ describe('release 1.25.1 Node 24 toolchain', () => {
 });
 
 describe('release 1.25.1 changelog version', () => {
-  it('lists 1.25.1 at the head of CHANGELOG.json', () => {
+  it('includes 1.25.1 in CHANGELOG.json', () => {
     const changelog = JSON.parse(
       fs.readFileSync(path.join(__dirname, '..', 'CHANGELOG.json'), 'utf8'),
     );
-    assert.equal(changelog[0].version, '1.25.1');
+    assert.ok(changelog.some((entry) => entry.version === '1.25.1'));
   });
 });
