@@ -271,12 +271,7 @@ function SidebarUpcomingPanelBase({
       className={`nearest-dates${showTopDivider ? ' nearest-dates--divider-top' : ''}`}
       aria-label={t('sidebar_upcoming_title')}
     >
-      <h2 className="sidebar-announcements-title">
-        <svg className="sidebar-announcements-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="currentColor" d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm7 9v2a7 7 0 0 1-14 0v-2H3v2a9 9 0 0 0 8 8.94V23h2v-1.06A9 9 0 0 0 21 11v-2h-2z" />
-        </svg>
-        <span>{t('sidebar_upcoming_title')}</span>
-      </h2>
+      <h2>{t('sidebar_upcoming_title')}</h2>
       <ScrollingAnnouncementsList
         items={items}
         uiLang={uiLang}

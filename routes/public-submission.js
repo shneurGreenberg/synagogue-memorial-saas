@@ -1,6 +1,6 @@
 const express = require('express');
 const Synagogue = require('../models/Synagogue');
-const { normalizePublicSubmission } = require('../lib/public-submission');
+const { normalizePublicSubmission, parseDonationUrl } = require('../lib/public-submission');
 const {
   getPublicSubmissionTranslator,
   resolvePublicSubmissionLang,
@@ -30,6 +30,9 @@ const {
 } = require('../lib/public-submission-form');
 const { pushPersonAddRequests } = require('../lib/public-submission-persist');
 const { createPublicSubmissionRateLimiter } = require('../lib/http-security');
+const { invalidateBoardCache } = require('../lib/board-cache');
+const { invalidateAdminSynagogueCache } = require('../lib/admin-synagogue-load');
+const { syncAutoDonationQrAfterUrlChange } = require('../lib/default-community-qr');
 const { formatDdMmYyyy, formatDdMmYyyyFromIso } = require('../lib/dd-mm-yyyy-date');
 const {
   formatDeceasedCardBadge,
@@ -399,6 +402,66 @@ router.get('/:slug/add-name/success', async (req, res) => {
       isMultiRequest: submittedCount > 1,
       shareUrl: `${req.protocol}://${req.get('host')}/s/${synagogue.slug}/add-name?lang=${lang}`,
     });
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
+function requireAdminForCommunitySlug(req, res, next) {
+  const slug = req.params.slug;
+  if (!req.session?.adminSlug || req.session.adminSlug !== slug) {
+    return res.redirect('/admin/login');
+  }
+  return next();
+}
+
+async function saveDonationUrlForSlug(slug, rawUrl) {
+  const donationUrl = parseDonationUrl(rawUrl);
+  await Synagogue.updateOne(
+    { slug },
+    { $set: { 'publicSubmission.donationUrl': donationUrl } },
+  );
+  const synagogue = await Synagogue.findOne({ slug });
+  if (!synagogue) {
+    return;
+  }
+  const donationQrImage = await syncAutoDonationQrAfterUrlChange(synagogue);
+  if (donationQrImage) {
+    await Synagogue.updateOne(
+      { slug },
+      { $set: { 'publicSubmission.donationQrImage': donationQrImage } },
+    );
+  }
+  invalidateBoardCache(slug);
+  invalidateAdminSynagogueCache(slug);
+}
+
+router.get('/:slug/donation-setup', requireAdminForCommunitySlug, async (req, res) => {
+  try {
+    const synagogue = await loadSynagogue(req.params.slug);
+    if (!synagogue) {
+      return res.status(404).send('Synagogue not found');
+    }
+
+    const lang = resolvePublicSubmissionLang(req.query.lang, synagogue.language);
+    const context = buildPageContext(synagogue, lang);
+
+    return renderPublicPage(res, 'public/donation-setup', context);
+  } catch (err) {
+    return res.status(500).send(err.message);
+  }
+});
+
+router.post('/:slug/donation-setup', requireAdminForCommunitySlug, async (req, res) => {
+  try {
+    const slug = req.params.slug;
+    const synagogue = await Synagogue.findOne({ slug });
+    if (!synagogue) {
+      return res.status(404).send('Synagogue not found');
+    }
+
+    await saveDonationUrlForSlug(slug, req.body.donationUrl);
+    return res.redirect(`/admin/${slug}/dashboard?saved=1`);
   } catch (err) {
     return res.status(500).send(err.message);
   }
