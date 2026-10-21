@@ -1,5 +1,27 @@
 [
   {
+    "version": "1.25.1",
+    "date": "2026-10-22",
+    "items": [
+      {
+        "type": "changed",
+        "text": "שדרוג Node ל־24 LTS (Amvera, Docker, CI) לתמיכה ואבטחה"
+      },
+      {
+        "type": "fixed",
+        "text": "עדכון תלויות npm לסגירת חולשות אבטחה (Express, Mongoose, Multer ועוד)"
+      },
+      {
+        "type": "fixed",
+        "text": "backfill ברקודים: תכנון לפי שדה — רק QR שחסרים ולא מוצגים כבר בלוח; ללא דריסה"
+      },
+      {
+        "type": "fixed",
+        "text": "נתיב /images/community-qr/: מחזיר 404 לקובץ/קהילה לא מקושרים; יצירה מחדש רק לנתיבים שמוגדרים בקהילה"
+      }
+    ]
+  },
+  {
     "version": "1.25.0",
     "date": "2026-10-21",
     "items": [

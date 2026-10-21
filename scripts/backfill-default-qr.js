@@ -8,7 +8,8 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const Synagogue = require('../models/Synagogue');
 const {
-  applyDefaultCommunityQrToDocument,
+  ensureRegistrationQrImage,
+  ensureDonationQrImage,
   planDefaultCommunityQrBackfill,
 } = require('../lib/default-community-qr');
 
@@ -46,7 +47,22 @@ async function main() {
     if (!doc) {
       continue;
     }
-    await applyDefaultCommunityQrToDocument(doc, { skipIfAnyQr: false });
+    if (!doc.publicSubmission) {
+      doc.publicSubmission = {};
+    }
+    if (planned.registrationQrImage) {
+      doc.publicSubmission.registrationQrImage = await ensureRegistrationQrImage(
+        row.slug,
+        doc.publicSubmission.registrationQrImage,
+      );
+    }
+    if (planned.donationQrImage) {
+      doc.publicSubmission.donationQrImage = await ensureDonationQrImage(
+        row.slug,
+        doc.publicSubmission.donationUrl,
+        doc.publicSubmission.donationQrImage,
+      );
+    }
     await doc.save();
     updated += 1;
     console.log(`[apply] backfilled QR for ${label}`);

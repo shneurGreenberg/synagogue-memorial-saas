@@ -5,6 +5,9 @@
   "author": "Ilya Lakhin(Лахин Илья Александрович) eliah.lakhin@gmail.com",
   "license": "license.txt",
   "private": true,
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "start": "node app.js",
     "start:prod": "(node scripts/seed.js || true) && node scripts/prebuild-css.js && exec node app.js",
@@ -28,12 +31,12 @@
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
-    "body-parser": "^1.19.0",
+    "body-parser": "^1.20.3",
     "compression": "^1.8.1",
     "connect-mongo": "^4.0.0",
     "dotenv": "^10.0.0",
     "events": "^3.3.0",
-    "express": "^4.17.1",
+    "express": "^4.22.0",
     "express-handlebars": "^5.2.1",
     "express-rate-limit": "^8.5.2",
     "express-session": "^1.17.0",
@@ -41,9 +44,9 @@
     "hebcal": "^2.3.2",
     "helmet": "^8.3.0",
     "i18next": "^20.0.0",
-    "mongoose": "^6.0.0",
-    "multer": "^2.0.2",
-    "nodemailer": "^9.0.1",
+    "mongoose": "^6.13.8",
+    "multer": "^2.4.0",
+    "nodemailer": "^10.2.0",
     "pm2": "^4.5.5",
     "qrcode": "^1.5.4",
     "react": "^17.0.1",
@@ -53,7 +56,11 @@
     "rimraf": "^3.0.2",
     "sanitize-html": "^2.17.4",
     "sass": "^1.50.0",
-    "sharp": "^0.34.2"
+    "sharp": "^0.35.5"
+  },
+  "overrides": {
+    "@remix-run/router": "1.23.4",
+    "esbuild": "^0.25.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.7.0",
