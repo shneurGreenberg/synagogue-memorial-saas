@@ -13,6 +13,7 @@ const { BOARD_THEME_DEFAULTS } = require('../lib/board-defaults');
 const { parsePhotoCropFromBody } = require('../lib/photo-crop');
 const { parseBoardFeaturesFromBody } = require('../lib/board-features');
 const { buildBoardSettingsUpdate } = require('../lib/admin-board-settings-save');
+const { syncAutoDonationQrAfterUrlChange } = require('../lib/default-community-qr');
 const { invalidateBoardCache } = require('../lib/board-cache');
 const { loadAdminSynagogue, invalidateAdminSynagogueCache } = require('../lib/admin-synagogue-load');
 const {
@@ -766,6 +767,18 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
 
         if (Object.keys(updateData).length > 0) {
             await Synagogue.updateOne({ slug: req.params.slug }, { $set: updateData });
+        }
+        if (Object.prototype.hasOwnProperty.call(updateData, 'publicSubmission.donationUrl')) {
+            const fresh = await Synagogue.findOne({ slug: req.params.slug });
+            if (fresh) {
+                const donationQrImage = await syncAutoDonationQrAfterUrlChange(fresh);
+                if (donationQrImage && donationQrImage !== fresh.publicSubmission?.donationQrImage) {
+                    await Synagogue.updateOne(
+                        { slug: req.params.slug },
+                        { $set: { 'publicSubmission.donationQrImage': donationQrImage } },
+                    );
+                }
+            }
         }
         res.redirect(`/admin/${req.params.slug}/dashboard?saved=1`);
     } catch (err) {

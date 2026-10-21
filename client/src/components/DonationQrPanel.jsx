@@ -19,9 +19,15 @@ function DonationQrPanelBase({ t }) {
   const { data } = useBoardData();
   const panel = data.memorialQrPanel || {};
   const publicSubmission = data.publicSubmission || {};
-  const donationUrl = String(publicSubmission.donationUrl || '').trim();
+  if (publicSubmission.showDonationQr === false) {
+    return null;
+  }
 
-  if (!donationUrl || publicSubmission.showDonationQr === false) {
+  const hasDonationPanel = Boolean(
+    String(publicSubmission.donationQrImage || '').trim()
+    || String(publicSubmission.donationUrl || '').trim(),
+  );
+  if (!hasDonationPanel) {
     return null;
   }
 

@@ -1,0 +1,16 @@
+<section class="public-card">
+    <h1>{{publicT 'donation_setup_title'}}</h1>
+    <p class="public-intro">{{publicT 'donation_setup_intro'}}</p>
+
+    <form method="POST" action="/s/{{synagogue.slug}}/donation-setup" class="public-form">
+        <div class="public-field">
+            <label for="donationUrl">{{publicT 'donation_setup_url_label'}}</label>
+            <input type="url" name="donationUrl" id="donationUrl" class="public-input" required
+                value="{{publicSubmission.donationUrl}}" placeholder="https://">
+        </div>
+        <div class="public-actions">
+            <button type="submit" class="public-button public-button-primary">{{publicT 'donation_setup_save'}}</button>
+            <a href="{{boardUrl}}" class="public-button public-button-secondary">{{publicT 'back_to_board'}}</a>
+        </div>
+    </form>
+</section>

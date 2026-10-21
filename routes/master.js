@@ -43,6 +43,7 @@ const {
   resolveDefaultActiveSavedViewId,
 } = require('../lib/saved-view-presets');
 const { processCommunityLogoUpload } = require('../lib/community-logo-upload');
+const { applyDefaultCommunityQrToDocument } = require('../lib/default-community-qr');
 const { MAX_UPLOAD_BYTES } = require('../lib/upload-limits');
 const loginRateLimiter = createLoginRateLimiter();
 
@@ -414,6 +415,8 @@ router.post('/add', requireMaster, (req, res) => {
 
             newSynagogue.savedViews = mergePresetSavedViews(newSynagogue.savedViews);
             newSynagogue.activeSavedViewId = resolveDefaultActiveSavedViewId(newSynagogue.savedViews);
+
+            await applyDefaultCommunityQrToDocument(newSynagogue);
 
             await newSynagogue.save();
             res.redirect(`/master/communities?saved=1&created=${encodeURIComponent(slug)}`);
