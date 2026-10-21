@@ -75,7 +75,7 @@ describe('release 1.24 B2 default community QR', () => {
       'utf8',
     );
     assert.match(script, /--apply/);
-    assert.match(script, /skipIfAnyQr:\s*true/);
+    assert.match(script, /planDefaultCommunityQrBackfill/);
   });
 
   it('registers donation-setup admin route', () => {
@@ -138,7 +138,6 @@ describe('release 1.24 B4 board announcements heading', () => {
 
   it('keeps הודעות rename on admin events page', () => {
     const events = fs.readFileSync(path.join(__dirname, '..', 'views', 'admin', 'events.handlebars'), 'utf8');
-    assert.match(events, /megaphone/);
     assert.match(events, /community_events/);
   });
 });

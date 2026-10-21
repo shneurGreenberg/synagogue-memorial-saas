@@ -535,10 +535,11 @@ html[dir='rtl'] .public-bh-badge {
 
 .public-phone-row {
   display: grid;
-  grid-template-columns: minmax(7.5rem, 9.5rem) minmax(0, 1fr);
+  grid-template-columns: minmax(5.5rem, 7rem) minmax(0, 1fr);
   gap: 10px;
   align-items: end;
   margin-top: 16px;
+  direction: ltr;
 }
 
 .public-field-phone-dial {
@@ -917,21 +918,37 @@ html[dir='rtl'] .public-bh-badge {
 }
 
 .public-lang-switch-pills {
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.35rem;
   padding: 0.35rem 0.5rem;
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.22);
   border: 1px solid rgba(207, 175, 31, 0.28);
+  width: 100%;
+  box-sizing: border-box;
 
   .public-lang-pill {
+    flex: 1 1 0;
+    min-width: 0;
     opacity: 1;
-    padding: 0.4rem 0.85rem;
+    padding: 0.4rem 0.5rem;
     border-radius: 999px;
     font-size: 0.88rem;
     font-weight: 600;
     border: 1px solid transparent;
     color: rgba(240, 240, 240, 0.88);
+    text-align: center;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--accent-color, #ffd54f);
+      outline-offset: 2px;
+    }
   }
 
   .public-lang-pill.is-active {
@@ -940,6 +957,40 @@ html[dir='rtl'] .public-bh-badge {
     border-color: rgba(207, 175, 31, 0.55);
     box-shadow: 0 0 0 1px rgba(207, 175, 31, 0.2);
   }
+}
+
+.public-gender-pills {
+  width: 100%;
+  flex-wrap: nowrap;
+
+  .public-pill-option {
+    flex: 1 1 50%;
+    max-width: 50%;
+    -webkit-tap-highlight-color: transparent;
+
+    span {
+      width: 100%;
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    input:focus + span {
+      outline: none;
+      box-shadow: none;
+    }
+
+    input:focus-visible + span {
+      outline: 2px solid var(--accent-color, #ffd54f);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 1px rgba(207, 175, 31, 0.2);
+    }
+  }
+}
+
+.public-death-date-input {
+  appearance: none;
+  background-image: none;
+  padding-inline-end: 12px;
 }
 
 .public-contact-block {
