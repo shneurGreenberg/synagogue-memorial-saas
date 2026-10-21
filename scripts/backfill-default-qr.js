@@ -9,35 +9,36 @@ const mongoose = require('mongoose');
 const Synagogue = require('../models/Synagogue');
 const {
   applyDefaultCommunityQrToDocument,
-  communityHasAnyQrSet,
+  planDefaultCommunityQrBackfill,
 } = require('../lib/default-community-qr');
 
 const apply = process.argv.includes('--apply');
+const slugArg = process.argv.find((arg) => arg.startsWith('--slug='));
+const slugFilter = slugArg ? slugArg.slice('--slug='.length).trim() : '';
 
 async function main() {
   const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue';
   await mongoose.connect(uri);
 
-  const communities = await Synagogue.find({}).select('slug name publicSubmission provisioning').lean();
+  const query = slugFilter ? { slug: slugFilter } : {};
+  const communities = await Synagogue.find(query)
+    .select('slug name publicSubmission provisioning')
+    .lean();
   let candidates = 0;
   let updated = 0;
 
   for (const row of communities) {
-    const publicSubmission = row.publicSubmission || {};
-    const provisioningQr = row.provisioning?.donationQrImage ? String(row.provisioning.donationQrImage).trim() : '';
-    const hasQr = communityHasAnyQrSet({
-      ...publicSubmission,
-      donationQrImage: publicSubmission.donationQrImage || provisioningQr,
-    });
-
-    if (hasQr) {
+    const planned = planDefaultCommunityQrBackfill(row);
+    if (!planned) {
       continue;
     }
 
     candidates += 1;
     const label = `${row.slug} (${row.name || ''})`;
     if (!apply) {
-      console.log(`[dry-run] would backfill QR for ${label}`);
+      for (const [field, value] of Object.entries(planned)) {
+        console.log(`[dry-run] ${label}: would set publicSubmission.${field}=${value}`);
+      }
       continue;
     }
 
@@ -45,7 +46,7 @@ async function main() {
     if (!doc) {
       continue;
     }
-    await applyDefaultCommunityQrToDocument(doc, { skipIfAnyQr: true });
+    await applyDefaultCommunityQrToDocument(doc, { skipIfAnyQr: false });
     await doc.save();
     updated += 1;
     console.log(`[apply] backfilled QR for ${label}`);

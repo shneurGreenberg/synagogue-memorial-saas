@@ -73,6 +73,12 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue
   console.log('MongoDB connected');
   const { runStartupMigrations } = require('./lib/migrations/run-migrations');
   await runStartupMigrations();
+  if (isProduction) {
+    const { regenerateMissingAutoQrAtStartup } = require('./lib/community-qr-on-demand');
+    regenerateMissingAutoQrAtStartup().catch((err) => {
+      console.error('Auto community QR startup regeneration failed:', err);
+    });
+  }
 }).catch(err => console.error('MongoDB connection error:', err));
 
 app.use(compression());
