@@ -3310,8 +3310,8 @@
       }
     ]
   },
-  "contentVersion": 1792588827478,
-  "exportedAt": "2026-10-21T13:20:27.478Z",
+  "contentVersion": 1792593502331,
+  "exportedAt": "2026-10-21T14:38:22.331Z",
   "jewishContent": {
     "date": "2026-10-21",
     "timezone": "Asia/Novosibirsk",
@@ -3464,6 +3464,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-21T13:20:27.478Z"
+    "updatedAt": "2026-10-21T14:38:22.331Z"
   }
 }
