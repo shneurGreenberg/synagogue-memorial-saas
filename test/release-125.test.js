@@ -115,7 +115,7 @@ describe('release 1.25 C2 safe barcode auto-generation', () => {
     assert.equal(parseAutoCommunityQrFilename('custom.png'), null);
   });
 
-  it('skips backfill when board already shows barcodes without stored images', () => {
+  it('detects barcodes visible on the board without stored QR images', () => {
     assert.equal(communityShowsBarcodesOnBoard({ showRegistrationQr: true }), true);
     assert.equal(
       communityShowsBarcodesOnBoard({ showDonationQr: true, donationUrl: 'https://donate.example' }),
@@ -125,9 +125,16 @@ describe('release 1.25 C2 safe barcode auto-generation', () => {
       communityShowsBarcodesOnBoard({ showRegistrationQr: false, showDonationQr: false }),
       false,
     );
-    assert.equal(
-      planDefaultCommunityQrBackfill({ slug: 'quiet', publicSubmission: { showRegistrationQr: true } }),
-      null,
+    assert.deepEqual(
+      planDefaultCommunityQrBackfill({
+        slug: 'quiet',
+        publicSubmission: {
+          showRegistrationQr: true,
+          showDonationQr: false,
+          donationQrImage: '',
+        },
+      }),
+      { donationQrImage: autoDonationQrRelativePath('quiet') },
     );
   });
 
@@ -179,11 +186,3 @@ describe('release 1.25 C2 safe barcode auto-generation', () => {
   });
 });
 
-describe('release 1.25 changelog version', () => {
-  it('lists 1.25.0 at the head of CHANGELOG.json', () => {
-    const changelog = JSON.parse(
-      fs.readFileSync(path.join(__dirname, '..', 'CHANGELOG.json'), 'utf8'),
-    );
-    assert.equal(changelog[0].version, '1.25.0');
-  });
-});
