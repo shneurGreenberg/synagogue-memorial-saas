@@ -204,7 +204,8 @@ html[dir='rtl'] .public-bh-badge {
   border: none;
 
   legend {
-    font-size: 0.9rem;
+    font-size: 14px;
+    color: var(--accent-color, #ffd54f);
     margin-bottom: 8px;
     padding: 0;
   }
@@ -537,17 +538,39 @@ html[dir='rtl'] .public-bh-badge {
   display: grid;
   grid-template-columns: minmax(5.5rem, 7rem) minmax(0, 1fr);
   gap: 10px;
-  align-items: end;
-  margin-top: 16px;
+  align-items: stretch;
   direction: ltr;
 }
 
-.public-field-phone-dial {
+.public-field-phone .public-phone-row {
   margin-top: 0;
 }
 
-.public-field-phone-national {
-  margin-top: 0;
+.public-field-phone {
+  select.public-phone-dial,
+  input.public-phone-national {
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 10px;
+    border: 1px solid var(--tile-glass-border, rgba(207, 175, 31, 0.45));
+    background-color: var(--tile-glass-base, rgba(0, 0, 0, 0.38));
+    color: var(--text-color, #f0f0f0);
+    padding: 10px 12px;
+    font: inherit;
+    min-height: 2.85rem;
+    line-height: 1.45;
+  }
+
+  select.public-phone-dial {
+    appearance: none;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  input.public-phone-national {
+    background-image: none;
+    padding-inline-end: 12px;
+  }
 }
 
 .public-name-row {
@@ -616,11 +639,6 @@ html[dir='rtl'] .public-bh-badge {
     outline: 2px solid var(--accent-color, #ffd54f);
     outline-offset: 2px;
   }
-}
-
-.public-sunset-pills .public-pill-option span {
-  font-size: 0.82rem;
-  padding: 0.4rem 0.65rem;
 }
 
 .public-sunset-hint {

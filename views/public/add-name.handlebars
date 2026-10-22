@@ -37,20 +37,17 @@
                 <span>{{publicT 'contact_name_label'}}</span>
                 <input type="text" name="contactName" maxlength="120" required value="{{values.contactName}}" placeholder="{{publicT 'contact_name_placeholder'}}">
             </label>
-            <div class="public-phone-row">
-                <label class="public-field public-field-phone-dial">
-                    <span>{{publicT 'contact_phone_label'}}</span>
-                    <select name="contactPhoneDial" class="public-select-field public-phone-dial" dir="ltr" required>
+            <div class="public-field public-field-phone">
+                <span>{{publicT 'contact_phone_label'}}</span>
+                <div class="public-phone-row">
+                    <select name="contactPhoneDial" class="public-select-field public-phone-dial" dir="ltr" required aria-label="{{publicT 'contact_phone_label'}}">
                         {{#each phoneDialOptions}}
                         <option value="{{this.dial}}" {{#if (eq ../values.contactPhoneDial this.dial)}}selected{{/if}}>{{this.label}} {{this.country}}</option>
                         {{/each}}
                     </select>
-                </label>
-                <label class="public-field public-field-phone-national">
-                    <span class="public-visually-hidden">{{publicT 'contact_phone_label'}}</span>
-                    <input type="tel" name="contactPhoneNational" class="public-phone-national" maxlength="20" required value="{{values.contactPhoneNational}}" placeholder="{{phonePlaceholder}}" dir="ltr" inputmode="tel" autocomplete="tel-national">
+                    <input type="tel" name="contactPhoneNational" class="public-phone-national" maxlength="20" required value="{{values.contactPhoneNational}}" placeholder="{{phonePlaceholder}}" dir="ltr" inputmode="tel" autocomplete="tel-national" aria-label="{{publicT 'contact_phone_label'}}">
                     <input type="hidden" name="contactPhone" value="{{values.contactPhone}}">
-                </label>
+                </div>
             </div>
         </div>
 
