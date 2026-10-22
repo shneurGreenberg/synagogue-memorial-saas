@@ -26,6 +26,7 @@ const { fetchWeatherForecast } = require('./lib/weather-api');
 const { applyBoardPreviewOverrides } = require('./lib/board-preview');
 const { BOARD_VERSION } = require('./lib/board-version');
 const { currentCodeVersion } = require('./lib/changelog');
+const { buildHealthPayload } = require('./lib/health-payload');
 const { resolvePublishedVersion, normalizeScreenReport, recordBoardScreen, summarizeBoardScreens } = require('./lib/board-publish');
 const { photoCropToInlineStyle } = require('./lib/photo-crop');
 const { buildPhotoThumbUrl } = require('./lib/photo-url');
@@ -91,6 +92,10 @@ app.use(helmet({
 }));
 
 registerStaticAssets(app, { isProduction });
+
+app.get('/healthz', (req, res) => {
+  res.json(buildHealthPayload());
+});
 
 function allowMobileApiCors(req, res, next) {
   if (!req.path.includes('/api/')) {

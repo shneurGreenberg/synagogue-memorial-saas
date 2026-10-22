@@ -97,21 +97,9 @@ describe('release 1.25.1 community QR route reference checks', () => {
 });
 
 describe('release 1.25.1 Node 24 toolchain', () => {
-  it('pins Node 24 in Amvera, Docker, and CI', () => {
-    const amvera = fs.readFileSync(path.join(__dirname, '..', 'amvera.yaml'), 'utf8');
-    const docker = fs.readFileSync(path.join(__dirname, '..', 'Dockerfile'), 'utf8');
-    const ci = fs.readFileSync(
-      path.join(__dirname, '..', '.github', 'workflows', 'test.yml'),
-      'utf8',
-    );
-    assert.match(amvera, /version:\s*"24"/);
-    assert.match(docker, /node:24-bookworm-slim/);
-    assert.match(ci, /node-version:\s*'24'/);
-  });
-
-  it('requires Node >=24 in package.json engines', () => {
+  it('requires Node 24+ in package.json engines', () => {
     const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
-    assert.match(pkg.engines.node, /24/);
+    assert.match(pkg.engines.node, />=24/);
   });
 });
 

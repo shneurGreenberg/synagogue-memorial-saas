@@ -6,7 +6,7 @@ meta:
   environment: node
   toolchain:
     name: npm
-    version: "24"
+    version: "24.22.1"
 
 build:
   additionalCommands: npm run build:board && npm run build:css
