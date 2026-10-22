@@ -66,14 +66,16 @@ describe('public-submission CSS (RTL-safe layout)', () => {
     assert.match(html, /class="public-consent-text"/);
   });
 
-  it('Z17 deceased block order: father name, gender pills, then death date', () => {
+  it('Z17 deceased block order: first name row, gender pills, father name, then death date', () => {
     const html = fs.readFileSync(DECEASED_BLOCK_PARTIAL, 'utf8');
-    const fatherIdx = html.indexOf('[fatherName]');
+    const firstNameIdx = html.indexOf('[firstName]');
     const genderIdx = html.indexOf('[deceasedGender]');
+    const fatherIdx = html.indexOf('[fatherName]');
     const deathIdx = html.indexOf('[deathDate]');
-    assert.ok(fatherIdx >= 0 && genderIdx >= 0 && deathIdx >= 0);
-    assert.ok(fatherIdx < genderIdx, 'gender must follow father name');
-    assert.ok(genderIdx < deathIdx, 'death date must follow gender');
+    assert.ok(firstNameIdx >= 0 && genderIdx >= 0 && fatherIdx >= 0 && deathIdx >= 0);
+    assert.ok(firstNameIdx < genderIdx, 'gender must follow first name');
+    assert.ok(genderIdx < fatherIdx, 'father name must follow gender');
+    assert.ok(fatherIdx < deathIdx, 'death date must follow father name');
   });
 
   it('Z16 consent wraps at 390px; ru label present in add-name flow (he/ru/en)', () => {

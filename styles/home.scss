@@ -2165,6 +2165,7 @@
 // Hebrew board UI: fixed ב״ה on admin/login shells only (column badge uses flow above)
 body.board-lang-he {
   .baruch-hashem-badge:not(.baruch-hashem-badge--column) {
+    text-align: end;
     inset-inline-start: auto;
     inset-inline-end: clamp(12px, 2vw, 24px);
   }

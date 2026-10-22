@@ -33,11 +33,6 @@
         </label>
     </div>
 
-    <label class="public-field">
-        <span>{{publicT 'father_name_label'}}</span>
-        <input type="text" name="deceased[{{index}}][fatherName]" maxlength="120" required value="{{block.fatherName}}" placeholder="{{publicT 'father_name_placeholder'}}">
-    </label>
-
     <fieldset class="public-gender-field">
         <legend>{{publicT 'deceased_gender_label'}}</legend>
         <div class="public-pill-group public-gender-pills" role="radiogroup">
@@ -52,6 +47,11 @@
         </div>
     </fieldset>
 
+    <label class="public-field">
+        <span>{{publicT 'father_name_label'}}</span>
+        <input type="text" name="deceased[{{index}}][fatherName]" maxlength="120" required value="{{block.fatherName}}" placeholder="{{publicT 'father_name_placeholder'}}">
+    </label>
+
     <label class="public-field public-field-death-date">
         <span>{{publicT 'death_date_label'}}</span>
         <input type="text" name="deceased[{{index}}][deathDate]" class="public-death-date-input" required value="{{block.deathDateDisplay}}" placeholder="{{publicT 'death_date_placeholder'}}" dir="ltr" autocomplete="off" maxlength="10">
@@ -59,7 +59,7 @@
 
     <fieldset class="public-sunset-field">
         <legend>{{publicT 'sunset_legend'}}</legend>
-        <div class="public-pill-group public-sunset-pills" role="radiogroup">
+        <div class="public-pill-group public-gender-pills public-sunset-pills" role="radiogroup">
             <label class="public-pill-option">
                 <input type="radio" name="deceased[{{index}}][diedAfterSunset]" value="before" {{#unless block.diedAfterSunset}}checked{{/unless}}>
                 <span>{{publicT 'sunset_before_short'}}</span>
