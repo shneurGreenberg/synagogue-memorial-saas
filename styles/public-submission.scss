@@ -21,10 +21,10 @@
 }
 
 .public-bh-badge {
-  position: fixed;
-  top: clamp(8px, 1.5vh, 14px);
-  right: clamp(12px, 2vw, 24px);
-  z-index: 950;
+  position: static;
+  padding: clamp(8px, 1.5vh, 14px) clamp(12px, 2vw, 24px) 0;
+  text-align: end;
+  z-index: auto;
   font-size: clamp(12px, 1.1vw, 15px);
   line-height: 1.2;
   color: rgba(207, 175, 31, 0.82);
