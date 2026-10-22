@@ -6,7 +6,7 @@
   "license": "license.txt",
   "private": true,
   "engines": {
-    "node": ">=24"
+    "node": ">=24.22.1"
   },
   "scripts": {
     "start": "node app.js",

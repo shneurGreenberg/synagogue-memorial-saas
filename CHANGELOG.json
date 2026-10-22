@@ -1,5 +1,19 @@
 [
   {
+    "version": "1.25.3",
+    "date": "2026-10-22",
+    "items": [
+      {
+        "type": "changed",
+        "text": "נעיצת Node 24.22.1 (Amvera, Docker, CI) — עדכון אבטחה ל־HTTP/TLS/OpenSSL/Brotli"
+      },
+      {
+        "type": "added",
+        "text": "נקודת בדיקת תקינות ציבורית GET /healthz — גרסת Node וגרסת האפליקציה (ללא סודות)"
+      }
+    ]
+  },
+  {
     "version": "1.25.2",
     "date": "2026-10-22",
     "items": [
