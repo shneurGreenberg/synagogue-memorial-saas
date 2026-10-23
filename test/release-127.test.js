@@ -105,10 +105,12 @@ describe('release 1.27 E3 Tehillim board section labels', () => {
     assert.match(he, /daily_tehillim_sublabel:\s*''/);
   });
 
-  it('ru i18n: title Псалмы, sublabel תהילים', () => {
+  it('ru i18n: title Теилим, sublabel Псалмы (no Hebrew)', () => {
     const ru = fs.readFileSync(path.join(I18N_DIR, 'ru.js'), 'utf8');
-    assert.match(ru, /daily_tehillim:\s*'Псалмы'/);
-    assert.match(ru, /daily_tehillim_sublabel:\s*'תהילים'/);
+    assert.match(ru, /daily_tehillim:\s*'Теилим'/);
+    assert.match(ru, /daily_tehillim_sublabel:\s*'Псалмы'/);
+    assert.doesNotMatch(ru, /daily_tehillim[^;]*תהילים/);
+    assert.doesNotMatch(ru, /Псалт/i);
   });
 
   it('en i18n: title Psalms, sublabel Tehillim', () => {
@@ -125,27 +127,29 @@ describe('release 1.27 E3 Tehillim board section labels', () => {
       return fs.readFileSync(path.join(assetsDir, name), 'utf8');
     };
     const mainBundle = fs.readFileSync(MEMORIAL_BUNDLE, 'utf8');
-    assert.match(mainBundle, /daily_tehillim:"Псалмы"/);
+    assert.match(mainBundle, /daily_tehillim:"Теилим"/);
+    assert.match(mainBundle, /daily_tehillim_sublabel:"Псалмы"/);
+    assert.doesNotMatch(mainBundle, /Псалт/i);
     assert.match(readLocaleChunk('he'), /daily_tehillim:"תהילים"/);
     assert.match(readLocaleChunk('en'), /daily_tehillim:"Psalms"/);
   });
 });
 
 describe('release 1.27 public health endpoint', () => {
-  it('returns JSON with node runtime and app version 1.27.0', () => {
+  it('returns JSON with node runtime and app version 1.27.1', () => {
     const payload = buildHealthPayload();
     assert.equal(payload.ok, true);
     assert.match(payload.node, /^v\d+\.\d+\.\d+/);
-    assert.equal(payload.version, '1.27.0');
+    assert.equal(payload.version, '1.27.1');
     assert.deepEqual(Object.keys(payload).sort(), ['node', 'ok', 'version']);
   });
 });
 
 describe('release 1.27 changelog version', () => {
-  it('lists 1.27.0 at the head of CHANGELOG.json', () => {
+  it('lists 1.27.1 at the head of CHANGELOG.json', () => {
     const changelog = JSON.parse(
       fs.readFileSync(path.join(__dirname, '..', 'CHANGELOG.json'), 'utf8'),
     );
-    assert.equal(changelog[0].version, '1.27.0');
+    assert.equal(changelog[0].version, '1.27.1');
   });
 });

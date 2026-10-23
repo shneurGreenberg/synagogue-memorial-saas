@@ -18,16 +18,24 @@ describe('release 1.24 B1 Tehillim Russian labels', () => {
   it('uses Псалмы instead of Christian Psalter wording in feed translations', () => {
     const line = translateLearningLine('Tehillim: Psalms 39-43', 'ru');
     assert.match(line, /Псалмы/);
-    assert.doesNotMatch(line, /Псалтирь/i);
+    assert.doesNotMatch(line, /Псалт/i);
     assert.doesNotMatch(line, /Тегилим/i);
   });
 
-  it('board ru i18n names the daily Tehillim section Псалмы', () => {
+  it('board ru i18n names the daily Tehillim section Теилим with Псалмы sublabel', () => {
     const ru = fs.readFileSync(
       path.join(__dirname, '..', 'client', 'src', 'lib', 'i18n-resources', 'ru.js'),
       'utf8',
     );
-    assert.match(ru, /daily_tehillim:\s*'Псалмы'/);
+    assert.match(ru, /daily_tehillim:\s*'Теилим'/);
+    assert.match(ru, /daily_tehillim_sublabel:\s*'Псалмы'/);
+  });
+
+  it('sanitizeRussianLearningText strips psalter wording and Hebrew Tehillim', () => {
+    const { sanitizeRussianLearningText } = require('../lib/jewish-translations');
+    assert.equal(sanitizeRussianLearningText('Псалтырь 39-43'), 'Псалмы 39-43');
+    assert.equal(sanitizeRussianLearningText('Псалтирь: главы'), 'Псалмы: главы');
+    assert.doesNotMatch(sanitizeRussianLearningText('תהילים: Псалмы 1'), /תהילים/);
   });
 
   it('admin ru feature label references псалмы', () => {
