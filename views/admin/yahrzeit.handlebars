@@ -36,7 +36,7 @@
                 {{#each upcomingWeek}}
                 <tr>
                     <td>
-                        <button type="button" class="yahrzeit-upcoming-name-link" data-person-id="{{this.id}}">{{this.name}}</button>
+                        <a href="/admin/{{@root.synagogue.slug}}/people?q={{this.searchQuery}}" class="yahrzeit-upcoming-name-link">{{this.name}}</a>
                     </td>
                     <td>{{this.hebrewDateLabel}}</td>
                     <td dir="ltr">{{this.gregorianDateLabel}}</td>
@@ -72,7 +72,7 @@
                 {{#each upcomingMonth}}
                 <tr>
                     <td>
-                        <button type="button" class="yahrzeit-upcoming-name-link" data-person-id="{{this.id}}">{{this.name}}</button>
+                        <a href="/admin/{{@root.synagogue.slug}}/people?q={{this.searchQuery}}" class="yahrzeit-upcoming-name-link">{{this.name}}</a>
                     </td>
                     <td>{{this.hebrewDateLabel}}</td>
                     <td dir="ltr">{{this.gregorianDateLabel}}</td>

@@ -38,10 +38,17 @@ function renderDailyGateTile(key, t, learning) {
       return (
         <LearningTile key={key} label={t('daily_tanya')} item={learning.tanya} />
       );
-    case 'tehillim':
+    case 'tehillim': {
+      const sublabel = t('daily_tehillim_sublabel');
       return (
-        <LearningTile key={key} label={t('daily_tehillim')} item={learning.tehillim} />
+        <LearningTile
+          key={key}
+          label={t('daily_tehillim')}
+          sublabel={sublabel || undefined}
+          item={learning.tehillim}
+        />
       );
+    }
     case 'rambam1':
       return (
         <LearningTile

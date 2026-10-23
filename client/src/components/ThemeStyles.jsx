@@ -12,6 +12,7 @@ import {
 import { normalizeBoardFont, resolveBoardFontFamily } from '../lib/board-fonts';
 import { normalizeThemeBorders, resolvePanelBorderCss, resolveTileBorderCss } from '../lib/theme-borders';
 import { shouldReduceBoardCompositorLoad } from '../lib/legacy-browser';
+import { normalizeBoardSubtitleTheme } from '../../../lib/board-subtitle';
 
 function tileGlassNoise(transparency) {
   if (transparency <= 0.01) {
@@ -70,6 +71,11 @@ export function ThemeStyles() {
   const backgroundImage = resolveBoardBackgroundImage(theme);
   const tilesBackground = resolveTilesBackgroundImage(theme);
   const boardFontFamily = resolveBoardFontFamily(normalizeBoardFont(theme.boardFont));
+  const subtitleTheme = normalizeBoardSubtitleTheme(theme);
+  const subtitleFont = String(subtitleTheme.boardSubtitleFont || '').trim();
+  const boardSubtitleFontFamily = subtitleFont
+    ? resolveBoardFontFamily(normalizeBoardFont(subtitleFont))
+    : boardFontFamily;
   const themeBorders = normalizeThemeBorders(theme);
   const panelBorderCss = resolvePanelBorderCss(theme);
   const tileBorderCss = resolveTileBorderCss(theme, tileVars.tileGlassBorder);
@@ -134,6 +140,9 @@ export function ThemeStyles() {
       --font-scale-clock: ${scale('clock')};
       --font-scale-board-header: ${scale('boardHeader')};
       --font-scale-board-subtitle: ${scale('boardSubtitle')};
+      --board-subtitle-color: ${subtitleTheme.boardSubtitleColor};
+      --board-subtitle-weight: ${subtitleTheme.boardSubtitleWeight};
+      --board-subtitle-font-family: ${boardSubtitleFontFamily};
       --font-scale-sidebar: ${scale('sidebar')};
       --font-scale-daily-study: ${scale('dailyStudy')};
       --font-scale-hayom-yom: ${scale('hayomYom')};
@@ -161,7 +170,9 @@ export function ThemeStyles() {
       font-size: calc(clamp(28px, 3.8vw, 58px) * var(--font-scale-board-header)) !important;
     }
     .main-container .board-header-subtitle {
-      color: var(--text-color) !important;
+      color: var(--board-subtitle-color) !important;
+      font-family: var(--board-subtitle-font-family) !important;
+      font-weight: var(--board-subtitle-weight) !important;
       font-size: calc(clamp(14px, 1.6vw, 26px) * var(--font-scale-board-subtitle)) !important;
       margin: 0.15em 0 0;
       line-height: 1.25;

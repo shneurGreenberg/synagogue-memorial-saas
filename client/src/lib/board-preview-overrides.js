@@ -151,6 +151,10 @@ export function previewPatchFromSearchParams(params) {
     || params.has('fontScale_tileTitle')
     || params.has('boardTitleText')
     || params.has('boardSubtitleText')
+    || params.has('boardSubtitleFont')
+    || params.has('boardSubtitleColor')
+    || params.has('boardSubtitleWeight')
+    || params.has('fontScale_boardSubtitle')
     || params.has('previewLang')
     || params.has('memorialQrTitleScale');
 
