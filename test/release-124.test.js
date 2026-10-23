@@ -22,13 +22,13 @@ describe('release 1.24 B1 Tehillim Russian labels', () => {
     assert.doesNotMatch(line, /Тегилим/i);
   });
 
-  it('board ru i18n names the daily Tehillim section Теилим with Псалмы sublabel', () => {
+  it('board ru i18n names the daily Tehillim section Теилим without title sublabel', () => {
     const ru = fs.readFileSync(
       path.join(__dirname, '..', 'client', 'src', 'lib', 'i18n-resources', 'ru.js'),
       'utf8',
     );
     assert.match(ru, /daily_tehillim:\s*'Теилим'/);
-    assert.match(ru, /daily_tehillim_sublabel:\s*'Псалмы'/);
+    assert.match(ru, /daily_tehillim_sublabel:\s*''/);
   });
 
   it('sanitizeRussianLearningText strips psalter wording and Hebrew Tehillim', () => {

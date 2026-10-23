@@ -19,6 +19,7 @@ const { getCachedYahrzeitTodayCount } = require('./lib/admin-yahrzeit-cache');
 const { loadBoardPersonWithText } = require('./lib/board-people-text');
 const { sendJsonWithEtag } = require('./lib/http-etag');
 const { computeSidebarAppEtag } = require('./lib/sidebar-app-etag');
+const { computeJewishContentEtag } = require('./lib/jewish-content-etag');
 const { computeBoardVersion, slimBoardPayload } = require('./lib/board-payload');
 const { toPublicBoardPayload, toPublicPersonPayload } = require('./lib/public-board');
 const { getJewishFeed } = require('./lib/jewish-feed');
@@ -558,9 +559,8 @@ app.get('/s/:slug/api/jewish-content', apiRateLimiter, async (req, res) => {
 
     const lang = ['ru', 'en', 'he'].includes(req.query.lang) ? req.query.lang : lite.language;
     const feed = await getJewishFeed(lang, lite);
-
-    res.setHeader('Cache-Control', 'public, max-age=3600');
-    return res.json(feed);
+    const etag = computeJewishContentEtag(feed);
+    return sendJsonWithEtag(req, res, etag, feed, { cacheControl: 'public, max-age=300' });
   } catch (err) {
     console.error('Jewish content error:', err);
     return res.status(500).json({ error: publicErrorMessage(err) });
