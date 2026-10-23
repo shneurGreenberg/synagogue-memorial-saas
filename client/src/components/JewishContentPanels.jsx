@@ -28,7 +28,7 @@ function LearningTile({ label, item, sublabel }) {
   );
 }
 
-function renderDailyGateTile(key, t, learning) {
+function renderDailyGateTile(key, t, learning, uiLang) {
   switch (key) {
     case 'chumash':
       return (
@@ -40,7 +40,12 @@ function renderDailyGateTile(key, t, learning) {
       );
     case 'tehillim':
       return (
-        <LearningTile key={key} label={t('daily_tehillim')} item={learning.tehillim} />
+        <LearningTile
+          key={key}
+          label="תהילים"
+          sublabel={uiLang === 'ru' ? t('daily_tehillim') : undefined}
+          item={learning.tehillim}
+        />
       );
     case 'rambam1':
       return (
@@ -123,7 +128,7 @@ function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
                 key={row.keys.join('-')}
                 className={dailyGateRowClassName(row.single)}
               >
-                {row.keys.map((key) => renderDailyGateTile(key, t, learning))}
+                {row.keys.map((key) => renderDailyGateTile(key, t, learning, uiLang))}
               </li>
             ))}
           </ul>

@@ -97,24 +97,6 @@
       });
     });
 
-    function bindUpcomingNameLink(button) {
-      function openFromButton(event) {
-        if (event) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        openPersonById(button.getAttribute('data-person-id'));
-      }
-      button.addEventListener('click', openFromButton);
-      button.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter' || event.key === ' ') {
-          openFromButton(event);
-        }
-      });
-    }
-
-    document.querySelectorAll('.yahrzeit-upcoming-name-link').forEach(bindUpcomingNameLink);
-
     return { openPersonById: openPersonById };
   }
 
