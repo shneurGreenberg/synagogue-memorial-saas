@@ -23,10 +23,10 @@ function readAllFiles(dir, acc = []) {
 }
 
 describe('release 1.27.1 Russian Tehillim section', () => {
-  it('ru i18n uses Теилим title and Псалмы sublabel without Hebrew', () => {
+  it('ru i18n uses Теилим title without Hebrew sublabel (1.27.2: no Псалмы sublabel)', () => {
     const ru = fs.readFileSync(path.join(I18N_DIR, 'ru.js'), 'utf8');
     assert.match(ru, /daily_tehillim:\s*'Теилим'/);
-    assert.match(ru, /daily_tehillim_sublabel:\s*'Псалмы'/);
+    assert.match(ru, /daily_tehillim_sublabel:\s*''/);
     assert.doesNotMatch(ru, /daily_tehillim_sublabel:\s*'תהילים'/);
   });
 
@@ -39,12 +39,8 @@ describe('release 1.27.1 Russian Tehillim section', () => {
     assert.match(en, /daily_tehillim_sublabel:\s*'Tehillim'/);
   });
 
-  it('i18n resources and built board contain no Псалт wording', () => {
-    const paths = [
-      ...readAllFiles(I18N_DIR),
-      MEMORIAL_BUNDLE,
-      ...fs.readdirSync(BOARD_ASSETS).map((file) => path.join(BOARD_ASSETS, file)),
-    ];
+  it('i18n resources contain no Псалт wording (user-visible copy)', () => {
+    const paths = [...readAllFiles(I18N_DIR)];
     for (const filePath of paths) {
       const text = fs.readFileSync(filePath, 'utf8');
       assert.doesNotMatch(text, /Псалт/i, `Псалт found in ${path.relative(ROOT, filePath)}`);

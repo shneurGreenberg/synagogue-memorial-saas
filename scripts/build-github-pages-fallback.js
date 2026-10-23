@@ -9,6 +9,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 const { normalizePersonDeathDate } = require('../lib/death-date');
+const { sanitizeJewishFeedPayload } = require('../lib/sanitize-jewish-feed-learning');
 
 const ROOT = path.join(__dirname, '..');
 const SITE_DIR = path.join(ROOT, 'site');
@@ -70,6 +71,10 @@ function loadSnapshots() {
     const data = JSON.parse(fs.readFileSync(path.join(SNAPSHOTS_DIR, file), 'utf8'));
     if (Array.isArray(data.people)) {
       data.people = data.people.map(normalizePersonDeathDate);
+    }
+    if (data.jewishContent) {
+      const lang = data.language || 'ru';
+      data.jewishContent = sanitizeJewishFeedPayload(data.jewishContent, lang);
     }
     snapshots[slug] = data;
     console.log(`  Loaded ${slug}: ${data.people?.length || 0} people`);

@@ -10,6 +10,7 @@ const { toPublicBoardPayload } = require('../lib/public-board');
 const { normalizePersonDeathDate } = require('../lib/death-date');
 const { getJewishFeed } = require('../lib/jewish-feed');
 const { buildSidebarAppPayload } = require('../lib/sidebar-app-payload');
+const { sanitizeJewishFeedPayload } = require('../lib/sanitize-jewish-feed-learning');
 
 const TENANTS = (process.argv[2] || 'novosibirsk,tomsk').split(',');
 const OUT = path.join(__dirname, '..', 'static-snapshots');
@@ -92,7 +93,7 @@ async function findDatabaseWithSynagogues(uri, targetSlugs) {
       let jewish = null, sidebar = null;
       
       try {
-        jewish = await getJewishFeed(lang, s);
+        jewish = sanitizeJewishFeedPayload(await getJewishFeed(lang, s), lang);
       } catch (e) {
         console.warn(`${slug}: jewish-content failed: ${e.message}`);
       }

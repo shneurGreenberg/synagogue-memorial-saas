@@ -3,6 +3,7 @@ import { withTranslation } from 'react-i18next';
 import { hasJewishContentPanels, resolveBoardFeatures } from '../lib/board-features';
 import { useBoardData } from '../context/BoardDataContext';
 import { fetchJewishFeed } from '../lib/jewish-feed-client';
+import { formatLearningLabelForDisplay } from '../lib/learning-label-display';
 import { HayomYomScroller } from './HayomYomScroller';
 import {
   buildDailyGateRows,
@@ -12,10 +13,12 @@ import {
 
 const REFRESH_MS = 15 * 60 * 1000;
 
-function LearningTile({ label, item, sublabel }) {
+function LearningTile({ label, item, sublabel, uiLang }) {
   if (!item || !item.label) {
     return null;
   }
+
+  const valueLabel = formatLearningLabelForDisplay(item.label, uiLang);
 
   return (
     <div className="daily-gate-tile">
@@ -23,20 +26,20 @@ function LearningTile({ label, item, sublabel }) {
         <span className="daily-gate-label">{label}</span>
         {sublabel && <span className="daily-gate-sublabel">{sublabel}</span>}
       </span>
-      <span className="daily-gate-value">{item.label}</span>
+      <span className="daily-gate-value">{valueLabel}</span>
     </div>
   );
 }
 
-function renderDailyGateTile(key, t, learning) {
+function renderDailyGateTile(key, t, learning, uiLang) {
   switch (key) {
     case 'chumash':
       return (
-        <LearningTile key={key} label={t('daily_chumash')} item={learning.chumash} />
+        <LearningTile key={key} label={t('daily_chumash')} item={learning.chumash} uiLang={uiLang} />
       );
     case 'tanya':
       return (
-        <LearningTile key={key} label={t('daily_tanya')} item={learning.tanya} />
+        <LearningTile key={key} label={t('daily_tanya')} item={learning.tanya} uiLang={uiLang} />
       );
     case 'tehillim': {
       const sublabel = t('daily_tehillim_sublabel');
@@ -46,6 +49,7 @@ function renderDailyGateTile(key, t, learning) {
           label={t('daily_tehillim')}
           sublabel={sublabel || undefined}
           item={learning.tehillim}
+          uiLang={uiLang}
         />
       );
     }
@@ -56,6 +60,7 @@ function renderDailyGateTile(key, t, learning) {
           label={t('daily_rambam')}
           sublabel={t('daily_rambam_one')}
           item={learning.rambam}
+          uiLang={uiLang}
         />
       );
     case 'rambam3':
@@ -65,6 +70,7 @@ function renderDailyGateTile(key, t, learning) {
           label={t('daily_rambam')}
           sublabel={t('daily_rambam_three')}
           item={learning.rambam3}
+          uiLang={uiLang}
         />
       );
     default:
@@ -130,7 +136,7 @@ function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
                 key={row.keys.join('-')}
                 className={dailyGateRowClassName(row.single)}
               >
-                {row.keys.map((key) => renderDailyGateTile(key, t, learning))}
+                {row.keys.map((key) => renderDailyGateTile(key, t, learning, uiLang))}
               </li>
             ))}
           </ul>

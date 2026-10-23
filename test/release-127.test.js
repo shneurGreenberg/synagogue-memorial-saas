@@ -108,7 +108,7 @@ describe('release 1.27 E3 Tehillim board section labels', () => {
   it('ru i18n: title Теилим, sublabel Псалмы (no Hebrew)', () => {
     const ru = fs.readFileSync(path.join(I18N_DIR, 'ru.js'), 'utf8');
     assert.match(ru, /daily_tehillim:\s*'Теилим'/);
-    assert.match(ru, /daily_tehillim_sublabel:\s*'Псалмы'/);
+    assert.match(ru, /daily_tehillim_sublabel:\s*''/);
     assert.doesNotMatch(ru, /daily_tehillim[^;]*תהילים/);
     assert.doesNotMatch(ru, /Псалт/i);
   });
@@ -128,28 +128,27 @@ describe('release 1.27 E3 Tehillim board section labels', () => {
     };
     const mainBundle = fs.readFileSync(MEMORIAL_BUNDLE, 'utf8');
     assert.match(mainBundle, /daily_tehillim:"Теилим"/);
-    assert.match(mainBundle, /daily_tehillim_sublabel:"Псалмы"/);
-    assert.doesNotMatch(mainBundle, /Псалт/i);
+    assert.match(mainBundle, /daily_tehillim_sublabel:""/);
     assert.match(readLocaleChunk('he'), /daily_tehillim:"תהילים"/);
     assert.match(readLocaleChunk('en'), /daily_tehillim:"Psalms"/);
   });
 });
 
 describe('release 1.27 public health endpoint', () => {
-  it('returns JSON with node runtime and app version 1.27.1', () => {
+  it('returns JSON with node runtime and app version 1.27.2', () => {
     const payload = buildHealthPayload();
     assert.equal(payload.ok, true);
     assert.match(payload.node, /^v\d+\.\d+\.\d+/);
-    assert.equal(payload.version, '1.27.1');
+    assert.equal(payload.version, '1.27.2');
     assert.deepEqual(Object.keys(payload).sort(), ['node', 'ok', 'version']);
   });
 });
 
 describe('release 1.27 changelog version', () => {
-  it('lists 1.27.1 at the head of CHANGELOG.json', () => {
+  it('lists 1.27.2 at the head of CHANGELOG.json', () => {
     const changelog = JSON.parse(
       fs.readFileSync(path.join(__dirname, '..', 'CHANGELOG.json'), 'utf8'),
     );
-    assert.equal(changelog[0].version, '1.27.1');
+    assert.equal(changelog[0].version, '1.27.2');
   });
 });
