@@ -89,16 +89,45 @@ describe('release 1.27 E2 yahrzeit upcoming name navigates to people search', ()
 });
 
 describe('release 1.27 E3 Tehillim board section labels', () => {
-  it('uses Hebrew title תהילים with Russian sublabel Псалмы', () => {
+  const I18N_DIR = path.join(__dirname, '..', 'client', 'src', 'lib', 'i18n-resources');
+
+  it('Tehillim tile title and sublabel use i18n keys (no hardcoded language)', () => {
     const source = fs.readFileSync(JEWISH_PANELS, 'utf8');
-    assert.match(source, /label="תהילים"/);
-    assert.match(source, /sublabel=\{uiLang === 'ru' \? t\('daily_tehillim'\)/);
+    assert.match(source, /label=\{t\('daily_tehillim'\)\}/);
+    assert.match(source, /t\('daily_tehillim_sublabel'\)/);
+    assert.doesNotMatch(source, /label="תהילים"/);
+    assert.doesNotMatch(source, /uiLang === 'ru'/);
   });
 
-  it('built memorial bundle includes תהילים and Псалмы for Tehillim tile', () => {
-    const bundle = fs.readFileSync(MEMORIAL_BUNDLE, 'utf8');
-    assert.match(bundle, /תהילים/);
-    assert.match(bundle, /Псалмы/);
+  it('he i18n: title תהילים, empty sublabel', () => {
+    const he = fs.readFileSync(path.join(I18N_DIR, 'he.js'), 'utf8');
+    assert.match(he, /daily_tehillim:\s*'תהילים'/);
+    assert.match(he, /daily_tehillim_sublabel:\s*''/);
+  });
+
+  it('ru i18n: title Псалмы, sublabel תהילים', () => {
+    const ru = fs.readFileSync(path.join(I18N_DIR, 'ru.js'), 'utf8');
+    assert.match(ru, /daily_tehillim:\s*'Псалмы'/);
+    assert.match(ru, /daily_tehillim_sublabel:\s*'תהילים'/);
+  });
+
+  it('en i18n: title Psalms, sublabel Tehillim', () => {
+    const en = fs.readFileSync(path.join(I18N_DIR, 'en.js'), 'utf8');
+    assert.match(en, /daily_tehillim:\s*'Psalms'/);
+    assert.match(en, /daily_tehillim_sublabel:\s*'Tehillim'/);
+  });
+
+  it('built board bundles include localized Tehillim labels (ru in main chunk)', () => {
+    const assetsDir = path.join(__dirname, '..', 'public', 'board', 'assets');
+    const readLocaleChunk = (prefix) => {
+      const name = fs.readdirSync(assetsDir).find((file) => file.startsWith(`${prefix}-`) && file.endsWith('.js'));
+      assert.ok(name, `missing ${prefix} locale chunk`);
+      return fs.readFileSync(path.join(assetsDir, name), 'utf8');
+    };
+    const mainBundle = fs.readFileSync(MEMORIAL_BUNDLE, 'utf8');
+    assert.match(mainBundle, /daily_tehillim:"Псалмы"/);
+    assert.match(readLocaleChunk('he'), /daily_tehillim:"תהילים"/);
+    assert.match(readLocaleChunk('en'), /daily_tehillim:"Psalms"/);
   });
 });
 

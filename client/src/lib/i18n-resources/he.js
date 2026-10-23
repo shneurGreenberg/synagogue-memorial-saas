@@ -26,6 +26,7 @@ export default {
   daily_gates_title: 'לימוד יומי',
   daily_chumash: 'חומש',
   daily_tehillim: 'תהילים',
+  daily_tehillim_sublabel: '',
   daily_tanya: 'תניא',
   daily_rambam: 'רמב"ם',
   daily_rambam_one: 'פרק אחד',

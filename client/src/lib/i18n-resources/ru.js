@@ -30,6 +30,7 @@ export default {
   daily_gates_title: 'Лимуд на сегодня',
   daily_chumash: 'Хумаш',
   daily_tehillim: 'Псалмы',
+  daily_tehillim_sublabel: 'תהילים',
   daily_tanya: 'Тания',
   daily_rambam: 'Рамбам',
   daily_rambam_one: '1 глава',
