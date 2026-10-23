@@ -6322,8 +6322,8 @@
   "boardHideSearchAndPager": false,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1792742429147,
-  "exportedAt": "2026-10-23T08:00:29.147Z",
+  "contentVersion": 1792742718653,
+  "exportedAt": "2026-10-23T08:05:18.653Z",
   "jewishContent": {
     "date": "2026-10-23",
     "timezone": "Asia/Tomsk",
@@ -6334,7 +6334,7 @@
         "label": "Лех Леха, 6-я часть"
       },
       "tehillim": {
-        "label": "Псалтирь 66-68"
+        "label": "Псалмы 66-68"
       },
       "tanya": {
         "label": "Игерет а-Кодеш, гл. 27"
@@ -6475,6 +6475,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-23T08:00:29.147Z"
+    "updatedAt": "2026-10-23T08:05:18.653Z"
   }
 }
