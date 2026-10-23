@@ -26,14 +26,14 @@
     "logo": "1791774465289-opt.webp",
     "tileColor": "#8c7418",
     "fontScales": {
-      "tileTitle": 110,
+      "tileTitle": 100,
       "tileDate": 100,
       "clock": 100,
-      "boardHeader": 90,
+      "boardHeader": 100,
       "boardSubtitle": 100,
       "sidebar": 100,
       "prayers": 100,
-      "dailyStudy": 90,
+      "dailyStudy": 100,
       "hayomYom": 100,
       "prayerOverlay": 100,
       "torahNames": 100,
@@ -44,14 +44,14 @@
     "tileOpacity": 34,
     "candlePalette": "amber",
     "fontScaleBaselines": {
-      "tileTitle": 150,
+      "tileTitle": 165,
       "tileDate": 131,
       "clock": 135,
-      "boardHeader": 89,
+      "boardHeader": 80,
       "boardSubtitle": 100,
       "sidebar": 90,
       "prayers": 124,
-      "dailyStudy": 100,
+      "dailyStudy": 90,
       "hayomYom": 100,
       "prayerOverlay": 135,
       "torahNames": 270,
@@ -3285,7 +3285,7 @@
     "qrScale": 80,
     "titleScaleBaseline": 100,
     "textScaleBaseline": 100,
-    "qrScaleBaseline": 205
+    "qrScaleBaseline": 164
   },
   "weeklyChapterEnabled": false,
   "shabbatTimesEnabled": true,
@@ -3310,43 +3310,43 @@
       }
     ]
   },
-  "contentVersion": 1792593502331,
-  "exportedAt": "2026-10-21T14:38:22.331Z",
+  "contentVersion": 1792742421064,
+  "exportedAt": "2026-10-23T08:00:21.064Z",
   "jewishContent": {
-    "date": "2026-10-21",
+    "date": "2026-10-23",
     "timezone": "Asia/Novosibirsk",
     "dailyLearning": {
-      "date": "2026-10-21",
+      "date": "2026-10-23",
       "timezone": "Asia/Novosibirsk",
       "chumash": {
-        "label": "Лех Леха, 4-я часть"
+        "label": "Лех Леха, 6-я часть"
       },
       "tehillim": {
-        "label": "Псалтирь 55-59"
+        "label": "Псалтирь 66-68"
       },
       "tanya": {
-        "label": "Игерет а-Кодеш, гл. 26"
+        "label": "Игерет а-Кодеш, гл. 27"
       },
       "rambam": {
-        "label": "Запрещенный половой акт 2"
+        "label": "Запрещенный половой акт 4"
       },
       "rambam3": {
-        "label": "Убийца и сохранение жизни 8-10"
+        "label": "Мехира 1-3"
       },
       "hayomYom": {
         "available": true,
-        "text": "Alter Rebbe раньше называл Atzilut «Выше.« Говорят, что из-за сильных эмоций при написании слова он не мог продвинуться дальше «Аци -».",
+        "text": "Одно из ранних учений альтер-ребе, тогда называвшееся Вертер (букв. «слова», короткие поговорки): «Шма Исраэль - еврей чувствует, что Хавайе Элокейну - наша сила и жизнь за пределами природы, а Хавайе Эхад - Хавайе - одно. См. Сиван 15. Лит. «Слушай, Израиль ». ( Обратно к тексту ) От слова Исраэль, один из Израиля. От Sh'ma -«слышать »,«слушать » или «понимать»; отсюда -«чувства ».\" См. Тишрей 3 и. (",
         "hebrewMonth": 8,
-        "hebrewDay": 10,
+        "hebrewDay": 12,
         "lessons5703": {
           "chumash": {
-            "label": "Ваейра, Шейни с Раши."
+            "label": "Ваейра, Ревии с Раши."
           },
           "tehillim": {
-            "label": "55-59"
+            "label": "66 - 68"
           },
           "tanya": {
-            "label": "Но когда (стр. 561).для посвященных. (стр. 563)."
+            "label": "И это (стр. 565).к благословению. (стр. 567)."
           }
         }
       }
@@ -3464,6 +3464,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-21T14:38:22.331Z"
+    "updatedAt": "2026-10-23T08:00:21.064Z"
   }
 }
