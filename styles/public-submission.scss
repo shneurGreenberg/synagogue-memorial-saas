@@ -1172,3 +1172,123 @@ html[dir='rtl'] .public-field select.public-select-field {
   border-color: rgba(120, 200, 140, 0.45);
   color: #b7e4c7;
 }
+
+// ---------------------------------------------------------------------------
+// 1.28.0 — F1: ב״ה sits small above the card (not beside it, not sticky)
+// ---------------------------------------------------------------------------
+.public-submission-page {
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@media (min-width: 720px) {
+  .public-submission-page {
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.public-submission-page > .baruch-hashem-badge {
+  position: static;
+  flex: 0 0 auto;
+  width: min(100%, 560px);
+  box-sizing: border-box;
+  margin: 0 0 4px;
+  padding: 0 4px;
+  text-align: right;
+  direction: rtl;
+  font-size: 12px;
+  line-height: 1.1;
+}
+
+// ---------------------------------------------------------------------------
+// F2: closed country-code picker shows only "+7"; phone gets the width
+// ---------------------------------------------------------------------------
+.public-field-phone .public-phone-row {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.public-phone-dial-wrap {
+  position: relative;
+  direction: ltr;
+  display: block;
+  width: 5.2rem;
+  min-width: 0;
+}
+
+.public-field-phone select.public-phone-dial.has-code-display,
+html[dir='rtl'] .public-field-phone select.public-phone-dial.has-code-display {
+  background-position: right 0.6rem center;
+  padding-left: 10px;
+  padding-right: 1.6rem;
+  color: transparent;
+  text-shadow: none;
+  padding-inline: 8px 1.6rem;
+
+  option {
+    color: #f0f0f0;
+    background: #1f1a12;
+  }
+}
+
+.public-phone-dial-display {
+  position: absolute;
+  inset: 0 1.6rem 0 12px;
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  color: var(--text-color, #f0f0f0);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+// ---------------------------------------------------------------------------
+// F3: sliding highlight on the three toggles (language, gender, sunset)
+// ---------------------------------------------------------------------------
+.public-pill-group.has-slider,
+.public-lang-switch-pills.has-slider {
+  position: relative;
+  isolation: isolate;
+}
+
+.public-pill-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(207, 175, 31, 0.35), rgba(234, 179, 8, 0.22));
+  border: 1px solid rgba(207, 175, 31, 0.55);
+  box-shadow: 0 0 0 1px rgba(207, 175, 31, 0.2);
+  box-sizing: border-box;
+  pointer-events: none;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), width 0.28s cubic-bezier(0.4, 0, 0.2, 1), height 0.28s ease;
+  will-change: transform, width;
+}
+
+.public-pill-group.has-slider .public-pill-option input:checked + span,
+.public-lang-switch-pills.has-slider .public-lang-pill.is-active {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.public-pill-group.has-slider .public-pill-option span,
+.public-lang-switch-pills.has-slider .public-lang-pill {
+  transition: color 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .public-pill-slider {
+    transition: none;
+  }
+}
+
+// F8: language pills keep the same order/position in every language
+.public-lang-switch-pills {
+  direction: ltr;
+}

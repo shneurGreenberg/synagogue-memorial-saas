@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { jsonForScript } = require('./lib/json-script');
 const express = require('express');
 const compression = require('compression');
 const helmet = require('helmet');
@@ -249,7 +250,7 @@ app.engine('handlebars', handlebars({
   partialsDir: path.join(__dirname, 'views/partials'),
   helpers: {
     json: value => JSON.stringify(value, false, '  '),
-    jsonCompact: value => JSON.stringify(value),
+    jsonCompact: value => jsonForScript(value),
     eq: (a, b) => a === b,
     or: (...args) => args.slice(0, -1).some(Boolean),
     and: (...args) => args.slice(0, -1).every(Boolean),

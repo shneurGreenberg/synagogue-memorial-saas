@@ -85,6 +85,8 @@ const DailyCiteSchema = new mongoose.Schema({
 const AdminUserSchema = new mongoose.Schema({
   username: { type: String, required: true },
   displayName: { type: String, default: '' },
+  // Optional personal login code (bcrypt). When empty the user logs in with the community password.
+  passwordHash: { type: String, default: '' },
   permissions: {
     people: { type: Boolean, default: true },
     peopleImport: { type: Boolean, default: false },

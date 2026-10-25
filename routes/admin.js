@@ -4,7 +4,7 @@ const Synagogue = require('../models/Synagogue');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { verifyPassword, ensureHashed } = require('../lib/password');
+const { verifyPassword, ensureHashed, hashPassword } = require('../lib/password');
 const { sanitizeRichText } = require('../lib/sanitize');
 const { enrichSynagogueForAdmin, normalizeTitles, sanitizeHexColor, resolveAdminColorMode } = require('../lib/admin-theme');
 const { getTranslator } = require('../lib/admin-translations');
@@ -81,6 +81,7 @@ const {
   parseSlugAndUsername,
   normalizeAdminUsername,
   findAdminUser,
+  isValidAdminUsername,
   resolveAdminPermissions,
   getDefaultLandingPath,
   applyUserDisplaySettings,
@@ -532,7 +533,17 @@ router.post('/login', loginRateLimiter, async (req, res) => {
     const nextUrl = req.body.next;
     try {
         const synagogue = await Synagogue.findOne({ slug }).select('+adminPassword');
-        if (synagogue && await verifyPassword(password, synagogue.adminPassword)) {
+        const namedUser = synagogue && username ? findAdminUser(synagogue, username) : null;
+        if (namedUser && namedUser.passwordHash) {
+            // Staff user with a personal code: only that code is accepted.
+            if (await verifyPassword(password, namedUser.passwordHash)) {
+                await regenerateSession(req);
+                req.session.adminSlug = slug;
+                req.session.adminUsername = normalizeAdminUsername(username);
+                const permissions = resolveAdminPermissions(req.session, synagogue);
+                return redirectAfterAdminLogin(res, slug, permissions, nextUrl);
+            }
+        } else if (synagogue && await verifyPassword(password, synagogue.adminPassword)) {
             const hashed = await ensureHashed(password, synagogue.adminPassword);
             if (hashed) {
                 await Synagogue.updateOne({ slug }, { $set: { adminPassword: hashed } });
@@ -782,7 +793,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         }
         res.redirect(`/admin/${req.params.slug}/dashboard?saved=1`);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -843,7 +854,7 @@ router.post('/:slug/settings/saved-views', requireAdmin, requirePermission('sett
 
         return res.json({ ok: true, view, resetTypography: true });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -871,7 +882,7 @@ router.post('/:slug/settings/saved-views/:viewId/apply', requireAdmin, requirePe
             snapshot: view.snapshot,
         });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -938,7 +949,7 @@ router.put('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermissio
 
         return res.json({ ok: true, view: normalizedViews[viewIndex], resetTypography: true });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -971,7 +982,7 @@ router.delete('/:slug/settings/saved-views/:viewId', requireAdmin, requirePermis
         invalidateAdminSynagogueCache(req.params.slug);
         return res.json({ ok: true });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -994,7 +1005,7 @@ router.get('/:slug/settings/saved-views/:viewId/export', requireAdmin, requirePe
         res.setHeader('Content-Disposition', buildExportContentDisposition(view));
         return res.send(JSON.stringify(payload, null, 2));
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -1039,7 +1050,7 @@ router.post('/:slug/settings/saved-views/import', requireAdmin, requirePermissio
 
         return res.json({ ok: true, view });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -1092,7 +1103,7 @@ router.post('/:slug/settings/saved-views/:viewId/preview-image', requireAdmin, r
             view: normalizedViews[viewIndex],
         });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -1130,7 +1141,7 @@ router.post('/:slug/settings/reset-theme', requireAdmin, requirePermission('sett
         });
         res.redirect(`/admin/${req.params.slug}/dashboard?saved=1`);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -1178,9 +1189,9 @@ router.post('/:slug/my-preferences', requireAdmin, parseFormBody, async (req, re
         return res.redirect(referer);
     } catch (err) {
         if (wantsJson(req)) {
-            return res.status(500).json({ ok: false, error: err.message });
+            return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
         }
-        return res.status(500).send(err.message);
+        return res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -1226,7 +1237,7 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             error: req.query.error || null,
         });
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -1295,7 +1306,7 @@ router.post('/:slug/yahrzeit/settings', requireAdmin, requirePermission('people'
         }
         return res.redirect(`/admin/${req.params.slug}/yahrzeit?saved=1`);
     } catch (err) {
-        return res.status(500).send(err.message);
+        return res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -1368,7 +1379,7 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
         timing.finish();
     } catch (err) {
         timing.finish();
-        res.status(500).send(err.message);
+        res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -1388,7 +1399,7 @@ router.post('/:slug/yahrzeit/weekly-confirm', requireAdmin, requirePermission('p
         });
         return res.redirect(`/admin/${req.params.slug}/yahrzeit#weekly-kaddish`);
     } catch (err) {
-        return res.status(500).send(err.message);
+        return res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -1427,7 +1438,7 @@ router.get('/:slug/yahrzeit/tile/:personId.png', requireAdmin, requirePermission
         res.setHeader('Cache-Control', 'private, max-age=300');
         return res.send(buffer);
     } catch (err) {
-        return res.status(500).send(err.message);
+        return res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -1476,7 +1487,7 @@ router.get('/:slug/people/message/:personId.json', requireAdmin, requirePermissi
             contactName: selectedContact.name || '',
         });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -1502,7 +1513,7 @@ router.get('/:slug/people/list', requireAdmin, requirePermission('people'), asyn
             undatedCount: countPeopleWithoutDeathDate(synagogue.people),
         });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -1536,7 +1547,7 @@ router.get('/:slug/people', requireAdmin, requirePermission('people'), async (re
             pendingPersonAddRequests,
         });
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -1568,7 +1579,7 @@ router.post('/:slug/person-add-requests/:requestId/dismiss', requireAdmin, requi
         invalidateAdminSynagogueCache(req.params.slug);
         return res.redirect(`/admin/${req.params.slug}/people`);
     } catch (err) {
-        return res.status(500).send(err.message);
+        return res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -1607,7 +1618,7 @@ router.post('/:slug/person-add-requests/:requestId/approve', requireAdmin, requi
         invalidateBoardCache(req.params.slug);
         return res.redirect(`/admin/${req.params.slug}/people`);
     } catch (err) {
-        return res.status(500).send(err.message);
+        return res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -1625,7 +1636,7 @@ router.get('/:slug/contact-directory', requireAdmin, requirePermission('contactD
             contactsImportError: req.query.contactsImportError === '1',
         });
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -1640,7 +1651,7 @@ router.get('/:slug/contacts/search', requireAdmin, requireAnyPermission('people'
         const results = searchContactDirectory(synagogue.contactDirectory, req.query.q, 12);
         return res.json({ ok: true, results });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -1656,7 +1667,7 @@ router.get('/:slug/contacts', requireAdmin, requirePermission('contactDirectory'
         const total = normalizeContactDirectory(synagogue.contactDirectory).length;
         return res.json({ ok: true, contacts, total });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -1798,7 +1809,7 @@ router.post('/:slug/contacts/import', requireAdmin, requirePermission('contactDi
     } catch (err) {
         console.error('Contact import error:', err);
         if (wantsJson) {
-            return res.status(500).json({ ok: false, error: err.message });
+            return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
         }
         return res.redirect(`/admin/${req.params.slug}/contact-directory?contactsImportError=1`);
     }
@@ -1879,7 +1890,7 @@ async function handleAdminRefreshScreens(req, res) {
 
         return res.redirect(`/admin/${req.params.slug}/dashboard?refreshed=1`);
     } catch (err) {
-        return res.status(500).send(err.message);
+        return res.status(500).send(publicErrorMessage(err));
     }
 }
 
@@ -1899,7 +1910,7 @@ router.post('/:slug/end-master-impersonation', requireAdmin, async (req, res) =>
         console.info(`[master-impersonation-end] ${new Date().toISOString()} slug=${slug}`);
         return res.redirect('/master/communities');
     } catch (err) {
-        return res.status(500).send(err.message);
+        return res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -1948,7 +1959,7 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
 
         res.redirect(`/admin/${req.params.slug}/people`);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -2014,7 +2025,7 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
 
         res.redirect(`/admin/${req.params.slug}/people`);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -2028,7 +2039,7 @@ router.post('/:slug/people/delete', requireAdmin, requirePermission('people'), a
         );
         res.redirect(`/admin/${req.params.slug}/people`);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -2051,7 +2062,7 @@ router.post('/:slug/slideshow/settings', requireAdmin, requireAnyPermission('eve
         invalidateAdminSynagogueCache(req.params.slug);
         return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -2082,7 +2093,7 @@ router.post('/:slug/slideshow/add', requireAdmin, requireAnyPermission('events',
         invalidateAdminSynagogueCache(req.params.slug);
         return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -2122,7 +2133,7 @@ router.post('/:slug/slideshow/edit', requireAdmin, requireAnyPermission('events'
         invalidateAdminSynagogueCache(req.params.slug);
         return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -2173,7 +2184,7 @@ router.post('/:slug/slideshow/delete', requireAdmin, requireAnyPermission('event
         invalidateAdminSynagogueCache(req.params.slug);
         return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -2193,7 +2204,7 @@ router.get('/:slug/events', requireAdmin, requirePermission('events'), async (re
         upcomingHolidayNotice,
         });
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -2281,7 +2292,7 @@ router.post('/:slug/events/publish-now', requireAdmin, requirePermission('events
         const events = await fetchCommunityEvents(req.params.slug);
         return res.json({ ok: true, events: categorizeCommunityEvents(events) });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -2322,7 +2333,7 @@ router.post('/:slug/events/end-now', requireAdmin, requirePermission('events'), 
         const events = await fetchCommunityEvents(req.params.slug);
         return res.json({ ok: true, events: categorizeCommunityEvents(events) });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
@@ -2338,11 +2349,11 @@ router.post('/:slug/events/delete', requireAdmin, requirePermission('events'), p
         const events = await fetchCommunityEvents(req.params.slug);
         return res.json({ ok: true, events: categorizeCommunityEvents(events) });
     } catch (err) {
-        return res.status(500).json({ ok: false, error: err.message });
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
     }
 });
 
-router.get('/:slug/users', requireAdmin, async (req, res) => {
+router.get('/:slug/users', requireAdmin, requireFullAdmin, async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const synagogue = await loadAdminSynagogue(req.params.slug, 'settings');
@@ -2386,7 +2397,7 @@ router.get('/:slug/users', requireAdmin, async (req, res) => {
             error: req.query.error || null,
         });
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -2398,6 +2409,9 @@ router.post('/:slug/users/add', requireAdmin, requireFullAdmin, parseFormBody, a
         if (!username) {
             return res.redirect(`/admin/${req.params.slug}/users?error=missing_username`);
         }
+        if (!isValidAdminUsername(req.body.username)) {
+            return res.redirect(`/admin/${req.params.slug}/users?error=invalid_username`);
+        }
 
         const synagogue = await loadAdminSynagogue(req.params.slug, 'settings');
         const existing = findAdminUser(synagogue, username);
@@ -2408,12 +2422,14 @@ router.post('/:slug/users/add', requireAdmin, requireFullAdmin, parseFormBody, a
         const permissions = permissionsForStorage(req.body);
         const adminLanguage = normalizeAdminLang(req.body.adminLanguage);
         const colorMode = req.body.colorMode === 'light' ? 'light' : 'dark';
+        const newPassword = String(req.body.password || '').trim();
 
         await Synagogue.updateOne({ slug: req.params.slug }, {
             $push: {
                 adminUsers: {
                     username,
                     displayName: displayName || username,
+                    passwordHash: newPassword ? await hashPassword(newPassword) : '',
                     permissions,
                     adminLanguage,
                     adminTheme: { colorMode },
@@ -2423,7 +2439,7 @@ router.post('/:slug/users/add', requireAdmin, requireFullAdmin, parseFormBody, a
 
         return res.redirect(`/admin/${req.params.slug}/users?saved=1`);
     } catch (err) {
-        return res.status(500).send(err.message);
+        return res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -2435,6 +2451,9 @@ router.post('/:slug/users/edit', requireAdmin, requireFullAdmin, parseFormBody, 
         const displayName = String(req.body.displayName || req.body.username || '').trim();
         if (!userId || !username) {
             return res.redirect(`/admin/${req.params.slug}/users?error=missing_fields`);
+        }
+        if (!isValidAdminUsername(req.body.username)) {
+            return res.redirect(`/admin/${req.params.slug}/users?error=invalid_username`);
         }
 
         const synagogue = await loadAdminSynagogue(req.params.slug, 'settings');
@@ -2450,10 +2469,19 @@ router.post('/:slug/users/edit', requireAdmin, requireFullAdmin, parseFormBody, 
         const adminLanguage = normalizeAdminLang(req.body.adminLanguage);
         const colorMode = req.body.colorMode === 'light' ? 'light' : 'dark';
 
+        const newPassword = String(req.body.password || '').trim();
+        const passwordSet = {};
+        if (newPassword) {
+            passwordSet['adminUsers.$.passwordHash'] = await hashPassword(newPassword);
+        } else if (req.body.clearPassword === '1') {
+            passwordSet['adminUsers.$.passwordHash'] = '';
+        }
+
         await Synagogue.updateOne(
             { slug: req.params.slug, 'adminUsers._id': userId },
             {
                 $set: {
+                    ...passwordSet,
                     'adminUsers.$.username': username,
                     'adminUsers.$.displayName': displayName || username,
                     'adminUsers.$.permissions': permissions,
@@ -2465,7 +2493,7 @@ router.post('/:slug/users/edit', requireAdmin, requireFullAdmin, parseFormBody, 
 
         return res.redirect(`/admin/${req.params.slug}/users?saved=1`);
     } catch (err) {
-        return res.status(500).send(err.message);
+        return res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -2484,7 +2512,7 @@ router.post('/:slug/users/delete', requireAdmin, requireFullAdmin, parseFormBody
 
         return res.redirect(`/admin/${req.params.slug}/users?saved=1`);
     } catch (err) {
-        return res.status(500).send(err.message);
+        return res.status(500).send(publicErrorMessage(err));
     }
 });
 

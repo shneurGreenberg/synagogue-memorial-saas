@@ -23,7 +23,7 @@
 
     {{#if error}}
     <div class="alert alert-danger alert-dismissible fade show admin-alert" role="alert">
-        {{#if (eq error 'duplicate_username')}}{{t 'user_duplicate_error'}}{{else if (eq error 'missing_username')}}{{t 'user_missing_username'}}{{else}}{{t 'user_save_error'}}{{/if}}
+        {{#if (eq error 'duplicate_username')}}{{t 'user_duplicate_error'}}{{else if (eq error 'missing_username')}}{{t 'user_missing_username'}}{{else if (eq error 'invalid_username')}}{{t 'user_username_no_spaces'}}{{else}}{{t 'user_save_error'}}{{/if}}
         <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div>
     {{/if}}

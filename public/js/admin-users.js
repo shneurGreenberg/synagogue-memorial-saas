@@ -108,6 +108,16 @@
     });
   }
 
+  // Login names are a single word: strip whitespace as the user types.
+  Array.prototype.forEach.call(document.querySelectorAll('input[data-single-word]'), function (input) {
+    input.addEventListener('input', function () {
+      var cleaned = input.value.replace(/[\s\/]+/g, '');
+      if (cleaned !== input.value) {
+        input.value = cleaned;
+      }
+    });
+  });
+
   bindSessionThemeToggle();
   bindSessionLanguagePreview();
   bindPreferencesForm();
@@ -120,6 +130,10 @@
 
     document.getElementById('editUserId').value = readData(button, 'user-id');
     document.getElementById('editUsername').value = readData(button, 'username');
+    var editPassword = document.getElementById('editPassword');
+    if (editPassword) { editPassword.value = ''; }
+    var editClear = document.getElementById('editClearPassword');
+    if (editClear) { editClear.checked = false; }
     document.getElementById('editDisplayName').value = readData(button, 'display-name');
     document.getElementById('editAdminLanguage').value = readData(button, 'admin-language') || 'ru';
     document.getElementById('editColorMode').value = readData(button, 'color-mode') || 'dark';
