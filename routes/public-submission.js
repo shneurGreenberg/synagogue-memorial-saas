@@ -29,7 +29,7 @@ const {
   validateDeceasedEntries,
 } = require('../lib/public-submission-form');
 const { pushPersonAddRequests } = require('../lib/public-submission-persist');
-const { createPublicSubmissionRateLimiter } = require('../lib/http-security');
+const { createPublicSubmissionRateLimiter, publicErrorMessage } = require('../lib/http-security');
 const { invalidateBoardCache } = require('../lib/board-cache');
 const { invalidateAdminSynagogueCache } = require('../lib/admin-synagogue-load');
 const { syncAutoDonationQrAfterUrlChange } = require('../lib/default-community-qr');
@@ -349,7 +349,7 @@ router.get('/:slug/add-name', async (req, res) => {
 
     return renderPublicPage(res, 'public/add-name', enrichFormRenderContext(context, req.query));
   } catch (err) {
-    return res.status(500).send(err.message);
+    return res.status(500).send(publicErrorMessage(err));
   }
 });
 
@@ -361,7 +361,7 @@ router.post('/:slug/add-name', publicSubmissionRateLimiter, async (req, res) => 
       successBaseUrl: `/s/${req.params.slug}/add-name/success`,
     });
   } catch (err) {
-    return res.status(500).send(err.message);
+    return res.status(500).send(publicErrorMessage(err));
   }
 });
 
@@ -403,7 +403,7 @@ router.get('/:slug/add-name/success', async (req, res) => {
       shareUrl: `${req.protocol}://${req.get('host')}/s/${synagogue.slug}/add-name?lang=${lang}`,
     });
   } catch (err) {
-    return res.status(500).send(err.message);
+    return res.status(500).send(publicErrorMessage(err));
   }
 });
 
@@ -448,7 +448,7 @@ router.get('/:slug/donation-setup', requireAdminForCommunitySlug, async (req, re
 
     return renderPublicPage(res, 'public/donation-setup', context);
   } catch (err) {
-    return res.status(500).send(err.message);
+    return res.status(500).send(publicErrorMessage(err));
   }
 });
 
@@ -463,7 +463,7 @@ router.post('/:slug/donation-setup', requireAdminForCommunitySlug, async (req, r
     await saveDonationUrlForSlug(slug, req.body.donationUrl);
     return res.redirect(`/admin/${slug}/dashboard?saved=1`);
   } catch (err) {
-    return res.status(500).send(err.message);
+    return res.status(500).send(publicErrorMessage(err));
   }
 });
 
@@ -479,7 +479,7 @@ router.get('/:slug/add-name/charity', async (req, res) => {
 
     return renderPublicPage(res, 'public/add-name-charity', context);
   } catch (err) {
-    return res.status(500).send(err.message);
+    return res.status(500).send(publicErrorMessage(err));
   }
 });
 

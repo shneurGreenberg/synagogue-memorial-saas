@@ -122,6 +122,87 @@
     return out.toDataURL('image/jpeg', 0.85);
   }
 
+  /**
+   * Pixel-faithful capture of the live preview board (F6, 1.28.0).
+   * modern-screenshot renders the iframe DOM through the browser's own engine
+   * (SVG foreignObject), so fonts, RTL text, textures and candles look exactly
+   * like the preview. html2canvas (which re-draws the DOM itself) is only a fallback.
+   */
+  function loadModernScreenshotInto(win) {
+    if (win.modernScreenshot) {
+      return Promise.resolve(win.modernScreenshot);
+    }
+    return new Promise(function (resolve, reject) {
+      var doc = win.document;
+      var script = doc.createElement('script');
+      script.src = '/js/vendor/modern-screenshot.min.js';
+      script.onload = function () {
+        if (win.modernScreenshot) {
+          resolve(win.modernScreenshot);
+        } else {
+          reject(new Error('modern-screenshot missing'));
+        }
+      };
+      script.onerror = reject;
+      (doc.head || doc.documentElement).appendChild(script);
+    });
+  }
+
+  function captureWithModernScreenshot(frame) {
+    var win = frame.contentWindow;
+    var doc = frame.contentDocument;
+    if (!win || !doc || !doc.body) {
+      return Promise.resolve('');
+    }
+    var viewW = Math.max(win.innerWidth || 0, 960);
+    var viewH = Math.max(win.innerHeight || 0, 540);
+    var scale = Math.min(1, PREVIEW_MAX_WIDTH / viewW);
+    var fontsReady = doc.fonts && doc.fonts.ready ? doc.fonts.ready : Promise.resolve();
+
+    return Promise.all([fontsReady, waitForImages(doc.body)]).then(function () {
+      return loadModernScreenshotInto(win);
+    }).then(function (ms) {
+      var bg = win.getComputedStyle(doc.body).backgroundColor;
+      return ms.domToCanvas(doc.documentElement, {
+        width: viewW,
+        height: viewH,
+        scale: scale,
+        backgroundColor: bg && bg !== 'rgba(0, 0, 0, 0)' ? bg : '#2a2118',
+        timeout: 15000,
+        style: { overflow: 'hidden' },
+      });
+    }).then(canvasToPreviewDataUrl);
+  }
+
+  function captureWithHtml2Canvas(frame) {
+    var doc = frame.contentDocument;
+    var root = doc && (doc.querySelector('.main-container') || doc.querySelector('.wooden-panel'));
+    if (!root) {
+      return Promise.resolve('');
+    }
+
+    var boardW = Math.max(root.scrollWidth || 0, root.clientWidth || 0, 960);
+    var boardH = Math.max(root.scrollHeight || 0, root.clientHeight || 0, 540);
+    var scale = Math.min(1, PREVIEW_MAX_WIDTH / boardW);
+
+    return waitForImages(root).then(function () {
+      return loadHtml2Canvas();
+    }).then(function (html2canvas) {
+      return html2canvas(root, {
+        backgroundColor: '#2a2118',
+        scale: scale,
+        width: boardW,
+        height: boardH,
+        windowWidth: boardW,
+        windowHeight: boardH,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        imageTimeout: 15000,
+      });
+    }).then(canvasToPreviewDataUrl);
+  }
+
   function capturePreviewScreenshot() {
     var frame = document.getElementById('boardPreviewFrame');
     if (!frame) {
@@ -129,34 +210,13 @@
     }
 
     return waitForPreviewFrameReady(frame).then(function () {
-      return delay(120);
+      return delay(300);
     }).then(function () {
-      var doc = frame.contentDocument;
-      var root = doc && (doc.querySelector('.main-container') || doc.querySelector('.wooden-panel'));
-      if (!root) {
+      return captureWithModernScreenshot(frame).catch(function () {
         return '';
-      }
-
-      var boardW = Math.max(root.scrollWidth || 0, root.clientWidth || 0, 960);
-      var boardH = Math.max(root.scrollHeight || 0, root.clientHeight || 0, 540);
-      var scale = Math.min(1, PREVIEW_MAX_WIDTH / boardW);
-
-      return waitForImages(root).then(function () {
-        return loadHtml2Canvas();
-      }).then(function (html2canvas) {
-        return html2canvas(root, {
-          backgroundColor: '#2a2118',
-          scale: scale,
-          width: boardW,
-          height: boardH,
-          windowWidth: boardW,
-          windowHeight: boardH,
-          useCORS: true,
-          allowTaint: true,
-          logging: false,
-          imageTimeout: 15000,
-        });
-      }).then(canvasToPreviewDataUrl);
+      });
+    }).then(function (dataUrl) {
+      return dataUrl || captureWithHtml2Canvas(frame);
     }).catch(function () {
       return '';
     });

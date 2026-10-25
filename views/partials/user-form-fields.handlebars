@@ -3,6 +3,8 @@
         <label for="{{#if prefix}}{{prefix}}{{else}}new{{/if}}Username">{{t 'user_username'}}</label>
         <input type="text" class="form-control admin-input" name="username"
             id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}Username" required
+            pattern="[^\s/]+" autocapitalize="off" autocomplete="off" spellcheck="false"
+            data-single-word="1" title="{{t 'user_username_no_spaces'}}"
             placeholder="{{t 'user_username_placeholder'}}">
         <small class="form-text text-muted">{{t 'user_username_help'}}</small>
     </div>
@@ -11,6 +13,19 @@
         <input type="text" class="form-control admin-input" name="displayName"
             id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}DisplayName"
             placeholder="{{t 'user_display_name_placeholder'}}">
+    </div>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-md-6">
+        <label for="{{#if prefix}}{{prefix}}{{else}}new{{/if}}Password">{{t 'user_password'}}</label>
+        <input type="password" class="form-control admin-input" name="password"
+            id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}Password" autocomplete="new-password"
+            placeholder="{{t 'user_password_placeholder'}}">
+        <small class="form-text text-muted">{{t 'user_password_help'}}</small>
+        {{#if prefix}}
+        <label class="permission-item mt-1"><input type="checkbox" name="clearPassword" value="1" id="{{prefix}}ClearPassword"> <span>{{t 'user_password_clear'}}</span></label>
+        {{/if}}
     </div>
 </div>
 

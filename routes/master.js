@@ -34,6 +34,7 @@ const {
   regenerateSession,
   isAllowedImageUpload,
   isAllowedCommunityLogoUpload,
+  publicErrorMessage,
 } = require('../lib/http-security');
 const OnboardingInvite = require('../models/OnboardingInvite');
 const CommunityOnboardingRequest = require('../models/CommunityOnboardingRequest');
@@ -236,7 +237,7 @@ router.get('/api/places', requireMasterApi, async (req, res) => {
 
         res.json((data || []).map(formatPlace));
     } catch (err) {
-        res.status(502).json({ error: err.message });
+        res.status(502).json({ error: publicErrorMessage(err) });
     }
 });
 
@@ -254,7 +255,7 @@ router.get('/api/reverse', requireMasterApi, async (req, res) => {
 
         res.json(formatPlace(data));
     } catch (err) {
-        res.status(502).json({ error: err.message });
+        res.status(502).json({ error: publicErrorMessage(err) });
     }
 });
 
@@ -310,7 +311,7 @@ router.get('/communities', requireMaster, async (req, res) => {
             error: req.query.error || null,
         });
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -421,7 +422,7 @@ router.post('/add', requireMaster, (req, res) => {
             await newSynagogue.save();
             res.redirect(`/master/communities?saved=1&created=${encodeURIComponent(slug)}`);
         } catch (err) {
-            res.status(500).send(err.message);
+            res.status(500).send(publicErrorMessage(err));
         }
     });
 });
@@ -468,7 +469,7 @@ router.post('/edit', requireMaster, async (req, res) => {
         await Synagogue.updateOne({ _id: id }, { $set: update });
         res.redirect('/master/communities?saved=1');
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -478,7 +479,7 @@ router.post('/delete', requireMaster, async (req, res) => {
         await Synagogue.findByIdAndDelete(id);
         res.redirect('/master/communities?saved=1');
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -491,7 +492,7 @@ async function handleMasterRefreshScreens(req, res) {
         }
         return res.redirect('/master/communities?refreshed=1');
     } catch (err) {
-        return res.status(500).send(err.message);
+        return res.status(500).send(publicErrorMessage(err));
     }
 }
 
@@ -514,7 +515,7 @@ router.post('/impersonate', requireMaster, async (req, res) => {
         console.info(`[master-impersonation] ${new Date().toISOString()} slug=${slug}`);
         return res.redirect(`/admin/${slug}/dashboard`);
     } catch (err) {
-        return res.status(500).send(err.message);
+        return res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -544,7 +545,7 @@ router.post('/onboarding/invites', requireMaster, async (req, res) => {
         const inviteUrl = `${req.protocol}://${host}/join/${token}`;
         return res.redirect(`/master/communities?invite=${encodeURIComponent(inviteUrl)}#master-onboarding`);
     } catch (err) {
-        return res.status(500).send(err.message);
+        return res.status(500).send(publicErrorMessage(err));
     }
 });
 
@@ -587,7 +588,7 @@ router.post('/onboarding/reject', requireMaster, async (req, res) => {
 
         return res.redirect('/master/communities?onboarding_rejected=1#master-onboarding');
     } catch (err) {
-        return res.status(500).send(err.message);
+        return res.status(500).send(publicErrorMessage(err));
     }
 });
 

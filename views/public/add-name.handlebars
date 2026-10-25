@@ -40,11 +40,11 @@
             <div class="public-field public-field-phone">
                 <span>{{publicT 'contact_phone_label'}}</span>
                 <div class="public-phone-row">
-                    <select name="contactPhoneDial" class="public-select-field public-phone-dial" dir="ltr" required aria-label="{{publicT 'contact_phone_label'}}">
+                    <span class="public-phone-dial-wrap"><select name="contactPhoneDial" class="public-select-field public-phone-dial" dir="ltr" required aria-label="{{publicT 'contact_phone_label'}}">
                         {{#each phoneDialOptions}}
                         <option value="{{this.dial}}" {{#if (eq ../values.contactPhoneDial this.dial)}}selected{{/if}}>{{this.label}} {{this.country}}</option>
                         {{/each}}
-                    </select>
+                    </select><span class="public-phone-dial-display" aria-hidden="true"></span></span>
                     <input type="tel" name="contactPhoneNational" class="public-phone-national" maxlength="20" required value="{{values.contactPhoneNational}}" placeholder="{{phonePlaceholder}}" dir="ltr" inputmode="tel" autocomplete="tel-national" aria-label="{{publicT 'contact_phone_label'}}">
                     <input type="hidden" name="contactPhone" value="{{values.contactPhone}}">
                 </div>
@@ -102,6 +102,7 @@
 <script src="/js/public-add-name-death-date.js"></script>
 <script src="/js/public-add-name-deceased.js"></script>
 <script src="/js/public-add-name-phone.js"></script>
+<script src="/js/public-pill-slider.js"></script>
 <script>
 (function () {
   var form = document.querySelector('.public-form');

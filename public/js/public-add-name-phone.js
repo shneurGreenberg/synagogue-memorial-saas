@@ -21,6 +21,21 @@
     hidden.value = code && local ? code + local : '';
   }
 
+  // 1.28.0 F2: the closed picker shows only the dial code ("+7"); country
+  // abbreviations stay visible in the opened list.
+  var display = dial.parentNode && dial.parentNode.querySelector('.public-phone-dial-display');
+  function syncDialDisplay() {
+    if (!display) {
+      return;
+    }
+    display.textContent = String(dial.value || '').trim();
+  }
+  if (display) {
+    dial.classList.add('has-code-display');
+    dial.addEventListener('change', syncDialDisplay);
+    syncDialDisplay();
+  }
+
   dial.addEventListener('change', syncPhone);
   national.addEventListener('input', syncPhone);
   form.addEventListener('submit', syncPhone);

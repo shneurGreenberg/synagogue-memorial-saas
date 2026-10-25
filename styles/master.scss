@@ -1017,3 +1017,88 @@ select.master-input,
 .master-community-screens-details {
   margin-top: 0.35rem;
 }
+
+// ---------------------------------------------------------------------------
+// 1.28.0 — F8: master + invite wizard on phones
+// ---------------------------------------------------------------------------
+@media (max-width: 600px) {
+  .master-main {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    padding-top: 4rem; // keep clear of the fixed logout button and ב״ה
+  }
+
+  .master-panel-header,
+  .master-panel-body {
+    padding-left: 0.9rem;
+    padding-right: 0.9rem;
+  }
+
+  .master-edit-grid,
+  .master-coords-row,
+  .master-wizard-review {
+    grid-template-columns: 1fr;
+  }
+
+  .master-edit-actions,
+  .master-community-card-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .master-community-card-links > *,
+  .master-edit-actions > .master-btn {
+    flex: 1 1 40%;
+    justify-content: center;
+    min-height: 2.75rem;
+  }
+
+  .master-btn {
+    min-height: 2.75rem;
+  }
+
+  .master-input,
+  .master-lang-select,
+  .master-main input,
+  .master-main select,
+  .master-main textarea {
+    font-size: 16px; // avoid iOS zoom-on-focus
+  }
+
+  .master-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .master-map {
+    height: 240px;
+  }
+
+  // Step chips: one swipeable row with readable, tappable chips
+  .master-wizard-steps {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.25rem;
+    margin-left: -0.25rem;
+    margin-right: -0.25rem;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .master-wizard-step-item {
+    flex: 0 0 auto;
+    font-size: 0.8rem;
+    padding: 0.45rem 0.8rem;
+    white-space: nowrap;
+  }
+
+  .master-community-card-header {
+    flex-wrap: wrap;
+  }
+}
