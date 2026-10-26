@@ -1104,6 +1104,14 @@
       editAfterSunset.checked = diedAfterSunset;
     }
     document.getElementById('editText').value = person.text || '';
+    const editPermanent = document.getElementById('editPermanent');
+    if (editPermanent) {
+      editPermanent.checked = !!person.permanent;
+    }
+    const editPermanentUntil = document.getElementById('editPermanentUntil');
+    if (editPermanentUntil) {
+      editPermanentUntil.value = person.permanentUntil ? String(new Date(person.permanentUntil).toISOString()).slice(0, 10) : '';
+    }
     const editInternalNotes = document.getElementById('editInternalNotes');
     if (editInternalNotes) {
       editInternalNotes.value = person.internalNotes || '';

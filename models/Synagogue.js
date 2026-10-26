@@ -72,6 +72,9 @@ const PersonSchema = new mongoose.Schema({
   },
   diedAfterSunset: { type: Boolean, default: false },
   internalNotes: { type: String, default: '' },
+  // 1.29: always shown on the board (e.g. donors), optional end date.
+  permanent: { type: Boolean, default: false },
+  permanentUntil: { type: Date, default: null },
 });
 
 const DailyCiteSchema = new mongoose.Schema({
@@ -409,6 +412,9 @@ const SynagogueSchema = new mongoose.Schema({
     timezone: { type: String, default: 'Asia/Novosibirsk' }
   },
   language: { type: String, default: 'ru' },
+  // 1.29: 'memorial' (classic) or 'combined' (top: names, bottom: synagogue info).
+  boardMode: { type: String, enum: ['memorial', 'combined'], default: 'memorial' },
+  prayerTimes: { type: [{ _id: false, label: { type: String, default: '' }, time: { type: String, default: '' } }], default: [] },
   adminLanguage: { type: String, default: 'ru' }, // Separate language for admin panel
   reloadTimeout: { type: Number, default: 43200000 }, // 12 hours
   publishedVersion: { type: Number, default: 1 },

@@ -210,6 +210,19 @@
           slugInput.value = webAddressFromName(nameInput.value);
         }
       });
+      var spaceAlert = slugInput.getAttribute('data-space-alert') || '';
+      slugInput.addEventListener('keydown', function (ev) {
+        if (ev.key === ' ' || ev.key === 'Spacebar' || ev.keyCode === 32) {
+          ev.preventDefault();
+          if (spaceAlert) window.alert(spaceAlert);
+        }
+      });
+      slugInput.addEventListener('beforeinput', function (ev) {
+        if (ev.data && /\s/.test(ev.data) && ev.inputType === 'insertText') {
+          ev.preventDefault();
+          if (spaceAlert) window.alert(spaceAlert);
+        }
+      });
       slugInput.addEventListener('blur', function () {
         slugInput.value = normalizeWebAddressInput(slugInput.value);
       });
@@ -367,7 +380,7 @@
     var rows = [
       ['name', 'name'],
       ['webAddress', 'slug'],
-      ['titleHe', 'titleHe'],
+      ['title', 'title'],
       ['city', 'city'],
       ['contactName', 'contactName'],
       ['adminEmail', 'adminEmail'],

@@ -1,4 +1,5 @@
 import React from 'react';
+import { withTranslation } from 'react-i18next';
 import {
   formatGregorianDate,
   formatHebrewDate,
@@ -48,7 +49,7 @@ class MemorialCardInner extends React.Component {
   }
 
   render() {
-    const { entry, big, emphasizeYahrzeitToday } = this.props;
+    const { entry, big, emphasizeYahrzeitToday, t } = this.props;
     const displayName = entry?.name || '';
 
     if (!entry) {
@@ -62,6 +63,7 @@ class MemorialCardInner extends React.Component {
           golden-panel
           ${big ? 'card-big' : ''}
           ${emphasizeYahrzeitToday ? 'card-yahrzeit-today' : ''}
+          ${entry.isPermanent ? 'card-permanent' : ''}
         `}
         role="button"
         tabIndex={0}
@@ -69,6 +71,12 @@ class MemorialCardInner extends React.Component {
         onKeyDown={this.onKeyDown}
         aria-label={displayName}
       >
+        {entry.isPermanent && (
+          <span className="card-permanent-mark" aria-label={t ? t('permanent_mark') : undefined}>
+            <span className="card-permanent-mark-star" aria-hidden="true">✦</span>
+            {t ? <span className="card-permanent-mark-text">{t('permanent_mark')}</span> : null}
+          </span>
+        )}
         <CandleVideo active={this.state.showCandle} mode={CANDLE_MODE} />
         <div className={`inner ${getNameDensityClass(displayName)}`}>
           <h3>{displayName}</h3>
@@ -88,6 +96,8 @@ class MemorialCardInner extends React.Component {
   }
 }
 
+const MemorialCardTranslated = withTranslation()(MemorialCardInner);
+
 export function MemorialCard(props) {
-  return <MemorialCardInner {...props} />;
+  return <MemorialCardTranslated {...props} />;
 }

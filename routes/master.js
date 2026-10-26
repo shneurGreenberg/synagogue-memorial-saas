@@ -20,6 +20,7 @@ const { optimizeUploadedImage } = require('../lib/image-optimize');
 const { BOARD_FEATURE_DEFAULTS } = require('../lib/board-features');
 const { verifyMasterPassword } = require('../lib/master-auth');
 const { invalidateBoardCache } = require('../lib/board-cache');
+const { invalidateAdminSynagogueCache } = require('../lib/admin-synagogue-load');
 const {
     summarizeBoardScreens,
     resolvePublishedVersion,
@@ -151,8 +152,8 @@ function parseLocation(body) {
 
 function parseLanguages(body) {
     return {
-        language: normalizeAdminLang(body.language || 'ru'),
-        adminLanguage: normalizeAdminLang(body.adminLanguage || body.language || 'ru'),
+        language: normalizeAdminLang(body.language || 'he'),
+        adminLanguage: normalizeAdminLang(body.adminLanguage || body.language || 'he'),
     };
 }
 
@@ -466,7 +467,13 @@ router.post('/edit', requireMaster, async (req, res) => {
             update.adminPassword = await hashPassword(adminPassword);
         }
 
+        const before = await Synagogue.findById(id).select('slug').lean();
         await Synagogue.updateOne({ _id: id }, { $set: update });
+        // 1.29 (G5): drop cached admin/board copies so the next admin Save can't write stale values back.
+        [before && before.slug, slug].filter(Boolean).forEach((s) => {
+            invalidateAdminSynagogueCache(s);
+            invalidateBoardCache(s);
+        });
         res.redirect('/master/communities?saved=1');
     } catch (err) {
         res.status(500).send(publicErrorMessage(err));

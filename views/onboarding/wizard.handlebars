@@ -38,15 +38,12 @@
             </label>
             <label class="onboarding-field public-field">
                 <span>{{onboardingT 'web_address_label'}}</span>
-                <input type="text" name="slug" id="onboardingSlug" required maxlength="64" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" autocomplete="off" autocapitalize="off" spellcheck="false">
-            </label>
-            <label class="onboarding-field public-field">
-                <span>{{onboardingT 'title_he_label'}}</span>
-                <input type="text" name="titleHe" maxlength="120">
+                <small class="onboarding-help">{{onboardingT 'web_address_help'}}</small>
+                <input type="text" name="slug" id="onboardingSlug" data-space-alert="{{onboardingT 'slug_space_alert'}}" required maxlength="64" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" autocomplete="off" autocapitalize="off" spellcheck="false">
             </label>
             <label class="onboarding-field public-field">
                 <span>{{onboardingT 'title_en_label'}}</span>
-                <input type="text" name="titleEn" maxlength="120">
+                <input type="text" name="title" maxlength="120">
             </label>
         </section>
 
@@ -101,17 +98,17 @@
             <label class="onboarding-field public-field">
                 <span>{{onboardingT 'board_language'}}</span>
                 <select name="boardLanguage" class="public-select-field">
-                    <option value="en">English</option>
+                    <option value="he" selected>עברית</option>
                     <option value="ru">Русский</option>
-                    <option value="he">עברית</option>
+                    <option value="en">English</option>
                 </select>
             </label>
             <label class="onboarding-field public-field">
                 <span>{{onboardingT 'admin_language'}}</span>
                 <select name="adminLanguage" class="public-select-field">
-                    <option value="en">English</option>
+                    <option value="he" selected>עברית</option>
                     <option value="ru">Русский</option>
-                    <option value="he">עברית</option>
+                    <option value="en">English</option>
                 </select>
             </label>
             <label class="onboarding-field public-field">

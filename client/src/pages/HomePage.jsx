@@ -43,6 +43,15 @@ import { DonationQrPanel } from '../components/DonationQrPanel';
 import { JewishContentPanels } from '../components/JewishContentPanels';
 import { TorahReadingOverlay } from '../components/TorahReadingOverlay';
 import { usePhotoPrefetch } from '../hooks/usePhotoPrefetch';
+import { SynagogueInfoPanel } from '../components/SynagogueInfoPanel';
+import { isPermanentActive, orderWithPermanent, combinedSlots } from '../lib/zmanim';
+
+const COMBINED_SLOTS = 8;
+const COMBINED_ROTATE_MS = 12000;
+
+function isCombinedMode(appData) {
+  return Boolean(appData && appData.boardMode === 'combined');
+}
 
 function getDailyCite(appData, hebrewDate) {
   const currentHebrewMonth = hebrewDate.getMonth();
@@ -80,10 +89,11 @@ function setPersonDates(card) {
 function buildPeopleList(appData, referenceDate = new Date(), timezone = resolveBoardTimezone(appData)) {
   const currentDayOfYear = getCurrentDayOfYear(referenceDate);
 
-  return (appData.people || [])
+  const sorted = (appData.people || [])
     .slice(0)
     .map((a) => {
       const person = attachNameComponents({ ...a });
+      person.isPermanent = isPermanentActive(person, referenceDate);
       const dated = personHasDeathDate(person);
       person.hasDeathDate = dated;
 
@@ -114,6 +124,8 @@ function buildPeopleList(appData, referenceDate = new Date(), timezone = resolve
       return String(a.name || '').localeCompare(String(b.name || ''), 'ru');
     })
     .map(setPersonDates);
+
+  return orderWithPermanent(sorted);
 }
 
 function buildCalendarState(appData, timezone = resolveBoardTimezone(appData)) {
@@ -219,6 +231,7 @@ class HomePageBase extends React.Component {
       pageShift: 0,
       filterString: '',
       namesReadingOpen: false,
+      combinedTick: 0,
     };
 
     applySearchToPaginationState(initialState, '');
@@ -266,6 +279,39 @@ class HomePageBase extends React.Component {
       applySearchToPaginationState(next, state.filterString);
       return next;
     });
+  }
+
+  componentDidMount() {
+    this.combinedTimer = window.setInterval(() => {
+      if (isCombinedMode(getAppData())) {
+        this.setState((state) => ({ combinedTick: state.combinedTick + 1 }));
+      }
+    }, COMBINED_ROTATE_MS);
+  }
+
+  componentWillUnmount() {
+    window.clearInterval(this.combinedTimer);
+  }
+
+  renderCombinedGrid() {
+    const entries = combinedSlots(this.state.allPeople, COMBINED_SLOTS, this.state.combinedTick);
+    return (
+      <div className="cards-area combined-cards-area">
+        <div className="cards-grid cards-grid-combined">
+          {Array.from({ length: COMBINED_SLOTS }, (_, i) => {
+            const entry = entries[i];
+            return (
+              <MemorialCard
+                key={entry ? `person-${entry.id}` : `empty-combined-${i}`}
+                entry={entry}
+                emphasizeYahrzeitToday={Boolean(entry && entry.passedToday)}
+                onOpen={this.props.onOpenCard}
+              />
+            );
+          })}
+        </div>
+      </div>
+    );
   }
 
   componentDidUpdate(prevProps) {
@@ -403,9 +449,10 @@ class HomePageBase extends React.Component {
     const showMemorialPrayers = showKelMale || boardFeatures.izkor;
 
     const pageNames = this.getPageNames();
+    const combined = isCombinedMode(appData);
 
     return (
-      <main className="main-container">
+      <main className={`main-container${combined ? ' board-mode-combined' : ''}`}>
         {this.state.namesReadingOpen && (
           <TorahReadingOverlay
             names={pageNames}
@@ -449,8 +496,15 @@ class HomePageBase extends React.Component {
                 <BoardTitleSubtitle subtitle={this.props.boardSubtitle} theme={this.props.boardTheme} />
               </button>
             </header>
-            {this.renderCurrentGrid()}
-            {!appData.boardHideSearchAndPager && (
+            {combined ? (
+              <div className="combined-board">
+                <div className="combined-board-top">{this.renderCombinedGrid()}</div>
+                <div className="combined-board-bottom">
+                  <SynagogueInfoPanel communityEvents={this.state.communityEvents} />
+                </div>
+              </div>
+            ) : this.renderCurrentGrid()}
+            {!combined && !appData.boardHideSearchAndPager && (
             <div className={`board-footer${this.state.totalPages <= 1 ? ' board-footer-search-only' : ''}`}>
               <div className="search">
                 <button

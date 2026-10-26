@@ -155,6 +155,17 @@
                                     <span>{{t 'died_after_sunset'}}</span>
                                 </label>
                             </fieldset>
+                            <div class="form-field admin-permanent-field">
+                                <input type="hidden" name="permanent" value="0">
+                                <label class="admin-permanent-toggle">
+                                    <input type="checkbox" name="permanent" value="1" id="addPermanent">
+                                    <span>{{t 'permanent_label'}}</span>
+                                </label>
+                                <label class="admin-permanent-until" for="addPermanentUntil">{{t 'permanent_until_label'}}
+                                    <input type="date" name="permanentUntil" id="addPermanentUntil" class="form-control">
+                                </label>
+                                <span class="field-hint">{{t 'permanent_hint'}}</span>
+                            </div>
                             <div class="form-field">
                                 <label for="addText">{{t 'biography'}}</label>
                                 <textarea name="text" id="addText" class="form-control"></textarea>
@@ -234,6 +245,17 @@
                                     <span>{{t 'died_after_sunset'}}</span>
                                 </label>
                             </fieldset>
+                            <div class="form-field admin-permanent-field">
+                                <input type="hidden" name="permanent" value="0">
+                                <label class="admin-permanent-toggle">
+                                    <input type="checkbox" name="permanent" value="1" id="editPermanent">
+                                    <span>{{t 'permanent_label'}}</span>
+                                </label>
+                                <label class="admin-permanent-until" for="editPermanentUntil">{{t 'permanent_until_label'}}
+                                    <input type="date" name="permanentUntil" id="editPermanentUntil" class="form-control">
+                                </label>
+                                <span class="field-hint">{{t 'permanent_hint'}}</span>
+                            </div>
                             <div class="form-field">
                                 <label for="editText">{{t 'biography'}}</label>
                                 <textarea name="text" id="editText" class="form-control"></textarea>
