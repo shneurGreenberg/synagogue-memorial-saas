@@ -2460,3 +2460,134 @@ body.tile-export-mode {
     outline: 3px solid $goldenText;
   }
 }
+
+/* 1.29: permanent deceased frame */
+.main-container .card.card-permanent {
+  border: 3px double #d4af37 !important;
+  outline: 2px solid rgba(212, 175, 55, 0.85);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.55), 0 0 14px rgba(212, 175, 55, 0.45), inset 0 0 12px rgba(212, 175, 55, 0.18);
+}
+.main-container .card.card-permanent.card-yahrzeit-today {
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.7), 0 0 12px var(--accent-color, #ffd54f), 0 0 24px var(--primary-color, #cfaf1f);
+}
+.card-permanent-mark {
+  position: absolute;
+  top: 3px;
+  inset-inline-end: 6px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(20, 14, 0, 0.55);
+  color: #f2d06b;
+  font-size: clamp(8px, 0.65vw, 12px);
+  line-height: 1.4;
+  pointer-events: none;
+}
+.card-permanent-mark-star { font-size: 1.1em; }
+
+/* 1.29: combined board (names on top, synagogue info below) */
+.main-container.board-mode-combined .middle .combined-board {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(4px, 0.6vw, 10px);
+}
+.main-container.board-mode-combined .combined-board-top,
+.main-container.board-mode-combined .combined-board-bottom {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.main-container.board-mode-combined .middle .cards-grid.cards-grid-combined {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+.synagogue-info-panel {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: clamp(6px, 0.8vw, 14px);
+  padding: clamp(4px, 0.6vw, 10px);
+  overflow: hidden;
+}
+.synagogue-info-block {
+  min-height: 0;
+  overflow: hidden;
+  padding: clamp(6px, 0.8vw, 14px);
+  border-radius: var(--tile-border-radius, 12px);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--text-color, #fff);
+}
+.synagogue-info-title {
+  margin: 0 0 6px;
+  font-size: clamp(13px, 1.2vw, 22px);
+  color: var(--accent-color, #ffd54f);
+  text-align: center;
+}
+.synagogue-info-list { margin: 0; }
+.synagogue-info-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 0;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+  font-size: clamp(11px, 0.95vw, 18px);
+  dt { font-weight: 400; margin: 0; }
+  dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 700; direction: ltr; }
+}
+.synagogue-info-announcement-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.synagogue-info-announcement { font-size: clamp(11px, 0.95vw, 18px); strong { display: block; } p { margin: 0; } }
+@media (max-width: 900px) {
+  .main-container.board-mode-combined .middle .wooden-panel { max-height: none; min-height: 0; }
+  .main-container.board-mode-combined .middle .combined-board { display: flex; flex-direction: column; }
+  .main-container.board-mode-combined .middle .cards-area { overflow: visible; flex: none; }
+  .main-container.board-mode-combined .middle .cards-grid.cards-grid-combined {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none !important;
+    grid-auto-rows: minmax(110px, auto);
+    min-height: 0 !important;
+  }
+  .synagogue-info-panel { grid-template-columns: 1fr; overflow: visible; }
+}
+
+/* 1.29 H4: ב״ה sits above the right frame (in its outer margin), tiny, takes no height */
+.main-container .right.side-panel { position: relative; }
+.main-container .baruch-hashem-badge.baruch-hashem-badge--outside {
+  position: absolute;
+  top: 0;
+  inset-inline-end: clamp(8px, 1.2vw, 16px);
+  inset-inline-start: auto;
+  padding: 0;
+  margin: 0;
+  font-size: clamp(9px, 0.7vw, 13px);
+  color: rgba(222, 190, 60, 0.95);
+  line-height: clamp(6px, 1vw, 12px);
+  height: clamp(6px, 1vw, 12px);
+  z-index: 3;
+}
+.main-container .right .board-right-header > .board-clock-block:first-child { padding-top: 0; }
+.main-container .right .board-right-header > .board-clock-block:first-child time h1 { margin-top: 0; }
+
+/* 1.29 H7: the QR size setting had no effect — the board renders .memorial-submission-qr-frame
+   (no link wrapper), so the image just filled the column. Size the frame from the admin scale. */
+.main-container .memorial-submission-panel,
+.main-container .donation-qr-panel {
+  --board-qr-image-size: calc(clamp(90px, 9.5vw, 190px) * var(--memorial-qr-size-scale, 1));
+}
+.main-container .memorial-submission-qr-frame {
+  display: block;
+  width: var(--board-qr-image-size);
+  height: var(--board-qr-image-size);
+  max-width: 100%;
+  max-height: 100%;
+  flex-shrink: 0;
+  line-height: 0;
+  margin-inline: auto;
+}

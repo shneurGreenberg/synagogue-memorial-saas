@@ -195,7 +195,7 @@ router.get('/:token', async (req, res) => {
       reviewLabels: {
         name: t('name_label'),
         webAddress: t('web_address_label'),
-        titleHe: t('title_he_label'),
+        title: t('title_en_label'),
         city: t('city_label'),
         contactName: t('contact_name'),
         adminEmail: t('admin_email'),
@@ -289,11 +289,7 @@ router.post('/:token', (req, res) => {
         }
       }
 
-      const titles = resolveBoardTitles({
-        en: req.body.titleEn,
-        he: req.body.titleHe,
-        ru: req.body.titleRu,
-      });
+      const titles = resolveBoardTitles(onboardingTitlesFromBody(req.body, name));
 
       const request = new CommunityOnboardingRequest({
         inviteToken: invite.token,
@@ -309,8 +305,8 @@ router.post('/:token', (req, res) => {
         contactName,
         contactPhone,
         adminEmail,
-        boardLanguage: normalizeAdminLang(req.body.boardLanguage || 'en'),
-        adminLanguage: normalizeAdminLang(req.body.adminLanguage || req.body.boardLanguage || 'en'),
+        boardLanguage: normalizeAdminLang(req.body.boardLanguage || 'he'),
+        adminLanguage: normalizeAdminLang(req.body.adminLanguage || req.body.boardLanguage || 'he'),
         logoFilename,
         logoBackground: normalizeLogoBackground(req.body.logoBackground),
         adminPasswordHash: await hashPassword(adminPassword),
@@ -333,4 +329,19 @@ router.post('/:token', (req, res) => {
   });
 });
 
+/**
+ * 1.29: the wizard has one "name" field (community name == Hebrew/local name) and one
+ * generic "title" (any language) applied to the chosen board language.
+ * Legacy titleHe/titleEn/titleRu are still honoured.
+ */
+function onboardingTitlesFromBody(body = {}, name = '') {
+  const out = { en: body.titleEn, he: body.titleHe, ru: body.titleRu };
+  const title = String(body.title || '').trim();
+  const lang = ['he', 'ru', 'en'].includes(body.boardLanguage) ? body.boardLanguage : 'he';
+  if (title) out[lang] = out[lang] || title;
+  if (!String(out.he || '').trim() && /[\u0590-\u05FF]/.test(name)) out.he = name;
+  return out;
+}
+
 module.exports = router;
+module.exports.onboardingTitlesFromBody = onboardingTitlesFromBody;

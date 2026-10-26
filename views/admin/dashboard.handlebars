@@ -457,6 +457,40 @@
             </button>
             <div class="admin-panel-body board-features-layout" hidden>
                 <input type="hidden" name="boardFeaturesSection" value="1">
+                <div class="board-mode-settings">
+                    <div class="form-field board-mode-field">
+                        <label for="boardMode">{{t 'board_mode'}}</label>
+                        <select name="boardMode" id="boardMode" class="form-control admin-select-modern">
+                            <option value="memorial" {{#if (eq boardMode 'memorial')}}selected{{/if}}>{{t 'board_mode_memorial'}}</option>
+                            <option value="combined" {{#if (eq boardMode 'combined')}}selected{{/if}}>{{t 'board_mode_combined'}}</option>
+                        </select>
+                        <span class="field-hint">{{t 'board_mode_help'}}</span>
+                    </div>
+                    <div class="admin-theme-setting hebrew-dates-only-setting">
+                        <div class="admin-theme-setting-label">{{t 'hebrew_dates_only'}}</div>
+                        <div class="admin-theme-setting-control">
+                            <label class="toggle-switch" for="hebrewDatesOnly">
+                                <input type="hidden" name="hebrewDatesOnly" value="0">
+                                <input type="checkbox" id="hebrewDatesOnly" name="hebrewDatesOnly" value="1" {{#if synagogue.hebrewDatesOnly}}checked{{/if}}>
+                                <span class="toggle-slider" aria-hidden="true"></span>
+                            </label>
+                        </div>
+                        <p class="field-hint admin-theme-setting-hint">{{t 'hebrew_dates_only_help'}}</p>
+                    </div>
+                    <div class="prayer-times-settings" id="prayerTimesSettings" {{#unless (eq boardMode 'combined')}}hidden{{/unless}}>
+                        <input type="hidden" name="prayerTimesSection" value="1">
+                        <h3 class="prayer-times-title">{{t 'prayer_times_title'}}</h3>
+                        <p class="field-hint">{{t 'prayer_times_help'}}</p>
+                        <div class="prayer-times-rows">
+                            {{#each prayerTimeRows}}
+                            <div class="prayer-times-row">
+                                <input type="text" name="prayerLabel_{{this.index}}" value="{{this.label}}" class="form-control" maxlength="60" placeholder="{{t 'prayer_label'}}" aria-label="{{t 'prayer_label'}}">
+                                <input type="time" name="prayerTime_{{this.index}}" value="{{this.time}}" class="form-control" aria-label="{{t 'prayer_time'}}">
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
                 {{#if yahrzeitTodayCount}}
                 <p class="public-submission-yahrzeit-notice">{{t 'public_submission_yahrzeit_alert'}}</p>
                 {{/if}}
@@ -646,6 +680,14 @@
                     return checked ? checked.value : '';
                 })(),
                 previewLang: languageSelect ? languageSelect.value : 'ru',
+                hebrewDatesOnly: (function () {
+                    var el = document.getElementById('hebrewDatesOnly');
+                    return el && el.checked ? '1' : '';
+                })(),
+                boardMode: (function () {
+                    var el = document.getElementById('boardMode');
+                    return el ? el.value : 'memorial';
+                })(),
             }, readFontScalePatch(), readMemorialQrPatch());
         }
 
@@ -707,6 +749,16 @@
             syncBoardSubtitleDesignVisibility();
         }
 
+        var hebrewOnlyToggle = document.getElementById('hebrewDatesOnly');
+        if (hebrewOnlyToggle) hebrewOnlyToggle.addEventListener('change', schedulePreview);
+        var boardModeSelect = document.getElementById('boardMode');
+        if (boardModeSelect) {
+            boardModeSelect.addEventListener('change', function () {
+                var box = document.getElementById('prayerTimesSettings');
+                if (box) box.hidden = boardModeSelect.value !== 'combined';
+                schedulePreview();
+            });
+        }
         var languageSelect = document.getElementById('language');
         if (languageSelect) {
             languageSelect.addEventListener('change', schedulePreview);

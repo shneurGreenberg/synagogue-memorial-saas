@@ -122,6 +122,12 @@ export function mergePreviewPatch(data, patch) {
 
   Object.assign(next.theme, normalizeThemeBorders(next.theme));
 
+  if (patch.hebrewDatesOnly !== undefined) {
+    next.hebrewDatesOnly = patch.hebrewDatesOnly === '1' || patch.hebrewDatesOnly === true;
+  }
+  if (patch.boardMode === 'combined' || patch.boardMode === 'memorial') {
+    next.boardMode = patch.boardMode;
+  }
   return next;
 }
 

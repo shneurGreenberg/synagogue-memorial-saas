@@ -16,6 +16,8 @@ const { buildBoardSettingsUpdate } = require('../lib/admin-board-settings-save')
 const { syncAutoDonationQrAfterUrlChange } = require('../lib/default-community-qr');
 const { invalidateBoardCache } = require('../lib/board-cache');
 const { loadAdminSynagogue, invalidateAdminSynagogueCache } = require('../lib/admin-synagogue-load');
+const { parsePermanentFromBody } = require('../lib/permanent-person');
+const { prayerTimeRowsForAdmin, normalizeBoardMode } = require('../lib/board-mode');
 const {
     parseOptionalDeathDate,
     parseDeathDateFields,
@@ -1224,6 +1226,8 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             activeSavedViewId: enriched.activeSavedViewId || '',
             activeSavedViewName: activeSavedView ? activeSavedView.name : '',
             memorialQrPanel: enriched.memorialQrPanel,
+            boardMode: normalizeBoardMode(enriched.boardMode),
+            prayerTimeRows: prayerTimeRowsForAdmin(enriched),
             boardFontsGoogleHref: buildAllBoardFontsGoogleHref(),
             boardFontOptions: BOARD_FONTS.map((font) => ({
               id: font.id,
@@ -1937,6 +1941,7 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
             title: '',
             contact: legacy.contact,
             contacts: legacy.contacts,
+            ...parsePermanentFromBody(req.body),
         };
         const diedAfterSunset = parseDiedAfterSunset(req.body.diedAfterSunset);
         if (deathDate) {
@@ -1982,6 +1987,11 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
             'people.$.contact': legacy.contact,
             'people.$.contacts': legacy.contacts,
         };
+        if (Object.prototype.hasOwnProperty.call(req.body, 'permanent')) {
+            const permanentFields = parsePermanentFromBody(req.body);
+            updateFields['people.$.permanent'] = permanentFields.permanent;
+            updateFields['people.$.permanentUntil'] = permanentFields.permanentUntil;
+        }
         const update = { $set: updateFields };
         const diedAfterSunset = parseDiedAfterSunset(req.body.diedAfterSunset);
         if (deathDate) {

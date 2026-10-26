@@ -72,7 +72,8 @@ export function ThemeStyles() {
   const tilesBackground = resolveTilesBackgroundImage(theme);
   const boardFontFamily = resolveBoardFontFamily(normalizeBoardFont(theme.boardFont));
   const subtitleTheme = normalizeBoardSubtitleTheme(theme);
-  const subtitleFont = String(subtitleTheme.boardSubtitleFont || '').trim();
+  // 1.29 H5: the subtitle always uses the main board font (separate picker removed).
+  const subtitleFont = '';
   const boardSubtitleFontFamily = subtitleFont
     ? resolveBoardFontFamily(normalizeBoardFont(subtitleFont))
     : boardFontFamily;
