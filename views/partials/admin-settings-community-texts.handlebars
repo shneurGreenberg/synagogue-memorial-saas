@@ -26,17 +26,8 @@
                 class="form-control admin-input-modern memorial-qr-preview-input"
                 value="{{boardSubtitle.text}}">
         </div>
-        <div class="form-field board-font-field">
-            <label for="boardSubtitleFont">{{t 'board_subtitle_font'}}</label>
-            <select name="boardSubtitleFont" id="boardSubtitleFont"
-                class="form-control admin-select-modern board-font-select memorial-qr-preview-input">
-                <option value="" {{#unless synagogue.theme.boardSubtitleFont}}selected{{/unless}}>{{t 'board_subtitle_font_inherit'}}</option>
-                {{#each boardFontOptions}}
-                <option value="{{this.id}}" {{#if (eq synagogue.theme.boardSubtitleFont this.id)}}selected{{/if}}
-                    style="font-family: {{this.family}};">{{t this.labelKey}}</option>
-                {{/each}}
-            </select>
-        </div>
+        <input type="hidden" name="boardSubtitleFont" id="boardSubtitleFont" value="">
+        <div class="board-subtitle-color-weight-row">
         <div class="form-field">
             <label for="boardSubtitleColor">{{t 'board_subtitle_color'}}</label>
             <input type="color" name="boardSubtitleColor" id="boardSubtitleColor"
@@ -52,6 +43,7 @@
                 <option value="600" {{#if (eq synagogue.theme.boardSubtitleWeight '600')}}selected{{/if}}>600</option>
                 <option value="700" {{#if (eq synagogue.theme.boardSubtitleWeight '700')}}selected{{/if}}>700</option>
             </select>
+        </div>
         </div>
         </div>
     </div>

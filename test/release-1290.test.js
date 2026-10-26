@@ -139,3 +139,42 @@ describe('release 1.29 login hint', () => {
     assert.match(read('views/admin/login.handlebars'), /personal code/);
   });
 });
+
+describe('release 1.29 H1-H6', () => {
+  it('H1: Hebrew boards never get non-Hebrew Hayom Yom text', () => {
+    const src = read('lib/jewish-feed.js');
+    assert.match(src, /lang === 'he' && !String\(entry\.text\?\.he/);
+    assert.match(src, /lang === 'he' && !\/\[\\u0590-\\u05FF\]\//);
+  });
+  it('H2: Gregorian dates on Hebrew boards use Hebrew month names', () => {
+    assert.match(read('client/src/lib/novosibirsk.js'), /'באוקטובר'/);
+  });
+  it('H3: Hebrew-dates-only toggle is saved, selected and public', () => {
+    assert.equal(buildBoardSettingsUpdate({ hebrewDatesOnly: ['0', '1'] }, {}, FULL).hebrewDatesOnly, true);
+    assert.equal(buildBoardSettingsUpdate({ hebrewDatesOnly: '0' }, {}, FULL).hebrewDatesOnly, false);
+    assert.ok(SELECT_SETTINGS.includes('hebrewDatesOnly'));
+    assert.ok(PUBLIC_BOARD_FIELDS.includes('hebrewDatesOnly'));
+    assert.match(read('client/src/lib/novosibirsk.js'), /isHebrewDatesOnly\(\)\) {\s*return '';/);
+  });
+  it('H4: ב״ה sits outside the right frame', () => {
+    assert.match(read('client/src/pages/HomePage.jsx'), /<aside className="right side-panel">\s*<BaruchHashemBadge placement="outside" \/>/);
+  });
+  it('H5: no separate subtitle font picker; color + weight side by side', () => {
+    const src = read('views/partials/admin-settings-community-texts.handlebars');
+    assert.doesNotMatch(src, /<select name="boardSubtitleFont"/);
+    assert.match(src, /board-subtitle-color-weight-row/);
+  });
+  it('H6: add-name page defaults to the board language', () => {
+    const { resolvePublicSubmissionLang } = require('../lib/public-submission-i18n');
+    assert.equal(resolvePublicSubmissionLang(undefined, 'he'), 'he');
+    assert.equal(resolvePublicSubmissionLang('ru', 'he'), 'ru');
+  });
+});
+
+describe('release 1.29 H7', () => {
+  it('QR size scale drives the rendered QR frame', () => {
+    const scss = read('styles/home.scss');
+    assert.match(scss, /\.memorial-submission-qr-frame \{[\s\S]*?width: var\(--board-qr-image-size\)/);
+    assert.match(read('client/src/components/MemorialSubmissionPanel.jsx'), /memorial-submission-qr-frame/);
+  });
+});

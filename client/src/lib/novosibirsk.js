@@ -261,8 +261,22 @@ export function formatHebrewDate(hewbrewDate) {
     return formatHebrewDateForLang(hewbrewDate, lang);
 }
 
+const HEBREW_GREGORIAN_MONTHS = ['בינואר', 'בפברואר', 'במרץ', 'באפריל', 'במאי', 'ביוני', 'ביולי', 'באוגוסט', 'בספטמבר', 'באוקטובר', 'בנובמבר', 'בדצמבר'];
+
+/** 1.29 H3: religious boards can hide Gregorian dates everywhere. */
+export function isHebrewDatesOnly() {
+  try {
+    return Boolean(typeof window !== 'undefined' && window.data && window.data.hebrewDatesOnly);
+  } catch {
+    return false;
+  }
+}
+
 export function formatGregorianDate(gregorianDate) {
     const lang = getDisplayLanguage();
+    if (isHebrewDatesOnly()) {
+      return '';
+    }
 
     if (!gregorianDate || typeof gregorianDate.getDate !== 'function') {
       if (gregorianDate && gregorianDate.date != null) {
@@ -279,7 +293,9 @@ export function formatGregorianDate(gregorianDate) {
     let result = `${gregorianDate.getDate()} `;
     const month = gregorianDate.getMonth();
 
-    if (lang === 'en') {
+    if (lang === 'he') {
+      result += HEBREW_GREGORIAN_MONTHS[month];
+    } else if (lang === 'en') {
       const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
       result += months[month];
     } else {

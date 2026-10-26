@@ -545,10 +545,10 @@ class HomePageBase extends React.Component {
           </div>
         </section>
         <aside className="right side-panel">
+          <BaruchHashemBadge placement="outside" />
           <div className="wooden-panel">
             <div className="inner">
               <div className="board-right-header">
-                <BaruchHashemBadge placement="column" />
                 {showOfficialLogo && (
                   <div className="board-official-logo-wrap">
                     <img
@@ -562,7 +562,7 @@ class HomePageBase extends React.Component {
                   <time>
                     <h1><LiveClock timezone={(appData.location && appData.location.timezone) || 'Asia/Novosibirsk'} /></h1>
                     <h2>{formatHebrewDate(this.state.hebrewDate)}</h2>
-                    <h3>{formatGregorianDate(this.state.gregorianDate)}</h3>
+                    {formatGregorianDate(this.state.gregorianDate) && <h3>{formatGregorianDate(this.state.gregorianDate)}</h3>}
                   </time>
                 </div>
                 {appData.shabbatTimesEnabled && (

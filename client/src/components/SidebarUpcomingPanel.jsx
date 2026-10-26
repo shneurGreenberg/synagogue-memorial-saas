@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { isHebrewDatesOnly } from '../lib/novosibirsk';
 import { withTranslation } from 'react-i18next';
 import { getBoardData } from '../lib/board-data';
 import { resolveBoardFeatures } from '../lib/board-features';
@@ -38,7 +39,7 @@ function formatHolidayDateRange(card, lang) {
 }
 
 function formatHolidayDate(dateStr, lang) {
-  if (!dateStr) {
+  if (!dateStr || isHebrewDatesOnly()) {
     return '';
   }
 
@@ -139,7 +140,7 @@ class ScrollingAnnouncementsList extends React.Component {
           <span className="community-event-title">{card.title}</span>
           {showEventDate && (
             <time dateTime={toEventDatetimeAttr(card.eventDate)}>
-              {this.props.formatGregorianDate(card.eventDate)} / {this.props.formatHebrewDate(card.hebrewDate)}
+              {[this.props.formatGregorianDate(card.eventDate), this.props.formatHebrewDate(card.hebrewDate)].filter(Boolean).join(' / ')}
             </time>
           )}
           {card.text && (

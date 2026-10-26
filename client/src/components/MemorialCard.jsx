@@ -82,9 +82,11 @@ class MemorialCardInner extends React.Component {
           <h3>{displayName}</h3>
           {entryShowsDeathDate(entry) && (
             <div className="card-dates">
-              <time dateTime={toDatetimeAttr(entry.gregorianDateOfDeath)}>
-                {formatGregorianDate(entry.gregorianDateOfDeath)}
-              </time>
+              {formatGregorianDate(entry.gregorianDateOfDeath) && (
+                <time dateTime={toDatetimeAttr(entry.gregorianDateOfDeath)}>
+                  {formatGregorianDate(entry.gregorianDateOfDeath)}
+                </time>
+              )}
               <time>{formatHebrewDate(entry.hebrewDateOfDeath)}</time>
             </div>
           )}

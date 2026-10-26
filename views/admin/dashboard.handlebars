@@ -466,6 +466,17 @@
                         </select>
                         <span class="field-hint">{{t 'board_mode_help'}}</span>
                     </div>
+                    <div class="admin-theme-setting hebrew-dates-only-setting">
+                        <div class="admin-theme-setting-label">{{t 'hebrew_dates_only'}}</div>
+                        <div class="admin-theme-setting-control">
+                            <label class="toggle-switch" for="hebrewDatesOnly">
+                                <input type="hidden" name="hebrewDatesOnly" value="0">
+                                <input type="checkbox" id="hebrewDatesOnly" name="hebrewDatesOnly" value="1" {{#if synagogue.hebrewDatesOnly}}checked{{/if}}>
+                                <span class="toggle-slider" aria-hidden="true"></span>
+                            </label>
+                        </div>
+                        <p class="field-hint admin-theme-setting-hint">{{t 'hebrew_dates_only_help'}}</p>
+                    </div>
                     <div class="prayer-times-settings" id="prayerTimesSettings" {{#unless (eq boardMode 'combined')}}hidden{{/unless}}>
                         <input type="hidden" name="prayerTimesSection" value="1">
                         <h3 class="prayer-times-title">{{t 'prayer_times_title'}}</h3>
@@ -669,6 +680,10 @@
                     return checked ? checked.value : '';
                 })(),
                 previewLang: languageSelect ? languageSelect.value : 'ru',
+                hebrewDatesOnly: (function () {
+                    var el = document.getElementById('hebrewDatesOnly');
+                    return el && el.checked ? '1' : '';
+                })(),
                 boardMode: (function () {
                     var el = document.getElementById('boardMode');
                     return el ? el.value : 'memorial';
@@ -734,6 +749,8 @@
             syncBoardSubtitleDesignVisibility();
         }
 
+        var hebrewOnlyToggle = document.getElementById('hebrewDatesOnly');
+        if (hebrewOnlyToggle) hebrewOnlyToggle.addEventListener('change', schedulePreview);
         var boardModeSelect = document.getElementById('boardMode');
         if (boardModeSelect) {
             boardModeSelect.addEventListener('change', function () {

@@ -4674,3 +4674,6 @@ body.admin-theme-light {
 .prayer-times-rows { display: flex; flex-direction: column; gap: 6px; }
 .prayer-times-row { display: grid; grid-template-columns: 1fr 120px; gap: 8px; }
 .onboarding-help { display: block; opacity: 0.75; font-size: 0.85em; margin: 2px 0 4px; }
+/* 1.29 H5: subtitle color + weight side by side (subtitle uses the title font) */
+.board-subtitle-color-weight-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.board-subtitle-color-weight-row > .form-field { min-width: 0; margin: 0; }

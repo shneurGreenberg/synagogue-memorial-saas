@@ -6,11 +6,11 @@ const path = require('node:path');
 const ROOT = path.join(__dirname, '..');
 
 describe('board ב״ה in right column flow', () => {
-  it('renders column badge in HomePage right header, not as board overlay', () => {
+  it('renders badge in the right column above its frame (1.29 H4), not as board overlay', () => {
     const home = fs.readFileSync(path.join(ROOT, 'client', 'src', 'pages', 'HomePage.jsx'), 'utf8');
     const layout = fs.readFileSync(path.join(ROOT, 'client', 'src', 'BoardLayout.jsx'), 'utf8');
 
-    assert.match(home, /board-right-header[\s\S]*BaruchHashemBadge[\s\S]*placement="column"/);
+    assert.match(home, /<aside className="right side-panel">\s*<BaruchHashemBadge placement="outside" \/>/);
     assert.doesNotMatch(layout, /BaruchHashemBadge/);
   });
 

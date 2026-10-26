@@ -413,6 +413,7 @@ const SynagogueSchema = new mongoose.Schema({
   },
   language: { type: String, default: 'ru' },
   // 1.29: 'memorial' (classic) or 'combined' (top: names, bottom: synagogue info).
+  hebrewDatesOnly: { type: Boolean, default: false },
   boardMode: { type: String, enum: ['memorial', 'combined'], default: 'memorial' },
   prayerTimes: { type: [{ _id: false, label: { type: String, default: '' }, time: { type: String, default: '' } }], default: [] },
   adminLanguage: { type: String, default: 'ru' }, // Separate language for admin panel

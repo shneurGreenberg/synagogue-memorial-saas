@@ -2556,3 +2556,38 @@ body.tile-export-mode {
   }
   .synagogue-info-panel { grid-template-columns: 1fr; overflow: visible; }
 }
+
+/* 1.29 H4: ב״ה sits above the right frame (in its outer margin), tiny, takes no height */
+.main-container .right.side-panel { position: relative; }
+.main-container .baruch-hashem-badge.baruch-hashem-badge--outside {
+  position: absolute;
+  top: 0;
+  inset-inline-end: clamp(8px, 1.2vw, 16px);
+  inset-inline-start: auto;
+  padding: 0;
+  margin: 0;
+  font-size: clamp(9px, 0.7vw, 13px);
+  color: rgba(222, 190, 60, 0.95);
+  line-height: clamp(6px, 1vw, 12px);
+  height: clamp(6px, 1vw, 12px);
+  z-index: 3;
+}
+.main-container .right .board-right-header > .board-clock-block:first-child { padding-top: 0; }
+.main-container .right .board-right-header > .board-clock-block:first-child time h1 { margin-top: 0; }
+
+/* 1.29 H7: the QR size setting had no effect — the board renders .memorial-submission-qr-frame
+   (no link wrapper), so the image just filled the column. Size the frame from the admin scale. */
+.main-container .memorial-submission-panel,
+.main-container .donation-qr-panel {
+  --board-qr-image-size: calc(clamp(90px, 9.5vw, 190px) * var(--memorial-qr-size-scale, 1));
+}
+.main-container .memorial-submission-qr-frame {
+  display: block;
+  width: var(--board-qr-image-size);
+  height: var(--board-qr-image-size);
+  max-width: 100%;
+  max-height: 100%;
+  flex-shrink: 0;
+  line-height: 0;
+  margin-inline: auto;
+}
