@@ -6322,43 +6322,43 @@
   "boardHideSearchAndPager": false,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1793000567607,
-  "exportedAt": "2026-10-26T07:42:47.607Z",
+  "contentVersion": 1793086816265,
+  "exportedAt": "2026-10-27T07:40:16.265Z",
   "jewishContent": {
-    "date": "2026-10-26",
+    "date": "2026-10-27",
     "timezone": "Asia/Tomsk",
     "dailyLearning": {
-      "date": "2026-10-26",
+      "date": "2026-10-27",
       "timezone": "Asia/Tomsk",
       "chumash": {
-        "label": "Ваера, 2-я часть"
+        "label": "Ваера, 3-я часть"
       },
       "tehillim": {
-        "label": "Псалмы 77-78"
+        "label": "Псалмы 79-82"
       },
       "tanya": {
         "label": "Игерет а-Кодеш, гл. 27"
       },
       "rambam": {
-        "label": "Запрещенный половой акт 7"
+        "label": "Запрещенный половой акт 8"
       },
       "rambam3": {
-        "label": "Мехира 10-12"
+        "label": "Мехира 13-15"
       },
       "hayomYom": {
         "available": true,
-        "text": "Haftora: Ve'isha.B' na Vateitsei Душа наверху ждет того времени, когда ей выпадет честь спуститься в тело. Ибо душа чувствует, как много она может совершить здесь, внизу; она может достичь уровня «восхищения Б-гом. - Так чего же все ждут? В этом физическом мире. Почему промедление в обращении к нашей Аводе - когда наши души с нетерпением ждали именно этого шанса!",
+        "text": "Thought is a garment and servant of the intellect and emotions. Even when it is not serving the intellect or emotions, it continues to function, thinking and meditating. However, this activity is then not only devoid of content, but also open to depravement. It is explained that alien or evil thoughts are caused by \"emptiness of the head.\" For when the mind is occupied, the thought has something to serve, and there is no room for stupid and vain thoughts devoid of substance. See Tanya Ch. 4.",
         "hebrewMonth": 8,
-        "hebrewDay": 15,
+        "hebrewDay": 16,
         "lessons5703": {
           "chumash": {
-            "label": "Ваейра, Шевии с Раши."
+            "label": "Chayei Sara, first Parsha with Rashi."
           },
           "tehillim": {
-            "label": "77-78."
+            "label": "79-82."
           },
           "tanya": {
-            "label": "Теперь есть (стр. 569).ниже земли. (стр. 571)."
+            "label": "XXVIII. \"Why was the (p. 571).lower than Nogah. (p. 573)."
           }
         }
       }
@@ -6475,6 +6475,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-26T07:42:47.607Z"
+    "updatedAt": "2026-10-27T07:40:16.265Z"
   }
 }
