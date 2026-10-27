@@ -2591,3 +2591,23 @@ body.tile-export-mode {
   line-height: 0;
   margin-inline: auto;
 }
+
+/* 1.29.1 I1: combined bottom half = two columns (zmanim + prayers | announcements carousel) */
+.synagogue-info-panel.synagogue-info-panel--two-col { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.synagogue-info-col { min-height: 0; display: flex; flex-direction: column; gap: clamp(6px, 0.8vw, 14px); overflow: hidden; }
+.synagogue-info-col > .synagogue-info-block { flex: 1 1 auto; }
+.synagogue-info-announcements { display: flex; flex-direction: column; }
+.synagogue-info-announcement-carousel {
+  flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; text-align: center;
+  animation: synagogue-info-fade 0.6s ease;
+  .synagogue-info-announcement { font-size: clamp(14px, 1.4vw, 28px); strong { margin-bottom: 0.4em; color: var(--accent-color, #ffd54f); } }
+}
+.synagogue-info-dots { display: flex; justify-content: center; gap: 6px; margin-top: 8px;
+  span { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, 0.3); }
+  span.is-active { background: var(--accent-color, #ffd54f); }
+}
+@keyframes synagogue-info-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (max-width: 900px) { .synagogue-info-panel.synagogue-info-panel--two-col { grid-template-columns: 1fr; } }
+.synagogue-info-col .synagogue-info-prayers { flex: 0 0 auto; }
+.synagogue-info-col .synagogue-info-row { padding: 1px 0; font-size: clamp(10px, 0.82vw, 16px); }
+.synagogue-info-col .synagogue-info-title { margin-bottom: 3px; }

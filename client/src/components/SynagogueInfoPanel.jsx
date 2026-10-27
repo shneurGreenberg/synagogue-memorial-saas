@@ -6,6 +6,8 @@ import { getGregorianDateInTimezone } from '../lib/board-calendar';
 import { computeZmanim } from '../lib/zmanim';
 import { sanitizeRichText } from '../lib/html-sanitize';
 
+const ANNOUNCEMENT_ROTATE_MS = 8000;
+
 function useMinuteTick() {
   const [tick, setTick] = useState(0);
   useEffect(() => {
@@ -28,10 +30,18 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
     lng: loc.lng,
   });
   const prayers = (data.prayerTimes || []).filter((row) => row && row.label && row.time);
-  const announcements = (communityEvents || []).slice(0, 4);
+  const announcements = communityEvents || [];
+  const [slide, setSlide] = useState(0);
+  useEffect(() => {
+    if (announcements.length < 2) return undefined;
+    const id = window.setInterval(() => setSlide((v) => v + 1), ANNOUNCEMENT_ROTATE_MS);
+    return () => window.clearInterval(id);
+  }, [announcements.length]);
+  const current = announcements.length ? announcements[slide % announcements.length] : null;
 
   return (
-    <div className="synagogue-info-panel">
+    <div className="synagogue-info-panel synagogue-info-panel--two-col">
+      <div className="synagogue-info-col">
       <section className="synagogue-info-block synagogue-info-zmanim">
         <h2 className="synagogue-info-title">{t('zmanim_title')}</h2>
         <dl className="synagogue-info-list">
@@ -56,21 +66,27 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
           </dl>
         </section>
       )}
-      {announcements.length > 0 && (
-        <section className="synagogue-info-block synagogue-info-announcements">
-          <h2 className="synagogue-info-title">{t('announcements_title')}</h2>
-          <ul className="synagogue-info-announcement-list">
-            {announcements.map((event) => (
-              <li key={event.id} className="synagogue-info-announcement">
-                <strong>{event.title}</strong>
-                {event.text && (
-                  <div dangerouslySetInnerHTML={{ __html: sanitizeRichText(event.text) }} />
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      </div>
+      <section className="synagogue-info-block synagogue-info-announcements">
+        <h2 className="synagogue-info-title">{t('announcements_title')}</h2>
+        {current ? (
+          <div className="synagogue-info-announcement-carousel" key={`${current.id}-${slide}`}>
+            <div className="synagogue-info-announcement">
+              <strong>{current.title}</strong>
+              {current.text && (
+                <div dangerouslySetInnerHTML={{ __html: sanitizeRichText(current.text) }} />
+              )}
+            </div>
+            {announcements.length > 1 && (
+              <div className="synagogue-info-dots" aria-hidden="true">
+                {announcements.map((event, index) => (
+                  <span key={event.id} className={index === slide % announcements.length ? 'is-active' : ''} />
+                ))}
+              </div>
+            )}
+          </div>
+        ) : null}
+      </section>
     </div>
   );
 }

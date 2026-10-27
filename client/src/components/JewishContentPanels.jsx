@@ -143,7 +143,7 @@ function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
         </section>
       )}
 
-      {boardFeatures.hayomYom && (
+      {boardFeatures.hayomYom && (hayomYom.text || hayomYom.available !== false) && (
         <section className="hayom-yom-panel" aria-label={t('hayom_yom_title')}>
           <h2>{t('hayom_yom_title')}</h2>
           {hayomYom.text ? (
