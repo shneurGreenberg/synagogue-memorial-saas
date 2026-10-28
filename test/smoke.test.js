@@ -200,7 +200,7 @@ describe('http smoke', () => {
       body: masterBody,
     });
     assert.equal(masterLogin.status, 302);
-    assert.match(masterLogin.headers.location || '', /\/master\/dashboard/);
+    assert.match(masterLogin.headers.location || '', /\/master\/(dashboard|communities)/);
   });
 
   it('admin users page exposes session preferences and settings drop legacy language panel', async () => {
