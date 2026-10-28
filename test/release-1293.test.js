@@ -4,7 +4,7 @@ const { translateViaOpenRouter } = require('../lib/jewish-feed');
 
 test('1.29.3: OpenRouter fallback returns translated text', async () => {
   let sent;
-  const fetchImpl = async (url, opts) => { sent = { url, opts }; return { ok: true, json: async () => ({ choices: [{ message: { content: 'יש לשמור על הזמן.' } }] }) }; };
+  const fetchImpl = async (url, opts) => { sent = { url, opts }; return { ok: true, text: async () => JSON.stringify({ choices: [{ message: { content: 'יש לשמור על הזמן.' } }] }) }; };
   const out = await translateViaOpenRouter('Time must be guarded.', 'he', { OPENROUTER_API_KEY: 'k' }, fetchImpl);
   assert.equal(out, 'יש לשמור על הזמן.');
   assert.match(sent.url, /openrouter\.ai/);
