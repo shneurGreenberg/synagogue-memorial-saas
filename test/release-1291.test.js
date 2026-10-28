@@ -9,7 +9,7 @@ describe('release 1.29.1 Hayom Yom', () => {
     const src = read('lib/jewish-feed.js');
     assert.match(src, /translateHayomYom\(englishText, month, day, 'he'\)/);
     assert.match(src, /translateHayomYom\(englishText, month, day, 'ru'\)/);
-    assert.match(src, /translateWithCache\(chunk, `en\|\$\{lang\}`\)/);
+    assert.match(src, /translateWithCache\(chunk, `en\|\$\{lang\}`/);
   });
   it('no infinite "loading": the panel is hidden when the feed says unavailable', () => {
     assert.match(read('client/src/components/JewishContentPanels.jsx'), /hayomYom\.available !== false/);
