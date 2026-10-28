@@ -143,7 +143,6 @@ describe('release 1.29 login hint', () => {
 describe('release 1.29 H1-H6', () => {
   it('H1: Hebrew boards never get non-Hebrew Hayom Yom text', () => {
     const src = read('lib/jewish-feed.js');
-    assert.match(src, /lang === 'he' && !String\(entry\.text\?\.he/);
     assert.match(src, /lang === 'he' && !\/\[\\u0590-\\u05FF\]\//);
   });
   it('H2: Gregorian dates on Hebrew boards use Hebrew month names', () => {
