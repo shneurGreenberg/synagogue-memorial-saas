@@ -105,7 +105,7 @@ async function main() {
   const limit = Number(process.argv[3]) || 0;
 
   mongoose.set('strictQuery', false);
-  await mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+  await mongoose.connect(MONGODB_URI);
   console.log('Connected to MongoDB');
 
   const dates = collectHebrewDates(year);

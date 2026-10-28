@@ -68,8 +68,6 @@ const { registerStaticAssets } = require('./lib/express-static-assets');
 
 mongoose.set('strictQuery', false);
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
   serverSelectionTimeoutMS: 15000,
   connectTimeoutMS: 15000,
 }).then(async () => {
@@ -189,6 +187,11 @@ app.use((req, res, next) => {
   return next();
 });
 app.use(bodyParser.json({ limit: MAX_IMAGE_BODY }));
+// Express 5 / body-parser 2 leave req.body undefined when nothing was parsed; keep the v4 behaviour.
+app.use((req, res, next) => {
+  if (req.body === undefined) req.body = {};
+  next();
+});
 
 const sessionSecret = process.env.SESSION_SECRET || (isProduction ? null : 'secret');
 if (!sessionSecret) {
