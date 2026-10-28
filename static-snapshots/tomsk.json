@@ -6322,43 +6322,43 @@
   "boardHideSearchAndPager": false,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1793086816265,
-  "exportedAt": "2026-10-27T07:40:16.265Z",
+  "contentVersion": 1793175375793,
+  "exportedAt": "2026-10-28T08:16:15.793Z",
   "jewishContent": {
-    "date": "2026-10-27",
+    "date": "2026-10-28",
     "timezone": "Asia/Tomsk",
     "dailyLearning": {
-      "date": "2026-10-27",
+      "date": "2026-10-28",
       "timezone": "Asia/Tomsk",
       "chumash": {
-        "label": "Ваера, 3-я часть"
+        "label": "Ваера, 4-я часть"
       },
       "tehillim": {
-        "label": "Псалмы 79-82"
+        "label": "Псалмы 83-87"
       },
       "tanya": {
-        "label": "Игерет а-Кодеш, гл. 27"
+        "label": "Игерет а-Кодеш, гл. 28"
       },
       "rambam": {
-        "label": "Запрещенный половой акт 8"
+        "label": "Запрещенный половой акт 9"
       },
       "rambam3": {
-        "label": "Мехира 13-15"
+        "label": "Мехира 16-18"
       },
       "hayomYom": {
         "available": true,
-        "text": "Thought is a garment and servant of the intellect and emotions. Even when it is not serving the intellect or emotions, it continues to function, thinking and meditating. However, this activity is then not only devoid of content, but also open to depravement. It is explained that alien or evil thoughts are caused by \"emptiness of the head.\" For when the mind is occupied, the thought has something to serve, and there is no room for stupid and vain thoughts devoid of substance. See Tanya Ch. 4.",
+        "text": "Time must be guarded. It is urgent to \"accept the yoke of Torah.\" Every bit of time, every day that passes, is not just a day but a life's concern. Days go by; as the Talmud says (Yerushalmi Berachot 1:1), \"A day enters and a day departs, a week enters etc.,. a month etc.,. a year etc.,.\" My father quoted the Alter Rebbe: \"A summer day and a winter night are a year.",
         "hebrewMonth": 8,
-        "hebrewDay": 16,
+        "hebrewDay": 17,
         "lessons5703": {
           "chumash": {
-            "label": "Chayei Sara, first Parsha with Rashi."
+            "label": "Chayei Sara, Sheini with Rashi."
           },
           "tehillim": {
-            "label": "79-82."
+            "label": "83-87."
           },
           "tanya": {
-            "label": "XXVIII. \"Why was the (p. 571).lower than Nogah. (p. 573)."
+            "label": "Now, it is (p. 573).waters of lustration. (p. 575)."
           }
         }
       }
@@ -6475,6 +6475,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-27T07:40:16.265Z"
+    "updatedAt": "2026-10-28T08:16:15.793Z"
   }
 }
