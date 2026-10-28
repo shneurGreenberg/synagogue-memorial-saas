@@ -485,14 +485,9 @@ const SynagogueSchema = new mongoose.Schema({
   },
 });
 
-SynagogueSchema.pre('save', function normalizeSavedViewsBeforeSave(next) {
-  try {
-    const { normalizeSavedViews } = require('../lib/saved-views');
-    this.set('savedViews', normalizeSavedViews(this.savedViews));
-    return next();
-  } catch (err) {
-    return next(err);
-  }
+SynagogueSchema.pre('save', function normalizeSavedViewsBeforeSave() {
+  const { normalizeSavedViews } = require('../lib/saved-views');
+  this.set('savedViews', normalizeSavedViews(this.savedViews));
 });
 
 module.exports = mongoose.model('Synagogue', SynagogueSchema);

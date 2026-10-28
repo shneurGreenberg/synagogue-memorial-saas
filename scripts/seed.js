@@ -6,8 +6,6 @@ const { hashPassword } = require('../lib/password');
 
 const MONGODB_URI = process.env.MONGODB_URI;
 const MONGO_OPTIONS = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
   serverSelectionTimeoutMS: 15000,
   connectTimeoutMS: 15000,
 };
