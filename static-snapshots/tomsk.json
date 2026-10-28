@@ -6322,8 +6322,8 @@
   "boardHideSearchAndPager": false,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1793175375793,
-  "exportedAt": "2026-10-28T08:16:15.793Z",
+  "contentVersion": 1793175617965,
+  "exportedAt": "2026-10-28T08:20:17.965Z",
   "jewishContent": {
     "date": "2026-10-28",
     "timezone": "Asia/Tomsk",
@@ -6347,7 +6347,7 @@
       },
       "hayomYom": {
         "available": true,
-        "text": "Time must be guarded. It is urgent to \"accept the yoke of Torah.\" Every bit of time, every day that passes, is not just a day but a life's concern. Days go by; as the Talmud says (Yerushalmi Berachot 1:1), \"A day enters and a day departs, a week enters etc.,. a month etc.,. a year etc.,.\" My father quoted the Alter Rebbe: \"A summer day and a winter night are a year.",
+        "text": "Время нужно беречь. Необходимо срочно «принять иго Торы.« Каждый момент времени, каждый день, который проходит, - это не просто день, а забота всей жизни. Проходят дни; как говорит Талмуд (Yerushalmi Berachot 1:1): «Входит день и уходит день, входит неделя и т. д., месяц и т. д., год и т. д.,. - Отец процитировал Альтер Ребе:« Летний день и зимняя ночь - это год.",
         "hebrewMonth": 8,
         "hebrewDay": 17,
         "lessons5703": {
@@ -6475,6 +6475,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-28T08:16:15.793Z"
+    "updatedAt": "2026-10-28T08:20:17.965Z"
   }
 }
