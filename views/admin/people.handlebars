@@ -84,7 +84,7 @@
 ]</pre>
                     <div class="form-field">
                         <label for="importJson">JSON</label>
-                        <textarea name="json" id="importJson" class="form-control" rows="12" required
+                        <textarea dir="auto" name="json" id="importJson" class="form-control" rows="12" required
                             placeholder='[{"name":"...","gregorianDateOfDeath":{"month":1,"date":1,"year":2020}}]'></textarea>
                     </div>
                 </div>
@@ -133,7 +133,7 @@
                         <div class="person-form-fields">
                             <div class="form-field">
                                 <label for="addName">{{t 'name'}}</label>
-                                <input type="text" name="name" id="addName" class="form-control" required placeholder="{{t 'name_placeholder'}}">
+                                <input type="text" dir="auto" name="name" id="addName" class="form-control" required placeholder="{{t 'name_placeholder'}}">
                             </div>
                             <div class="form-field">
                                 <label>{{t 'date_gregorian'}}</label>
@@ -168,7 +168,7 @@
                             </div>
                             <div class="form-field">
                                 <label for="addText">{{t 'biography'}}</label>
-                                <textarea name="text" id="addText" class="form-control"></textarea>
+                                <textarea dir="auto" name="text" id="addText" class="form-control"></textarea>
                             </div>
                             {{> admin-person-contacts}}
                         </div>
@@ -223,7 +223,7 @@
                         <div class="person-form-fields">
                             <div class="form-field">
                                 <label for="editName">{{t 'name'}}</label>
-                                <input type="text" name="name" id="editName" class="form-control" required placeholder="{{t 'name_placeholder'}}">
+                                <input type="text" dir="auto" name="name" id="editName" class="form-control" required placeholder="{{t 'name_placeholder'}}">
                             </div>
                             <div class="form-field">
                                 <label>{{t 'date_gregorian'}}</label>
@@ -258,11 +258,11 @@
                             </div>
                             <div class="form-field">
                                 <label for="editText">{{t 'biography'}}</label>
-                                <textarea name="text" id="editText" class="form-control"></textarea>
+                                <textarea dir="auto" name="text" id="editText" class="form-control"></textarea>
                             </div>
                             <div class="form-field">
                                 <label for="editInternalNotes">{{t 'internal_notes_label'}}</label>
-                                <textarea name="internalNotes" id="editInternalNotes" class="form-control" rows="3" maxlength="4000" placeholder="{{t 'internal_notes_placeholder'}}"></textarea>
+                                <textarea dir="auto" name="internalNotes" id="editInternalNotes" class="form-control" rows="3" maxlength="4000" placeholder="{{t 'internal_notes_placeholder'}}"></textarea>
                                 <span class="field-hint">{{t 'internal_notes_hint'}}</span>
                             </div>
                             {{> admin-person-contacts}}

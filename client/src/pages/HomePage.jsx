@@ -128,6 +128,20 @@ function buildPeopleList(appData, referenceDate = new Date(), timezone = resolve
   return orderWithPermanent(sorted);
 }
 
+function computeDayKey() {
+  try {
+    const appData = getAppData();
+    const timezone = resolveBoardTimezone(appData);
+    const g = getGregorianDateInTimezone(timezone);
+    const h = getHebrewDateInTimezone(timezone);
+    const gk = g instanceof Date ? `${g.getFullYear()}-${g.getMonth()}-${g.getDate()}` : String(g);
+    const hk = h && typeof h.getDate === 'function' ? `${h.getFullYear()}-${h.getMonth()}-${h.getDate()}` : String(h);
+    return `${gk}|${hk}`;
+  } catch {
+    return '';
+  }
+}
+
 function buildCalendarState(appData, timezone = resolveBoardTimezone(appData)) {
   const gregorianDate = getGregorianDateInTimezone(timezone);
   const hebrewDate = getHebrewDateInTimezone(timezone);
@@ -282,6 +296,15 @@ class HomePageBase extends React.Component {
   }
 
   componentDidMount() {
+    // 1.29.5 I5: recompute "yahrzeit today" when the day changes (community timezone), same as on load.
+    this.dayKey = computeDayKey();
+    this.dayTimer = window.setInterval(() => {
+      const key = computeDayKey();
+      if (key !== this.dayKey) {
+        this.dayKey = key;
+        this.refreshCalendarState();
+      }
+    }, 60 * 1000);
     this.combinedTimer = window.setInterval(() => {
       if (isCombinedMode(getAppData())) {
         this.setState((state) => ({ combinedTick: state.combinedTick + 1 }));
@@ -291,6 +314,7 @@ class HomePageBase extends React.Component {
 
   componentWillUnmount() {
     window.clearInterval(this.combinedTimer);
+    window.clearInterval(this.dayTimer);
   }
 
   renderCombinedGrid() {

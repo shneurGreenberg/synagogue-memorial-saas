@@ -8,7 +8,7 @@ export function BoardTitleSubtitle({ subtitle }) {
   }
 
   return (
-    <p className="board-header-subtitle">
+    <p className="board-header-subtitle" dir="auto">
       {text}
     </p>
   );

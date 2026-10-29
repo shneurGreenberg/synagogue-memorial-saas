@@ -3,7 +3,7 @@
     <div class="settings-copy-grid settings-copy-grid--single">
         <div class="form-field">
             <label for="boardTitleText">{{t 'board_title_single'}}</label>
-            <input type="text" name="boardTitleText" id="boardTitleText" class="form-control admin-input-modern"
+            <input type="text" dir="auto" name="boardTitleText" id="boardTitleText" class="form-control admin-input-modern"
                 value="{{boardTitleText}}">
             <span class="field-hint">{{t 'board_title_single_help'}}</span>
         </div>
@@ -22,7 +22,7 @@
         <div class="board-subtitle-design-fields{{#unless boardSubtitle.enabled}} is-hidden{{/unless}}" id="boardSubtitleDesignFields" {{#unless boardSubtitle.enabled}}hidden{{/unless}}>
         <div class="form-field">
             <label for="boardSubtitleText">{{t 'board_subtitle_text'}}</label>
-            <input type="text" name="boardSubtitleText" id="boardSubtitleText"
+            <input type="text" dir="auto" name="boardSubtitleText" id="boardSubtitleText"
                 class="form-control admin-input-modern memorial-qr-preview-input"
                 value="{{boardSubtitle.text}}">
         </div>
@@ -54,12 +54,12 @@
     <div class="settings-copy-grid settings-copy-grid--single">
         <div class="form-field">
             <label for="donationQrTitle">{{t 'donation_qr_title_single'}}</label>
-            <input type="text" name="donationQrTitle" id="donationQrTitle" class="form-control admin-input-modern memorial-qr-preview-input"
+            <input type="text" dir="auto" name="donationQrTitle" id="donationQrTitle" class="form-control admin-input-modern memorial-qr-preview-input"
                 value="{{memorialQrPanel.donationTitleText}}">
         </div>
         <div class="form-field">
             <label for="donationQrText">{{t 'donation_qr_text_single'}}</label>
-            <input type="text" name="donationQrText" id="donationQrText" class="form-control admin-input-modern memorial-qr-preview-input"
+            <input type="text" dir="auto" name="donationQrText" id="donationQrText" class="form-control admin-input-modern memorial-qr-preview-input"
                 value="{{memorialQrPanel.donationTextText}}">
         </div>
     </div>
@@ -70,12 +70,12 @@
     <div class="settings-copy-grid settings-copy-grid--single">
         <div class="form-field">
             <label for="memorialQrTitle">{{t 'memorial_qr_title_single'}}</label>
-            <input type="text" name="memorialQrTitle" id="memorialQrTitle" class="form-control admin-input-modern memorial-qr-preview-input"
+            <input type="text" dir="auto" name="memorialQrTitle" id="memorialQrTitle" class="form-control admin-input-modern memorial-qr-preview-input"
                 value="{{memorialQrPanel.titleText}}">
         </div>
         <div class="form-field">
             <label for="memorialQrText">{{t 'memorial_qr_text_single'}}</label>
-            <input type="text" name="memorialQrText" id="memorialQrText" class="form-control admin-input-modern memorial-qr-preview-input"
+            <input type="text" dir="auto" name="memorialQrText" id="memorialQrText" class="form-control admin-input-modern memorial-qr-preview-input"
                 value="{{memorialQrPanel.textText}}">
         </div>
     </div>

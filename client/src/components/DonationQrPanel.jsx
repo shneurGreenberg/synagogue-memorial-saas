@@ -58,8 +58,8 @@ function DonationQrPanelBase({ t }) {
       }}
     >
       <div className="memorial-submission-qr-header">
-        <h2>{title}</h2>
-        <p className="memorial-submission-text">{text}</p>
+        <h2 dir="auto">{title}</h2>
+        <p className="memorial-submission-text" dir="auto">{text}</p>
       </div>
       <div className="memorial-submission-qr-body">
         <div className="memorial-submission-qr-frame" aria-hidden="true">

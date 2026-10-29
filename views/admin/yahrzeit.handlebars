@@ -113,7 +113,7 @@
                 {{#if weeklyKaddish.confirmed}}
                 <span class="weekly-kaddish-confirmed">✓ {{t 'weekly_kaddish_confirmed_by'}} {{weeklyKaddish.confirmedBy}} · {{weeklyKaddish.confirmedAtLabel}}</span>
                 <button type="button" id="weeklyKaddishSend" class="btn-admin btn-admin-primary" data-wa-url="{{weeklyKaddish.whatsappUrl}}" data-copied-label="{{t 'weekly_kaddish_copied_set_number'}}">{{t 'weekly_kaddish_send_whatsapp'}}</button>
-                <textarea id="weeklyKaddishMessage" hidden readonly>{{weeklyKaddish.message}}</textarea>
+                <textarea dir="auto" id="weeklyKaddishMessage" hidden readonly>{{weeklyKaddish.message}}</textarea>
                 {{else}}
                 <form method="POST" action="/admin/{{synagogue.slug}}/yahrzeit/weekly-confirm" class="weekly-kaddish-confirm-form">
                     <button type="submit" class="btn-admin btn-admin-primary">{{t 'weekly_kaddish_confirm'}}</button>
@@ -193,7 +193,7 @@
 
                             <div class="yahrzeit-message-block">
                                 <h3>{{t 'yahrzeit_prepared_message'}}</h3>
-                                <textarea class="form-control yahrzeit-message" rows="8" readonly>{{this.preparedMessage}}</textarea>
+                                <textarea dir="auto" class="form-control yahrzeit-message" rows="8" readonly>{{this.preparedMessage}}</textarea>
                                 <div class="yahrzeit-actions">
                                     <button type="button" class="btn-admin btn-admin-secondary yahrzeit-copy-btn btn-admin-with-icon" data-message="{{this.preparedMessage}}">
                                         <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
@@ -288,7 +288,7 @@
 
                             <div class="yahrzeit-message-block">
                                 <h3>{{t 'yahrzeit_prepared_message'}}</h3>
-                                <textarea class="form-control yahrzeit-message" rows="8" readonly>{{this.preparedMessage}}</textarea>
+                                <textarea dir="auto" class="form-control yahrzeit-message" rows="8" readonly>{{this.preparedMessage}}</textarea>
                                 <div class="yahrzeit-actions">
                                     <button type="button" class="btn-admin btn-admin-secondary yahrzeit-copy-btn btn-admin-with-icon" data-message="{{this.preparedMessage}}">
                                         <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>

@@ -76,6 +76,14 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue
   console.log('MongoDB connected');
   const { runStartupMigrations } = require('./lib/migrations/run-migrations');
   await runStartupMigrations();
+  // 1.29.5 I6: drop machine-translated Hebrew Hayom Yom so the original is refetched (idempotent).
+  try {
+    const { invalidateTranslatedHebrew } = require('./lib/hayom-yom-store');
+    const n = await invalidateTranslatedHebrew();
+    if (n) console.log(`Hayom Yom: cleared ${n} translated Hebrew entries`);
+  } catch (err) {
+    console.error('Hayom Yom Hebrew invalidation failed:', err.message);
+  }
   if (isProduction) {
     const { regenerateMissingAutoQrAtStartup } = require('./lib/community-qr-on-demand');
     regenerateMissingAutoQrAtStartup().catch((err) => {
