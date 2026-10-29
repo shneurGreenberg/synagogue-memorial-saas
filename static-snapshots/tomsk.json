@@ -6322,43 +6322,43 @@
   "boardHideSearchAndPager": false,
   "reloadTimeout": 43200000,
   "baseUrl": "/s/tomsk",
-  "contentVersion": 1793177645273,
-  "exportedAt": "2026-10-28T08:54:05.273Z",
+  "contentVersion": 1793260225058,
+  "exportedAt": "2026-10-29T07:50:25.058Z",
   "jewishContent": {
-    "date": "2026-10-28",
+    "date": "2026-10-29",
     "timezone": "Asia/Tomsk",
     "dailyLearning": {
-      "date": "2026-10-28",
+      "date": "2026-10-29",
       "timezone": "Asia/Tomsk",
       "chumash": {
-        "label": "Ваера, 4-я часть"
+        "label": "Ваера, 5-я часть"
       },
       "tehillim": {
-        "label": "Псалмы 83-87"
+        "label": "Псалмы 88-89"
       },
       "tanya": {
         "label": "Игерет а-Кодеш, гл. 28"
       },
       "rambam": {
-        "label": "Запрещенный половой акт 9"
+        "label": "Запрещенный половой акт 10"
       },
       "rambam3": {
-        "label": "Мехира 16-18"
+        "label": "Мехира 19-21"
       },
       "hayomYom": {
         "available": true,
-        "text": "Время нужно беречь. Необходимо срочно «принять иго Торы.« Каждый момент времени, каждый день, который проходит, - это не просто день, а забота всей жизни. Проходят дни; как говорит Талмуд (Yerushalmi Berachot 1:1): «Входит день и уходит день, входит неделя и т. д., месяц и т. д., год и т. д.,. - Отец процитировал Альтер Ребе:« Летний день и зимняя ночь - это год.",
+        "text": "(В этом месте в тексте на иврите приводятся поправки к «Тора Ор» к недельной главе этой недели, имеющие значение только на иврите. Переводчик).",
         "hebrewMonth": 8,
-        "hebrewDay": 17,
+        "hebrewDay": 18,
         "lessons5703": {
           "chumash": {
-            "label": "Chayei Sara, Sheini with Rashi."
+            "label": "Chayei Sara, Shlishi with Rashi."
           },
           "tehillim": {
-            "label": "83-87."
+            "label": "88-89."
           },
           "tanya": {
-            "label": "Now, it is (p. 573).waters of lustration. (p. 575)."
+            "label": "XXIX. \"A woman of (p. 575).210 and 229. (p. 577)."
           }
         }
       }
@@ -6475,6 +6475,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-28T08:54:05.273Z"
+    "updatedAt": "2026-10-29T07:50:25.058Z"
   }
 }
