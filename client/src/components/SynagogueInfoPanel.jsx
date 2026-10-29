@@ -41,6 +41,44 @@ function useAutoScroll(ref, deps) {
   }, deps); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
+// 1.30.0 I11: zmanim/prayers scroll as a seamless endless loop (like the other board scrollers).
+// When the list overflows its box, a second copy is rendered right after the first one and the
+// box scrolls down forever; once the first copy has fully passed we jump back by its height,
+// which looks identical, so the motion never reverses.
+export function useLoopScroll(ref, deps) {
+  const [looping, setLooping] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return undefined;
+    let pos = 0;
+    let pauseUntil = Date.now() + 3000;
+    el.scrollTop = 0;
+    const id = window.setInterval(() => {
+      const first = el.firstElementChild;
+      if (!first) return;
+      const copyHeight = first.getBoundingClientRect().height;
+      const overflow = copyHeight > el.clientHeight + 2;
+      if (overflow !== looping) {
+        setLooping(overflow);
+        return;
+      }
+      if (!overflow) {
+        if (el.scrollTop) el.scrollTop = 0;
+        pos = 0;
+        return;
+      }
+      if (Date.now() < pauseUntil) return;
+      pos += 0.5;
+      const gap = parseFloat(getComputedStyle(first).marginBottom) || 0;
+      const period = copyHeight + gap;
+      if (period > 0 && pos >= period) pos -= period;
+      el.scrollTop = pos;
+    }, 25);
+    return () => window.clearInterval(id);
+  }, [...deps, looping]); // eslint-disable-line react-hooks/exhaustive-deps
+  return looping;
+}
+
 function clampScale(value) {
   const n = Number(value);
   if (!Number.isFinite(n) || n <= 0) return 1;
@@ -71,8 +109,8 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
   const zmanimRef = useRef(null);
   const prayersRef = useRef(null);
   const announcementRef = useRef(null);
-  useAutoScroll(zmanimRef, [zmanim.length, prayers.length, data.combinedInfoScale]);
-  useAutoScroll(prayersRef, [prayers.length, data.combinedInfoScale]);
+  const zmanimLoop = useLoopScroll(zmanimRef, [zmanim.length, prayers.length, data.combinedInfoScale]);
+  const prayersLoop = useLoopScroll(prayersRef, [prayers.length, data.combinedInfoScale]);
   useAutoScroll(announcementRef, [slide, announcements.length, data.combinedAnnouncementScale]);
   const current = announcements.length ? announcements[slide % announcements.length] : null;
 
@@ -87,26 +125,34 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
       <div className="synagogue-info-col synagogue-info-col--boxes">
       <section className="synagogue-info-block synagogue-info-zmanim">
         <h2 className="synagogue-info-title">{t('zmanim_title')}</h2>
-        <dl className="synagogue-info-list synagogue-info-box-scroll" ref={zmanimRef}>
-          {zmanim.map((row) => (
-            <div className="synagogue-info-row" key={row.key}>
-              <dt>{t(row.labelKey)}</dt>
-              <dd>{formatShabbatClockTime(row.at, loc.timezone)}</dd>
-            </div>
+        <div className="synagogue-info-box-scroll synagogue-info-loop" ref={zmanimRef}>
+          {(zmanimLoop ? ['a', 'b'] : ['a']).map((copy) => (
+            <dl className="synagogue-info-list synagogue-info-loop-copy" key={copy} aria-hidden={copy === 'b' ? 'true' : undefined}>
+              {zmanim.map((row) => (
+                <div className="synagogue-info-row" key={row.key}>
+                  <dt>{t(row.labelKey)}</dt>
+                  <dd>{formatShabbatClockTime(row.at, loc.timezone)}</dd>
+                </div>
+              ))}
+            </dl>
           ))}
-        </dl>
+        </div>
       </section>
       {prayers.length > 0 && (
         <section className="synagogue-info-block synagogue-info-prayers">
           <h2 className="synagogue-info-title">{t('prayer_times_title')}</h2>
-          <dl className="synagogue-info-list synagogue-info-box-scroll" ref={prayersRef}>
-            {prayers.map((row, index) => (
-              <div className="synagogue-info-row" key={`${row.label}-${index}`}>
-                <dt dir="auto">{row.label}</dt>
-                <dd>{row.time}</dd>
-              </div>
+          <div className="synagogue-info-box-scroll synagogue-info-loop" ref={prayersRef}>
+            {(prayersLoop ? ['a', 'b'] : ['a']).map((copy) => (
+              <dl className="synagogue-info-list synagogue-info-loop-copy" key={copy} aria-hidden={copy === 'b' ? 'true' : undefined}>
+                {prayers.map((row, index) => (
+                  <div className="synagogue-info-row" key={`${row.label}-${index}`}>
+                    <dt dir="auto">{row.label}</dt>
+                    <dd>{row.time}</dd>
+                  </div>
+                ))}
+              </dl>
             ))}
-          </dl>
+          </div>
         </section>
       )}
       </div>

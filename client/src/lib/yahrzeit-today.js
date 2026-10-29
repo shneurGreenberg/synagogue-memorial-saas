@@ -1,4 +1,5 @@
 import Hebcal from 'hebcal';
+import { daysUntilHebrewYahrzeit } from '../../../lib/hebrew-yahrzeit-order';
 import { personHasDeathDate } from '../../../lib/death-date';
 import {
   getGregorianDateInTimezone,
@@ -27,13 +28,20 @@ function isHebrewYahrzeitToday(death, timezone, now = new Date()) {
     && deathHebrew.getDate() === todayHebrew.getDate();
 }
 
-export function isPersonYahrzeitToday(person, timezone, now = new Date()) {
+export function isPersonYahrzeitToday(person, timezone, now = new Date(), calendar = 'gregorian') {
   if (!personHasDeathDate(person)) {
     return false;
   }
 
   const death = person.gregorianDateOfDeath;
 
+  // 1.30.0 I10: a board run by the Hebrew calendar only counts the Hebrew anniversary.
+  if (calendar === 'hebrew') {
+    return isHebrewYahrzeitToday(death, timezone, now);
+  }
+
   return isGregorianYahrzeitToday(death, timezone, now)
     || isHebrewYahrzeitToday(death, timezone, now);
 }
+
+export { daysUntilHebrewYahrzeit };

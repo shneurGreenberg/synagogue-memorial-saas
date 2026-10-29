@@ -261,6 +261,7 @@ app.engine('handlebars', handlebars({
     jsonCompact: value => jsonForScript(value),
     eq: (a, b) => a === b,
     or: (...args) => args.slice(0, -1).some(Boolean),
+    firstOf: (...args) => args.slice(0, -1).find(Boolean) || '',
     and: (...args) => args.slice(0, -1).every(Boolean),
     t(key, options) {
       const root = options.data && options.data.root;

@@ -56,6 +56,12 @@ export function mergePreviewPatch(data, patch) {
   if (patch.accentColor) {
     next.theme.accentColor = patch.accentColor;
   }
+  if (patch.clockColor) {
+    next.theme.clockColor = patch.clockColor;
+  }
+  if (patch.shabbatColor) {
+    next.theme.shabbatColor = patch.shabbatColor;
+  }
   if (patch.tileColor) {
     next.theme.tileColor = patch.tileColor;
   }
@@ -122,6 +128,8 @@ export function mergePreviewPatch(data, patch) {
 
   Object.assign(next.theme, normalizeThemeBorders(next.theme));
 
+  if (['hebrew', 'gregorian'].includes(patch.boardCalendar)) next.boardCalendar = patch.boardCalendar;
+  if (['both', 'hebrew', 'gregorian'].includes(patch.dateDisplay)) next.dateDisplay = patch.dateDisplay;
   if (patch.hebrewDatesOnly !== undefined) {
     next.hebrewDatesOnly = patch.hebrewDatesOnly === '1' || patch.hebrewDatesOnly === true;
   }
@@ -144,6 +152,8 @@ export function previewPatchFromSearchParams(params) {
     || params.has('primaryColor')
     || params.has('textColor')
     || params.has('accentColor')
+    || params.has('clockColor')
+    || params.has('shabbatColor')
     || params.has('tileColor')
     || params.has('tileOpacity')
     || params.has('panelBorderColor')
@@ -182,6 +192,8 @@ export function previewPatchFromSearchParams(params) {
   if (params.has('primaryColor')) patch.primaryColor = params.get('primaryColor');
   if (params.has('textColor')) patch.textColor = params.get('textColor');
   if (params.has('accentColor')) patch.accentColor = params.get('accentColor');
+  if (params.has('clockColor')) patch.clockColor = params.get('clockColor');
+  if (params.has('shabbatColor')) patch.shabbatColor = params.get('shabbatColor');
   if (params.has('tileColor')) patch.tileColor = params.get('tileColor');
   if (params.has('tileOpacity')) patch.tileOpacity = params.get('tileOpacity');
   if (params.has('panelBorderColor')) patch.panelBorderColor = params.get('panelBorderColor');

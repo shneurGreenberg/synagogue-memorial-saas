@@ -163,8 +163,8 @@
                         {{#if this.yahrzeitKindLabel}}
                         <p class="yahrzeit-kind-label">{{this.yahrzeitKindLabel}}</p>
                         {{/if}}
-                        {{#if this.gregorianDateLabel}}
-                        <p class="yahrzeit-date-label">{{this.gregorianDateLabel}}{{#if this.hebrewDateLabel}} · {{this.hebrewDateLabel}}{{/if}}</p>
+                        {{#if (or this.gregorianDateLabel this.hebrewDateLabel)}}
+                        <p class="yahrzeit-date-label">{{this.gregorianDateLabel}}{{#if (and this.gregorianDateLabel this.hebrewDateLabel)}} · {{/if}}{{this.hebrewDateLabel}}</p>
                         {{/if}}
                     </div>
                     <div class="yahrzeit-tile-candle" aria-hidden="true">🕯</div>
@@ -258,8 +258,8 @@
                         {{#if this.yahrzeitKindLabel}}
                         <p class="yahrzeit-kind-label">{{this.yahrzeitKindLabel}}</p>
                         {{/if}}
-                        {{#if this.gregorianDateLabel}}
-                        <p class="yahrzeit-date-label">{{this.gregorianDateLabel}}{{#if this.hebrewDateLabel}} · {{this.hebrewDateLabel}}{{/if}}</p>
+                        {{#if (or this.gregorianDateLabel this.hebrewDateLabel)}}
+                        <p class="yahrzeit-date-label">{{this.gregorianDateLabel}}{{#if (and this.gregorianDateLabel this.hebrewDateLabel)}} · {{/if}}{{this.hebrewDateLabel}}</p>
                         {{/if}}
                     </div>
                     <div class="yahrzeit-tile-candle" aria-hidden="true">🕯</div>

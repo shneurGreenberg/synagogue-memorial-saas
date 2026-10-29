@@ -1,3 +1,4 @@
+import { resolveBoardCalendar, resolveDateDisplay } from '../../../lib/board-date-settings';
 import Hebcal from 'hebcal';
 import { getDisplayLanguage } from './person-names';
 import { formatHebrewDate as formatHebrewDateForLang } from './hebrew-date-format';
@@ -266,15 +267,33 @@ const HEBREW_GREGORIAN_MONTHS = ['בינואר', 'בפברואר', 'במרץ', '
 /** 1.29 H3: religious boards can hide Gregorian dates everywhere. */
 export function isHebrewDatesOnly() {
   try {
-    return Boolean(typeof window !== 'undefined' && window.data && window.data.hebrewDatesOnly);
+    return getDateDisplay() === 'hebrew';
   } catch {
     return false;
   }
 }
 
+/** 1.30.0 I10: 'hebrew' | 'gregorian' — what drives order and "yahrzeit today". */
+export function getBoardCalendar() {
+  try {
+    return resolveBoardCalendar(typeof window !== 'undefined' ? window.data : null);
+  } catch {
+    return 'gregorian';
+  }
+}
+
+/** 1.30.0 I10: 'both' | 'hebrew' | 'gregorian' — which date text is shown. */
+export function getDateDisplay() {
+  try {
+    return resolveDateDisplay(typeof window !== 'undefined' ? window.data : null);
+  } catch {
+    return 'both';
+  }
+}
+
 export function formatGregorianDate(gregorianDate) {
     const lang = getDisplayLanguage();
-    if (isHebrewDatesOnly()) {
+    if (getDateDisplay() === 'hebrew') {
       return '';
     }
 

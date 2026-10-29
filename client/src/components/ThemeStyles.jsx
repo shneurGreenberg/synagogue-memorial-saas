@@ -58,6 +58,9 @@ export function ThemeStyles() {
   const primary = theme.primaryColor || '#cfaf1f';
   const text = theme.textColor || '#bfbfbf';
   const accent = theme.accentColor || '#ffd54f';
+  // 1.30.0 I12: clock+date and Shabbat times each have their own color.
+  const clockColor = theme.clockColor || '#ffffff';
+  const shabbatColor = theme.shabbatColor || accent;
   const fontScales = resolveFontScales(theme.fontScales);
   const fontScaleBaselines = resolveFontScaleBaselines(theme.fontScaleBaselines);
   const scale = (key) => effectiveFontScaleCss(fontScales, fontScaleBaselines, key);
@@ -114,6 +117,8 @@ export function ThemeStyles() {
       --primary-color: ${primary};
       --text-color: ${text};
       --accent-color: ${accent};
+      --clock-color: ${clockColor};
+      --shabbat-color: ${shabbatColor};
       --tile-color: ${tileVars.tileColor};
       --tile-title-color: ${primary};
       --tile-date-color: ${text};
@@ -217,7 +222,7 @@ export function ThemeStyles() {
     .main-container .board-clock-block h2,
     .main-container .board-clock-block h3,
     .main-container .board-clock-block time {
-      color: #ffffff !important;
+      color: var(--clock-color, #ffffff) !important;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
     }
     .main-container .jewish-sidebar-panels h2,
@@ -320,7 +325,7 @@ export function ThemeStyles() {
     .main-container .board-shabbat-block .shabbat-times .shabbat-time,
     .main-container .board-shabbat-block .shabbat-times .shabbat-parsha-heading,
     .main-container .board-shabbat-block .shabbat-times .shabbat-parsha-name {
-      color: var(--accent-color) !important;
+      color: var(--shabbat-color, var(--accent-color)) !important;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
     }
     .main-container .board-shabbat-block .shabbat-times .shabbat-parsha-heading {
@@ -390,7 +395,7 @@ export function ThemeStyles() {
 
   return (
     <style
-      key={`theme-${primary}-${text}-${accent}-${tileVars.tileColor}-${tileTransparency}-${candlePalette}-${theme.boardFont}-${panelBorderCss}-${tileBorderCss}-${themeBorders.panelBorderWidth}-${themeBorders.panelBorderRadius}-${themeBorders.tileBorderWidth}-${themeBorders.tileBorderRadius}`}
+      key={`theme-${primary}-${text}-${accent}-${clockColor}-${shabbatColor}-${tileVars.tileColor}-${tileTransparency}-${candlePalette}-${theme.boardFont}-${panelBorderCss}-${tileBorderCss}-${themeBorders.panelBorderWidth}-${themeBorders.panelBorderRadius}-${themeBorders.tileBorderWidth}-${themeBorders.tileBorderRadius}`}
       dangerouslySetInnerHTML={{ __html: css }}
     />
   );
