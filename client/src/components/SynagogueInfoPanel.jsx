@@ -67,8 +67,13 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
     const id = window.setInterval(() => setSlide((v) => v + 1), ANNOUNCEMENT_ROTATE_MS);
     return () => window.clearInterval(id);
   }, [announcements.length]);
-  const colRef = useRef(null);
-  useAutoScroll(colRef, [prayers.length, data.combinedInfoScale]);
+  // 1.29.6: each box scrolls its own content (title + frame stay fixed).
+  const zmanimRef = useRef(null);
+  const prayersRef = useRef(null);
+  const announcementRef = useRef(null);
+  useAutoScroll(zmanimRef, [zmanim.length, prayers.length, data.combinedInfoScale]);
+  useAutoScroll(prayersRef, [prayers.length, data.combinedInfoScale]);
+  useAutoScroll(announcementRef, [slide, announcements.length, data.combinedAnnouncementScale]);
   const current = announcements.length ? announcements[slide % announcements.length] : null;
 
   return (
@@ -79,10 +84,10 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
         '--combined-announcement-scale': clampScale(data.combinedAnnouncementScale),
       }}
     >
-      <div className="synagogue-info-col synagogue-info-col--scroll" ref={colRef}>
+      <div className="synagogue-info-col synagogue-info-col--boxes">
       <section className="synagogue-info-block synagogue-info-zmanim">
         <h2 className="synagogue-info-title">{t('zmanim_title')}</h2>
-        <dl className="synagogue-info-list">
+        <dl className="synagogue-info-list synagogue-info-box-scroll" ref={zmanimRef}>
           {zmanim.map((row) => (
             <div className="synagogue-info-row" key={row.key}>
               <dt>{t(row.labelKey)}</dt>
@@ -94,7 +99,7 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
       {prayers.length > 0 && (
         <section className="synagogue-info-block synagogue-info-prayers">
           <h2 className="synagogue-info-title">{t('prayer_times_title')}</h2>
-          <dl className="synagogue-info-list">
+          <dl className="synagogue-info-list synagogue-info-box-scroll" ref={prayersRef}>
             {prayers.map((row, index) => (
               <div className="synagogue-info-row" key={`${row.label}-${index}`}>
                 <dt dir="auto">{row.label}</dt>
@@ -109,7 +114,7 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
         <h2 className="synagogue-info-title" dir="auto">{t('announcements_title')}</h2>
         {current ? (
           <div className="synagogue-info-announcement-carousel" key={`${current.id}-${slide}`}>
-            <div className="synagogue-info-announcement">
+            <div className="synagogue-info-announcement synagogue-info-box-scroll" ref={announcementRef}>
               <strong dir="auto">{current.title}</strong>
               {current.text && (
                 <div dir="auto" dangerouslySetInnerHTML={{ __html: sanitizeRichText(current.text) }} />

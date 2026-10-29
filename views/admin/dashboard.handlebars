@@ -383,6 +383,21 @@
                             </div>
                         </div>
                         {{/if}}
+                        <div class="typography-group combined-text-size-group" id="combinedTextSizeGroup" {{#unless (eq boardMode 'combined')}}hidden{{/unless}}>
+                            <h4 class="typography-controls-title">{{t 'board_mode_combined'}}</h4>
+                        <div class="font-scale-grid combined-text-size-controls">
+                            <div class="slider-field-modern settings-slider-compact">
+                                <label for="combinedInfoScale">{{t 'combined_info_scale'}}</label>
+                                {{> admin-settings-number-stepper name="combinedInfoScale" id="combinedInfoScale" min="50" max="250" step="5"
+                                    value=combinedInfoScale suffix="%" compact=true}}
+                            </div>
+                            <div class="slider-field-modern settings-slider-compact">
+                                <label for="combinedAnnouncementScale">{{t 'combined_announcement_scale'}}</label>
+                                {{> admin-settings-number-stepper name="combinedAnnouncementScale" id="combinedAnnouncementScale" min="50" max="250" step="5"
+                                    value=combinedAnnouncementScale suffix="%" compact=true}}
+                            </div>
+                        </div>
+                        </div>
                         {{/each}}
                     </div>
                 </div>
@@ -479,18 +494,6 @@
                     </div>
                     <div class="prayer-times-settings" id="prayerTimesSettings" {{#unless (eq boardMode 'combined')}}hidden{{/unless}}>
                         <input type="hidden" name="prayerTimesSection" value="1">
-                        <div class="settings-compact-sliders combined-text-size-controls">
-                            <div class="slider-field-modern settings-slider-compact">
-                                <label for="combinedInfoScale">{{t 'combined_info_scale'}}</label>
-                                {{> admin-settings-number-stepper name="combinedInfoScale" id="combinedInfoScale" min="50" max="250" step="5"
-                                    value=combinedInfoScale suffix="%" compact=true}}
-                            </div>
-                            <div class="slider-field-modern settings-slider-compact">
-                                <label for="combinedAnnouncementScale">{{t 'combined_announcement_scale'}}</label>
-                                {{> admin-settings-number-stepper name="combinedAnnouncementScale" id="combinedAnnouncementScale" min="50" max="250" step="5"
-                                    value=combinedAnnouncementScale suffix="%" compact=true}}
-                            </div>
-                        </div>
                         <h3 class="prayer-times-title">{{t 'prayer_times_title'}}</h3>
                         <p class="field-hint">{{t 'prayer_times_help'}}</p>
                         <div class="prayer-times-rows">
@@ -776,6 +779,8 @@
             boardModeSelect.addEventListener('change', function () {
                 var box = document.getElementById('prayerTimesSettings');
                 if (box) box.hidden = boardModeSelect.value !== 'combined';
+                var sizeGroup = document.getElementById('combinedTextSizeGroup');
+                if (sizeGroup) sizeGroup.hidden = boardModeSelect.value !== 'combined';
                 schedulePreview();
             });
         }
