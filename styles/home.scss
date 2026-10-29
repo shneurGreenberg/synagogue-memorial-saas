@@ -2611,3 +2611,21 @@ body.tile-export-mode {
 .synagogue-info-col .synagogue-info-prayers { flex: 0 0 auto; }
 .synagogue-info-col .synagogue-info-row { padding: 1px 0; font-size: clamp(10px, 0.82vw, 16px); }
 .synagogue-info-col .synagogue-info-title { margin-bottom: 3px; }
+
+/* 1.29.5 I2: admin-controlled text size for the combined bottom half (defaults = 100% = previous look) */
+.synagogue-info-panel--two-col .synagogue-info-col .synagogue-info-row {
+  font-size: calc(clamp(10px, 0.82vw, 16px) * var(--combined-info-scale, 1));
+}
+.synagogue-info-panel--two-col .synagogue-info-col .synagogue-info-title {
+  font-size: calc(clamp(13px, 1.2vw, 22px) * var(--combined-info-scale, 1));
+}
+.synagogue-info-panel--two-col .synagogue-info-announcements .synagogue-info-title {
+  font-size: calc(clamp(13px, 1.2vw, 22px) * var(--combined-announcement-scale, 1));
+}
+.synagogue-info-panel--two-col .synagogue-info-announcement-carousel .synagogue-info-announcement {
+  font-size: calc(clamp(14px, 1.4vw, 28px) * var(--combined-announcement-scale, 1));
+}
+/* 1.29.5 I3: the zmanim/prayers column scrolls (JS, slowly) only when it overflows */
+.synagogue-info-col.synagogue-info-col--scroll { overflow: hidden; scrollbar-width: none; }
+.synagogue-info-col.synagogue-info-col--scroll > .synagogue-info-block { flex: 1 0 auto; }
+.synagogue-info-col.synagogue-info-col--scroll > .synagogue-info-prayers { flex: 0 0 auto; }

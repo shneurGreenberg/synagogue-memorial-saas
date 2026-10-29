@@ -14,7 +14,7 @@
             <label class="master-field-label">{{t 'onboarding_invite_link'}}</label>
             <p class="onboarding-invite-hint">{{t 'onboarding_invite_reuse_hint'}}</p>
             <div class="onboarding-copy-row">
-                <input type="text" class="form-control master-input" readonly value="{{inviteUrl}}" id="onboardingInviteUrl">
+                <input type="text" dir="auto" class="form-control master-input" readonly value="{{inviteUrl}}" id="onboardingInviteUrl">
                 <button type="button" class="btn master-btn master-btn-primary" id="copyOnboardingLinkBtn" data-copied-label="{{t 'onboarding_copy_done'}}">{{t 'onboarding_copy_link'}}</button>
             </div>
         </div>
@@ -29,7 +29,7 @@
             <form method="POST" action="/master/onboarding/invites" class="master-inline-form">
                 <label>
                     <span class="master-field-label">{{t 'onboarding_invite_label'}}</span>
-                    <input type="text" name="label" class="form-control master-input" maxlength="120" placeholder="{{t 'onboarding_invite_label_placeholder'}}">
+                    <input type="text" dir="auto" name="label" class="form-control master-input" maxlength="120" placeholder="{{t 'onboarding_invite_label_placeholder'}}">
                 </label>
                 <button type="submit" class="btn master-btn master-btn-primary">{{t 'onboarding_create_invite_btn'}}</button>
             </form>

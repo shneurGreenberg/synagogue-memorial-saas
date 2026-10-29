@@ -93,16 +93,16 @@ describe('release 1.27.2 Tehillim cache and Russian labels', () => {
   });
 });
 
-describe('release 1.29.4 version metadata', () => {
-  it('health endpoint reports app version 1.29.4', () => {
+describe('release 1.29.5 version metadata', () => {
+  it('health endpoint reports app version 1.29.5', () => {
     const payload = buildHealthPayload();
-    assert.equal(payload.version, '1.29.4');
+    assert.equal(payload.version, '1.29.5');
   });
 
-  it('lists 1.29.4 at the head of CHANGELOG.json', () => {
+  it('lists 1.29.5 at the head of CHANGELOG.json', () => {
     const changelog = JSON.parse(
       fs.readFileSync(path.join(ROOT, 'CHANGELOG.json'), 'utf8'),
     );
-    assert.equal(changelog[0].version, '1.29.4');
+    assert.equal(changelog[0].version, '1.29.5');
   });
 });

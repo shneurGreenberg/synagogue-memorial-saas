@@ -203,7 +203,7 @@
                             <label class="settings-color-label" for="tileColor">{{t 'tile_color'}}</label>
                             <input type="color" name="tileColor" id="tileColor" class="color-swatch-input settings-color-swatch"
                                 value="{{synagogue.theme.tileColor}}">
-                            <input type="text" class="color-hex-display settings-color-hex" id="tileColorHex" readonly
+                            <input type="text" dir="auto" class="color-hex-display settings-color-hex" id="tileColorHex" readonly
                                 value="{{synagogue.theme.tileColor}}" aria-hidden="true" tabindex="-1">
                             <div class="settings-embedded-slider">
                                 <span class="settings-embedded-slider-label" id="tileOpacityLabel">{{t 'tile_opacity'}}</span>
@@ -218,7 +218,7 @@
                             <label class="settings-color-label" for="panelBorderColor">{{t 'panel_border_color'}}</label>
                             <input type="color" name="panelBorderColor" id="panelBorderColor" class="color-swatch-input settings-color-swatch"
                                 value="{{synagogue.theme.panelBorderColor}}">
-                            <input type="text" class="color-hex-display settings-color-hex" id="panelBorderColorHex" readonly
+                            <input type="text" dir="auto" class="color-hex-display settings-color-hex" id="panelBorderColorHex" readonly
                                 value="{{synagogue.theme.panelBorderColor}}" aria-hidden="true" tabindex="-1">
                             <div class="settings-embedded-slider">
                                 <span class="settings-embedded-slider-label" id="panelBorderOpacityLabel">{{t 'panel_border_opacity'}}</span>
@@ -237,7 +237,7 @@
                             <label class="settings-color-label" for="tileBorderColor">{{t 'tile_border_color'}}</label>
                             <input type="color" name="tileBorderColor" id="tileBorderColor" class="color-swatch-input settings-color-swatch"
                                 value="{{synagogue.theme.tileBorderColor}}">
-                            <input type="text" class="color-hex-display settings-color-hex" id="tileBorderColorHex" readonly
+                            <input type="text" dir="auto" class="color-hex-display settings-color-hex" id="tileBorderColorHex" readonly
                                 value="{{synagogue.theme.tileBorderColor}}" aria-hidden="true" tabindex="-1">
                             <div class="settings-embedded-slider">
                                 <span class="settings-embedded-slider-label" id="tileBorderOpacityLabel">{{t 'tile_border_opacity'}}</span>
@@ -479,12 +479,24 @@
                     </div>
                     <div class="prayer-times-settings" id="prayerTimesSettings" {{#unless (eq boardMode 'combined')}}hidden{{/unless}}>
                         <input type="hidden" name="prayerTimesSection" value="1">
+                        <div class="settings-compact-sliders combined-text-size-controls">
+                            <div class="slider-field-modern settings-slider-compact">
+                                <label for="combinedInfoScale">{{t 'combined_info_scale'}}</label>
+                                {{> admin-settings-number-stepper name="combinedInfoScale" id="combinedInfoScale" min="50" max="250" step="5"
+                                    value=combinedInfoScale suffix="%" compact=true}}
+                            </div>
+                            <div class="slider-field-modern settings-slider-compact">
+                                <label for="combinedAnnouncementScale">{{t 'combined_announcement_scale'}}</label>
+                                {{> admin-settings-number-stepper name="combinedAnnouncementScale" id="combinedAnnouncementScale" min="50" max="250" step="5"
+                                    value=combinedAnnouncementScale suffix="%" compact=true}}
+                            </div>
+                        </div>
                         <h3 class="prayer-times-title">{{t 'prayer_times_title'}}</h3>
                         <p class="field-hint">{{t 'prayer_times_help'}}</p>
                         <div class="prayer-times-rows">
                             {{#each prayerTimeRows}}
                             <div class="prayer-times-row">
-                                <input type="text" name="prayerLabel_{{this.index}}" value="{{this.label}}" class="form-control" maxlength="60" placeholder="{{t 'prayer_label'}}" aria-label="{{t 'prayer_label'}}">
+                                <input type="text" dir="auto" name="prayerLabel_{{this.index}}" value="{{this.label}}" class="form-control" maxlength="60" placeholder="{{t 'prayer_label'}}" aria-label="{{t 'prayer_label'}}">
                                 <input type="time" name="prayerTime_{{this.index}}" value="{{this.time}}" class="form-control" aria-label="{{t 'prayer_time'}}">
                             </div>
                             {{/each}}
@@ -687,6 +699,14 @@
                 boardMode: (function () {
                     var el = document.getElementById('boardMode');
                     return el ? el.value : 'memorial';
+                })(),
+                combinedInfoScale: (function () {
+                    var el = document.getElementById('combinedInfoScale');
+                    return el ? el.value : '';
+                })(),
+                combinedAnnouncementScale: (function () {
+                    var el = document.getElementById('combinedAnnouncementScale');
+                    return el ? el.value : '';
                 })(),
             }, readFontScalePatch(), readMemorialQrPatch());
         }

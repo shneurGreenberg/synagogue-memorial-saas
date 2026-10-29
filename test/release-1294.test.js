@@ -19,7 +19,7 @@ test('1.29.4: OpenRouter HTTP error is logged without the key and returns empty'
   assert.ok(!warns.some((w) => w.includes('sk-secret')));
 });
 
-test('1.29.4: Hebrew board falls back to English text instead of hiding', () => {
+test('1.29.5: Hebrew board shows only the original text (no translation / English fallback)', () => {
   const src = fs.readFileSync(path.join(__dirname, '..', 'lib', 'jewish-feed.js'), 'utf8');
-  assert.match(src, /if \(!text && englishText\) \{\s*text = englishText;/);
+  assert.match(src, /entry\.hebrewSource === 'chabadlibrary'/);
 });

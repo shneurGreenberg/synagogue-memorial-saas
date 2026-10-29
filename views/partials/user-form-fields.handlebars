@@ -1,7 +1,7 @@
 <div class="form-row">
     <div class="form-group col-md-6">
         <label for="{{#if prefix}}{{prefix}}{{else}}new{{/if}}Username">{{t 'user_username'}}</label>
-        <input type="text" class="form-control admin-input" name="username"
+        <input type="text" dir="auto" class="form-control admin-input" name="username"
             id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}Username" required
             pattern="[^\s/]+" autocapitalize="off" autocomplete="off" spellcheck="false"
             data-single-word="1" title="{{t 'user_username_no_spaces'}}"
@@ -10,7 +10,7 @@
     </div>
     <div class="form-group col-md-6">
         <label for="{{#if prefix}}{{prefix}}{{else}}new{{/if}}DisplayName">{{t 'user_display_name'}}</label>
-        <input type="text" class="form-control admin-input" name="displayName"
+        <input type="text" dir="auto" class="form-control admin-input" name="displayName"
             id="{{#if prefix}}{{prefix}}{{else}}new{{/if}}DisplayName"
             placeholder="{{t 'user_display_name_placeholder'}}">
     </div>

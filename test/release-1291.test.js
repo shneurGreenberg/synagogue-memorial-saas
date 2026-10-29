@@ -5,9 +5,9 @@ const path = require('path');
 const read = (rel) => fs.readFileSync(path.join(__dirname, '..', rel), 'utf8');
 
 describe('release 1.29.1 Hayom Yom', () => {
-  it('Hebrew/Russian boards translate the English aphorism instead of showing nothing', () => {
+  it('Russian boards translate the English aphorism; Hebrew boards use the original only (1.29.5)', () => {
     const src = read('lib/jewish-feed.js');
-    assert.match(src, /translateHayomYom\(englishText, month, day, 'he'\)/);
+    assert.doesNotMatch(src, /translateHayomYom\(englishText, month, day, 'he'\)/);
     assert.match(src, /translateHayomYom\(englishText, month, day, 'ru'\)/);
     assert.match(src, /translateWithCache\(chunk, `en\|\$\{lang\}`/);
   });

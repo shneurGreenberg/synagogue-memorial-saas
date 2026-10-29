@@ -34,16 +34,16 @@
             <h2 class="public-deceased-block-title">{{onboardingT 'step_basics'}}</h2>
             <label class="onboarding-field public-field">
                 <span>{{onboardingT 'name_label'}}</span>
-                <input type="text" name="name" id="onboardingName" required maxlength="120">
+                <input type="text" dir="auto" name="name" id="onboardingName" required maxlength="120">
             </label>
             <label class="onboarding-field public-field">
                 <span>{{onboardingT 'web_address_label'}}</span>
                 <small class="onboarding-help">{{onboardingT 'web_address_help'}}</small>
-                <input type="text" name="slug" id="onboardingSlug" data-space-alert="{{onboardingT 'slug_space_alert'}}" required maxlength="64" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" autocomplete="off" autocapitalize="off" spellcheck="false">
+                <input type="text" dir="auto" name="slug" id="onboardingSlug" data-space-alert="{{onboardingT 'slug_space_alert'}}" required maxlength="64" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" autocomplete="off" autocapitalize="off" spellcheck="false">
             </label>
             <label class="onboarding-field public-field">
                 <span>{{onboardingT 'title_en_label'}}</span>
-                <input type="text" name="title" maxlength="120">
+                <input type="text" dir="auto" name="title" maxlength="120">
             </label>
         </section>
 
@@ -57,11 +57,11 @@
             <div id="onboardingMap" class="onboarding-map" aria-label="Map"></div>
             <label class="onboarding-field public-field">
                 <span>{{onboardingT 'city_label'}}</span>
-                <input type="text" name="city" id="onboardingCity" required>
+                <input type="text" dir="auto" name="city" id="onboardingCity" required>
             </label>
             <label class="onboarding-field public-field">
                 <span>{{onboardingT 'timezone_label'}}</span>
-                <input type="text" name="timezoneDisplay" id="onboardingTimezoneDisplay" readonly>
+                <input type="text" dir="auto" name="timezoneDisplay" id="onboardingTimezoneDisplay" readonly>
             </label>
         </section>
 
@@ -81,7 +81,7 @@
             <h2 class="public-deceased-block-title">{{onboardingT 'step_contact'}}</h2>
             <label class="onboarding-field public-field">
                 <span>{{onboardingT 'contact_name'}}</span>
-                <input type="text" name="contactName" required maxlength="120">
+                <input type="text" dir="auto" name="contactName" required maxlength="120">
             </label>
             <label class="onboarding-field public-field">
                 <span>{{onboardingT 'contact_phone'}}</span>
@@ -113,7 +113,7 @@
             </label>
             <label class="onboarding-field public-field">
                 <span>{{onboardingT 'notes_label'}}</span>
-                <textarea name="notes" rows="3" maxlength="2000"></textarea>
+                <textarea dir="auto" name="notes" rows="3" maxlength="2000"></textarea>
             </label>
         </section>
 

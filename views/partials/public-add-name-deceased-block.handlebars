@@ -18,18 +18,18 @@
         </label>
         <label class="public-field public-field-relation-other" {{#unless (eq block.relationKey 'other')}}hidden{{/unless}}>
             <span>{{publicT 'relation_other_label'}}</span>
-            <input type="text" name="deceased[{{index}}][relationOther]" maxlength="120" value="{{block.relationOther}}" placeholder="{{publicT 'relation_other_placeholder'}}" {{#if (eq block.relationKey 'other')}}required{{/if}}>
+            <input type="text" dir="auto" name="deceased[{{index}}][relationOther]" maxlength="120" value="{{block.relationOther}}" placeholder="{{publicT 'relation_other_placeholder'}}" {{#if (eq block.relationKey 'other')}}required{{/if}}>
         </label>
     </div>
 
     <div class="public-name-row">
         <label class="public-field">
             <span>{{publicT 'deceased_surname_label'}}</span>
-            <input type="text" name="deceased[{{index}}][surname]" maxlength="120" required value="{{block.surname}}" placeholder="{{publicT 'deceased_surname_placeholder'}}">
+            <input type="text" dir="auto" name="deceased[{{index}}][surname]" maxlength="120" required value="{{block.surname}}" placeholder="{{publicT 'deceased_surname_placeholder'}}">
         </label>
         <label class="public-field">
             <span>{{publicT 'deceased_first_name_label'}}</span>
-            <input type="text" name="deceased[{{index}}][firstName]" maxlength="120" required value="{{block.firstName}}" placeholder="{{publicT 'deceased_first_name_placeholder'}}">
+            <input type="text" dir="auto" name="deceased[{{index}}][firstName]" maxlength="120" required value="{{block.firstName}}" placeholder="{{publicT 'deceased_first_name_placeholder'}}">
         </label>
     </div>
 
@@ -49,7 +49,7 @@
 
     <label class="public-field">
         <span>{{publicT 'father_name_label'}}</span>
-        <input type="text" name="deceased[{{index}}][fatherName]" maxlength="120" required value="{{block.fatherName}}" placeholder="{{publicT 'father_name_placeholder'}}">
+        <input type="text" dir="auto" name="deceased[{{index}}][fatherName]" maxlength="120" required value="{{block.fatherName}}" placeholder="{{publicT 'father_name_placeholder'}}">
     </label>
 
     <label class="public-field public-field-death-date">

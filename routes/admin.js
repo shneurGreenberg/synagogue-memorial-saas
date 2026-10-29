@@ -1227,6 +1227,8 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             activeSavedViewName: activeSavedView ? activeSavedView.name : '',
             memorialQrPanel: enriched.memorialQrPanel,
             boardMode: normalizeBoardMode(enriched.boardMode),
+            combinedInfoScale: Number(enriched.combinedInfoScale) || 100,
+            combinedAnnouncementScale: Number(enriched.combinedAnnouncementScale) || 100,
             prayerTimeRows: prayerTimeRowsForAdmin(enriched),
             boardFontsGoogleHref: buildAllBoardFontsGoogleHref(),
             boardFontOptions: BOARD_FONTS.map((font) => ({
