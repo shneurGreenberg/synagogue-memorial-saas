@@ -153,7 +153,7 @@ describe('release 1.29 H1-H6', () => {
     assert.equal(buildBoardSettingsUpdate({ hebrewDatesOnly: '0' }, {}, FULL).hebrewDatesOnly, false);
     assert.ok(SELECT_SETTINGS.includes('hebrewDatesOnly'));
     assert.ok(PUBLIC_BOARD_FIELDS.includes('hebrewDatesOnly'));
-    assert.match(read('client/src/lib/novosibirsk.js'), /isHebrewDatesOnly\(\)\) {\s*return '';/);
+    assert.match(read('client/src/lib/novosibirsk.js'), /getDateDisplay\(\) === 'hebrew'\) {\s*return '';/);
   });
   it('H4: ב״ה sits outside the right frame', () => {
     assert.match(read('client/src/pages/HomePage.jsx'), /<aside className="right side-panel">\s*<BaruchHashemBadge placement="outside" \/>/);

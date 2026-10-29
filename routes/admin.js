@@ -1227,6 +1227,8 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             activeSavedViewName: activeSavedView ? activeSavedView.name : '',
             memorialQrPanel: enriched.memorialQrPanel,
             boardMode: normalizeBoardMode(enriched.boardMode),
+            boardCalendar: require('../lib/board-date-settings').resolveBoardCalendar(enriched),
+            dateDisplay: require('../lib/board-date-settings').resolveDateDisplay(enriched),
             combinedInfoScale: Number(enriched.combinedInfoScale) || 100,
             combinedAnnouncementScale: Number(enriched.combinedAnnouncementScale) || 100,
             prayerTimeRows: prayerTimeRowsForAdmin(enriched),

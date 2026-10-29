@@ -80,6 +80,10 @@
                 <span class="admin-panel-chevron" aria-hidden="true"></span>
             </button>
             <div class="admin-panel-body">
+                <label class="preview-edit-toggle">
+                    <input type="checkbox" id="previewEditToggle" checked>
+                    <span>{{t 'preview_edit_toggle'}}</span>
+                </label>
                 <div class="board-preview-stage" id="boardPreviewStage">
                     <div class="board-preview-frame-wrap" id="boardPreviewWrap">
                         {{#if activeSavedViewName}}
@@ -197,8 +201,10 @@
                     <h3 class="settings-block-title">{{t 'colors_section'}}</h3>
                     <div class="settings-color-grid">
                         {{> admin-settings-color-swatch id="primaryColor" name="primaryColor" labelKey="primary_color" value=synagogue.theme.primaryColor}}
-                        {{> admin-settings-color-swatch id="textColor" name="textColor" labelKey="text_color" value=synagogue.theme.textColor}}
                         {{> admin-settings-color-swatch id="accentColor" name="accentColor" labelKey="accent_color" value=synagogue.theme.accentColor}}
+                        {{> admin-settings-color-swatch id="textColor" name="textColor" labelKey="text_color" value=synagogue.theme.textColor}}
+                        {{> admin-settings-color-swatch id="clockColor" name="clockColor" labelKey="clock_color" value=(firstOf synagogue.theme.clockColor '#ffffff')}}
+                        {{> admin-settings-color-swatch id="shabbatColor" name="shabbatColor" labelKey="shabbat_color" value=(firstOf synagogue.theme.shabbatColor synagogue.theme.accentColor '#ffd54f')}}
                         <div class="settings-color-tile settings-color-tile--with-slider color-field-modern">
                             <label class="settings-color-label" for="tileColor">{{t 'tile_color'}}</label>
                             <input type="color" name="tileColor" id="tileColor" class="color-swatch-input settings-color-swatch"
@@ -383,6 +389,7 @@
                             </div>
                         </div>
                         {{/if}}
+                        {{/each}}
                         <div class="typography-group combined-text-size-group" id="combinedTextSizeGroup" {{#unless (eq boardMode 'combined')}}hidden{{/unless}}>
                             <h4 class="typography-controls-title">{{t 'board_mode_combined'}}</h4>
                         <div class="font-scale-grid combined-text-size-controls">
@@ -398,7 +405,6 @@
                             </div>
                         </div>
                         </div>
-                        {{/each}}
                     </div>
                 </div>
                 {{#if adminPermissions.settingsAppearance}}
@@ -481,16 +487,22 @@
                         </select>
                         <span class="field-hint">{{t 'board_mode_help'}}</span>
                     </div>
-                    <div class="admin-theme-setting hebrew-dates-only-setting">
-                        <div class="admin-theme-setting-label">{{t 'hebrew_dates_only'}}</div>
-                        <div class="admin-theme-setting-control">
-                            <label class="toggle-switch" for="hebrewDatesOnly">
-                                <input type="hidden" name="hebrewDatesOnly" value="0">
-                                <input type="checkbox" id="hebrewDatesOnly" name="hebrewDatesOnly" value="1" {{#if synagogue.hebrewDatesOnly}}checked{{/if}}>
-                                <span class="toggle-slider" aria-hidden="true"></span>
-                            </label>
-                        </div>
-                        <p class="field-hint admin-theme-setting-hint">{{t 'hebrew_dates_only_help'}}</p>
+                    <div class="form-field board-calendar-field">
+                        <label for="boardCalendar">{{t 'board_calendar'}}</label>
+                        <select name="boardCalendar" id="boardCalendar" class="form-control admin-select-modern">
+                            <option value="hebrew" {{#if (eq boardCalendar 'hebrew')}}selected{{/if}}>{{t 'board_calendar_hebrew'}}</option>
+                            <option value="gregorian" {{#if (eq boardCalendar 'gregorian')}}selected{{/if}}>{{t 'board_calendar_gregorian'}}</option>
+                        </select>
+                        <span class="field-hint">{{t 'board_calendar_help'}}</span>
+                    </div>
+                    <div class="form-field date-display-field">
+                        <label for="dateDisplay">{{t 'date_display'}}</label>
+                        <select name="dateDisplay" id="dateDisplay" class="form-control admin-select-modern">
+                            <option value="both" {{#if (eq dateDisplay 'both')}}selected{{/if}}>{{t 'date_display_both'}}</option>
+                            <option value="hebrew" {{#if (eq dateDisplay 'hebrew')}}selected{{/if}}>{{t 'date_display_hebrew'}}</option>
+                            <option value="gregorian" {{#if (eq dateDisplay 'gregorian')}}selected{{/if}}>{{t 'date_display_gregorian'}}</option>
+                        </select>
+                        <span class="field-hint">{{t 'date_display_help'}}</span>
                     </div>
                     <div class="prayer-times-settings" id="prayerTimesSettings" {{#unless (eq boardMode 'combined')}}hidden{{/unless}}>
                         <input type="hidden" name="prayerTimesSection" value="1">
@@ -651,6 +663,8 @@
             var primary = document.getElementById('primaryColor');
             var text = document.getElementById('textColor');
             var accent = document.getElementById('accentColor');
+            var clockColorEl = document.getElementById('clockColor');
+            var shabbatColorEl = document.getElementById('shabbatColor');
             var tile = document.getElementById('tileColor');
             var tileOpacity = document.getElementById('tileOpacity');
             var panelBorderColor = document.getElementById('panelBorderColor');
@@ -671,6 +685,8 @@
                 primaryColor: primary ? primary.value : '',
                 textColor: text ? text.value : '',
                 accentColor: accent ? accent.value : '',
+                clockColor: clockColorEl ? clockColorEl.value : '',
+                shabbatColor: shabbatColorEl ? shabbatColorEl.value : '',
                 tileColor: tile ? tile.value : '',
                 tileOpacity: tileOpacity ? tileOpacity.value : '100',
                 panelBorderColor: panelBorderColor ? panelBorderColor.value : '',
@@ -695,9 +711,13 @@
                     return checked ? checked.value : '';
                 })(),
                 previewLang: languageSelect ? languageSelect.value : 'ru',
-                hebrewDatesOnly: (function () {
-                    var el = document.getElementById('hebrewDatesOnly');
-                    return el && el.checked ? '1' : '';
+                boardCalendar: (function () {
+                    var el = document.getElementById('boardCalendar');
+                    return el ? el.value : '';
+                })(),
+                dateDisplay: (function () {
+                    var el = document.getElementById('dateDisplay');
+                    return el ? el.value : '';
                 })(),
                 boardMode: (function () {
                     var el = document.getElementById('boardMode');
@@ -729,6 +749,8 @@
         bindColorPair('primaryColor', 'primaryColorHex');
         bindColorPair('textColor', 'textColorHex');
         bindColorPair('accentColor', 'accentColorHex');
+        bindColorPair('clockColor', 'clockColorHex');
+        bindColorPair('shabbatColor', 'shabbatColorHex');
         bindColorPair('tileColor', 'tileColorHex');
         bindColorPair('panelBorderColor', 'panelBorderColorHex');
         bindColorPair('tileBorderColor', 'tileBorderColorHex');
@@ -772,8 +794,18 @@
             syncBoardSubtitleDesignVisibility();
         }
 
-        var hebrewOnlyToggle = document.getElementById('hebrewDatesOnly');
-        if (hebrewOnlyToggle) hebrewOnlyToggle.addEventListener('change', schedulePreview);
+        ['boardCalendar', 'dateDisplay'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) el.addEventListener('change', schedulePreview);
+        });
+        // 1.30.0 I14: combined text-size steppers update the live preview immediately.
+        ['combinedInfoScale', 'combinedAnnouncementScale'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', schedulePreview);
+                el.addEventListener('change', schedulePreview);
+            }
+        });
         var boardModeSelect = document.getElementById('boardMode');
         if (boardModeSelect) {
             boardModeSelect.addEventListener('change', function () {
@@ -906,6 +938,8 @@
             params.set('primaryColor', patch.primaryColor || '');
             params.set('textColor', patch.textColor || '');
             params.set('accentColor', patch.accentColor || '');
+            if (patch.clockColor) params.set('clockColor', patch.clockColor);
+            if (patch.shabbatColor) params.set('shabbatColor', patch.shabbatColor);
             params.set('tileColor', patch.tileColor || '');
             params.set('tileOpacity', patch.tileOpacity || '100');
             params.set('panelBorderColor', patch.panelBorderColor || '');
@@ -1350,3 +1384,28 @@
 
     })();
 </script>
+<style>
+    .preview-edit-toggle { display: inline-flex; gap: 8px; align-items: center; margin: 0 0 8px; font-size: 14px; cursor: pointer; }
+    .preview-editor-panel { position: fixed; z-index: 10000; width: 300px; max-height: 70vh; display: flex; flex-direction: column;
+        background: var(--admin-surface, #1f1f24); color: var(--admin-text, #f2f2f2); border: 1px solid rgba(128,128,128,.45);
+        border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+    .preview-editor-head { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid rgba(128,128,128,.3); }
+    .preview-editor-close { background: none; border: 0; color: inherit; font-size: 22px; line-height: 1; cursor: pointer; }
+    .preview-editor-body { padding: 8px 12px; overflow: auto; display: flex; flex-direction: column; gap: 8px; }
+    .preview-editor-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 13px; }
+    .preview-editor-row > span { flex: 1 1 auto; }
+    .preview-editor-row .form-control { max-width: 140px; }
+    .preview-editor-row input[type="number"] { max-width: 80px; }
+    .preview-editor-color { width: 44px; height: 30px; padding: 0; border: 0; background: none; }
+    .preview-editor-foot { padding: 8px 12px; border-top: 1px solid rgba(128,128,128,.3); text-align: end; }
+</style>
+<script>
+    window.ADMIN_PREVIEW_EDITOR = { labels: {
+        clock: '{{t 'preview_edit_clock'}}', shabbat: '{{t 'preview_edit_shabbat'}}', header: '{{t 'preview_edit_header'}}',
+        bottom: '{{t 'preview_edit_bottom'}}', tiles: '{{t 'preview_edit_tiles'}}', hayomYom: '{{t 'preview_edit_hayom_yom'}}',
+        dailyStudy: '{{t 'preview_edit_daily_study'}}', weather: '{{t 'preview_edit_weather'}}', prayers: '{{t 'preview_edit_prayers'}}',
+        side: '{{t 'preview_edit_side'}}', sideRight: '{{t 'preview_edit_side_right'}}', sideLeft: '{{t 'preview_edit_side_left'}}',
+        middle: '{{t 'preview_edit_middle'}}', close: '{{t 'preview_edit_close'}}', save: '{{t 'save'}}', empty: '{{t 'preview_edit_empty'}}'
+    } };
+</script>
+<script src="/js/admin-preview-editor.js"></script>

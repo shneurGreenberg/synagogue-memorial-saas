@@ -2637,3 +2637,20 @@ body.tile-export-mode {
 .synagogue-info-box-scroll::-webkit-scrollbar { display: none; }
 .synagogue-info-panel--two-col .synagogue-info-announcement-carousel { justify-content: flex-start; }
 .synagogue-info-panel--two-col .synagogue-info-announcement.synagogue-info-box-scroll { margin-block: auto; max-height: 100%; }
+
+/* 1.30.0 I11: endless loop for zmanim/prayers — two stacked copies, gap between them */
+.synagogue-info-loop .synagogue-info-loop-copy { margin: 0 0 1.2em; }
+.synagogue-info-loop .synagogue-info-loop-copy:only-child { margin-bottom: 0; }
+/* 1.30.0 I14: admin text-size controls must win over every other font-size rule */
+.main-container .synagogue-info-panel--two-col .synagogue-info-col .synagogue-info-row {
+  font-size: calc(clamp(10px, 0.82vw, 16px) * var(--combined-info-scale, 1)) !important;
+}
+.main-container .synagogue-info-panel--two-col .synagogue-info-col .synagogue-info-title {
+  font-size: calc(clamp(13px, 1.2vw, 22px) * var(--combined-info-scale, 1)) !important;
+}
+.main-container .synagogue-info-panel--two-col .synagogue-info-announcements .synagogue-info-title {
+  font-size: calc(clamp(13px, 1.2vw, 22px) * var(--combined-announcement-scale, 1)) !important;
+}
+.main-container .synagogue-info-panel--two-col .synagogue-info-announcement-carousel .synagogue-info-announcement {
+  font-size: calc(clamp(14px, 1.4vw, 28px) * var(--combined-announcement-scale, 1)) !important;
+}

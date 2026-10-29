@@ -36,7 +36,8 @@ import { normalizeCommunityEvent } from '../lib/community-event-copy';
 import { hasDailyStudyFeatures, resolveBoardFeatures } from '../lib/board-features';
 import { SidebarUpcomingPanel } from '../components/SidebarUpcomingPanel';
 import { BoardWeatherSection } from '../components/BoardWeatherSection';
-import { isPersonYahrzeitToday } from '../lib/yahrzeit-today';
+import { isPersonYahrzeitToday, daysUntilHebrewYahrzeit } from '../lib/yahrzeit-today';
+import { resolveBoardCalendar } from '../../../lib/board-date-settings';
 import { personHasDeathDate } from '../../../lib/death-date';
 import { MemorialSubmissionPanel } from '../components/MemorialSubmissionPanel';
 import { DonationQrPanel } from '../components/DonationQrPanel';
@@ -87,6 +88,7 @@ function setPersonDates(card) {
 
 function buildPeopleList(appData, referenceDate = new Date(), timezone = resolveBoardTimezone(appData)) {
   const currentDayOfYear = getCurrentDayOfYear(referenceDate);
+  const calendar = resolveBoardCalendar(appData);
 
   const sorted = (appData.people || [])
     .slice(0)
@@ -111,7 +113,16 @@ function buildPeopleList(appData, referenceDate = new Date(), timezone = resolve
         person.gregorianDayOfMemory += DAYS_IN_YEAR;
       }
 
-      person.passedToday = isPersonYahrzeitToday(person, timezone, referenceDate);
+      // 1.30.0 I10: Hebrew-calendar boards order by the next Hebrew anniversary.
+      if (calendar === 'hebrew') {
+        const hebrewDays = daysUntilHebrewYahrzeit(
+          person.gregorianDateOfDeath,
+          getGregorianDateInTimezone(timezone, referenceDate),
+        );
+        if (hebrewDays != null) person.gregorianDayOfMemory = hebrewDays;
+      }
+
+      person.passedToday = isPersonYahrzeitToday(person, timezone, referenceDate, calendar);
 
       return person;
     })

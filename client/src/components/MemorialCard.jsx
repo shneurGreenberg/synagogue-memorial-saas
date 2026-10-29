@@ -2,6 +2,7 @@ import React from 'react';
 import { withTranslation } from 'react-i18next';
 import {
   formatGregorianDate,
+  getDateDisplay,
   formatHebrewDate,
 } from '../lib/novosibirsk';
 import { getNameDensityClass } from '../lib/text-density';
@@ -87,7 +88,7 @@ class MemorialCardInner extends React.Component {
                   {formatGregorianDate(entry.gregorianDateOfDeath)}
                 </time>
               )}
-              <time>{formatHebrewDate(entry.hebrewDateOfDeath)}</time>
+              {getDateDisplay() !== 'gregorian' && <time>{formatHebrewDate(entry.hebrewDateOfDeath)}</time>}
             </div>
           )}
           {entry.title && big && <div className="title">{entry.title}</div>}

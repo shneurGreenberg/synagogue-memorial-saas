@@ -151,6 +151,8 @@ const SavedViewSchema = new mongoose.Schema({
       primaryColor: String,
       textColor: String,
       accentColor: String,
+      clockColor: String,
+      shabbatColor: String,
       tileColor: String,
       tileOpacity: Number,
       panelBorderColor: String,
@@ -352,6 +354,9 @@ const SynagogueSchema = new mongoose.Schema({
     primaryColor: { type: String, default: '#cfaf1f' },
     textColor: { type: String, default: '#f0f0f0' },
     accentColor: { type: String, default: '#ffd54f' },
+    // 1.30.0 I12/I15: own colors for the clock+date and the Shabbat times ('' = legacy look)
+    clockColor: { type: String, default: '' },
+    shabbatColor: { type: String, default: '' },
     tileColor: { type: String, default: '#b89a22' },
     tileOpacity: { type: Number, default: 100, min: 0, max: 100 },
     panelBorderColor: { type: String, default: '#604f2f' },
@@ -414,6 +419,9 @@ const SynagogueSchema = new mongoose.Schema({
   language: { type: String, default: 'ru' },
   // 1.29: 'memorial' (classic) or 'combined' (top: names, bottom: synagogue info).
   hebrewDatesOnly: { type: Boolean, default: false },
+  // 1.30.0 I10: unset = derived from hebrewDatesOnly (see lib/board-date-settings.js)
+  boardCalendar: { type: String, enum: ['hebrew', 'gregorian', null], default: undefined },
+  dateDisplay: { type: String, enum: ['both', 'hebrew', 'gregorian', null], default: undefined },
   boardMode: { type: String, enum: ['memorial', 'combined'], default: 'memorial' },
   // 1.29.5 I2: text size (%) of the combined board's bottom half.
   combinedInfoScale: { type: Number, default: 100 },
