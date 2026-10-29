@@ -2625,7 +2625,15 @@ body.tile-export-mode {
 .synagogue-info-panel--two-col .synagogue-info-announcement-carousel .synagogue-info-announcement {
   font-size: calc(clamp(14px, 1.4vw, 28px) * var(--combined-announcement-scale, 1));
 }
-/* 1.29.5 I3: the zmanim/prayers column scrolls (JS, slowly) only when it overflows */
-.synagogue-info-col.synagogue-info-col--scroll { overflow: hidden; scrollbar-width: none; }
-.synagogue-info-col.synagogue-info-col--scroll > .synagogue-info-block { flex: 1 0 auto; }
-.synagogue-info-col.synagogue-info-col--scroll > .synagogue-info-prayers { flex: 0 0 auto; }
+/* 1.29.6: each box (zmanim / prayers / announcements) keeps its frame and scrolls its own content */
+.synagogue-info-col.synagogue-info-col--boxes { overflow: hidden; }
+.synagogue-info-panel--two-col .synagogue-info-col--boxes > .synagogue-info-block,
+.synagogue-info-panel--two-col .synagogue-info-col--boxes > .synagogue-info-prayers {
+  flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden;
+}
+.synagogue-info-panel--two-col .synagogue-info-announcements { min-height: 0; overflow: hidden; }
+.synagogue-info-panel--two-col .synagogue-info-title { flex: 0 0 auto; }
+.synagogue-info-box-scroll { flex: 1 1 auto; min-height: 0; overflow: hidden; scrollbar-width: none; }
+.synagogue-info-box-scroll::-webkit-scrollbar { display: none; }
+.synagogue-info-panel--two-col .synagogue-info-announcement-carousel { justify-content: flex-start; }
+.synagogue-info-panel--two-col .synagogue-info-announcement.synagogue-info-box-scroll { margin-block: auto; max-height: 100%; }
