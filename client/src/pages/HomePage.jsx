@@ -47,7 +47,6 @@ import { SynagogueInfoPanel } from '../components/SynagogueInfoPanel';
 import { isPermanentActive, orderWithPermanent, combinedSlots } from '../lib/zmanim';
 
 const COMBINED_SLOTS = 8;
-const COMBINED_ROTATE_MS = 12000;
 
 function isCombinedMode(appData) {
   return Boolean(appData && appData.boardMode === 'combined');
@@ -245,7 +244,6 @@ class HomePageBase extends React.Component {
       pageShift: 0,
       filterString: '',
       namesReadingOpen: false,
-      combinedTick: 0,
     };
 
     applySearchToPaginationState(initialState, '');
@@ -305,20 +303,14 @@ class HomePageBase extends React.Component {
         this.refreshCalendarState();
       }
     }, 60 * 1000);
-    this.combinedTimer = window.setInterval(() => {
-      if (isCombinedMode(getAppData())) {
-        this.setState((state) => ({ combinedTick: state.combinedTick + 1 }));
-      }
-    }, COMBINED_ROTATE_MS);
   }
 
   componentWillUnmount() {
-    window.clearInterval(this.combinedTimer);
     window.clearInterval(this.dayTimer);
   }
 
   renderCombinedGrid() {
-    const entries = combinedSlots(this.state.allPeople, COMBINED_SLOTS, this.state.combinedTick);
+    const entries = combinedSlots(this.state.allPeople, COMBINED_SLOTS);
     return (
       <div className="cards-area combined-cards-area">
         <div className="cards-grid cards-grid-combined">

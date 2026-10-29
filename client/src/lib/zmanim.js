@@ -48,18 +48,10 @@ export function orderWithPermanent(people) {
 }
 
 /** Combined board: pinned (today + permanent) stay, remaining slots rotate. */
-export function combinedSlots(people, slotCount, tick) {
+// 1.29.6 I9: fixed set, no paging — today/permanent first, then nearest upcoming.
+export function combinedSlots(people, slotCount) {
   const list = people || [];
   const pinned = list.filter((p) => p.passedToday || p.isPermanent);
   const others = list.filter((p) => !(p.passedToday || p.isPermanent));
-  if (pinned.length >= slotCount) {
-    const pages = Math.ceil(pinned.length / slotCount);
-    const page = tick % pages;
-    return pinned.slice(page * slotCount, page * slotCount + slotCount);
-  }
-  const free = slotCount - pinned.length;
-  if (!others.length) return pinned;
-  const pages = Math.ceil(others.length / free);
-  const page = tick % pages;
-  return [...pinned, ...others.slice(page * free, page * free + free)];
+  return [...pinned, ...others].slice(0, slotCount);
 }
