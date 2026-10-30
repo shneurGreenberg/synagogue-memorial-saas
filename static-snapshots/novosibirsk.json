@@ -3310,8 +3310,8 @@
       }
     ]
   },
-  "contentVersion": 1793301021290,
-  "exportedAt": "2026-10-29T19:10:21.290Z",
+  "contentVersion": 1793337167867,
+  "exportedAt": "2026-10-30T05:12:47.867Z",
   "jewishContent": {
     "date": "2026-10-30",
     "timezone": "Asia/Novosibirsk",
@@ -3325,7 +3325,7 @@
         "label": "Псалмы 90-96"
       },
       "tanya": {
-        "label": "Игерет а-Кодеш, гл. 28"
+        "label": "Игерет а-Кодеш, гл. 29"
       },
       "rambam": {
         "label": "Запрещенный половой акт 11"
@@ -3464,6 +3464,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-10-29T19:10:21.290Z"
+    "updatedAt": "2026-10-30T05:12:47.867Z"
   }
 }
