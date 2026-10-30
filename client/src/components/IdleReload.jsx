@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { getBoardData } from '../lib/board-data';
+import { isBrowserOffline } from '../lib/network-backoff';
 
 export function IdleReload() {
   useEffect(() => {
@@ -28,7 +29,8 @@ export function IdleReload() {
 
       idleMs += tickMs;
 
-      if (idleMs >= reloadAfter) {
+      // 1.30.1 I19: never reload while offline — that would blank the board until the network returns.
+      if (idleMs >= reloadAfter && !isBrowserOffline()) {
         window.location.reload();
       }
     }, tickMs);

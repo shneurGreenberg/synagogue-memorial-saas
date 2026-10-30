@@ -87,6 +87,7 @@ function useBoardWeather(coords) {
       onSuccess: setForecast,
       onSettled: ({ loading: nextLoading, failed: nextFailed }) => {
         setLoading(nextLoading);
+        // 1.30.1 I19: a failed refresh never replaces a forecast already on screen.
         setFailed(nextFailed);
       },
     });

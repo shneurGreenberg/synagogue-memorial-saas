@@ -122,7 +122,7 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
         '--combined-announcement-scale': clampScale(data.combinedAnnouncementScale),
       }}
     >
-      <div className="synagogue-info-col synagogue-info-col--boxes">
+      <div className="synagogue-info-col synagogue-info-col--boxes synagogue-info-col--side-by-side">
       <section className="synagogue-info-block synagogue-info-zmanim">
         <h2 className="synagogue-info-title">{t('zmanim_title')}</h2>
         <div className="synagogue-info-box-scroll synagogue-info-loop" ref={zmanimRef}>
