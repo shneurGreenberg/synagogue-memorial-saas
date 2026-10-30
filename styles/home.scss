@@ -2030,122 +2030,130 @@
 
 /* Laptop / smaller desktop — keep 4x4 but tighter sides */
 @media (max-width: 1280px) {
-  .main-container {
-    grid-template-columns: minmax(130px, 14vw) minmax(0, 1fr) minmax(130px, 14vw);
+  html:not(.board-scaled) {
+    .main-container {
+      grid-template-columns: minmax(130px, 14vw) minmax(0, 1fr) minmax(130px, 14vw);
+    }
   }
 }
 
 /* Tablet landscape — 3 columns of cards */
 @media (max-width: 1100px) {
-  .main-container {
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto 1fr;
-    grid-template-areas:
-      'middle middle'
-      'left right';
-    height: 100dvh;
-    overflow: hidden;
+  html:not(.board-scaled) {
+    .main-container {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        'middle middle'
+        'left right';
+      height: 100dvh;
+      overflow: hidden;
 
-    .middle {
-      grid-area: middle;
-    }
+      .middle {
+        grid-area: middle;
+      }
 
-    .left {
-      grid-area: left;
-    }
+      .left {
+        grid-area: left;
+      }
 
-    .right {
-      grid-area: right;
-    }
+      .right {
+        grid-area: right;
+      }
 
-    .left .wooden-panel,
-    .right .wooden-panel {
-      height: 100%;
-    }
+      .left .wooden-panel,
+      .right .wooden-panel {
+        height: 100%;
+      }
 
-    .middle .cards-grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      grid-template-rows: repeat(4, minmax(0, 1fr));
+      .middle .cards-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-rows: repeat(4, minmax(0, 1fr));
+      }
     }
   }
 }
 
 /* Tablet portrait — 3x3 visible cells scale, still 4 rows with smaller cells */
 @media (max-width: 900px) {
-  .main-container {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
-    grid-template-areas: none;
-    overflow-y: auto;
-    overflow-x: hidden;
-    height: auto;
-    min-height: 100dvh;
-    max-height: none;
-
-    .left,
-    .middle,
-    .right {
-      height: auto;
-    }
-
-    .wooden-panel {
-      height: auto;
-      max-height: none;
-      min-height: 200px;
-    }
-
-    .middle .wooden-panel {
-      min-height: 55vh;
-      max-height: 70vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .middle .cards-grid,
-    .middle .cards-grid-kadish {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      grid-template-rows: repeat(4, minmax(72px, 1fr));
-      min-height: 320px;
-    }
-
-    .middle .cards-grid-kadish .kadish-center {
-      grid-column: 2 / span 2;
-      grid-row: 2 / span 2;
-    }
-
-    .middle .board-footer {
+  html:not(.board-scaled) {
+    .main-container {
       grid-template-columns: 1fr;
-      gap: 10px;
-      padding-bottom: 12px;
-    }
+      grid-template-rows: auto auto auto;
+      grid-template-areas: none;
+      overflow-y: auto;
+      overflow-x: hidden;
+      height: auto;
+      min-height: 100dvh;
+      max-height: none;
 
-    .middle .search {
-      max-width: none;
-      grid-column: 1;
-      justify-self: stretch;
-    }
+      .left,
+      .middle,
+      .right {
+        height: auto;
+      }
 
-    .middle .pager {
-      grid-column: 1;
-      justify-self: center;
-      justify-content: center;
+      .wooden-panel {
+        height: auto;
+        max-height: none;
+        min-height: 200px;
+      }
+
+      .middle .wooden-panel {
+        min-height: 55vh;
+        max-height: 70vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .middle .cards-grid,
+      .middle .cards-grid-kadish {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-rows: repeat(4, minmax(72px, 1fr));
+        min-height: 320px;
+      }
+
+      .middle .cards-grid-kadish .kadish-center {
+        grid-column: 2 / span 2;
+        grid-row: 2 / span 2;
+      }
+
+      .middle .board-footer {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding-bottom: 12px;
+      }
+
+      .middle .search {
+        max-width: none;
+        grid-column: 1;
+        justify-self: stretch;
+      }
+
+      .middle .pager {
+        grid-column: 1;
+        justify-self: center;
+        justify-content: center;
+      }
     }
   }
 }
 
 /* Phone — keep 4x4 grid, equal small cells */
 @media (max-width: 560px) {
-  .main-container .middle .wooden-panel {
-    min-height: 50vh;
-    max-height: 65vh;
-  }
+  html:not(.board-scaled) {
+    .main-container .middle .wooden-panel {
+      min-height: 50vh;
+      max-height: 65vh;
+    }
 
-  .main-container .middle .cards-grid,
-  .main-container .middle .cards-grid-kadish {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-template-rows: repeat(4, minmax(0, 1fr));
-    gap: 3px;
-    padding: 4px;
+    .main-container .middle .cards-grid,
+    .main-container .middle .cards-grid-kadish {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-rows: repeat(4, minmax(0, 1fr));
+      gap: 3px;
+      padding: 4px;
+    }
   }
 }
 
@@ -2545,16 +2553,18 @@ body.tile-export-mode {
 .synagogue-info-announcement-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .synagogue-info-announcement { font-size: clamp(11px, 0.95vw, 18px); strong { display: block; } p { margin: 0; } }
 @media (max-width: 900px) {
-  .main-container.board-mode-combined .middle .wooden-panel { max-height: none; min-height: 0; }
-  .main-container.board-mode-combined .middle .combined-board { display: flex; flex-direction: column; }
-  .main-container.board-mode-combined .middle .cards-area { overflow: visible; flex: none; }
-  .main-container.board-mode-combined .middle .cards-grid.cards-grid-combined {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: none !important;
-    grid-auto-rows: minmax(110px, auto);
-    min-height: 0 !important;
+  html:not(.board-scaled) {
+    .main-container.board-mode-combined .middle .wooden-panel { max-height: none; min-height: 0; }
+    .main-container.board-mode-combined .middle .combined-board { display: flex; flex-direction: column; }
+    .main-container.board-mode-combined .middle .cards-area { overflow: visible; flex: none; }
+    .main-container.board-mode-combined .middle .cards-grid.cards-grid-combined {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: none !important;
+      grid-auto-rows: minmax(110px, auto);
+      min-height: 0 !important;
+    }
+    .synagogue-info-panel { grid-template-columns: 1fr; overflow: visible; }
   }
-  .synagogue-info-panel { grid-template-columns: 1fr; overflow: visible; }
 }
 
 /* 1.29 H4: ב״ה sits above the right frame (in its outer margin), tiny, takes no height */
@@ -2607,7 +2617,7 @@ body.tile-export-mode {
   span.is-active { background: var(--accent-color, #ffd54f); }
 }
 @keyframes synagogue-info-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-@media (max-width: 900px) { .synagogue-info-panel.synagogue-info-panel--two-col { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { html:not(.board-scaled) .synagogue-info-panel.synagogue-info-panel--two-col { grid-template-columns: 1fr; } }
 .synagogue-info-col .synagogue-info-prayers { flex: 0 0 auto; }
 .synagogue-info-col .synagogue-info-row { padding: 1px 0; font-size: clamp(10px, 0.82vw, 16px); }
 .synagogue-info-col .synagogue-info-title { margin-bottom: 3px; }
@@ -2667,4 +2677,28 @@ body.tile-export-mode {
   min-height: 0;
   display: flex;
   flex-direction: column;
+}
+
+// 1.30.2: ?scale= board scaling. Viewport units get multiplied by the scale, so divide them back.
+html.board-scaled {
+  overflow: hidden;
+
+  body {
+    overflow: hidden;
+    margin: 0;
+  }
+
+  .main-container {
+    height: calc(100vh / var(--board-scale, 1));
+    max-height: calc(100vh / var(--board-scale, 1));
+    grid-template-columns: minmax(150px, calc(17vw / var(--board-scale, 1))) minmax(0, 1fr) minmax(150px, calc(17vw / var(--board-scale, 1)));
+  }
+}
+
+html.board-scaled--transform #root {
+  width: calc(100vw / var(--board-scale, 1));
+  height: calc(100vh / var(--board-scale, 1));
+  transform: scale(var(--board-scale, 1));
+  transform-origin: top left;
+  overflow: hidden;
 }
