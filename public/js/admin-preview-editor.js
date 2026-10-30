@@ -216,5 +216,52 @@
     attach(frame);
   }
 
-  window.__adminPreviewEditor = { REGIONS: REGIONS, findRegion: findRegion };
+  /* 1.30.1 I17: settings reachable from a preview panel are hidden in the regular sections below
+   * (they stay in the form, so saving is unchanged). Toggles stay visible because their board part
+   * can disappear when switched off; boardMode stays because it changes which parts exist.
+   * Turning the preview-edit toggle off shows everything again. */
+  var KEEP_IN_FORM = { boardMode: true };
+  function coveredIds() {
+    var out = {};
+    REGIONS.forEach(function (r) {
+      r.fields.forEach(function (id) {
+        if (KEEP_IN_FORM[id]) return;
+        var real = document.getElementById(id);
+        if (!real || real.type === 'hidden') return;
+        if (real.type === 'checkbox' && id !== 'boardSubtitleEnabled') return;
+        out[id] = true;
+      });
+    });
+    return out;
+  }
+  var WRAP = '.settings-color-tile, .slider-field-modern, .admin-theme-setting, .form-field';
+  function applyCovered() {
+    var form = document.getElementById('settingsForm');
+    if (!form) return;
+    var on = isEnabled() && !!document.getElementById('boardPreviewFrame');
+    var ids = coveredIds();
+    Object.keys(ids).forEach(function (id) {
+      var real = document.getElementById(id);
+      var wrap = real && real.closest(WRAP);
+      if (wrap && form.contains(wrap)) wrap.classList.toggle('preview-covered', on);
+    });
+    form.querySelectorAll('.settings-block, .typography-group, .font-scale-grid').forEach(function (g) {
+      g.classList.remove('preview-covered-empty');
+    });
+    if (!on) return;
+    form.querySelectorAll('.typography-group, .font-scale-grid, .settings-block').forEach(function (g) {
+      var visible = Array.prototype.some.call(g.querySelectorAll('input, select, textarea'), function (el) {
+        return el.type !== 'hidden' && !el.closest('.preview-covered') && !el.closest('.preview-covered-empty');
+      });
+      if (!visible) g.classList.add('preview-covered-empty');
+    });
+  }
+  var css = document.createElement('style');
+  css.textContent = '#settingsForm .preview-covered, #settingsForm .preview-covered-empty{display:none!important}';
+  document.head.appendChild(css);
+  var editToggle = document.getElementById('previewEditToggle');
+  if (editToggle) editToggle.addEventListener('change', applyCovered);
+  applyCovered();
+
+  window.__adminPreviewEditor = { REGIONS: REGIONS, findRegion: findRegion, coveredIds: coveredIds, applyCovered: applyCovered };
 })();

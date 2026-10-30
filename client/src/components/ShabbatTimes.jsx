@@ -7,6 +7,7 @@ import {
   getBoardTimezone,
   msUntilNextRefresh,
 } from '../lib/shabbat-times';
+import { backoffDelayMs, isBrowserOffline } from '../lib/network-backoff';
 import { createHebrewDate, getHolidayName, getWeeklyParshaName, translateHolidayFromEnglish } from '../lib/weekly-parsha';
 import { useBoardData } from '../context/BoardDataContext';
 
@@ -27,25 +28,38 @@ function ShabbatTimesInner({ t }) {
   useEffect(() => {
     let cancelled = false;
     let timeout;
+    let failures = 0;
+    let lastGood = null;
 
+    // 1.30.1 I19: offline → keep the last good times on screen and retry with quiet backoff.
     async function load() {
       const data = getBoardData();
       const next = await fetchShabbatTimes(data);
       if (cancelled) {
         return;
       }
-      setTimes(next);
       window.clearTimeout(timeout);
-      timeout = window.setTimeout(load, msUntilNextRefresh(next));
+      if (next) {
+        failures = 0;
+        lastGood = next;
+        setTimes(next);
+        timeout = window.setTimeout(load, msUntilNextRefresh(next));
+        return;
+      }
+      failures += 1;
+      timeout = window.setTimeout(load, Math.max(msUntilNextRefresh(lastGood), backoffDelayMs(failures - 1)));
     }
 
     load();
-    const interval = window.setInterval(load, 60 * 60 * 1000);
+    const onOnline = () => { failures = 0; load(); };
+    window.addEventListener('online', onOnline);
+    const interval = window.setInterval(() => { if (!isBrowserOffline()) load(); }, 60 * 60 * 1000);
 
     return () => {
       cancelled = true;
       window.clearInterval(interval);
       window.clearTimeout(timeout);
+      window.removeEventListener('online', onOnline);
     };
   }, []);
 
