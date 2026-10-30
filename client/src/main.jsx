@@ -6,12 +6,14 @@ import App from './App';
 import i18n from './lib/i18n';
 import { configureNovosibirsk } from './lib/novosibirsk';
 import { isStaticSite } from './lib/asset-url';
+import { applyBoardScale } from './lib/board-scale';
 
 import '../../styles/home.scss';
 import '../../styles/card.scss';
 import '../../styles/logo-transition.scss';
 
 configureNovosibirsk();
+applyBoardScale();
 
 const root = document.getElementById('root');
 const Router = isStaticSite() ? HashRouter : BrowserRouter;
