@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { withTranslation } from 'react-i18next';
 import { hasJewishContentPanels, resolveBoardFeatures } from '../lib/board-features';
 import { useBoardData } from '../context/BoardDataContext';
-import { fetchJewishFeed } from '../lib/jewish-feed-client';
+import { fetchJewishFeed, prefetchJewishFeedRange, readOfflineJewishFeed } from '../lib/jewish-feed-client';
+import { backoffDelayMs, isBrowserOffline } from '../lib/network-backoff';
 import { formatLearningLabelForDisplay } from '../lib/learning-label-display';
 import { HayomYomScroller } from './HayomYomScroller';
 import {
@@ -90,25 +91,45 @@ function JewishContentPanelsBase({ t, uiLang, calendarDayKey }) {
     }
 
     let cancelled = false;
-    setFeed(null);
+    let timer;
+    let failures = 0;
+    // 1.31.0 I25: never blank on a day change: show the device-cached day at once (if any),
+    // otherwise keep what is on screen until fresh data arrives.
+    const cachedDay = readOfflineJewishFeed(slug, uiLang, calendarDayKey || '');
+    if (cachedDay) setFeed(cachedDay);
 
-    const load = async () => {
-      try {
-        const next = await fetchJewishFeed(slug, uiLang, calendarDayKey || '');
-        if (!cancelled && next) {
-          setFeed(next);
-        }
-      } catch {
-        /* ignore transient network errors */
-      }
+    const schedule = (ms) => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(load, ms);
     };
 
+    async function load() {
+      if (isBrowserOffline() && failures > 0) {
+        schedule(backoffDelayMs(failures));
+        return;
+      }
+      try {
+        const next = await fetchJewishFeed(slug, uiLang, calendarDayKey || '');
+        if (cancelled) return;
+        if (next) setFeed(next);
+        failures = 0;
+        schedule(REFRESH_MS);
+        prefetchJewishFeedRange(slug, uiLang, calendarDayKey || '').catch(() => {});
+      } catch {
+        if (cancelled) return;
+        failures += 1;
+        schedule(backoffDelayMs(failures - 1));
+      }
+    }
+
     load();
-    const timer = window.setInterval(load, REFRESH_MS);
+    const onOnline = () => { failures = 0; load(); };
+    window.addEventListener('online', onOnline);
 
     return () => {
       cancelled = true;
-      window.clearInterval(timer);
+      window.clearTimeout(timer);
+      window.removeEventListener('online', onOnline);
     };
   }, [slug, uiLang, calendarDayKey, boardFeatures.dailyChumash, boardFeatures.dailyTehillim, boardFeatures.dailyTanya, boardFeatures.dailyRambam, boardFeatures.hayomYom]);
 

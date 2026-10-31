@@ -2702,3 +2702,22 @@ html.board-scaled--transform #root {
   transform-origin: top left;
   overflow: hidden;
 }
+
+// 1.31.0 I24: Hebrew boards read right-to-left: candle lighting on the right, havdalah on the left;
+// the weather widget (today card, forecast, sun times) flows RTL too. Times stay LTR digits.
+body.board-lang-he {
+  .shabbat-times .shabbat-times-row,
+  .weather-panel,
+  .weather-panel .weather-today-card,
+  .weather-panel .weather-forecast,
+  .weather-panel .weather-sun-stack-row {
+    direction: rtl;
+  }
+
+  .shabbat-times .shabbat-time,
+  .weather-panel .weather-sun-time,
+  .weather-panel .weather-temp {
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+}

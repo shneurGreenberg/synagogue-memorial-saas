@@ -57,6 +57,7 @@
 
 <script id="people-data" type="application/json">[]</script>
 <script>
+    window.peopleDefaultContactPlatform = '{{#if (eq synagogue.language "he")}}whatsapp{{/if}}';
     window.peopleListApiUrl = '/admin/{{synagogue.slug}}/people/list';
 </script>
 

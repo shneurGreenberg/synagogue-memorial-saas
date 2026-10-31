@@ -28,6 +28,10 @@
       'feature_dailyRambam', 'feature_dailyTanya', 'fontScale_dailyStudy', 'accentColor'] },
     { key: 'weather', selector: '.weather-panel', fields: ['feature_weather', 'fontScale_weather'] },
     { key: 'prayers', selector: '.memorial-prayers', fields: ['feature_kelMaleRachamim', 'feature_izkor', 'fontScale_prayers'] },
+    { key: 'donationQr', selector: '.donation-qr-panel', fields: ['publicSubmissionShowDonationQr', 'donationQrTitle',
+      'donationQrText', 'publicSubmissionDonationUrl', 'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale'] },
+    { key: 'memorialQr', selector: '.memorial-submission-panel', fields: ['publicSubmissionShowRegistrationQr', 'memorialQrTitle',
+      'memorialQrText', 'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale'] },
     { key: 'side', selector: '.side-panel', fields: SIDE_FIELDS },
     { key: 'middle', selector: '.middle', fields: ['panelBorderColor', 'panelBorderWidth', 'panelBorderRadius', 'tileColor', 'boardMode'] },
   ];
@@ -76,6 +80,15 @@
       });
       proxy.value = real.value;
       proxy.addEventListener('change', function () { real.value = proxy.value; fire(real); });
+      return proxy;
+    }
+    if (tag === 'textarea') {
+      proxy = document.createElement('textarea');
+      proxy.className = 'form-control';
+      proxy.rows = 3;
+      proxy.setAttribute('dir', real.getAttribute('dir') || 'auto');
+      proxy.value = real.value;
+      proxy.addEventListener('input', function () { real.value = proxy.value; fire(real); });
       return proxy;
     }
     proxy = document.createElement('input');
@@ -180,7 +193,9 @@
     style.textContent = 'html.preview-edit-on .board-clock-block:hover, html.preview-edit-on .board-shabbat-block:hover,'
       + 'html.preview-edit-on .board-header:hover, html.preview-edit-on .synagogue-info-panel:hover,'
       + 'html.preview-edit-on .cards-grid .card:hover, html.preview-edit-on .hayom-yom-panel:hover,'
-      + 'html.preview-edit-on .daily-gates-panel:hover, html.preview-edit-on .weather-panel:hover'
+      + 'html.preview-edit-on .daily-gates-panel:hover, html.preview-edit-on .weather-panel:hover,'
+      + 'html.preview-edit-on .memorial-submission-panel:hover, html.preview-edit-on .side-panel:hover,'
+      + 'html.preview-edit-on .memorial-prayers:hover'
       + '{outline:3px dashed rgba(64,160,255,.9);outline-offset:2px;cursor:pointer}';
     (doc.head || doc.documentElement).appendChild(style);
     function syncClass() { doc.documentElement.classList.toggle('preview-edit-on', isEnabled()); }
@@ -228,10 +243,12 @@
         if (KEEP_IN_FORM[id]) return;
         var real = document.getElementById(id);
         if (!real || real.type === 'hidden') return;
-        if (real.type === 'checkbox' && id !== 'boardSubtitleEnabled') return;
         out[id] = true;
       });
     });
+    // 1.31.0 I20: every on/off part toggle moves to the preview too; switched-off parts come back
+    // through the "hidden parts" list above the preview.
+    TOGGLE_IDS().forEach(function (id) { out[id] = true; });
     return out;
   }
   var WRAP = '.settings-color-tile, .slider-field-modern, .admin-theme-setting, .form-field';
@@ -256,12 +273,53 @@
       if (!visible) g.classList.add('preview-covered-empty');
     });
   }
+  function TOGGLE_IDS() {
+    var ids = ['shabbatTimesEnabled', 'publicSubmissionShowDonationQr', 'publicSubmissionShowRegistrationQr'];
+    document.querySelectorAll('#settingsForm input[type="checkbox"][id^="feature_"]').forEach(function (el) { ids.push(el.id); });
+    return ids.filter(function (id) { return document.getElementById(id); });
+  }
+  /* Hidden-parts list: one chip per switched-off part; clicking it switches the part back on. */
+  function renderHiddenParts() {
+    var stage = document.getElementById('boardPreviewStage');
+    if (!stage) return;
+    var box = document.getElementById('previewHiddenParts');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'previewHiddenParts';
+      box.className = 'preview-hidden-parts';
+      stage.parentNode.insertBefore(box, stage);
+    }
+    box.innerHTML = '';
+    if (!isEnabled()) { box.hidden = true; return; }
+    var off = TOGGLE_IDS().filter(function (id) { return !document.getElementById(id).checked; });
+    box.hidden = !off.length;
+    if (!off.length) return;
+    var t = document.createElement('span');
+    t.className = 'preview-hidden-parts-title';
+    t.textContent = labels.hiddenParts || 'Hidden parts:';
+    box.appendChild(t);
+    off.forEach(function (id) {
+      var real = document.getElementById(id);
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'btn-admin btn-admin-sm preview-hidden-part';
+      b.textContent = '+ ' + fieldLabel(real);
+      b.addEventListener('click', function () { real.checked = true; fire(real); renderHiddenParts(); });
+      box.appendChild(b);
+    });
+  }
+  document.addEventListener('change', function (ev) {
+    if (ev.target && ev.target.type === 'checkbox') renderHiddenParts();
+  });
   var css = document.createElement('style');
-  css.textContent = '#settingsForm .preview-covered, #settingsForm .preview-covered-empty{display:none!important}';
+  css.textContent = '#settingsForm .preview-covered, #settingsForm .preview-covered-empty{display:none!important}'
+    + '.preview-hidden-parts{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}'
+    + '.preview-hidden-parts[hidden]{display:none}';
   document.head.appendChild(css);
   var editToggle = document.getElementById('previewEditToggle');
-  if (editToggle) editToggle.addEventListener('change', applyCovered);
+  if (editToggle) editToggle.addEventListener('change', function () { applyCovered(); renderHiddenParts(); });
   applyCovered();
+  renderHiddenParts();
 
-  window.__adminPreviewEditor = { REGIONS: REGIONS, findRegion: findRegion, coveredIds: coveredIds, applyCovered: applyCovered };
+  window.__adminPreviewEditor = { REGIONS: REGIONS, findRegion: findRegion, coveredIds: coveredIds, renderHiddenParts: renderHiddenParts, applyCovered: applyCovered };
 })();

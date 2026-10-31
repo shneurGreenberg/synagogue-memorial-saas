@@ -83,7 +83,7 @@ function ShabbatTimesInner({ t }) {
         </div>
       )}
       {times && (
-        <div className="shabbat-times-row">
+        <div className="shabbat-times-row" dir={uiLang === 'he' ? 'rtl' : undefined}>
           <div className="shabbat-times-item shabbat-enter">
             <span className="shabbat-label">{enterLabel}</span>
             <span className="shabbat-time">{formatShabbatClockTime(times.enter, timezone)}</span>
