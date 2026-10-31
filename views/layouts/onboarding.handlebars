@@ -41,11 +41,11 @@
     {{#if showOnboardingMap}}
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     {{/if}}
-    <script src="/js/onboarding-lang.js"></script>
+    <script src="/js/onboarding-lang.js?v={{@root.cssVersion}}"></script>
     {{#if showOnboardingWizard}}
     <script type="application/json" id="onboardingConfig">{{{onboardingConfigJson}}}</script>
-    <script src="/js/community-web-address.js"></script>
-    <script src="/js/onboarding-wizard.js"></script>
+    <script src="/js/community-web-address.js?v={{@root.cssVersion}}"></script>
+    <script src="/js/onboarding-wizard.js?v={{@root.cssVersion}}"></script>
     {{/if}}
 </body>
 

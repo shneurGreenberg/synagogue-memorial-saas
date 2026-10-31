@@ -1992,6 +1992,11 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
             contacts: legacy.contacts,
             ...parsePermanentFromBody(req.body),
         };
+        {
+            const { normalizeGender, inferPersonGender } = require('../lib/deceased-gender');
+            const chosen = normalizeGender(req.body.gender);
+            newPerson.gender = chosen !== 'unknown' ? chosen : inferPersonGender({ name });
+        }
         const diedAfterSunset = parseDiedAfterSunset(req.body.diedAfterSunset);
         if (deathDate) {
             newPerson.gregorianDateOfDeath = deathDate;
@@ -2038,6 +2043,9 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
             'people.$.contact': legacy.contact,
             'people.$.contacts': legacy.contacts,
         };
+        if (Object.prototype.hasOwnProperty.call(req.body, 'gender')) {
+            updateFields['people.$.gender'] = require('../lib/deceased-gender').normalizeGender(req.body.gender);
+        }
         if (Object.prototype.hasOwnProperty.call(req.body, 'permanent')) {
             const permanentFields = parsePermanentFromBody(req.body);
             updateFields['people.$.permanent'] = permanentFields.permanent;

@@ -29,15 +29,15 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     {{/if}}
     {{#if showMasterMap}}
-    <script src="/js/community-web-address.js"></script>
-    <script src="/js/master-dashboard.js"></script>
+    <script src="/js/community-web-address.js?v={{@root.cssVersion}}"></script>
+    <script src="/js/master-dashboard.js?v={{@root.cssVersion}}"></script>
     {{/if}}
     {{#if showMasterWizard}}
     <script type="application/json" id="masterWizardLabels">{{{wizardLabelsJson}}}</script>
-    <script src="/js/master-wizard.js"></script>
+    <script src="/js/master-wizard.js?v={{@root.cssVersion}}"></script>
     {{/if}}
     {{#if showMasterLogout}}
-    <script src="/js/master-onboarding-copy.js"></script>
+    <script src="/js/master-onboarding-copy.js?v={{@root.cssVersion}}"></script>
     {{/if}}
 </body>
 
