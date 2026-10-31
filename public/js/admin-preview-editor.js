@@ -17,24 +17,43 @@
   var REGIONS = [
     { key: 'clock', selector: '.board-clock-block', fields: ['clockColor', 'fontScale_clock'] },
     { key: 'shabbat', selector: '.board-shabbat-block', fields: ['shabbatTimesEnabled', 'shabbatColor', 'fontScale_shabbat'] },
+    // 1.31.2 I27: logo and candle settings are whole tiles of the form; they are moved into the panel
+    // while it is open ("move") and put back when it closes, so saving is unchanged.
+    { key: 'logo', selector: '.community-logo-img, .community-logo-flip', fields: [], move: ['.settings-media-tile--logo'] },
     { key: 'header', selector: '.board-header', fields: ['boardTitleText', 'primaryColor', 'fontScale_boardHeader',
-      'boardSubtitleEnabled', 'boardSubtitleText', 'boardSubtitleColor', 'fontScale_boardSubtitle'] },
+      'boardSubtitleEnabled', 'boardSubtitleText', 'boardSubtitleColor', 'boardSubtitleWeight', 'fontScale_boardSubtitle'] },
     { key: 'bottom', selector: '.synagogue-info-panel', fields: ['boardMode', 'combinedInfoScale', 'combinedAnnouncementScale', 'accentColor'] },
+    { key: 'candle', selector: '.css-candle, .prayer-reading-candle', fields: [], move: ['.settings-candle-preview-tile'] },
     { key: 'tiles', selector: '.cards-grid .card, .cards-grid-kadish .card', fields: ['primaryColor', 'textColor', 'tileColor',
-      'tileOpacity', 'tileBorderColor', 'tileBorderWidth', 'tileBorderRadius', 'fontScale_tileTitle', 'fontScale_tileDate',
+      'tileOpacity', 'tileBorderColor', 'tileBorderWidth', 'tileBorderRadius', 'fontScale_tileTitle', 'fontScale_tileDate', 'fontScale_torahNames',
       'boardCalendar', 'dateDisplay'] },
     { key: 'hayomYom', selector: '.hayom-yom-panel', fields: ['feature_hayomYom', 'fontScale_hayomYom', 'accentColor'] },
     { key: 'dailyStudy', selector: '.daily-gates-panel', fields: ['feature_dailyChumash', 'feature_dailyTehillim',
       'feature_dailyRambam', 'feature_dailyTanya', 'fontScale_dailyStudy', 'accentColor'] },
     { key: 'weather', selector: '.weather-panel', fields: ['feature_weather', 'fontScale_weather'] },
-    { key: 'prayers', selector: '.memorial-prayers', fields: ['feature_kelMaleRachamim', 'feature_izkor', 'fontScale_prayers'] },
+    { key: 'prayers', selector: '.memorial-prayers', fields: ['feature_kelMaleRachamim', 'feature_izkor', 'fontScale_prayers', 'fontScale_prayerOverlay'] },
     { key: 'donationQr', selector: '.donation-qr-panel', fields: ['publicSubmissionShowDonationQr', 'donationQrTitle',
-      'donationQrText', 'publicSubmissionDonationUrl', 'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale'] },
+      'donationQrText', 'publicSubmissionDonationUrl', 'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale'], move: ['input[name="donationQrImage"]'] },
     { key: 'memorialQr', selector: '.memorial-submission-panel', fields: ['publicSubmissionShowRegistrationQr', 'memorialQrTitle',
-      'memorialQrText', 'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale'] },
+      'memorialQrText', 'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale'], move: ['input[name="registrationQrImage"]'] },
     { key: 'side', selector: '.side-panel', fields: SIDE_FIELDS },
     { key: 'middle', selector: '.middle', fields: ['panelBorderColor', 'panelBorderWidth', 'panelBorderRadius', 'tileColor', 'boardMode'] },
   ];
+
+  // Resolve the form nodes each region moves into its panel. Their fields get form="settingsForm"
+  // so they are still submitted while they sit in the panel (outside the <form>).
+  REGIONS.forEach(function (r) {
+    r.moveNodes = [];
+    (r.move || []).forEach(function (sel) {
+      var el = document.querySelector('#settingsForm ' + sel);
+      if (!el) return;
+      if (el.tagName === 'INPUT') el = el.closest('label.file-drop-label') || el.parentNode;
+      el.querySelectorAll('input, select, textarea').forEach(function (f) { f.setAttribute('form', 'settingsForm'); });
+      r.moveNodes.push(el);
+    });
+  });
+
+  function isTextSize(id) { return /^fontScale_/.test(id || '') || /Scale$/.test(id || ''); }
 
   function findRegion(target) {
     for (var i = 0; i < REGIONS.length; i += 1) {
@@ -48,6 +67,9 @@
     var id = real.id;
     var lbl = id ? document.querySelector('label[for="' + id + '"]') : null;
     var text = lbl && !lbl.classList.contains('toggle-switch') ? lbl.textContent : '';
+    var emb = !text && real.closest('.settings-embedded-slider');
+    var embLabel = emb && emb.querySelector('.settings-embedded-slider-label');
+    if (embLabel) text = embLabel.textContent;
     if (!text) {
       var setting = real.closest('.admin-theme-setting');
       var sl = setting && setting.querySelector('.admin-theme-setting-label');
@@ -91,6 +113,29 @@
       proxy.addEventListener('input', function () { real.value = proxy.value; fire(real); });
       return proxy;
     }
+    if (real.type === 'number' && isTextSize(real.id)) {
+      // 1.31.2 I28: text size is only + and − buttons, no number.
+      proxy = document.createElement('span');
+      proxy.className = 'preview-editor-size-buttons';
+      [['−', -1], ['+', 1]].forEach(function (pair) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'admin-number-stepper-btn';
+        b.textContent = pair[0];
+        b.addEventListener('click', function (ev) {
+          ev.preventDefault();
+          var step = parseFloat(real.getAttribute('step')) || 1;
+          var cur = parseFloat(real.value);
+          if (!isFinite(cur)) cur = parseFloat(real.getAttribute('min')) || 0;
+          var next = cur + pair[1] * step;
+          var S = window.AdminNumberStepper;
+          real.value = S && S.clampValue ? S.clampValue(real, next) : next;
+          fire(real);
+        });
+        proxy.appendChild(b);
+      });
+      return proxy;
+    }
     proxy = document.createElement('input');
     proxy.type = real.type === 'checkbox' ? 'checkbox' : (real.type || 'text');
     if (proxy.type === 'checkbox') {
@@ -107,7 +152,16 @@
   }
 
   var panel;
+  var movedBack = [];
   function closePanel() {
+    movedBack.forEach(function (m) {
+      if (m.ph.parentNode) {
+        m.ph.parentNode.insertBefore(m.node, m.ph);
+        m.ph.parentNode.removeChild(m.ph);
+      }
+      if (isEnabled()) m.node.classList.add('preview-covered');
+    });
+    movedBack = [];
     if (panel && panel.parentNode) panel.parentNode.removeChild(panel);
     panel = null;
   }
@@ -148,6 +202,14 @@
       row.appendChild(buildControl(real));
       body.appendChild(row);
     });
+    (region.moveNodes || []).forEach(function (node) {
+      var ph = document.createComment('preview-moved');
+      node.parentNode.insertBefore(ph, node);
+      node.classList.remove('preview-covered', 'preview-covered-empty');
+      node.classList.add('preview-editor-moved');
+      body.appendChild(node);
+      movedBack.push({ node: node, ph: ph });
+    });
     if (!body.children.length) {
       var empty = document.createElement('p');
       empty.className = 'field-hint';
@@ -187,7 +249,7 @@
   function attach(frame) {
     var doc;
     try { doc = frame.contentDocument; } catch (e) { return; }
-    if (!doc || doc.__previewEditorAttached) return;
+    if (!doc || doc.__previewEditorAttached || !(doc.head || doc.documentElement)) return;
     doc.__previewEditorAttached = true;
     var style = doc.createElement('style');
     style.textContent = 'html.preview-edit-on .board-clock-block:hover, html.preview-edit-on .board-shabbat-block:hover,'
@@ -202,9 +264,22 @@
     syncClass();
     var toggle = document.getElementById('previewEditToggle');
     if (toggle) toggle.addEventListener('change', function () { syncClass(); if (!toggle.checked) closePanel(); });
+    doc.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') closePanel(); });
     doc.addEventListener('click', function (ev) {
       if (!isEnabled()) return;
       var hit = findRegion(ev.target);
+      // The candle sits under other layers of the tile, so match it by position too.
+      var candleRegion = REGIONS.filter(function (r) { return r.key === 'candle'; })[0];
+      if (candleRegion && (!hit || hit.region.key === 'tiles')) {
+        Array.prototype.some.call(doc.querySelectorAll('.css-candle-wax, .css-candle-flame, .css-candle-glow'), function (c) {
+          var cr = c.getBoundingClientRect();
+          if (cr.width && ev.clientX >= cr.left && ev.clientX <= cr.right && ev.clientY >= cr.top && ev.clientY <= cr.bottom) {
+            hit = { region: candleRegion, el: c };
+            return true;
+          }
+          return false;
+        });
+      }
       if (!hit) return;
       ev.preventDefault();
       ev.stopPropagation();
@@ -262,11 +337,17 @@
       var wrap = real && real.closest(WRAP);
       if (wrap && form.contains(wrap)) wrap.classList.toggle('preview-covered', on);
     });
-    form.querySelectorAll('.settings-block, .typography-group, .font-scale-grid').forEach(function (g) {
+    REGIONS.forEach(function (r) {
+      r.moveNodes.forEach(function (node) { if (form.contains(node)) node.classList.toggle('preview-covered', on); });
+    });
+    // 1.31.2 I27: also drop rows, tiles, groups and whole sections left with no control.
+    var GROUPS = '.admin-panel, .settings-block, .settings-media-grid, .settings-media-tile, .settings-copy-group, '
+      + '.settings-copy-details, .board-features-group, .typography-group, .font-scale-grid, .slider-field-modern, .settings-embedded-slider';
+    form.querySelectorAll(GROUPS).forEach(function (g) {
       g.classList.remove('preview-covered-empty');
     });
     if (!on) return;
-    form.querySelectorAll('.typography-group, .font-scale-grid, .settings-block').forEach(function (g) {
+    Array.prototype.slice.call(form.querySelectorAll(GROUPS)).reverse().forEach(function (g) {
       var visible = Array.prototype.some.call(g.querySelectorAll('input, select, textarea'), function (el) {
         return el.type !== 'hidden' && !el.closest('.preview-covered') && !el.closest('.preview-covered-empty');
       });
@@ -274,7 +355,7 @@
     });
   }
   function TOGGLE_IDS() {
-    var ids = ['shabbatTimesEnabled', 'publicSubmissionShowDonationQr', 'publicSubmissionShowRegistrationQr'];
+    var ids = ['shabbatTimesEnabled', 'boardHideSearchAndPager', 'publicSubmissionShowDonationQr', 'publicSubmissionShowRegistrationQr'];
     document.querySelectorAll('#settingsForm input[type="checkbox"][id^="feature_"]').forEach(function (el) { ids.push(el.id); });
     return ids.filter(function (id) { return document.getElementById(id); });
   }
@@ -291,29 +372,47 @@
     }
     box.innerHTML = '';
     if (!isEnabled()) { box.hidden = true; return; }
-    var off = TOGGLE_IDS().filter(function (id) { return !document.getElementById(id).checked; });
-    box.hidden = !off.length;
-    if (!off.length) return;
-    var t = document.createElement('span');
-    t.className = 'preview-hidden-parts-title';
-    t.textContent = labels.hiddenParts || 'Hidden parts:';
-    box.appendChild(t);
-    off.forEach(function (id) {
-      var real = document.getElementById(id);
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.className = 'btn-admin btn-admin-sm preview-hidden-part';
-      b.textContent = '+ ' + fieldLabel(real);
-      b.addEventListener('click', function () { real.checked = true; fire(real); renderHiddenParts(); });
-      box.appendChild(b);
-    });
+    var inPanel = {};
+    REGIONS.forEach(function (r) { r.fields.forEach(function (id) { inPanel[id] = true; }); });
+    var ids = TOGGLE_IDS();
+    var off = ids.filter(function (id) { return !document.getElementById(id).checked; });
+    // 1.31.2 I27a: a part switched on from this list that has no panel of its own (e.g. the Kaddish
+    // symbol) gets a chip here to switch it off again; parts with a panel switch off from it.
+    var onNoPanel = ids.filter(function (id) { return document.getElementById(id).checked && !inPanel[id]; });
+    box.hidden = !off.length && !onNoPanel.length;
+    function row(list, titleText, prefix, value, cls) {
+      if (!list.length) return;
+      var line = document.createElement('div');
+      line.className = 'preview-hidden-parts-row ' + cls;
+      var t = document.createElement('span');
+      t.className = 'preview-hidden-parts-title';
+      t.textContent = titleText;
+      line.appendChild(t);
+      list.forEach(function (id) {
+        var real = document.getElementById(id);
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'btn-admin btn-admin-sm preview-hidden-part';
+        b.setAttribute('data-part', id);
+        b.textContent = prefix + ' ' + fieldLabel(real);
+        b.addEventListener('click', function () { real.checked = value; fire(real); renderHiddenParts(); });
+        line.appendChild(b);
+      });
+      box.appendChild(line);
+    }
+    row(off, labels.hiddenParts || 'Hidden parts:', '+', true, 'is-off');
+    row(onNoPanel, labels.shownParts || 'Shown parts:', '✕', false, 'is-on');
   }
   document.addEventListener('change', function (ev) {
     if (ev.target && ev.target.type === 'checkbox') renderHiddenParts();
   });
   var css = document.createElement('style');
   css.textContent = '#settingsForm .preview-covered, #settingsForm .preview-covered-empty{display:none!important}'
-    + '.preview-hidden-parts{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}'
+    + '.preview-hidden-parts{display:flex;flex-direction:column;gap:6px;margin:6px 0}'
+    + '.preview-hidden-parts-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}'
+    + '.preview-editor-size-buttons{display:inline-flex;gap:6px}'
+    + '.preview-editor-moved{margin-top:8px;max-width:100%}'
+    + '.preview-editor-panel{max-height:80vh;overflow:auto}'
     + '.preview-hidden-parts[hidden]{display:none}';
   document.head.appendChild(css);
   var editToggle = document.getElementById('previewEditToggle');

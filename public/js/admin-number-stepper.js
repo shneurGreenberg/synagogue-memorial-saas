@@ -55,6 +55,11 @@
 
     var step = parseNum(input.getAttribute('step'), 1);
 
+    // 1.31.2 I28: text-size steppers show only the + and − buttons, no number.
+    if (/^fontScale_/.test(input.id || '') || /Scale$/.test(input.id || '')) {
+      wrap.classList.add('admin-number-stepper--buttons-only');
+    }
+
     wrap.querySelectorAll('[data-admin-stepper-delta]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var delta = parseNum(btn.getAttribute('data-admin-stepper-delta'), 0);
@@ -70,6 +75,16 @@
     input.addEventListener('blur', function () {
       setInputValue(input, parseNum(input.value, parseNum(input.getAttribute('min'), 0)), true);
     });
+  }
+
+  if (typeof document.getElementById === 'function' && typeof document.createElement === 'function'
+    && !document.getElementById('adminStepperButtonsOnlyCss')) {
+    var css = document.createElement('style');
+    css.id = 'adminStepperButtonsOnlyCss';
+    css.textContent = '.admin-number-stepper--buttons-only .admin-number-stepper-input,'
+      + '.admin-number-stepper--buttons-only .admin-number-stepper-suffix{display:none!important}'
+      + '.admin-number-stepper--buttons-only{gap:8px}';
+    (document.head || document.documentElement).appendChild(css);
   }
 
   function initAdminNumberSteppers(root) {
