@@ -76,6 +76,14 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue
   console.log('MongoDB connected');
   const { runStartupMigrations } = require('./lib/migrations/run-migrations');
   await runStartupMigrations();
+  // 1.31.1: infer deceased gender for records without one (idempotent, never overrides male/female).
+  try {
+    const { migrateDeceasedGender } = require('./lib/migrate-deceased-gender');
+    const report = await migrateDeceasedGender(require('./models/Synagogue'));
+    report.filter((r) => r.updated).forEach((r) => console.log(`Gender migration ${r.slug}: male=${r.male} female=${r.female} missing=${r.missing} (updated ${r.updated})`));
+  } catch (err) {
+    console.error('Gender migration failed:', err.message);
+  }
   // 1.29.5 I6: drop machine-translated Hebrew Hayom Yom so the original is refetched (idempotent).
   try {
     const { invalidateTranslatedHebrew } = require('./lib/hayom-yom-store');

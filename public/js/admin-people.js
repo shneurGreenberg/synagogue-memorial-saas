@@ -15,6 +15,18 @@
 
   const searchInput = document.getElementById('peopleSearch');
   const undatedFilter = null;
+  const genderMissingFilter = document.getElementById('genderMissingFilter');
+  function isGenderMissing(person) { return person.gender !== 'male' && person.gender !== 'female'; }
+  function syncGenderBadge(row, person) {
+    row.setAttribute('data-gender-missing', isGenderMissing(person) ? '1' : '0');
+    const nameLine = row.querySelector('.person-name-line');
+    if (!nameLine) return;
+    let b = nameLine.querySelector('.person-gender-missing-badge');
+    if (isGenderMissing(person)) {
+      if (!b) { b = document.createElement('span'); b.className = 'person-undated-badge person-gender-missing-badge'; nameLine.appendChild(b); }
+      b.textContent = page.getAttribute('data-gender-missing-badge') || 'Gender missing';
+    } else if (b) { b.remove(); }
+  }
   const THUMB_WIDTH = 128;
 
   function parsePeopleListSearchParam(raw) {
@@ -315,6 +327,7 @@
   }
 
   function syncUndatedBadge(row, person) {
+    syncGenderBadge(row, person);
     const undated = !hasDeathDate(person);
     row.setAttribute('data-undated', undated ? '1' : '0');
     const nameLine = row.querySelector('.person-name-line');
@@ -581,7 +594,9 @@
       const name = (row.getAttribute('data-name') || '').toLowerCase();
       const matchesQuery = !query || name.includes(query);
       const matchesUndated = !undatedOnly || row.getAttribute('data-undated') === '1';
-      row.style.display = matchesQuery && matchesUndated ? '' : 'none';
+      const genderOnly = genderMissingFilter && genderMissingFilter.getAttribute('aria-pressed') === 'true';
+      const matchesGender = !genderOnly || row.getAttribute('data-gender-missing') === '1';
+      row.style.display = matchesQuery && matchesUndated && matchesGender ? '' : 'none';
     });
 
     const visible = rows.filter(function (row) { return row.style.display !== 'none'; });
@@ -754,6 +769,7 @@
     meta.appendChild(small);
 
     row.appendChild(meta);
+    syncGenderBadge(row, person);
 
     return row;
   }
@@ -1104,6 +1120,10 @@
       editAfterSunset.checked = diedAfterSunset;
     }
     document.getElementById('editText').value = person.text || '';
+    const editGender = document.getElementById('editGender');
+    if (editGender) {
+      editGender.value = person.gender === 'male' || person.gender === 'female' ? person.gender : 'unknown';
+    }
     const editPermanent = document.getElementById('editPermanent');
     if (editPermanent) {
       editPermanent.checked = !!person.permanent;
@@ -1262,6 +1282,14 @@
     });
 
     searchInput.addEventListener('input', applyFilters);
+    if (genderMissingFilter) {
+      genderMissingFilter.addEventListener('click', function () {
+        const pressed = genderMissingFilter.getAttribute('aria-pressed') === 'true';
+        genderMissingFilter.setAttribute('aria-pressed', pressed ? 'false' : 'true');
+        genderMissingFilter.classList.toggle('is-active', !pressed);
+        applyFilters();
+      });
+    }
 
     if (undatedFilter) {
       undatedFilter.addEventListener('click', function () {

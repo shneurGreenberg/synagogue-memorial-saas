@@ -71,7 +71,7 @@ const PersonSchema = new mongoose.Schema({
     year: { type: Number, default: undefined },
   },
   diedAfterSunset: { type: Boolean, default: false },
-  gender: { type: String, enum: ['male', 'female', ''], default: '' },
+  gender: { type: String, enum: ['male', 'female', 'unknown', ''], default: '' },
   internalNotes: { type: String, default: '' },
   // 1.29: always shown on the board (e.g. donors), optional end date.
   permanent: { type: Boolean, default: false },

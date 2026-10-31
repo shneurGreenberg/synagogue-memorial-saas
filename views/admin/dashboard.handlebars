@@ -579,10 +579,10 @@
     <form id="adminDetachedActionsForm" class="visually-hidden-reset-form" aria-hidden="true" hidden></form>
 </div>
 
-<script src="/js/candle-palette-browser.js"></script>
-<script src="/js/admin-candle-preview.js"></script>
-<script src="/js/admin-number-stepper.js"></script>
-<script src="/js/admin-settings-panel.js"></script>
+<script src="/js/candle-palette-browser.js?v={{@root.cssVersion}}"></script>
+<script src="/js/admin-candle-preview.js?v={{@root.cssVersion}}"></script>
+<script src="/js/admin-number-stepper.js?v={{@root.cssVersion}}"></script>
+<script src="/js/admin-settings-panel.js?v={{@root.cssVersion}}"></script>
 <script>
     (function () {
         var dialog = document.getElementById('codeReleaseDialog');
@@ -1409,4 +1409,4 @@
         hiddenParts: '{{t 'preview_edit_hidden_parts'}}', donationQr: '{{t 'preview_edit_donation_qr'}}', memorialQr: '{{t 'preview_edit_memorial_qr'}}'
     } };
 </script>
-<script src="/js/admin-preview-editor.js"></script>
+<script src="/js/admin-preview-editor.js?v={{@root.cssVersion}}"></script>

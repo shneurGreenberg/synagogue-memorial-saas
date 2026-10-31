@@ -141,7 +141,7 @@ describe('1.30.0 I16: click-to-edit preview (stage 1)', () => {
     });
     assert.match(js, /real\.value = proxy\.value; fire\(real\)/);
     const v = read('views/admin/dashboard.handlebars');
-    assert.match(v, /<script src="\/js\/admin-preview-editor\.js"><\/script>/);
+    assert.match(v, /<script src="\/js\/admin-preview-editor\.js\?v=\{\{@root\.cssVersion\}\}"><\/script>/);
     assert.match(v, /id="previewEditToggle"/);
   });
 });
