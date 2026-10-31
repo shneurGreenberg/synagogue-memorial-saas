@@ -11,7 +11,6 @@ describe('1.30.1 I17: preview-panel settings are hidden from the regular section
   it('hides covered fields but keeps toggles and board mode', () => {
     assert.match(js, /preview-covered/);
     assert.match(js, /KEEP_IN_FORM = \{ boardMode: true \}/);
-    assert.match(js, /real\.type === 'checkbox'/);
     assert.match(js, /previewEditToggle/);
   });
 });

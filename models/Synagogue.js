@@ -71,6 +71,7 @@ const PersonSchema = new mongoose.Schema({
     year: { type: Number, default: undefined },
   },
   diedAfterSunset: { type: Boolean, default: false },
+  gender: { type: String, enum: ['male', 'female', ''], default: '' },
   internalNotes: { type: String, default: '' },
   // 1.29: always shown on the board (e.g. donors), optional end date.
   permanent: { type: Boolean, default: false },
@@ -346,6 +347,8 @@ const SynagogueSchema = new mongoose.Schema({
   people: [PersonSchema],
   personAddRequests: { type: [PersonAddRequestSchema], default: [] },
   contactDirectory: { type: [ContactDirectoryEntrySchema], default: [] },
+  // 1.31.0 I23: { he: { regular, missed }, ru: {...}, en: {...} } gender-neutral templates.
+  yahrzeitMessageTemplates: { type: mongoose.Schema.Types.Mixed, default: {} },
   adminUsers: [AdminUserSchema],
   adminTheme: {
     colorMode: { type: String, enum: ['dark', 'light'], default: 'dark' },

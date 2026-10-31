@@ -6,8 +6,9 @@
       event.stopPropagation();
       const copiedLabel = page ? page.getAttribute('data-copied-label') : 'Copied!';
       const copyLabel = page ? page.getAttribute('data-copy-label') : 'Copy';
-      const card = button.closest('.yahrzeit-card');
-      const textarea = card ? card.querySelector('.yahrzeit-message') : null;
+      const block = button.closest('.yahrzeit-message-block') || button.closest('.yahrzeit-card');
+      const textarea = block ? block.querySelector('.yahrzeit-message') : null;
+      saveEditedMessage(textarea);
       const message = (textarea && textarea.value) || button.getAttribute('data-message') || '';
 
       try {
@@ -27,16 +28,47 @@
     });
   });
 
-  document.querySelectorAll('.yahrzeit-send-btn').forEach(function (button) {
-    button.addEventListener('click', function (event) {
-      if (!window.AdminTileCapture) {
-        return;
-      }
+  /* 1.31.0 I23: the message is editable; an edited text is saved as the community template
+   * (server turns it into gender-neutral form) and the send link is rebuilt with the edited text. */
+  function saveEditedMessage(textarea) {
+    if (!textarea || !page) return Promise.resolve(null);
+    if (textarea.value === textarea.defaultValue) return Promise.resolve(null);
+    var slug = page.getAttribute('data-synagogue-slug');
+    return fetch('/admin/' + slug + '/yahrzeit/message-template', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        personId: textarea.getAttribute('data-person-id'),
+        contactIndex: textarea.getAttribute('data-contact-index'),
+        missed: textarea.getAttribute('data-missed') === '1',
+        message: textarea.value,
+      }),
+    }).then(function (r) { return r.ok ? r.json() : null; }).then(function (data) {
+      if (data && data.ok) textarea.defaultValue = textarea.value;
+      return data;
+    }).catch(function () { return null; });
+  }
 
+  document.querySelectorAll('.yahrzeit-message').forEach(function (textarea) {
+    textarea.addEventListener('change', function () { saveEditedMessage(textarea); });
+  });
+
+  document.querySelectorAll('.yahrzeit-send-btn').forEach(function (button) {
+    button.addEventListener('click', async function (event) {
       event.preventDefault();
+      var block = button.closest('.yahrzeit-message-block');
+      var textarea = block ? block.querySelector('.yahrzeit-message') : null;
+      var edited = textarea && textarea.value !== textarea.defaultValue;
+      var saved = edited ? await saveEditedMessage(textarea) : null;
+      if (saved && saved.contactLink) button.setAttribute('href', saved.contactLink);
       var exportUrl = button.getAttribute('data-export-url');
       var personName = button.getAttribute('data-person-name') || '';
       var contactLink = button.getAttribute('href');
+      if (!window.AdminTileCapture) {
+        if (contactLink) window.open(contactLink, '_blank', 'noopener,noreferrer');
+        return;
+      }
 
       window.AdminTileCapture.captureBoardCardPng(exportUrl).then(function (dataUrl) {
         window.AdminTileCapture.downloadDataUrl(dataUrl, personName);

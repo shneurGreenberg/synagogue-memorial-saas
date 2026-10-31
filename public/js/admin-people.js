@@ -846,7 +846,7 @@
     if (nameInput) nameInput.value = source.name || '';
     if (phoneInput) phoneInput.value = source.phone || '';
     if (emailInput) emailInput.value = source.email || '';
-    if (platformSelect) platformSelect.value = source.platform || '';
+    if (platformSelect) platformSelect.value = source.platform || (contact ? '' : (window.peopleDefaultContactPlatform || ''));
 
     syncContactPlatformFields(row);
     if (window.ContactPlatformUI && platformSelect) {

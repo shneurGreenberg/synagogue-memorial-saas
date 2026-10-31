@@ -559,6 +559,27 @@ app.get('/s/:slug/api/weather', apiRateLimiter, async (req, res) => {
   }
 });
 
+app.get('/s/:slug/api/jewish-content/range', apiRateLimiter, async (req, res) => {
+  try {
+    const lite = await loadSynagogueLite(req.params.slug);
+    if (!lite) {
+      return res.status(404).json({ error: 'Synagogue not found' });
+    }
+    const from = String(req.query.from || '');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(from)) {
+      return res.status(400).json({ error: 'from=YYYY-MM-DD required' });
+    }
+    const lang = ['ru', 'en', 'he'].includes(req.query.lang) ? req.query.lang : lite.language;
+    const { getJewishFeedRange } = require('./lib/jewish-feed');
+    const days = await getJewishFeedRange(lang, lite, from, req.query.days);
+    res.set('Cache-Control', 'public, max-age=3600');
+    return res.json({ from, days });
+  } catch (err) {
+    console.error('Jewish content range error:', err);
+    return res.status(500).json({ error: publicErrorMessage(err) });
+  }
+});
+
 app.get('/s/:slug/api/jewish-content', apiRateLimiter, async (req, res) => {
   try {
     const lite = await loadSynagogueLite(req.params.slug);

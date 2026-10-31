@@ -1,3 +1,4 @@
+import { readOffline, writeOffline } from './offline-cache';
 import { resolveBoardTimezone } from './timezone';
 
 const HEBCAL_API = 'https://www.hebcal.com/shabbat?cfg=json';
@@ -304,13 +305,55 @@ async function fetchShabbatTimesForDate(location, now) {
   return null;
 }
 
+// 1.31.0 I25: keep ~5 weeks of candle/havdalah items on the device for offline boards.
+function shabbatCacheKey(location) {
+  return `shabbat:${location.geonameId || `${location.lat},${location.lng}`}`;
+}
+
+export function mergeShabbatItems(existing, incoming, now = new Date()) {
+  const byKey = new Map();
+  const cutoff = now.getTime() - 8 * 24 * 60 * 60 * 1000;
+  [...(existing || []), ...(incoming || [])].forEach((item) => {
+    if (!item || !item.date || (item.category !== 'candles' && item.category !== 'havdalah')) return;
+    if (new Date(item.date).getTime() < cutoff) return;
+    byKey.set(`${item.category}|${item.date}`, { category: item.category, date: item.date, memo: item.memo || '', hebrew: item.hebrew || '' });
+  });
+  return Array.from(byKey.values()).sort((a, b) => String(a.date).localeCompare(String(b.date)));
+}
+
+export function shabbatTimesFromCache(location, now = new Date()) {
+  const items = readOffline(shabbatCacheKey(location));
+  return items && items.length ? parseHebcalItems(items, now) : null;
+}
+
+let shabbatPrefetchDay = '';
+async function prefetchShabbatWeeks(location, now) {
+  const day = now.toISOString().slice(0, 10);
+  if (shabbatPrefetchDay === day) return;
+  shabbatPrefetchDay = day;
+  let merged = readOffline(shabbatCacheKey(location)) || [];
+  for (let week = 0; week <= 5; week += 1) {
+    try {
+      const items = await fetchHebcalItems(location, new Date(now.getTime() + week * 7 * 24 * 60 * 60 * 1000));
+      merged = mergeShabbatItems(merged, items, now);
+    } catch {
+      break;
+    }
+  }
+  writeOffline(shabbatCacheKey(location), merged);
+}
+
 export async function fetchShabbatTimes(data, now = new Date()) {
   const location = getBoardLocation(data);
 
   try {
-    return await fetchShabbatTimesForDate(location, now);
+    const times = await fetchShabbatTimesForDate(location, now);
+    prefetchShabbatWeeks(location, now).catch(() => {});
+    return times;
   } catch (err) {
-    console.error('Shabbat times fetch failed:', err);
+    const cached = shabbatTimesFromCache(location, now);
+    if (cached) return cached;
+    console.warn('Shabbat times fetch failed (no offline cache):', err && err.message);
     return null;
   }
 }

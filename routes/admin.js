@@ -110,6 +110,8 @@ const {
 } = require('../lib/person-add-request');
 const { findSimilarPeopleForSubmission } = require('../lib/person-name-similarity');
 const { buildPersonFromAddRequest } = require('../lib/person-add-request-approve');
+const { defaultPhonePlatformFor } = require('../lib/person-contact');
+const { addMissingContactsToDirectory } = require('../lib/contact-directory');
 const { parsePersonContactsFromBody, normalizePersonContact, personContactsToLegacyFields, getPersonContacts, hasContactDetails } = require('../lib/person-contact');
 const { parseContactImportFile } = require('../lib/google-contacts-import');
 const {
@@ -1450,6 +1452,36 @@ router.get('/:slug/yahrzeit/tile/:personId.png', requireAdmin, requirePermission
     }
 });
 
+router.post('/:slug/yahrzeit/message-template', requireAdmin, requirePermission('people'), express.json({ limit: '64kb' }), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const tplLib = require('../lib/yahrzeit-message-template');
+        const { normalizePublicSubmission } = require('../lib/public-submission');
+        const { buildTemplatedYahrzeitMessage, normalizeLang } = require('../lib/yahrzeit-messages');
+        const { buildContactActionLink } = require('../lib/contact-links');
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }).lean();
+        if (!synagogue) return res.status(404).json({ ok: false });
+        const person = (synagogue.people || []).find((p) => p.id === Number(req.body.personId));
+        if (!person) return res.status(404).json({ ok: false });
+        const message = String(req.body.message || '').slice(0, 4000);
+        if (!message.trim()) return res.status(400).json({ ok: false });
+        const contacts = getPersonContacts(person);
+        const idx = Number.parseInt(req.body.contactIndex, 10);
+        const contact = contacts[Number.isFinite(idx) && idx >= 0 ? idx : 0] || {};
+        const lang = normalizeLang(synagogue.language || 'ru');
+        const publicSubmission = normalizePublicSubmission(synagogue.publicSubmission, synagogue.provisioning);
+        const synagogueName = (synagogue.titles && synagogue.titles[lang]) || synagogue.name || synagogue.title || '';
+        const built = buildTemplatedYahrzeitMessage({ synagogue, person, synagogueName, contact, donationUrl: publicSubmission.donationUrl, lang, missed: !!req.body.missed });
+        const template = tplLib.toTemplate(message, { lang, vars: built.vars, gender: built.gender });
+        const kind = req.body.missed ? 'missed' : 'regular';
+        await Synagogue.updateOne({ slug: req.params.slug }, { $set: { [`yahrzeitMessageTemplates.${lang}.${kind}`]: template } });
+        const normalized = normalizePersonContact(contact);
+        return res.json({ ok: true, template, contactLink: buildContactActionLink(normalized, message, message.split('\n')[0]) });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
+    }
+});
+
 router.get('/:slug/people/message/:personId.json', requireAdmin, requirePermission('people'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
@@ -1922,6 +1954,18 @@ router.post('/:slug/end-master-impersonation', requireAdmin, async (req, res) =>
     }
 });
 
+async function syncContactsToDirectory(slug, synagogue, contacts) {
+    try {
+        if (!synagogue || !contacts || !contacts.length) return;
+        const result = addMissingContactsToDirectory(synagogue.contactDirectory || [], contacts);
+        if (result.added > 0) {
+            await Synagogue.updateOne({ slug }, { $set: { contactDirectory: result.directory } });
+        }
+    } catch (err) {
+        console.warn('[contacts] directory sync failed:', err && err.message);
+    }
+}
+
 router.post('/:slug/people/add', requireAdmin, requirePermission('people'), upload.single('photo'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
@@ -1930,9 +1974,10 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
         if (deathDate === undefined && res.headersSent) {
             return undefined;
         }
-        const contacts = parsePersonContactsFromBody(req.body);
-        const legacy = personContactsToLegacyFields(contacts);
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
+        const contacts = parsePersonContactsFromBody(req.body, { defaultPhonePlatform: defaultPhonePlatformFor(synagogue && synagogue.language) });
+        const legacy = personContactsToLegacyFields(contacts);
+        await syncContactsToDirectory(req.params.slug, synagogue, contacts);
         const maxId = synagogue.people.reduce((max, p) => p.id > max ? p.id : max, 0);
 
         const newPerson = {
@@ -1980,8 +2025,10 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
         if (deathDate === undefined && res.headersSent) {
             return undefined;
         }
-        const contacts = parsePersonContactsFromBody(req.body);
+        const synForContacts = await Synagogue.findOne({ slug: req.params.slug }, { language: 1, contactDirectory: 1 }).lean();
+        const contacts = parsePersonContactsFromBody(req.body, { defaultPhonePlatform: defaultPhonePlatformFor(synForContacts && synForContacts.language) });
         const legacy = personContactsToLegacyFields(contacts);
+        await syncContactsToDirectory(req.params.slug, synForContacts, contacts);
         const personId = parseInt(id);
 
         const updateFields = {
