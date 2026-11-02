@@ -263,7 +263,7 @@
                 <div class="settings-block">
                     <h3 class="settings-block-title">{{t 'backgrounds_section'}}</h3>
                     <div class="settings-media-grid">
-                        <article class="settings-media-tile">
+                        <article class="settings-media-tile settings-media-tile--bg-page">
                             <div class="saved-view-thumb settings-media-thumb">
                                 {{#if synagogue.theme.backgroundImage}}
                                 <img src="/images/{{synagogue.theme.backgroundImage}}" alt="{{t 'background_image'}}">
@@ -277,7 +277,7 @@
                                 <input type="file" name="backgroundImage" accept="image/*">
                             </label>
                         </article>
-                        <article class="settings-media-tile">
+                        <article class="settings-media-tile settings-media-tile--bg-tiles">
                             <div class="saved-view-thumb settings-media-thumb">
                                 {{#if synagogue.theme.tilesBackground}}
                                 <img src="/images/{{synagogue.theme.tilesBackground}}" alt="{{t 'tiles_background'}}">
@@ -290,6 +290,24 @@
                                 {{t 'replace_image'}}
                                 <input type="file" name="tilesBackground" accept="image/*">
                             </label>
+                        </article>
+                        <article class="settings-media-tile settings-media-tile--bg-middle">
+                            <div class="saved-view-thumb settings-media-thumb">
+                                {{#if synagogue.theme.middleBackground}}
+                                <img src="/images/{{synagogue.theme.middleBackground}}" alt="{{t 'bg_middle_label'}}">
+                                {{else}}
+                                {{#if synagogue.theme.tilesBackground}}<img src="/images/{{synagogue.theme.tilesBackground}}" alt="{{t 'bg_middle_label'}}" style="opacity:.45">{{else}}<img src="/images/wood2.png" alt="{{t 'bg_middle_label'}}" style="opacity:.45">{{/if}}
+                                {{/if}}
+                                <span class="saved-view-thumb-label settings-media-thumb-label">{{t 'bg_middle_label'}}</span>
+                            </div>
+                            <span class="field-hint">{{t 'bg_middle_hint'}}</span>
+                            <label class="file-drop-label file-drop-label-compact settings-media-action">
+                                {{t 'replace_image'}}
+                                <input type="file" name="middleBackground" accept="image/*">
+                            </label>
+                            {{#if synagogue.theme.middleBackground}}
+                            <label class="settings-media-remove"><input type="checkbox" name="removeMiddleBackground" value="1"> {{t 'bg_middle_remove'}}</label>
+                            {{/if}}
                         </article>
                         <article class="settings-media-tile settings-candle-preview-tile">
                             <div class="settings-candle-preview-stage">

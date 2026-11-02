@@ -111,6 +111,8 @@ app.use(helmet({
 
 registerStaticAssets(app, { isProduction });
 
+require('./lib/admin-pwa').registerAdminPwa(app);
+
 app.get('/healthz', (req, res) => {
   res.json(buildHealthPayload());
 });

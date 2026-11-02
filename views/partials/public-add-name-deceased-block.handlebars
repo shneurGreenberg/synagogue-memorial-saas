@@ -52,12 +52,36 @@
         <input type="text" dir="auto" name="deceased[{{index}}][fatherName]" maxlength="120" required value="{{block.fatherName}}" placeholder="{{publicT 'father_name_placeholder'}}">
     </label>
 
-    <label class="public-field public-field-death-date">
+    <fieldset class="public-death-mode-field" data-public-death-mode>
+        <legend>{{publicT 'death_mode_legend'}}</legend>
+        <div class="public-pill-group public-gender-pills" role="radiogroup">
+            <label class="public-pill-option">
+                <input type="radio" name="deceased[{{index}}][deathDateMode]" value="gregorian" class="public-death-mode-input" checked>
+                <span>{{publicT 'death_mode_gregorian'}}</span>
+            </label>
+            <label class="public-pill-option">
+                <input type="radio" name="deceased[{{index}}][deathDateMode]" value="hebrew" class="public-death-mode-input">
+                <span>{{publicT 'death_mode_hebrew'}}</span>
+            </label>
+        </div>
+    </fieldset>
+
+    <div class="public-field public-field-hebrew-death" data-public-death-panel="hebrew" hidden>
+        <span>{{publicT 'death_mode_hebrew'}}</span>
+        <div class="public-hebrew-date-row">
+            <select name="deceased[{{index}}][hebrewDay]" class="public-heb-select public-heb-day" aria-label="{{publicT 'hebrew_day'}}"><option value="">{{publicT 'hebrew_day'}}</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option></select>
+            <select name="deceased[{{index}}][hebrewMonth]" class="public-heb-select public-heb-month" aria-label="{{publicT 'hebrew_month'}}"><option value="">{{publicT 'hebrew_month'}}</option><option value="7">{{publicT 'hm_7'}}</option><option value="8">{{publicT 'hm_8'}}</option><option value="9">{{publicT 'hm_9'}}</option><option value="10">{{publicT 'hm_10'}}</option><option value="11">{{publicT 'hm_11'}}</option><option value="12">{{publicT 'hm_12'}}</option><option value="13">{{publicT 'hm_13'}}</option><option value="1">{{publicT 'hm_1'}}</option><option value="2">{{publicT 'hm_2'}}</option><option value="3">{{publicT 'hm_3'}}</option><option value="4">{{publicT 'hm_4'}}</option><option value="5">{{publicT 'hm_5'}}</option><option value="6">{{publicT 'hm_6'}}</option></select>
+            <input type="number" name="deceased[{{index}}][hebrewYear]" class="public-heb-year" min="3762" max="9999" placeholder="{{publicT 'hebrew_year'}}" dir="ltr">
+        </div>
+        <p class="public-sunset-hint">{{publicT 'hebrew_mode_hint'}}</p>
+    </div>
+
+    <label class="public-field public-field-death-date" data-public-death-panel="gregorian">
         <span>{{publicT 'death_date_label'}}</span>
         <input type="text" name="deceased[{{index}}][deathDate]" class="public-death-date-input" required value="{{block.deathDateDisplay}}" placeholder="{{publicT 'death_date_placeholder'}}" dir="ltr" autocomplete="off" maxlength="10">
     </label>
 
-    <fieldset class="public-sunset-field">
+    <fieldset class="public-sunset-field" data-public-death-panel="gregorian">
         <legend>{{publicT 'sunset_legend'}}</legend>
         <div class="public-pill-group public-gender-pills public-sunset-pills" role="radiogroup">
             <label class="public-pill-option">
@@ -70,6 +94,7 @@
             </label>
         </div>
         <p class="public-sunset-hint">{{publicT 'sunset_field_hint'}}</p>
+        <p class="public-hebrew-preview" data-public-hebrew-preview hidden>{{publicT 'hebrew_date_preview'}}: <strong></strong></p>
     </fieldset>
 
     {{#if inviteMode}}

@@ -137,15 +137,6 @@
                                 <label for="addName">{{t 'name'}}</label>
                                 <input type="text" dir="auto" name="name" id="addName" class="form-control" required placeholder="{{t 'name_placeholder'}}">
                             </div>
-                            <div class="form-field">
-                                <label>{{t 'date_gregorian'}}</label>
-                                <div class="date-row">
-                                    <input type="number" name="date" class="form-control" placeholder="{{t 'day'}}" min="1" max="31">
-                                    <input type="number" name="month" class="form-control" placeholder="{{t 'month'}}" min="1" max="12">
-                                    <input type="number" name="year" class="form-control" placeholder="{{t 'year'}}" min="1" max="9999">
-                                </div>
-                                <span class="field-hint">{{t 'date_optional_hint'}}</span>
-                            </div>
                             <div class="form-field admin-gender-field">
                                 <label>{{t 'gender_label'}}</label>
                                 <select name="gender" class="form-control">
@@ -154,17 +145,7 @@
                                     <option value="female">{{t 'gender_female'}}</option>
                                 </select>
                             </div>
-                            <fieldset class="form-field admin-sunset-field">
-                                <legend>{{t 'died_sunset_legend'}}</legend>
-                                <label class="admin-sunset-option">
-                                    <input type="radio" name="diedAfterSunset" value="before" checked>
-                                    <span>{{t 'died_before_sunset'}}</span>
-                                </label>
-                                <label class="admin-sunset-option">
-                                    <input type="radio" name="diedAfterSunset" value="after">
-                                    <span>{{t 'died_after_sunset'}}</span>
-                                </label>
-                            </fieldset>
+                            {{> admin-death-date-fields prefix="add"}}
                             <div class="form-field admin-permanent-field">
                                 <input type="hidden" name="permanent" value="0">
                                 <label class="admin-permanent-toggle">
@@ -235,15 +216,6 @@
                                 <label for="editName">{{t 'name'}}</label>
                                 <input type="text" dir="auto" name="name" id="editName" class="form-control" required placeholder="{{t 'name_placeholder'}}">
                             </div>
-                            <div class="form-field">
-                                <label>{{t 'date_gregorian'}}</label>
-                                <div class="date-row">
-                                    <input type="number" name="date" id="editDate" class="form-control" placeholder="{{t 'day'}}" min="1" max="31">
-                                    <input type="number" name="month" id="editMonth" class="form-control" placeholder="{{t 'month'}}" min="1" max="12">
-                                    <input type="number" name="year" id="editYear" class="form-control" placeholder="{{t 'year'}}" min="1" max="9999">
-                                </div>
-                                <span class="field-hint">{{t 'date_optional_hint'}}</span>
-                            </div>
                             <div class="form-field admin-gender-field">
                                 <label for="editGender">{{t 'gender_label'}}</label>
                                 <select name="gender" id="editGender" class="form-control">
@@ -252,17 +224,7 @@
                                     <option value="female">{{t 'gender_female'}}</option>
                                 </select>
                             </div>
-                            <fieldset class="form-field admin-sunset-field" id="editSunsetField">
-                                <legend>{{t 'died_sunset_legend'}}</legend>
-                                <label class="admin-sunset-option">
-                                    <input type="radio" name="diedAfterSunset" value="before" id="editDiedBeforeSunset">
-                                    <span>{{t 'died_before_sunset'}}</span>
-                                </label>
-                                <label class="admin-sunset-option">
-                                    <input type="radio" name="diedAfterSunset" value="after" id="editDiedAfterSunset">
-                                    <span>{{t 'died_after_sunset'}}</span>
-                                </label>
-                            </fieldset>
+                            {{> admin-death-date-fields prefix="edit"}}
                             <div class="form-field admin-permanent-field">
                                 <input type="hidden" name="permanent" value="0">
                                 <label class="admin-permanent-toggle">

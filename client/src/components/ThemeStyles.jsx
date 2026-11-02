@@ -359,6 +359,9 @@ export function ThemeStyles() {
       border-width: var(--panel-border-width, 7px) !important;
       border-radius: var(--panel-border-radius, 0px) !important;
     }
+    ${theme.middleBackground ? `.main-container .middle .wooden-panel {
+      background-image: url('${assetUrl(`images/${theme.middleBackground}`)}') !important;
+    }` : ''}
     ${GLASS_SELECTORS} {
       background-color: var(--tile-glass-legacy-base) !important;
       background-image: ${tileGlassLayers(

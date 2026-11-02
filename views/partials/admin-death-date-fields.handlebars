@@ -1,0 +1,55 @@
+<div class="admin-death-date" data-death-date-root data-prefix="{{prefix}}">
+    <fieldset class="form-field admin-death-mode-field">
+        <legend>{{t 'death_mode_label'}}</legend>
+        <div class="admin-death-mode-pills" role="radiogroup">
+            <label class="admin-sunset-option">
+                <input type="radio" name="deathDateMode" value="gregorian" class="death-mode-input" id="{{prefix}}DeathModeGregorian" checked>
+                <span>{{t 'death_mode_gregorian'}}</span>
+            </label>
+            <label class="admin-sunset-option">
+                <input type="radio" name="deathDateMode" value="hebrew" class="death-mode-input" id="{{prefix}}DeathModeHebrew">
+                <span>{{t 'death_mode_hebrew'}}</span>
+            </label>
+        </div>
+    </fieldset>
+    <div class="death-mode-panel" data-death-panel="gregorian">
+        <div class="form-field">
+            <label>{{t 'date_gregorian'}}</label>
+            <div class="date-row">
+                <input type="number" name="date" id="{{prefix}}Date" class="form-control death-greg-day" placeholder="{{t 'day'}}" min="1" max="31">
+                <input type="number" name="month" id="{{prefix}}Month" class="form-control death-greg-month" placeholder="{{t 'month'}}" min="1" max="12">
+                <input type="number" name="year" id="{{prefix}}Year" class="form-control death-greg-year" placeholder="{{t 'year'}}" min="1" max="9999">
+            </div>
+            <span class="field-hint">{{t 'date_optional_hint'}}</span>
+        </div>
+        <fieldset class="form-field admin-sunset-field" id="{{prefix}}SunsetField">
+            <legend>{{t 'died_sunset_legend'}}</legend>
+            <label class="admin-sunset-option">
+                <input type="radio" name="diedAfterSunset" value="before" id="{{prefix}}DiedBeforeSunset" checked>
+                <span>{{t 'died_before_sunset'}}</span>
+            </label>
+            <label class="admin-sunset-option">
+                <input type="radio" name="diedAfterSunset" value="after" id="{{prefix}}DiedAfterSunset">
+                <span>{{t 'died_after_sunset'}}</span>
+            </label>
+            <p class="death-hebrew-preview" data-death-hebrew-preview hidden><span>{{t 'hebrew_date_preview'}}:</span> <strong></strong></p>
+        </fieldset>
+    </div>
+    <div class="death-mode-panel" data-death-panel="hebrew" hidden>
+        <div class="form-field">
+            <label>{{t 'death_mode_hebrew'}}</label>
+            <div class="date-row">
+                <select name="hebrewDay" id="{{prefix}}HebrewDay" class="form-control death-heb-day" aria-label="{{t 'hebrew_day'}}">
+                    <option value="">{{t 'hebrew_day'}}</option>
+                    <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option>
+                </select>
+                <select name="hebrewMonth" id="{{prefix}}HebrewMonth" class="form-control death-heb-month" aria-label="{{t 'hebrew_month'}}">
+                    <option value="">{{t 'hebrew_month'}}</option>
+                    <option value="7">{{t 'hm_7'}}</option><option value="8">{{t 'hm_8'}}</option><option value="9">{{t 'hm_9'}}</option><option value="10">{{t 'hm_10'}}</option><option value="11">{{t 'hm_11'}}</option><option value="12">{{t 'hm_12'}}</option><option value="13">{{t 'hm_13'}}</option><option value="1">{{t 'hm_1'}}</option><option value="2">{{t 'hm_2'}}</option><option value="3">{{t 'hm_3'}}</option><option value="4">{{t 'hm_4'}}</option><option value="5">{{t 'hm_5'}}</option><option value="6">{{t 'hm_6'}}</option>
+                </select>
+                <input type="number" name="hebrewYear" id="{{prefix}}HebrewYear" class="form-control death-heb-year" placeholder="{{t 'hebrew_year'}}" min="3762" max="9999">
+            </div>
+            <span class="field-hint">{{t 'hebrew_mode_hint'}}</span>
+        </div>
+    </div>
+</div>

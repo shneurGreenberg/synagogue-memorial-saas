@@ -4677,3 +4677,16 @@ body.admin-theme-light {
 /* 1.29 H5: subtitle color + weight side by side (subtitle uses the title font) */
 .board-subtitle-color-weight-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .board-subtitle-color-weight-row > .form-field { min-width: 0; margin: 0; }
+
+/* 1.31.3: Hebrew / Gregorian date of death, person detail list */
+.admin-death-mode-pills { display: flex; gap: 14px; flex-wrap: wrap; }
+.death-hebrew-preview { margin: 6px 0 0; font-size: 14px; }
+.death-hebrew-preview strong { font-weight: 600; }
+.admin-person-detail-list { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0; font-size: 14px; }
+.admin-person-detail-list dt { font-weight: 600; opacity: .75; }
+.admin-person-detail-list dd { margin: 0; overflow-wrap: anywhere; }
+.settings-media-remove { display: flex; gap: 6px; align-items: center; font-size: 13px; margin-top: 4px; }
+
+.admin-death-date [hidden], .death-hebrew-preview[hidden] { display: none !important; }
+.admin-death-mode-field legend { font-size: 13px; font-weight: 600; margin-bottom: 6px; width: auto; }
+.public-death-mode-field legend { font-size: inherit; }
