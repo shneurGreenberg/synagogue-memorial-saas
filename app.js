@@ -108,17 +108,19 @@ app.use(helmet({
   hsts: isProduction ? undefined : false,
   referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
 }));
+app.use(require('./lib/csp').cspMiddleware);
 
 registerStaticAssets(app, { isProduction });
 
 require('./lib/admin-pwa').registerAdminPwa(app);
 
 app.get('/healthz', (req, res) => {
-  res.json(buildHealthPayload());
+  // 1.33.0: report Mongo status but stay 200 so the Amvera healthcheck never flaps on a DB blip.
+  res.json(buildHealthPayload({ mongo: mongoose.connection.readyState }));
 });
 
 function allowMobileApiCors(req, res, next) {
-  if (!req.path.includes('/api/')) {
+  if (!req.path.includes('/api/') || /^\/(admin|master)(\/|$)/.test(req.path)) {
     return next();
   }
 
@@ -208,9 +210,11 @@ app.use((req, res, next) => {
 });
 app.use(bodyParser.json({ limit: MAX_IMAGE_BODY }));
 
-const sessionSecret = process.env.SESSION_SECRET || (isProduction ? null : 'secret');
+let sessionSecret = process.env.SESSION_SECRET || (isProduction ? null : 'secret');
 if (!sessionSecret) {
-  throw new Error('SESSION_SECRET is required');
+  // 1.33.0: never refuse to boot prod; use a random per-process secret (admins re-login after restart).
+  sessionSecret = require('crypto').randomBytes(32).toString('hex');
+  console.error('!!! SECURITY WARNING !!! SESSION_SECRET is missing. Using a random secret; sessions reset on every restart. Set SESSION_SECRET in the hosting dashboard.');
 }
 
 const sessionMiddleware = session({
@@ -218,11 +222,12 @@ const sessionMiddleware = session({
   resave: false,
   saveUninitialized: false,
   name: 'kaddish.sid',
+  rolling: true,
   cookie: {
     httpOnly: true,
     secure: isProduction,
     sameSite: 'lax',
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+    maxAge: 24 * 60 * 60 * 1000, // 1.33.0: 1 day idle (rolling)
   },
   store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue' }),
 });

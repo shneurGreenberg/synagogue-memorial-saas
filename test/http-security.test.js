@@ -26,7 +26,7 @@ describe('http security helpers', () => {
     process.env.NODE_ENV = previous || 'test';
   });
 
-  it('refuses weak production session secrets', () => {
+  it('warns (does not crash) on weak production session secrets', () => {
     const previousEnv = process.env.NODE_ENV;
     const previousSecret = process.env.SESSION_SECRET;
     const previousMaster = process.env.MASTER_ADMIN_PASSWORD;
@@ -35,7 +35,11 @@ describe('http security helpers', () => {
     process.env.SESSION_SECRET = 'secret';
     process.env.MASTER_ADMIN_PASSWORD = 'master';
 
-    assert.throws(() => assertProductionSecrets(), /SESSION_SECRET/);
+    const origErr = console.error; const logs = [];
+    console.error = (m) => logs.push(String(m));
+    assert.doesNotThrow(() => assertProductionSecrets());
+    console.error = origErr;
+    assert.ok(logs.some((l) => l.includes('SESSION_SECRET')));
 
     process.env.SESSION_SECRET = 'strong-production-secret-value';
     assert.doesNotThrow(() => assertProductionSecrets());

@@ -25,6 +25,11 @@ body.admin-login-page.admin-theme-light {
   --admin-success-text: #059669;
   --admin-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
   --admin-shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.12);
+  --admin-on: #16a34a;
+  --admin-off: #8a94a6;
+  --admin-radius: 12px;
+  --admin-radius-sm: 8px;
+  --admin-touch: 44px;
 }
 
 body.admin-body,
@@ -4476,8 +4481,8 @@ body.admin-theme-light {
   margin-inline-end: 0.3rem;
 }
 
-.code-release-added .code-release-type { color: #16a34a; }
-.code-release-fixed .code-release-type { color: #2563eb; }
+.code-release-added .code-release-type { color: var(--admin-success-text); }
+.code-release-fixed .code-release-type { color: var(--admin-primary); }
 .code-release-changed .code-release-type { color: #d97706; }
 
 .weekly-kaddish-panel {
@@ -4701,12 +4706,12 @@ body.admin-theme-light {
 .people-filter-menu button:hover { background: #f1f5f9; }
 .people-filter-menu button.is-active { background: #e0ecff; font-weight: 600; }
 .people-filter-count { color: #64748b; font-size: .85em; }
-#peopleFilterBtn.is-active { background: #2563eb; color: #fff; border-color: #2563eb; }
+#peopleFilterBtn.is-active { background: var(--admin-primary); color: #fff; border-color: var(--admin-primary); }
 
 /* 1.31.4 I34: every on/off setting is an Android/iOS-style switch: green = on, grey = off. */
 .toggle-switch .toggle-slider { background: #9ca3af; }
 .toggle-switch .toggle-slider::after { background: #fff; }
-.toggle-switch input:checked + .toggle-slider { background: #22c55e; }
+.toggle-switch input:checked + .toggle-slider { background: var(--admin-on); }
 .admin-body input[type="checkbox"]:not(.toggle-switch input) {
   -webkit-appearance: none;
   appearance: none;
@@ -4735,7 +4740,7 @@ body.admin-theme-light {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
   transition: inset-inline-start 0.2s ease;
 }
-.admin-body input[type="checkbox"]:not(.toggle-switch input):checked { background: #22c55e; }
+.admin-body input[type="checkbox"]:not(.toggle-switch input):checked { background: var(--admin-on); }
 .admin-body input[type="checkbox"]:not(.toggle-switch input):checked::after { inset-inline-start: 23px; }
 .admin-body input[type="checkbox"]:not(.toggle-switch input):focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
 .admin-body input[type="checkbox"]:not(.toggle-switch input):disabled { opacity: .5; cursor: not-allowed; }
@@ -4765,7 +4770,7 @@ body.admin-theme-light {
 /* 1.32.0 I42: "board content" tabs + prayers/classes editor */
 .content-tabs { display: flex; gap: 6px; margin: 0 0 16px; padding: 4px; border-radius: 12px; background: rgba(128,128,128,.14); }
 .content-tab { flex: 1 1 0; border: 0; background: none; color: inherit; padding: 10px 8px; border-radius: 9px; font-weight: 600; cursor: pointer; font: inherit; font-weight: 600; }
-.content-tab.is-active { background: #2563eb; color: #fff; box-shadow: 0 2px 8px rgba(37,99,235,.3); }
+.content-tab.is-active { background: var(--admin-primary); color: #fff; box-shadow: 0 2px 8px var(--admin-primary-dim); }
 .content-tab-pane[hidden] { display: none !important; }
 .prayer-times-form .prayer-times-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
 .prayer-times-form .prayer-times-row { display: flex; gap: 8px; align-items: center; }
@@ -4808,7 +4813,7 @@ body.admin-theme-light {
   body.has-mobile-fab .admin-container { padding-bottom: 90px; }
   .admin-mobile-fab {
     display: block; position: fixed; z-index: 1040; left: 16px; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-    padding: 14px 18px; border: 0; border-radius: 999px; background: #2563eb; color: #fff; font-weight: 700; font-size: 1rem;
+    padding: 14px 18px; border: 0; border-radius: 999px; background: var(--admin-primary); color: #fff; font-weight: 700; font-size: 1rem;
     box-shadow: 0 6px 20px rgba(0,0,0,.35);
   }
   .admin-mobile-fab[hidden] { display: none; }
@@ -4816,4 +4821,24 @@ body.admin-theme-light {
 .admin-sunset-field .admin-seg { display: flex; flex-wrap: nowrap; border-radius: 22px; }
 .admin-sunset-field .admin-seg-option { flex: 1 1 0; min-width: 0; }
 .admin-sunset-field .admin-seg-option span { width: 100%; min-width: 0; white-space: normal; padding: 7px 10px; font-size: .85rem; border-radius: 18px; }
-.admin-alert-success { padding: 10px 14px; border-radius: 10px; background: rgba(34,197,94,.15); border: 1px solid rgba(34,197,94,.4); color: #22c55e; font-weight: 600; }
+.admin-alert-success { padding: 10px 14px; border-radius: 10px; background: rgba(34,197,94,.15); border: 1px solid rgba(34,197,94,.4); color: var(--admin-success-text); font-weight: 600; }
+
+/* 1.33.0 I44 + audit #12: unified tokens, focus, touch targets, mobile cleanups */
+.admin-body .btn-admin, .admin-body .btn-admin-primary { border-radius: var(--admin-radius-sm); }
+.admin-body .btn-admin-primary, .admin-body .btn-primary { background: var(--admin-primary); border-color: var(--admin-primary); color: #fff; }
+.admin-body .btn-admin-primary:hover, .admin-body .btn-primary:hover { background: var(--admin-primary-hover); border-color: var(--admin-primary-hover); }
+.admin-body .admin-panel, .admin-body .modal-content { border-radius: var(--admin-radius); }
+.admin-body a:focus-visible, .admin-body button:focus-visible, .admin-body input:focus-visible, .admin-body select:focus-visible, .admin-body textarea:focus-visible, .admin-body [tabindex]:focus-visible {
+  outline: 3px solid var(--admin-border-focus); outline-offset: 2px;
+}
+.toggle-switch .toggle-slider { background: var(--admin-off); }
+@media (max-width: 767.98px) {
+  .admin-body .btn-admin, .admin-body .btn, .admin-body .content-tab, .admin-body .nav-link, .admin-mobile-back { min-height: var(--admin-touch); }
+  .btn-admin-nav-board, .admin-home-tile--board { display: none !important; }
+}
+.admin-home-preview { display: block; pointer-events: none; cursor: default; }
+.admin-home-preview iframe { pointer-events: none; }
+.people-section-tabs { margin-bottom: 16px; }
+.people-section-tabs .content-tab { text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; }
+.people-section-tabs .content-tab:hover { text-decoration: none; }
+.admin-save-toast { position: fixed; inset-inline: 16px; bottom: 16px; z-index: 3000; padding: 12px 16px; border-radius: var(--admin-radius); background: var(--admin-danger); color: #fff; font-weight: 600; box-shadow: var(--admin-shadow-lg); }
