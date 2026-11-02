@@ -1132,6 +1132,9 @@
     if (editPermanentUntil) {
       editPermanentUntil.value = person.permanentUntil ? String(new Date(person.permanentUntil).toISOString()).slice(0, 10) : '';
     }
+    if (window.AdminDeathDate) {
+      window.AdminDeathDate.fillFromPerson(document.querySelector('#editPersonModal [data-death-date-root]'), person);
+    }
     const editInternalNotes = document.getElementById('editInternalNotes');
     if (editInternalNotes) {
       editInternalNotes.value = person.internalNotes || '';

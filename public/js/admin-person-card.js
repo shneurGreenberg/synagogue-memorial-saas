@@ -245,6 +245,42 @@
       });
     }
 
+
+    function renderDetails(person) {
+      var dl = document.getElementById('personCardDetails');
+      if (!dl) return;
+      var L = function (k) { return dl.getAttribute('data-l-' + k) || ''; };
+      dl.textContent = '';
+      function row(label, value, multiline) {
+        var dt = document.createElement('dt');
+        dt.textContent = label;
+        var dd = document.createElement('dd');
+        dd.textContent = value || L('none');
+        if (multiline) dd.style.whiteSpace = 'pre-wrap';
+        dl.appendChild(dt);
+        dl.appendChild(dd);
+      }
+      var p = person || {};
+      var g = p.gregorianDateOfDeath;
+      var hasG = g && g.year && g.month && g.date;
+      var gender = p.gender === 'male' || p.gender === 'female' ? p.gender : 'unknown';
+      row(L('gender'), L(gender));
+      row(L('gregorian'), hasG ? (String(g.date).padStart(2, '0') + '.' + String(g.month).padStart(2, '0') + '.' + g.year) : '');
+      var heb = '';
+      if (hasG && window.AdminDeathDate && window.AdminDeathDate.formatHebrew) {
+        heb = window.AdminDeathDate.formatHebrew(Number(g.year), Number(g.month), Number(g.date), !!p.diedAfterSunset);
+      }
+      row(L('hebrew'), heb);
+      if (hasG) {
+        row(L('entered'), p.deathDateMode === 'hebrew' ? L('mode-hebrew') : L('mode-gregorian'));
+        if (p.deathDateMode !== 'hebrew') row(L('sunset'), p.diedAfterSunset ? L('after') : L('before'));
+      }
+      var perm = p.permanent ? L('yes') : L('no');
+      if (p.permanent && p.permanentUntil) perm += ' (' + L('until') + ' ' + String(new Date(p.permanentUntil).toISOString()).slice(0, 10) + ')';
+      row(L('permanent'), perm);
+      row(L('notes'), String(p.internalNotes || '').trim(), true);
+    }
+
     function populateCard(person) {
       activePerson = person;
       const hasPhoto = !!(person && person.photo);
@@ -286,6 +322,7 @@
       }
 
       populateContacts(person);
+      renderDetails(person);
 
       if (deleteIdInput) {
         deleteIdInput.value = person && person.id != null ? String(person.id) : '';

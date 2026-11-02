@@ -36,8 +36,10 @@
       'donationQrText', 'publicSubmissionDonationUrl', 'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale'], move: ['input[name="donationQrImage"]'] },
     { key: 'memorialQr', selector: '.memorial-submission-panel', fields: ['publicSubmissionShowRegistrationQr', 'memorialQrTitle',
       'memorialQrText', 'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale'], move: ['input[name="registrationQrImage"]'] },
-    { key: 'side', selector: '.side-panel', fields: SIDE_FIELDS },
-    { key: 'middle', selector: '.middle', fields: ['panelBorderColor', 'panelBorderWidth', 'panelBorderRadius', 'tileColor', 'boardMode'] },
+    // 1.31.3 I30: background images (sides, tiles, middle) are replaced from the preview.
+    { key: 'side', selector: '.side-panel', fields: SIDE_FIELDS, move: ['.settings-media-tile--bg-page', '.settings-media-tile--bg-tiles'] },
+    { key: 'middle', selector: '.middle', fields: ['panelBorderColor', 'panelBorderWidth', 'panelBorderRadius', 'tileColor', 'boardMode'],
+      move: ['.settings-media-tile--bg-middle', '.settings-media-tile--bg-page', '.settings-media-tile--bg-tiles'] },
   ];
 
   // Resolve the form nodes each region moves into its panel. Their fields get form="settingsForm"

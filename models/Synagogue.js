@@ -71,6 +71,8 @@ const PersonSchema = new mongoose.Schema({
     year: { type: Number, default: undefined },
   },
   diedAfterSunset: { type: Boolean, default: false },
+  // 1.31.3: how the admin entered the date ('hebrew' = picked a Hebrew date, no sunset question).
+  deathDateMode: { type: String, enum: ['gregorian', 'hebrew', ''], default: '' },
   gender: { type: String, enum: ['male', 'female', 'unknown', ''], default: '' },
   internalNotes: { type: String, default: '' },
   // 1.29: always shown on the board (e.g. donors), optional end date.
@@ -407,6 +409,8 @@ const SynagogueSchema = new mongoose.Schema({
     boardSubtitleWeight: { type: String, default: '400' },
     backgroundImage: String,
     tilesBackground: String,
+    // 1.31.3 I30: optional background for the middle panel only ('' = same as tilesBackground).
+    middleBackground: { type: String, default: '' },
     logo: String,
     logoBorderRadius: { type: Number, default: 100, min: 0, max: 100 },
     logoBackground: { type: String, enum: ['', 'white', 'black'], default: '' },

@@ -642,11 +642,11 @@ const getInitials = (name) => {
 
 const ADMIN_PAGE_SCRIPTS = {
     'admin/dashboard': [],
-    'admin/people': ['admin-people.js', 'admin-person-card.js', 'contact-platform-ui.js'],
+    'admin/people': ['admin-death-date.js', 'admin-people.js', 'admin-person-card.js', 'contact-platform-ui.js'],
     'admin/contacts': ['admin-contact-directory.js', 'contact-platform-ui.js'],
     'admin/events': ['admin-events.js', 'admin-slideshow.js'],
     'admin/users': ['admin-users.js'],
-    'admin/yahrzeit': ['admin-person-card.js', 'admin-yahrzeit.js', 'admin-tile-capture.js'],
+    'admin/yahrzeit': ['admin-person-card.js', 'admin-yahrzeit.js', 'admin-death-date.js', 'admin-tile-capture.js'],
 };
 
 const ADMIN_NAV_BY_VIEW = {
@@ -752,6 +752,7 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
     { name: 'logo', maxCount: 1 },
     { name: 'backgroundImage', maxCount: 1 },
     { name: 'tilesBackground', maxCount: 1 },
+    { name: 'middleBackground', maxCount: 1 },
     { name: 'donationQrImage', maxCount: 1 },
     { name: 'registrationQrImage', maxCount: 1 },
 ]), async (req, res) => {
@@ -772,6 +773,11 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         }
         if (permissions.settingsAppearance && req.files['tilesBackground']) {
             updateData['theme.tilesBackground'] = await optimizeUploadedImage(req.files['tilesBackground'][0].path, 'tilesBackground');
+        }
+        if (permissions.settingsAppearance && req.files['middleBackground']) {
+            updateData['theme.middleBackground'] = await optimizeUploadedImage(req.files['middleBackground'][0].path, 'tilesBackground');
+        } else if (permissions.settingsAppearance && String(req.body.removeMiddleBackground || '') === '1') {
+            updateData['theme.middleBackground'] = '';
         }
         if (permissions.settingsAppearance && req.files['donationQrImage']) {
             updateData['publicSubmission.donationQrImage'] = await optimizeUploadedImage(req.files['donationQrImage'][0].path, 'qr');
@@ -1902,6 +1908,13 @@ router.post('/:slug/people/import', requireAdmin, requirePermission('people'), r
 
 function readDeathDateOrRespond(req, res) {
     try {
+        const { parseDeathDateMode, parseHebrewDeathFields } = require('../lib/hebrew-death-input');
+        if (parseDeathDateMode(req.body.deathDateMode) === 'hebrew') {
+            const parsed = parseHebrewDeathFields(req.body.hebrewDay, req.body.hebrewMonth, req.body.hebrewYear);
+            // A Hebrew date already names the exact day; no before/after sunset question.
+            req.body.diedAfterSunset = 'before';
+            return parsed ? parsed.gregorian : null;
+        }
         return parseDeathDateFields(req.body.month, req.body.date, req.body.year);
     } catch (err) {
         if (err && err.code === 'incomplete_death_date') {
@@ -2001,6 +2014,7 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
         if (deathDate) {
             newPerson.gregorianDateOfDeath = deathDate;
             newPerson.diedAfterSunset = diedAfterSunset;
+            newPerson.deathDateMode = require('../lib/hebrew-death-input').parseDeathDateMode(req.body.deathDateMode);
             const hebrew = computeHebrewDateOfDeath(deathDate, { diedAfterSunset });
             if (hebrew) {
                 newPerson.hebrewDateOfDeath = hebrew;
@@ -2056,6 +2070,7 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
         if (deathDate) {
             updateFields['people.$.gregorianDateOfDeath'] = deathDate;
             updateFields['people.$.diedAfterSunset'] = diedAfterSunset;
+            updateFields['people.$.deathDateMode'] = require('../lib/hebrew-death-input').parseDeathDateMode(req.body.deathDateMode);
             const hebrew = computeHebrewDateOfDeath(deathDate, { diedAfterSunset });
             if (hebrew) {
                 updateFields['people.$.hebrewDateOfDeath'] = hebrew;

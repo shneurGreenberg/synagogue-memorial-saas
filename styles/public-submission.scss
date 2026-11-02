@@ -1292,3 +1292,11 @@ html[dir='rtl'] .public-field-phone select.public-phone-dial.has-code-display {
 .public-lang-switch-pills {
   direction: ltr;
 }
+
+/* 1.31.3: Hebrew / Gregorian date of passing */
+.public-deceased-block [data-public-death-panel][hidden],
+.public-hebrew-preview[hidden] { display: none !important; }
+.public-death-mode-field { border: 0; padding: 0; margin: 0 0 12px; }
+.public-hebrew-date-row { display: grid; grid-template-columns: 1fr 1.6fr 1.2fr; gap: 8px; }
+.public-hebrew-date-row select, .public-hebrew-date-row input { width: 100%; min-height: 44px; }
+.public-hebrew-preview { margin: 6px 0 0; }
