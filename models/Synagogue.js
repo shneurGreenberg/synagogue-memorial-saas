@@ -435,7 +435,13 @@ const SynagogueSchema = new mongoose.Schema({
   // 1.29.5 I2: text size (%) of the combined board's bottom half.
   combinedInfoScale: { type: Number, default: 100 },
   combinedAnnouncementScale: { type: Number, default: 100 },
-  prayerTimes: { type: [{ _id: false, label: { type: String, default: '' }, time: { type: String, default: '' } }], default: [] },
+  prayerTimes: { type: [{ _id: false, label: { type: String, default: '' }, time: { type: String, default: '' }, kind: { type: String, enum: ['prayer', 'class'], default: 'prayer' } }], default: [] },
+  // 1.32.0 I38: custom headings for the combined board boxes (empty = default text per language)
+  boardSectionTitles: {
+    announcements: { type: String, default: '' },
+    prayers: { type: String, default: '' },
+    zmanim: { type: String, default: '' },
+  },
   adminLanguage: { type: String, default: 'ru' }, // Separate language for admin panel
   reloadTimeout: { type: Number, default: 43200000 }, // 12 hours
   publishedVersion: { type: Number, default: 1 },

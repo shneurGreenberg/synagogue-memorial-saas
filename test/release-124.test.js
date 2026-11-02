@@ -146,6 +146,6 @@ describe('release 1.24 B4 board announcements heading', () => {
 
   it('keeps הודעות rename on admin events page', () => {
     const events = fs.readFileSync(path.join(__dirname, '..', 'views', 'admin', 'events.handlebars'), 'utf8');
-    assert.match(events, /community_events/);
+    assert.match(events, /board_content|community_events/);
   });
 });

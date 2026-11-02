@@ -1169,10 +1169,10 @@
       editAfterSunset.checked = diedAfterSunset;
     }
     document.getElementById('editText').value = person.text || '';
-    const editGender = document.getElementById('editGender');
-    if (editGender) {
-      editGender.value = person.gender === 'male' || person.gender === 'female' ? person.gender : 'unknown';
-    }
+    // 1.32.0 I40: gender is a two-pill toggle (hidden "unknown" radio when not set)
+    const genderValue = person.gender === 'male' || person.gender === 'female' ? person.gender : 'unknown';
+    const genderRadio = document.getElementById(genderValue === 'male' ? 'editGenderMale' : genderValue === 'female' ? 'editGenderFemale' : 'editGenderUnknown');
+    if (genderRadio) genderRadio.checked = true;
     const editPermanent = document.getElementById('editPermanent');
     if (editPermanent) {
       editPermanent.checked = !!person.permanent;

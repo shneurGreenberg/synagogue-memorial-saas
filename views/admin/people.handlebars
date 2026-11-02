@@ -15,7 +15,7 @@
                 {{{adminIcon 'scan' class='btn-admin-inline-icon'}}}
                 {{t 'scan_grave'}}
             </a>
-            <button type="button" class="btn-admin btn-admin-primary btn-admin-with-icon" data-toggle="modal" data-target="#addPersonModal">
+            <button type="button" class="btn-admin btn-admin-primary btn-admin-with-icon" data-toggle="modal" data-target="#addPersonModal" data-mobile-fab="always">
                 {{{adminIcon 'add' class='btn-admin-inline-icon'}}}
                 {{t 'add_person'}}
             </button>
@@ -148,11 +148,11 @@
                             </div>
                             <div class="form-field admin-gender-field">
                                 <label>{{t 'gender_label'}}</label>
-                                <select name="gender" class="form-control">
-                                    <option value="unknown">{{t 'gender_unknown'}}</option>
-                                    <option value="male">{{t 'gender_male'}}</option>
-                                    <option value="female">{{t 'gender_female'}}</option>
-                                </select>
+                                <div class="admin-seg" role="radiogroup" aria-label="{{t 'gender_label'}}">
+                                    <input type="radio" name="gender" value="unknown" id="addGenderUnknown" class="admin-seg-unknown" checked hidden>
+                                    <label class="admin-seg-option"><input type="radio" name="gender" value="male" id="addGenderMale"><span>{{t 'gender_male'}}</span></label>
+                                    <label class="admin-seg-option"><input type="radio" name="gender" value="female" id="addGenderFemale"><span>{{t 'gender_female'}}</span></label>
+                                </div>
                             </div>
                             {{> admin-death-date-fields prefix="add"}}
                             <div class="form-field admin-permanent-field">
@@ -226,12 +226,12 @@
                                 <input type="text" dir="auto" name="name" id="editName" class="form-control" required placeholder="{{t 'name_placeholder'}}">
                             </div>
                             <div class="form-field admin-gender-field">
-                                <label for="editGender">{{t 'gender_label'}}</label>
-                                <select name="gender" id="editGender" class="form-control">
-                                    <option value="unknown">{{t 'gender_unknown'}}</option>
-                                    <option value="male">{{t 'gender_male'}}</option>
-                                    <option value="female">{{t 'gender_female'}}</option>
-                                </select>
+                                <label>{{t 'gender_label'}}</label>
+                                <div class="admin-seg" role="radiogroup" aria-label="{{t 'gender_label'}}">
+                                    <input type="radio" name="gender" value="unknown" id="editGenderUnknown" class="admin-seg-unknown" checked hidden>
+                                    <label class="admin-seg-option"><input type="radio" name="gender" value="male" id="editGenderMale"><span>{{t 'gender_male'}}</span></label>
+                                    <label class="admin-seg-option"><input type="radio" name="gender" value="female" id="editGenderFemale"><span>{{t 'gender_female'}}</span></label>
+                                </div>
                             </div>
                             {{> admin-death-date-fields prefix="edit"}}
                             <div class="form-field admin-permanent-field">

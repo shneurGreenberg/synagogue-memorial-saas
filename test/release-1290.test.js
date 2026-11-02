@@ -98,10 +98,10 @@ describe('release 1.29 B: combined board', () => {
     assert.equal(normalizeBoardMode('combined'), 'combined');
     assert.equal(normalizeBoardMode('x'), 'memorial');
     const rows = parsePrayerTimesFromBody({ prayerTimesSection: '1', prayerLabel_0: 'שחרית', prayerTime_0: '7:05', prayerLabel_1: 'מנחה', prayerTime_1: '' });
-    assert.deepEqual(rows, [{ label: 'שחרית', time: '07:05' }]);
+    assert.deepEqual(rows, [{ label: 'שחרית', time: '07:05', kind: 'prayer' }]);
     const update = buildBoardSettingsUpdate({ boardMode: 'combined', prayerTimesSection: '1', prayerLabel_0: 'A', prayerTime_0: '06:30' }, {}, FULL);
     assert.equal(update.boardMode, 'combined');
-    assert.deepEqual(update.prayerTimes, [{ label: 'A', time: '06:30' }]);
+    assert.deepEqual(update.prayerTimes, [{ label: 'A', time: '06:30', kind: 'prayer' }]);
   });
 
   it('admin defaults follow the board language (Russian stays Russian)', () => {

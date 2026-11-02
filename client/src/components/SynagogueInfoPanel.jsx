@@ -97,7 +97,12 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
     lat: loc.lat,
     lng: loc.lng,
   });
-  const prayers = (data.prayerTimes || []).filter((row) => row && row.label && row.time);
+  const allRows = (data.prayerTimes || []).filter((row) => row && row.label && row.time);
+  // 1.32.0 I39: prayers first, then classes, separated by a thin line
+  const prayers = allRows.filter((row) => row.kind !== 'class').concat(allRows.filter((row) => row.kind === 'class'));
+  const firstClassIndex = prayers.findIndex((row) => row.kind === 'class');
+  const titles = data.boardSectionTitles || {};
+  const heading = (key, fallbackKey) => (String(titles[key] || '').trim() || t(fallbackKey));
   const announcements = communityEvents || [];
   const [slide, setSlide] = useState(0);
   useEffect(() => {
@@ -124,7 +129,7 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
     >
       <div className="synagogue-info-col synagogue-info-col--boxes synagogue-info-col--side-by-side">
       <section className="synagogue-info-block synagogue-info-zmanim">
-        <h2 className="synagogue-info-title">{t('zmanim_title')}</h2>
+        <h2 className="synagogue-info-title">{heading('zmanim', 'zmanim_title')}</h2>
         <div className="synagogue-info-box-scroll synagogue-info-loop" ref={zmanimRef}>
           {(zmanimLoop ? ['a', 'b'] : ['a']).map((copy) => (
             <dl className="synagogue-info-list synagogue-info-loop-copy" key={copy} aria-hidden={copy === 'b' ? 'true' : undefined}>
@@ -140,12 +145,15 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
       </section>
       {prayers.length > 0 && (
         <section className="synagogue-info-block synagogue-info-prayers">
-          <h2 className="synagogue-info-title">{t('prayer_times_title')}</h2>
+          <h2 className="synagogue-info-title" dir="auto">{heading('prayers', 'prayer_times_title')}</h2>
           <div className="synagogue-info-box-scroll synagogue-info-loop" ref={prayersRef}>
             {(prayersLoop ? ['a', 'b'] : ['a']).map((copy) => (
               <dl className="synagogue-info-list synagogue-info-loop-copy" key={copy} aria-hidden={copy === 'b' ? 'true' : undefined}>
                 {prayers.map((row, index) => (
-                  <div className="synagogue-info-row" key={`${row.label}-${index}`}>
+                  <div
+                    className={`synagogue-info-row synagogue-info-row--${row.kind === 'class' ? 'class' : 'prayer'}${index === firstClassIndex && index > 0 ? ' synagogue-info-row--first-class' : ''}`}
+                    key={`${row.label}-${index}`}
+                  >
                     <dt dir="auto">{row.label}</dt>
                     <dd>{row.time}</dd>
                   </div>
@@ -157,7 +165,7 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
       )}
       </div>
       <section className="synagogue-info-block synagogue-info-announcements">
-        <h2 className="synagogue-info-title" dir="auto">{t('announcements_title')}</h2>
+        <h2 className="synagogue-info-title" dir="auto">{heading('announcements', 'announcements_title')}</h2>
         {current ? (
           <div className="synagogue-info-announcement-carousel" key={`${current.id}-${slide}`}>
             <div className="synagogue-info-announcement synagogue-info-box-scroll" ref={announcementRef}>

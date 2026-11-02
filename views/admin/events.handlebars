@@ -1,18 +1,73 @@
 <div class="admin-page events-page">
     <header class="admin-page-header">
         <div>
-            <h1 class="admin-page-title-with-icon">{{{adminIcon 'announcement' 'admin-page-title-icon'}}}{{t 'community_events'}}</h1>
-            <p class="admin-subtitle">{{t 'community_events_subtitle'}}</p>
+            <h1 class="admin-page-title-with-icon">{{{adminIcon 'announcement' 'admin-page-title-icon'}}}{{t 'board_content'}}</h1>
+            <p class="admin-subtitle">{{t 'board_content_subtitle'}}</p>
         </div>
     </header>
 
-{{#if upcomingHolidayNotice}}
-<section class="admin-alert admin-alert-info upcoming-holiday-notice" role="status">
-    <strong>{{t 'upcoming_holiday_notice_title'}}:</strong>
-    <span>{{upcomingHolidayNotice.title}}</span>
-    <span class="upcoming-holiday-notice-date">{{upcomingHolidayNotice.date}}</span>
-</section>
-{{/if}}
+    {{!-- 1.32.0 I42: one place for everything shown on the board: prayers & classes, messages, slideshow --}}
+    <div class="content-tabs" role="tablist" id="contentTabs">
+        <button type="button" role="tab" class="content-tab{{#if (eq contentTab 'prayers')}} is-active{{/if}}" data-tab="prayers" aria-selected="{{#if (eq contentTab 'prayers')}}true{{else}}false{{/if}}">{{t 'content_tab_prayers'}}</button>
+        <button type="button" role="tab" class="content-tab{{#if (eq contentTab 'messages')}} is-active{{/if}}" data-tab="messages" aria-selected="{{#if (eq contentTab 'messages')}}true{{else}}false{{/if}}">{{t 'content_tab_messages'}}</button>
+        <button type="button" role="tab" class="content-tab{{#if (eq contentTab 'slideshow')}} is-active{{/if}}" data-tab="slideshow" aria-selected="{{#if (eq contentTab 'slideshow')}}true{{else}}false{{/if}}">{{t 'content_tab_slideshow'}}</button>
+    </div>
+
+    <div class="content-tab-pane" data-pane="prayers" {{#unless (eq contentTab 'prayers')}}hidden{{/unless}}>
+        <section class="admin-panel">
+            <div class="admin-panel-header">
+                <h2>{{t 'content_tab_prayers'}}</h2>
+                <p class="admin-subtitle">{{t 'prayer_classes_help'}}</p>
+            </div>
+            <div class="admin-panel-body">
+                {{#if prayersSaved}}<p class="admin-alert admin-alert-success" role="status">{{t 'saved'}}</p>{{/if}}
+                {{#unless (eq boardMode 'combined')}}<p class="field-hint prayer-mode-hint">{{t 'prayer_times_combined_only'}}</p>{{/unless}}
+                <form method="POST" action="/admin/{{synagogue.slug}}/prayer-times" id="prayerTimesForm" class="prayer-times-form">
+                    <input type="hidden" name="prayerTimesSection" value="1">
+                    <h3 class="prayer-group-title">{{t 'prayers_group'}}</h3>
+                    <div class="prayer-times-rows" id="prayerRows" data-kind="prayer">
+                        {{#each prayerTimeRows}}{{#unless this.isClass}}
+                        <div class="prayer-times-row" data-kind="prayer">
+                            <input type="hidden" data-f="kind" value="prayer">
+                            <input type="text" dir="auto" data-f="label" value="{{this.label}}" class="form-control" maxlength="60" placeholder="{{t 'prayer_label'}}" aria-label="{{t 'prayer_label'}}">
+                            <input type="time" data-f="time" value="{{this.time}}" class="form-control" aria-label="{{t 'prayer_time'}}">
+                            <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm prayer-row-remove" aria-label="{{t 'delete'}}">✕</button>
+                        </div>
+                        {{/unless}}{{/each}}
+                    </div>
+                    <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm prayer-add-btn" data-add-kind="prayer">+ {{t 'add_prayer'}}</button>
+                    <hr class="prayer-group-divider">
+                    <h3 class="prayer-group-title">{{t 'classes_group'}}</h3>
+                    <div class="prayer-times-rows" id="classRows" data-kind="class">
+                        {{#each prayerTimeRows}}{{#if this.isClass}}
+                        <div class="prayer-times-row" data-kind="class">
+                            <input type="hidden" data-f="kind" value="class">
+                            <input type="text" dir="auto" data-f="label" value="{{this.label}}" class="form-control" maxlength="60" placeholder="{{t 'class_label'}}" aria-label="{{t 'class_label'}}">
+                            <input type="time" data-f="time" value="{{this.time}}" class="form-control" aria-label="{{t 'prayer_time'}}">
+                            <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm prayer-row-remove" aria-label="{{t 'delete'}}">✕</button>
+                        </div>
+                        {{/if}}{{/each}}
+                    </div>
+                    <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm prayer-add-btn" data-add-kind="class">+ {{t 'add_class'}}</button>
+                    <div class="prayer-times-save">
+                        <button type="submit" class="btn-admin btn-admin-primary" data-mobile-fab>{{t 'save'}}</button>
+                    </div>
+                </form>
+                <template id="prayerRowTemplate">
+                    <div class="prayer-times-row">
+                        <input type="hidden" data-f="kind" value="prayer">
+                        <input type="text" dir="auto" data-f="label" value="" class="form-control" maxlength="60">
+                        <input type="time" data-f="time" value="" class="form-control" aria-label="{{t 'prayer_time'}}">
+                        <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm prayer-row-remove" aria-label="{{t 'delete'}}">✕</button>
+                    </div>
+                </template>
+                <script>window.prayerFormLabels = { prayer: '{{t 'prayer_label'}}', 'class': '{{t 'class_label'}}' };</script>
+            </div>
+        </section>
+    </div>
+
+    <div class="content-tab-pane" data-pane="slideshow" {{#unless (eq contentTab 'slideshow')}}hidden{{/unless}}>
+
 
 
 <section class="admin-panel slideshow-compact" id="slideshow-section">
@@ -105,7 +160,18 @@
 </script>
 
 
-    <section class="admin-panel">
+    </div>
+
+    <div class="content-tab-pane" data-pane="messages" {{#unless (eq contentTab 'messages')}}hidden{{/unless}}>
+    <button type="button" class="sr-only" data-mobile-fab data-mobile-fab-label="+ {{t 'add_community_event'}}" onclick="var f=document.querySelector('[data-pane=messages] form');if(f){f.scrollIntoView({behavior:'smooth'});var i=f.querySelector('input[type=text],textarea');if(i)i.focus();}">{{t 'add_community_event'}}</button>
+{{#if upcomingHolidayNotice}}
+<section data-holiday-notice class="admin-alert admin-alert-info upcoming-holiday-notice" role="status">
+    <strong>{{t 'upcoming_holiday_notice_title'}}:</strong>
+    <span>{{upcomingHolidayNotice.title}}</span>
+    <span class="upcoming-holiday-notice-date">{{upcomingHolidayNotice.date}}</span>
+</section>
+{{/if}}
+    <section class="admin-panel" id="addEventPanel">
         <div class="admin-panel-header">
             <h2>{{t 'add_community_event'}}</h2>
         </div>
@@ -214,7 +280,9 @@
             <div class="events-list events-list-history" id="historyEventsList" data-section="history"></div>
         </div>
     </section>
+    </div>
 </div>
+<script src="/js/admin-content-tabs.js?v={{@root.cssVersion}}"></script>
 
 <div class="modal fade admin-modal" id="editEventModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">

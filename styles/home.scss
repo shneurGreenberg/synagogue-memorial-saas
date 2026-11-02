@@ -2593,6 +2593,9 @@ body.tile-export-mode {
 }
 .main-container .memorial-submission-qr-frame {
   display: block;
+  /* 1.32.0 I41: fixed size first for old WebViews without CSS variables */
+  width: 120px;
+  height: 120px;
   width: var(--board-qr-image-size);
   height: var(--board-qr-image-size);
   max-width: 100%;
@@ -2721,3 +2724,51 @@ body.board-lang-he {
     unicode-bidi: isolate;
   }
 }
+
+/* 1.32.0 I39: long (1-2 line) prayer/class labels align like the other rows (start side, wrapping),
+   time stays vertically centred against the multi-line label; classes follow prayers after a thin
+   divider in the same colour as the other row lines. */
+.main-container .synagogue-info-prayers .synagogue-info-row {
+  align-items: center;
+  dt {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: start;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.25;
+  }
+  dd { flex: 0 0 auto; align-self: center; }
+}
+.main-container .synagogue-info-prayers .synagogue-info-row--first-class {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  margin-top: 0.35em;
+  padding-top: 0.35em !important;
+}
+
+/* 1.32.0 I41: old TVs (Xiaomi streamer / old Android WebView) drew a black square around the QR codes.
+   Keep the QR rendering dead simple: solid white frame + white image background, no shadows, no
+   rounded image corners, no transforms/filters/blend modes on or around the QR. */
+.memorial-submission-qr-frame,
+.main-container .memorial-submission-qr-frame {
+  background-color: #ffffff;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+.memorial-submission-qr,
+.main-container .memorial-submission-qr,
+.main-container .left .memorial-submission-qr,
+.main-container .right .memorial-submission-qr {
+  background-color: #ffffff !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  mix-blend-mode: normal !important;
+  transform: none !important;
+  -webkit-backface-visibility: visible;
+  opacity: 1 !important;
+}
+.memorial-submission-qr-link,
+.memorial-submission-qr-link:hover { transform: none !important; transition: none !important; }

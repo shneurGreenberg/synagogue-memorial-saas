@@ -430,6 +430,20 @@
                                     value=combinedAnnouncementScale suffix="%" compact=true}}
                             </div>
                         </div>
+                        <div class="font-scale-grid combined-section-titles">
+                            <div class="form-field">
+                                <label for="sectionTitle_zmanim">{{t 'section_title_zmanim'}}</label>
+                                <input type="text" dir="auto" maxlength="60" class="form-control admin-input-modern" name="sectionTitle_zmanim" id="sectionTitle_zmanim" value="{{sectionTitles.zmanim}}" placeholder="{{sectionTitleDefaults.zmanim}}">
+                            </div>
+                            <div class="form-field">
+                                <label for="sectionTitle_prayers">{{t 'section_title_prayers'}}</label>
+                                <input type="text" dir="auto" maxlength="60" class="form-control admin-input-modern" name="sectionTitle_prayers" id="sectionTitle_prayers" value="{{sectionTitles.prayers}}" placeholder="{{sectionTitleDefaults.prayers}}">
+                            </div>
+                            <div class="form-field">
+                                <label for="sectionTitle_announcements">{{t 'section_title_announcements'}}</label>
+                                <input type="text" dir="auto" maxlength="60" class="form-control admin-input-modern" name="sectionTitle_announcements" id="sectionTitle_announcements" value="{{sectionTitles.announcements}}" placeholder="{{sectionTitleDefaults.announcements}}">
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -552,17 +566,7 @@
                         <span class="field-hint">{{t 'date_display_help'}}</span>
                     </div>
                     <div class="prayer-times-settings" id="prayerTimesSettings" {{#unless (eq boardMode 'combined')}}hidden{{/unless}}>
-                        <input type="hidden" name="prayerTimesSection" value="1">
-                        <h3 class="prayer-times-title">{{t 'prayer_times_title'}}</h3>
-                        <p class="field-hint">{{t 'prayer_times_help'}}</p>
-                        <div class="prayer-times-rows">
-                            {{#each prayerTimeRows}}
-                            <div class="prayer-times-row">
-                                <input type="text" dir="auto" name="prayerLabel_{{this.index}}" value="{{this.label}}" class="form-control" maxlength="60" placeholder="{{t 'prayer_label'}}" aria-label="{{t 'prayer_label'}}">
-                                <input type="time" name="prayerTime_{{this.index}}" value="{{this.time}}" class="form-control" aria-label="{{t 'prayer_time'}}">
-                            </div>
-                            {{/each}}
-                        </div>
+                        <a class="btn-admin btn-admin-secondary btn-admin-sm" href="/admin/{{synagogue.slug}}/events?tab=prayers">{{t 'prayer_times_edit_link'}}</a>
                     </div>
                 </div>
                 {{#if yahrzeitTodayCount}}
@@ -778,6 +782,9 @@
                     var el = document.getElementById('combinedAnnouncementScale');
                     return el ? el.value : '';
                 })(),
+                sectionTitle_zmanim: (document.getElementById('sectionTitle_zmanim') || {}).value || '',
+                sectionTitle_prayers: (document.getElementById('sectionTitle_prayers') || {}).value || '',
+                sectionTitle_announcements: (document.getElementById('sectionTitle_announcements') || {}).value || '',
             }, readFontScalePatch(), readMemorialQrPatch());
         }
 
@@ -846,6 +853,11 @@
             if (el) el.addEventListener('change', schedulePreview);
         });
         // 1.30.0 I14: combined text-size steppers update the live preview immediately.
+        // 1.32.0 I38: custom headings update the preview too
+        ['sectionTitle_zmanim', 'sectionTitle_prayers', 'sectionTitle_announcements'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (el) el.addEventListener('input', schedulePreview);
+        });
         ['combinedInfoScale', 'combinedAnnouncementScale'].forEach(function (id) {
             var el = document.getElementById(id);
             if (el) {
