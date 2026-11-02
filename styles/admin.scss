@@ -4690,3 +4690,53 @@ body.admin-theme-light {
 .admin-death-date [hidden], .death-hebrew-preview[hidden] { display: none !important; }
 .admin-death-mode-field legend { font-size: 13px; font-weight: 600; margin-bottom: 6px; width: auto; }
 .public-death-mode-field legend { font-size: inherit; }
+
+/* 1.31.4 I32b: people filter menu */
+.people-filter { position: relative; display: inline-block; }
+.people-filter[hidden] { display: none; }
+.people-filter-menu { position: absolute; top: calc(100% + 4px); inset-inline-start: 0; z-index: 30; min-width: 180px; background: #fff; border: 1px solid #d6dbe3; border-radius: 10px; box-shadow: 0 8px 24px rgba(15,23,42,.14); padding: 6px; display: flex; flex-direction: column; gap: 2px; }
+.people-filter-menu[hidden] { display: none; }
+.people-filter-menu button { background: none; border: 0; text-align: start; padding: 8px 10px; border-radius: 8px; cursor: pointer; font: inherit; color: #1f2937; }
+.people-filter-menu button[hidden] { display: none; }
+.people-filter-menu button:hover { background: #f1f5f9; }
+.people-filter-menu button.is-active { background: #e0ecff; font-weight: 600; }
+.people-filter-count { color: #64748b; font-size: .85em; }
+#peopleFilterBtn.is-active { background: #2563eb; color: #fff; border-color: #2563eb; }
+
+/* 1.31.4 I34: every on/off setting is an Android/iOS-style switch: green = on, grey = off. */
+.toggle-switch .toggle-slider { background: #9ca3af; }
+.toggle-switch .toggle-slider::after { background: #fff; }
+.toggle-switch input:checked + .toggle-slider { background: #22c55e; }
+.admin-body input[type="checkbox"]:not(.toggle-switch input) {
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 44px;
+  height: 24px;
+  margin: 0;
+  border-radius: 999px;
+  background: #9ca3af;
+  border: 0;
+  vertical-align: middle;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.admin-body input[type="checkbox"]:not(.toggle-switch input)::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  inset-inline-start: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  transition: inset-inline-start 0.2s ease;
+}
+.admin-body input[type="checkbox"]:not(.toggle-switch input):checked { background: #22c55e; }
+.admin-body input[type="checkbox"]:not(.toggle-switch input):checked::after { inset-inline-start: 23px; }
+.admin-body input[type="checkbox"]:not(.toggle-switch input):focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
+.admin-body input[type="checkbox"]:not(.toggle-switch input):disabled { opacity: .5; cursor: not-allowed; }
+.settings-media-remove { display: inline-flex; align-items: center; gap: 8px; }

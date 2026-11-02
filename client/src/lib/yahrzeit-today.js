@@ -40,8 +40,8 @@ export function isPersonYahrzeitToday(person, timezone, now = new Date(), calend
     return isHebrewYahrzeitToday(death, timezone, now);
   }
 
-  return isGregorianYahrzeitToday(death, timezone, now)
-    || isHebrewYahrzeitToday(death, timezone, now);
+  // 1.31.4 I37: a board run by the Gregorian calendar only counts the Gregorian anniversary.
+  return isGregorianYahrzeitToday(death, timezone, now);
 }
 
 export { daysUntilHebrewYahrzeit };

@@ -8,10 +8,19 @@
   var cfg = window.ADMIN_PREVIEW_EDITOR || {};
   var labels = cfg.labels || {};
 
-  var SIDE_FIELDS = ['feature_upcomingHolidays', 'feature_chabadDates', 'feature_communityEvents',
-    'feature_dailyChumash', 'feature_dailyTehillim', 'feature_dailyRambam', 'feature_dailyTanya',
-    'feature_hayomYom', 'feature_weather', 'fontScale_sidebar', 'accentColor', 'panelBorderColor',
-    'panelBorderWidth', 'panelBorderRadius'];
+  // 1.31.4 I36: each board column's panel offers only the parts that live in that column
+  // (no more daily study / weather in both). Part on/off switches come first, so a part that is
+  // switched off (and so no longer on the board) can always be switched back on from its column.
+  var SIDE_STYLE_FIELDS = ['fontScale_sidebar', 'accentColor', 'panelBorderColor', 'panelBorderWidth', 'panelBorderRadius'];
+  // DOM "aside.left": community logo, memorial prayers (Kel Male / Yizkor), daily study, Hayom Yom, donation QR.
+  var LEFT_PARTS = ['feature_kelMaleRachamim', 'feature_izkor', 'feature_dailyChumash', 'feature_dailyTehillim',
+    'feature_dailyRambam', 'feature_dailyTanya', 'feature_hayomYom', 'publicSubmissionShowDonationQr'];
+  // DOM "aside.right": Kaddish logo, clock, Shabbat times, weather, upcoming holidays / Chabad dates / events, registration QR.
+  var RIGHT_PARTS = ['feature_officialLogo', 'shabbatTimesEnabled', 'feature_weather', 'feature_upcomingHolidays',
+    'feature_chabadDates', 'feature_communityEvents', 'publicSubmissionShowRegistrationQr'];
+  var MIDDLE_PARTS = ['boardHideSearchAndPager'];
+  var SIDE_FIELDS = LEFT_PARTS.concat(RIGHT_PARTS, SIDE_STYLE_FIELDS);
+  var BG_TILES = ['.settings-media-tile--bg-page', '.settings-media-tile--bg-tiles', '.settings-media-tile--bg-middle'];
 
   // Most specific first: the first matching region wins.
   var REGIONS = [
@@ -37,8 +46,14 @@
     { key: 'memorialQr', selector: '.memorial-submission-panel', fields: ['publicSubmissionShowRegistrationQr', 'memorialQrTitle',
       'memorialQrText', 'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale'], move: ['input[name="registrationQrImage"]'] },
     // 1.31.3 I30: background images (sides, tiles, middle) are replaced from the preview.
-    { key: 'side', selector: '.side-panel', fields: SIDE_FIELDS, move: ['.settings-media-tile--bg-page', '.settings-media-tile--bg-tiles'] },
-    { key: 'middle', selector: '.middle', fields: ['panelBorderColor', 'panelBorderWidth', 'panelBorderRadius', 'tileColor', 'boardMode'],
+    // 1.31.4 I33: every background (page, tiles, middle) can always be replaced or removed from both
+    // the column panels and the middle panel.
+    { key: 'side', selector: '.side-panel', fields: SIDE_FIELDS, move: BG_TILES,
+      fieldsFor: function (el) {
+        var parts = el && el.classList && el.classList.contains('left') ? LEFT_PARTS : RIGHT_PARTS;
+        return parts.concat(SIDE_STYLE_FIELDS);
+      } },
+    { key: 'middle', selector: '.middle', fields: MIDDLE_PARTS.concat(['panelBorderColor', 'panelBorderWidth', 'panelBorderRadius', 'tileColor', 'boardMode']),
       move: ['.settings-media-tile--bg-middle', '.settings-media-tile--bg-page', '.settings-media-tile--bg-tiles'] },
   ];
 
@@ -142,7 +157,13 @@
     proxy.type = real.type === 'checkbox' ? 'checkbox' : (real.type || 'text');
     if (proxy.type === 'checkbox') {
       proxy.checked = real.checked;
-      proxy.addEventListener('change', function () { real.checked = proxy.checked; fire(real); });
+      proxy.className = 'admin-switch';
+      proxy.addEventListener('change', function () {
+        real.checked = proxy.checked;
+        fire(real);
+        var row = proxy.closest('.preview-editor-row');
+        if (row) { row.classList.toggle('is-on', proxy.checked); row.classList.toggle('is-off', !proxy.checked); }
+      });
       return proxy;
     }
     ['min', 'max', 'step', 'maxLength'].forEach(function (a) { if (real[a] && real[a] > -1) proxy[a] = real[a]; });
@@ -168,7 +189,7 @@
     panel = null;
   }
 
-  function openPanel(region, x, y, sideLabel) {
+  function openPanel(region, x, y, sideLabel, hitEl) {
     closePanel();
     var form = document.getElementById('settingsForm');
     panel = document.createElement('div');
@@ -191,13 +212,15 @@
     var body = document.createElement('div');
     body.className = 'preview-editor-body';
     var seen = {};
-    region.fields.forEach(function (id) {
+    var fields = region.fieldsFor ? region.fieldsFor(hitEl) : region.fields;
+    fields.forEach(function (id) {
       if (seen[id]) return;
       seen[id] = true;
       var real = form && form.querySelector('#' + id);
       if (!real || real.type === 'hidden') return;
       var row = document.createElement('label');
-      row.className = 'preview-editor-row';
+      row.className = 'preview-editor-row' + (real.type === 'checkbox' ? ' preview-editor-row--switch' + (real.checked ? ' is-on' : ' is-off') : '');
+      if (real.type === 'checkbox') row.setAttribute('data-part', id);
       var span = document.createElement('span');
       span.textContent = fieldLabel(real);
       row.appendChild(span);
@@ -293,7 +316,7 @@
         var r = hit.el.getBoundingClientRect();
         sideLabel = (r.left + r.width / 2) > innerW / 2 ? labels.sideRight : labels.sideLeft;
       }
-      openPanel(hit.region, rect.left + ev.clientX * k, rect.top + ev.clientY * k, sideLabel);
+      openPanel(hit.region, rect.left + ev.clientX * k, rect.top + ev.clientY * k, sideLabel, hit.el);
     }, true);
   }
 
@@ -323,8 +346,8 @@
         out[id] = true;
       });
     });
-    // 1.31.0 I20: every on/off part toggle moves to the preview too; switched-off parts come back
-    // through the "hidden parts" list above the preview.
+    // 1.31.0 I20 / 1.31.4 I36: every on/off part toggle lives in the preview panels only; a
+    // switched-off part is switched back on from its column's panel.
     TOGGLE_IDS().forEach(function (id) { out[id] = true; });
     return out;
   }
@@ -361,49 +384,11 @@
     document.querySelectorAll('#settingsForm input[type="checkbox"][id^="feature_"]').forEach(function (el) { ids.push(el.id); });
     return ids.filter(function (id) { return document.getElementById(id); });
   }
-  /* Hidden-parts list: one chip per switched-off part; clicking it switches the part back on. */
+  /* 1.31.4 I36: the "hidden parts" / "shown parts" rows above the preview are gone; every part is
+   * switched on and off from the panel of the board column (or area) it belongs to. */
   function renderHiddenParts() {
-    var stage = document.getElementById('boardPreviewStage');
-    if (!stage) return;
     var box = document.getElementById('previewHiddenParts');
-    if (!box) {
-      box = document.createElement('div');
-      box.id = 'previewHiddenParts';
-      box.className = 'preview-hidden-parts';
-      stage.parentNode.insertBefore(box, stage);
-    }
-    box.innerHTML = '';
-    if (!isEnabled()) { box.hidden = true; return; }
-    var inPanel = {};
-    REGIONS.forEach(function (r) { r.fields.forEach(function (id) { inPanel[id] = true; }); });
-    var ids = TOGGLE_IDS();
-    var off = ids.filter(function (id) { return !document.getElementById(id).checked; });
-    // 1.31.2 I27a: a part switched on from this list that has no panel of its own (e.g. the Kaddish
-    // symbol) gets a chip here to switch it off again; parts with a panel switch off from it.
-    var onNoPanel = ids.filter(function (id) { return document.getElementById(id).checked && !inPanel[id]; });
-    box.hidden = !off.length && !onNoPanel.length;
-    function row(list, titleText, prefix, value, cls) {
-      if (!list.length) return;
-      var line = document.createElement('div');
-      line.className = 'preview-hidden-parts-row ' + cls;
-      var t = document.createElement('span');
-      t.className = 'preview-hidden-parts-title';
-      t.textContent = titleText;
-      line.appendChild(t);
-      list.forEach(function (id) {
-        var real = document.getElementById(id);
-        var b = document.createElement('button');
-        b.type = 'button';
-        b.className = 'btn-admin btn-admin-sm preview-hidden-part';
-        b.setAttribute('data-part', id);
-        b.textContent = prefix + ' ' + fieldLabel(real);
-        b.addEventListener('click', function () { real.checked = value; fire(real); renderHiddenParts(); });
-        line.appendChild(b);
-      });
-      box.appendChild(line);
-    }
-    row(off, labels.hiddenParts || 'Hidden parts:', '+', true, 'is-off');
-    row(onNoPanel, labels.shownParts || 'Shown parts:', '✕', false, 'is-on');
+    if (box && box.parentNode) box.parentNode.removeChild(box);
   }
   document.addEventListener('change', function (ev) {
     if (ev.target && ev.target.type === 'checkbox') renderHiddenParts();
@@ -415,6 +400,7 @@
     + '.preview-editor-size-buttons{display:inline-flex;gap:6px}'
     + '.preview-editor-moved{margin-top:8px;max-width:100%}'
     + '.preview-editor-panel{max-height:80vh;overflow:auto}'
+    + '.preview-editor-row--switch.is-off>span{opacity:.7}'
     + '.preview-hidden-parts[hidden]{display:none}';
   document.head.appendChild(css);
   var editToggle = document.getElementById('previewEditToggle');
