@@ -31,7 +31,7 @@
     { key: 'logo', selector: '.community-logo-img, .community-logo-flip', fields: [], move: ['.settings-media-tile--logo'] },
     { key: 'header', selector: '.board-header', fields: ['boardTitleText', 'primaryColor', 'fontScale_boardHeader',
       'boardSubtitleEnabled', 'boardSubtitleText', 'boardSubtitleColor', 'boardSubtitleWeight', 'fontScale_boardSubtitle'] },
-    { key: 'bottom', selector: '.synagogue-info-panel', fields: ['boardMode', 'combinedInfoScale', 'combinedAnnouncementScale', 'accentColor'] },
+    { key: 'bottom', selector: '.synagogue-info-panel', fields: ['boardMode', 'sectionTitle_zmanim', 'sectionTitle_prayers', 'sectionTitle_announcements', 'combinedInfoScale', 'combinedAnnouncementScale', 'accentColor'] },
     { key: 'candle', selector: '.css-candle, .prayer-reading-candle', fields: [], move: ['.settings-candle-preview-tile'] },
     { key: 'tiles', selector: '.cards-grid .card, .cards-grid-kadish .card', fields: ['primaryColor', 'textColor', 'tileColor',
       'tileOpacity', 'tileBorderColor', 'tileBorderWidth', 'tileBorderRadius', 'fontScale_tileTitle', 'fontScale_tileDate', 'fontScale_torahNames',
@@ -168,6 +168,7 @@
     }
     ['min', 'max', 'step', 'maxLength'].forEach(function (a) { if (real[a] && real[a] > -1) proxy[a] = real[a]; });
     if (real.getAttribute('dir')) proxy.setAttribute('dir', real.getAttribute('dir'));
+    if (real.getAttribute('placeholder')) proxy.setAttribute('placeholder', real.getAttribute('placeholder'));
     proxy.className = proxy.type === 'color' ? 'preview-editor-color' : 'form-control';
     proxy.value = real.value;
     proxy.addEventListener('input', function () { real.value = proxy.value; fire(real); });

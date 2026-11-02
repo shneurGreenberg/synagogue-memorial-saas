@@ -1233,6 +1233,38 @@ router.post('/:slug/my-preferences', requireAdmin, parseFormBody, async (req, re
     }
 });
 
+// 1.32.0 I42: phone home screen (board preview + big tiles). Desktop keeps the top menu.
+router.get('/:slug/home', requireAdmin, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const synagogue = await loadAdminSynagogue(req.params.slug, 'yahrzeit');
+        const perms = req.adminPermissions || {};
+        let yahrzeitWeekCount = 0;
+        let missingGenderCount = 0;
+        if (perms.people) {
+            try {
+                const bundle = getCachedAdminYahrzeitBundle(enrichSynagogueForAdmin(synagogue), {
+                    adminLanguage: synagogue && synagogue.adminLanguage,
+                });
+                yahrzeitWeekCount = Array.isArray(bundle.weekEntries) ? bundle.weekEntries.length : 0;
+            } catch (e) { yahrzeitWeekCount = 0; }
+            missingGenderCount = (synagogue.people || []).filter((p) => p && p.gender !== 'male' && p.gender !== 'female').length;
+        }
+        renderAdmin(res, 'admin/home', {
+            synagogue,
+            adminUser: req.adminUser,
+            adminPermissions: perms,
+            adminNavActive: 'home',
+            canManageUsers: req.adminCanManageUsers,
+            yahrzeitWeekCount,
+            missingGenderCount,
+            peopleCount: (synagogue.people || []).length,
+        });
+    } catch (err) {
+        res.status(500).send(publicErrorMessage(err));
+    }
+});
+
 router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
@@ -1268,6 +1300,8 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             combinedInfoScale: Number(enriched.combinedInfoScale) || 100,
             combinedAnnouncementScale: Number(enriched.combinedAnnouncementScale) || 100,
             prayerTimeRows: prayerTimeRowsForAdmin(enriched),
+            sectionTitles: require('../lib/board-mode').normalizeSectionTitles(enriched.boardSectionTitles),
+            sectionTitleDefaults: require('../lib/board-mode').defaultSectionTitles(enriched.language),
             boardFontsGoogleHref: buildAllBoardFontsGoogleHref(),
             boardFontOptions: BOARD_FONTS.map((font) => ({
               id: font.id,
@@ -2310,8 +2344,25 @@ router.get('/:slug/events', requireAdmin, requirePermission('events'), async (re
             adminUser: req.adminUser,
             adminPermissions: req.adminPermissions,
             events: categorized,
-        upcomingHolidayNotice,
+            upcomingHolidayNotice,
+            contentTab: ['prayers', 'messages', 'slideshow'].includes(req.query.tab) ? req.query.tab : 'prayers',
+            prayersSaved: req.query.saved === 'prayers',
+            prayerTimeRows: prayerTimeRowsForAdmin(synagogue),
+            boardMode: normalizeBoardMode(synagogue.boardMode),
         });
+    } catch (err) {
+        res.status(500).send(publicErrorMessage(err));
+    }
+});
+
+// 1.32.0 I39/I42: prayers & classes are edited on the "board content" page.
+router.post('/:slug/prayer-times', requireAdmin, requireAnyPermission('events', 'settings'), parseFormBody, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { parsePrayerTimesFromBody } = require('../lib/board-mode');
+        await Synagogue.updateOne({ slug: req.params.slug }, { $set: { prayerTimes: parsePrayerTimesFromBody(req.body || {}) } });
+        invalidateAdminSynagogueCache(req.params.slug);
+        res.redirect(`/admin/${req.params.slug}/events?tab=prayers&saved=prayers`);
     } catch (err) {
         res.status(500).send(publicErrorMessage(err));
     }

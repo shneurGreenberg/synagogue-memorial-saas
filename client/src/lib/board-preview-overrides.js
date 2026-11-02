@@ -140,6 +140,13 @@ export function mergePreviewPatch(data, patch) {
     const n = Number(patch[key]);
     if (patch[key] !== undefined && patch[key] !== '' && Number.isFinite(n)) next[key] = n;
   });
+  // 1.32.0 I38: custom box headings
+  ['announcements', 'prayers', 'zmanim'].forEach((key) => {
+    const v = patch[`sectionTitle_${key}`];
+    if (v !== undefined) {
+      next.boardSectionTitles = { ...(next.boardSectionTitles || {}), [key]: String(v || '').trim() };
+    }
+  });
   return next;
 }
 

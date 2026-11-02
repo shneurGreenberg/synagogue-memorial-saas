@@ -53,7 +53,7 @@ describe('image optimize', () => {
     assert.equal(meta.height, 400);
   });
 
-  it('keeps PNG output for QR images with alpha', async () => {
+  it('keeps PNG output for QR images and flattens them on white (1.32.0 I41)', async () => {
     const source = await sharp({
       create: {
         width: 2000,
@@ -70,6 +70,6 @@ describe('image optimize', () => {
     assert.equal(result.ext, '.png');
     const meta = await sharp(result.buffer).metadata();
     assert.ok(meta.width <= PRESETS.qr.maxWidth);
-    assert.ok(meta.hasAlpha);
+    assert.ok(!meta.hasAlpha);
   });
 });

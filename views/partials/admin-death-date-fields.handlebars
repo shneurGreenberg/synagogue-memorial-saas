@@ -1,12 +1,12 @@
 <div class="admin-death-date" data-death-date-root data-prefix="{{prefix}}">
     <fieldset class="form-field admin-death-mode-field">
         <legend>{{t 'death_mode_label'}}</legend>
-        <div class="admin-death-mode-pills" role="radiogroup">
-            <label class="admin-sunset-option">
+        <div class="admin-death-mode-pills admin-seg" role="radiogroup">
+            <label class="admin-seg-option">
                 <input type="radio" name="deathDateMode" value="gregorian" class="death-mode-input" id="{{prefix}}DeathModeGregorian" checked>
                 <span>{{t 'death_mode_gregorian'}}</span>
             </label>
-            <label class="admin-sunset-option">
+            <label class="admin-seg-option">
                 <input type="radio" name="deathDateMode" value="hebrew" class="death-mode-input" id="{{prefix}}DeathModeHebrew">
                 <span>{{t 'death_mode_hebrew'}}</span>
             </label>
@@ -24,14 +24,16 @@
         </div>
         <fieldset class="form-field admin-sunset-field" id="{{prefix}}SunsetField">
             <legend>{{t 'died_sunset_legend'}}</legend>
-            <label class="admin-sunset-option">
+            <div class="admin-seg" role="radiogroup">
+            <label class="admin-seg-option">
                 <input type="radio" name="diedAfterSunset" value="before" id="{{prefix}}DiedBeforeSunset" checked>
                 <span>{{t 'died_before_sunset'}}</span>
             </label>
-            <label class="admin-sunset-option">
+            <label class="admin-seg-option">
                 <input type="radio" name="diedAfterSunset" value="after" id="{{prefix}}DiedAfterSunset">
                 <span>{{t 'died_after_sunset'}}</span>
             </label>
+            </div>
             <p class="death-hebrew-preview" data-death-hebrew-preview hidden><span>{{t 'hebrew_date_preview'}}:</span> <strong></strong></p>
         </fieldset>
     </div>
