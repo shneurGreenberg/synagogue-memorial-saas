@@ -507,6 +507,29 @@ function requireAnyPermission(...permissionKeys) {
     };
 }
 
+// 1.31.4 I32c: the installed admin app (PWA) starts at /admin/. Always land on a real page:
+// the login screen when signed out, the community's admin landing page when signed in.
+async function redirectAdminRoot(req, res) {
+    const slug = req.session && req.session.adminSlug;
+    if (!slug) {
+        return res.redirect('/admin/login');
+    }
+    try {
+        const synagogue = await Synagogue.findOne({ slug }).select('slug adminUsers').lean();
+        if (!synagogue) {
+            return res.redirect('/admin/login');
+        }
+        if (!req.session.adminUsername) {
+            return res.redirect(`/admin/${slug}/dashboard`);
+        }
+        const permissions = resolveAdminPermissions(req.session, synagogue);
+        return res.redirect(getDefaultLandingPath(slug, permissions));
+    } catch (err) {
+        return res.redirect('/admin/login');
+    }
+}
+router.get('/', redirectAdminRoot);
+
 router.get('/login', (req, res) => {
     const slugPrefill = String(req.query.slug || '').trim();
     res.render('admin/login', {
@@ -770,9 +793,14 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         }
         if (permissions.settingsAppearance && req.files['backgroundImage']) {
             updateData['theme.backgroundImage'] = await optimizeUploadedImage(req.files['backgroundImage'][0].path, 'background');
+        } else if (permissions.settingsAppearance && String(req.body.removeBackgroundImage || '') === '1') {
+            // 1.31.4 I33: every background can be removed (back to the default image).
+            updateData['theme.backgroundImage'] = '';
         }
         if (permissions.settingsAppearance && req.files['tilesBackground']) {
             updateData['theme.tilesBackground'] = await optimizeUploadedImage(req.files['tilesBackground'][0].path, 'tilesBackground');
+        } else if (permissions.settingsAppearance && String(req.body.removeTilesBackground || '') === '1') {
+            updateData['theme.tilesBackground'] = '';
         }
         if (permissions.settingsAppearance && req.files['middleBackground']) {
             updateData['theme.middleBackground'] = await optimizeUploadedImage(req.files['middleBackground'][0].path, 'tilesBackground');
@@ -1304,13 +1332,10 @@ function normalizeImportedPerson(raw, fallbackId) {
 router.post('/:slug/yahrzeit/settings', requireAdmin, requirePermission('people'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
-        const includeHebrew = req.body.yahrzeitRemindersIncludeHebrew === '1'
-            || req.body.yahrzeitRemindersIncludeHebrew === 'on';
         const synagogue = await loadAdminSynagogue(req.params.slug, 'settings');
         const weeklyEnabled = synagogue && synagogue.weeklyKaddishReminderEnabled === true;
         await Synagogue.updateOne({ slug: req.params.slug }, {
             $set: {
-                'yahrzeitReminders.includeHebrewYahrzeit': includeHebrew,
                 ...(weeklyEnabled && 'weeklyKaddishWhatsapp' in req.body
                     ? { weeklyKaddishWhatsapp: String(req.body.weeklyKaddishWhatsapp || '').trim().slice(0, 30) }
                     : {}),
@@ -2621,6 +2646,12 @@ router.use((err, req, res, next) => {
     }
 
     return res.status(status).send(message);
+});
+
+// 1.31.4 I32c: a bare /admin/<slug> (e.g. an old installed-app shortcut) goes to the right landing page.
+router.get('/:slug', (req, res, next) => {
+    if (!/^[a-z0-9-]+$/i.test(req.params.slug)) return next();
+    return redirectAdminRoot(req, res);
 });
 
 module.exports = router;

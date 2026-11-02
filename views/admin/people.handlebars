@@ -50,7 +50,16 @@
     <div class="people-toolbar">
         <input type="search" id="peopleSearch" class="form-control admin-input" style="max-width: 300px; flex: 1;"
             placeholder="{{t 'search_people'}}" aria-label="{{t 'search_people'}}" value="{{peopleSearchQuery}}">
-        <button type="button" id="genderMissingFilter" class="btn-admin btn-admin-sm" aria-pressed="false">{{t 'gender_missing_filter'}}</button>
+        <div class="people-filter" id="peopleFilter" hidden>
+            <button type="button" id="peopleFilterBtn" class="btn-admin btn-admin-sm btn-admin-secondary" aria-haspopup="true" aria-expanded="false"><span>{{t 'people_filter_button'}}</span><span class="people-filter-current" id="peopleFilterCurrent"></span> ▾</button>
+            <div class="people-filter-menu" id="peopleFilterMenu" role="menu" hidden>
+                <button type="button" role="menuitemradio" data-filter="" class="is-active">{{t 'people_filter_all'}}</button>
+                <button type="button" role="menuitemradio" data-filter="gender-missing">{{t 'people_filter_gender_missing'}} <span class="people-filter-count"></span></button>
+                <button type="button" role="menuitemradio" data-filter="undated">{{t 'people_filter_undated'}} <span class="people-filter-count"></span></button>
+                <button type="button" role="menuitemradio" data-filter="male">{{t 'people_filter_male'}} <span class="people-filter-count"></span></button>
+                <button type="button" role="menuitemradio" data-filter="female">{{t 'people_filter_female'}} <span class="people-filter-count"></span></button>
+            </div>
+        </div>
     </div>
 
     <div class="people-list" id="peopleList"></div>

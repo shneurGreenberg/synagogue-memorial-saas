@@ -35,7 +35,8 @@ describe('invariant: admin routes require auth', () => {
     const violations = scanRouterAuth(
       path.join(__dirname, '..', 'routes', 'admin.js'),
       {
-        publicPaths: ['/login', '/logout'],
+        // '/' and '/:slug' only redirect (to login when signed out) for the installed admin app.
+        publicPaths: ['/login', '/logout', '/', '/:slug'],
         authToken: 'requireAdmin',
       },
     );

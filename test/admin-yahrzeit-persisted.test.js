@@ -44,7 +44,8 @@ describe('admin-yahrzeit-persisted', () => {
       adminYahrzeitTodayCache: {
         dayKey: scope.dayKey,
         peopleRevision: revision,
-        includeHebrewYahrzeit: true,
+        // 1.31.4 I37: a Gregorian board never counts the Hebrew anniversary.
+        includeHebrewYahrzeit: false,
         count: 3,
       },
     };

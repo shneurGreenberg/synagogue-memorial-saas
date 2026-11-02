@@ -206,6 +206,8 @@ const SavedViewSchema = new mongoose.Schema({
       logoBackground: String,
       backgroundImage: String,
       tilesBackground: String,
+      // 1.31.4 I33: saved designs also keep the middle background ('' = none).
+      middleBackground: String,
       candlePalette: String,
     },
     memorialQrPanel: {

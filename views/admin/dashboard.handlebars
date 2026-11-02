@@ -276,6 +276,9 @@
                                 {{t 'replace_image'}}
                                 <input type="file" name="backgroundImage" accept="image/*">
                             </label>
+                            {{#if synagogue.theme.backgroundImage}}
+                            <label class="settings-media-remove"><input type="checkbox" name="removeBackgroundImage" value="1" class="admin-switch"> {{t 'bg_page_remove'}}</label>
+                            {{/if}}
                         </article>
                         <article class="settings-media-tile settings-media-tile--bg-tiles">
                             <div class="saved-view-thumb settings-media-thumb">
@@ -290,6 +293,9 @@
                                 {{t 'replace_image'}}
                                 <input type="file" name="tilesBackground" accept="image/*">
                             </label>
+                            {{#if synagogue.theme.tilesBackground}}
+                            <label class="settings-media-remove"><input type="checkbox" name="removeTilesBackground" value="1" class="admin-switch"> {{t 'bg_tiles_remove'}}</label>
+                            {{/if}}
                         </article>
                         <article class="settings-media-tile settings-media-tile--bg-middle">
                             <div class="saved-view-thumb settings-media-thumb">
@@ -306,7 +312,7 @@
                                 <input type="file" name="middleBackground" accept="image/*">
                             </label>
                             {{#if synagogue.theme.middleBackground}}
-                            <label class="settings-media-remove"><input type="checkbox" name="removeMiddleBackground" value="1"> {{t 'bg_middle_remove'}}</label>
+                            <label class="settings-media-remove"><input type="checkbox" name="removeMiddleBackground" value="1" class="admin-switch"> {{t 'bg_middle_remove'}}</label>
                             {{/if}}
                         </article>
                         <article class="settings-media-tile settings-candle-preview-tile">
@@ -353,6 +359,7 @@
             </button>
             <div class="admin-panel-body settings-panel-body" hidden>
                 <div class="settings-block settings-texts-styling-block">
+                    {{#unless adminPermissions.settingsFeatures}}
                     {{#if (or adminPermissions.settingsAppearance adminPermissions.settingsLanguages)}}
                     <div class="form-field board-language-field">
                         <label for="language">{{t 'language'}}</label>
@@ -373,6 +380,7 @@
                         <span class="field-hint">{{t 'board_font_help'}}</span>
                     </div>
                     {{/if}}
+                    {{/unless}}
                     <div class="typography-controls settings-typography-controls">
                         {{#each textsFontScaleGroups}}
                         {{#if this.sliders}}
@@ -497,6 +505,27 @@
             <div class="admin-panel-body board-features-layout" hidden>
                 <input type="hidden" name="boardFeaturesSection" value="1">
                 <div class="board-mode-settings">
+                    {{!-- 1.31.4 I35: display language and font live in "board features". --}}
+                    {{#if (or adminPermissions.settingsAppearance adminPermissions.settingsLanguages)}}
+                    <div class="form-field board-language-field">
+                        <label for="language">{{t 'language'}}</label>
+                        <select name="language" id="language" class="form-control admin-select-modern">
+                            <option value="ru" {{#if (eq synagogue.language 'ru')}}selected{{/if}}>Russian</option>
+                            <option value="en" {{#if (eq synagogue.language 'en')}}selected{{/if}}>English</option>
+                            <option value="he" {{#if (eq synagogue.language 'he')}}selected{{/if}}>Hebrew</option>
+                        </select>
+                    </div>
+                    <div class="form-field board-font-field">
+                        <label for="boardFont">{{t 'board_font'}}</label>
+                        <select name="boardFont" id="boardFont" class="form-control admin-select-modern board-font-select">
+                            {{#each boardFontOptions}}
+                            <option value="{{this.id}}" {{#if this.selected}}selected{{/if}}
+                                style="font-family: {{this.family}};">{{t this.labelKey}} — {{this.previewSample}}</option>
+                            {{/each}}
+                        </select>
+                        <span class="field-hint">{{t 'board_font_help'}}</span>
+                    </div>
+                    {{/if}}
                     <div class="form-field board-mode-field">
                         <label for="boardMode">{{t 'board_mode'}}</label>
                         <select name="boardMode" id="boardMode" class="form-control admin-select-modern">
@@ -1057,8 +1086,9 @@
         if (settingsForm) {
             settingsForm.querySelectorAll('input[type="file"]').forEach(function (input) {
                 input.addEventListener('change', function () {
-                    var card = input.closest('.media-upload-card');
-                    var hint = card && card.querySelector('.file-selected-hint');
+                    var card = input.closest('.media-upload-card, .settings-media-tile');
+                    if (!card) return;
+                    var hint = card.querySelector('.file-selected-hint');
                     if (!hint) {
                         hint = document.createElement('p');
                         hint.className = 'field-hint file-selected-hint';

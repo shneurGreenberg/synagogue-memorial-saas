@@ -126,26 +126,17 @@
 {{/if}}
 {{/if}}
 
+    {{#if weeklyKaddishReminderEnabled}}
     <form method="POST" action="/admin/{{synagogue.slug}}/yahrzeit/settings" class="yahrzeit-settings-form board-features-grid">
         <p class="yahrzeit-settings-saved" id="yahrzeitSettingsSaved" data-saved-label="{{t 'saved_settings'}}" hidden role="status">{{t 'saved_settings'}}</p>
-        <div class="admin-theme-setting">
-            <div class="admin-theme-setting-label">{{t 'yahrzeit_include_hebrew'}}</div>
-            <div class="admin-theme-setting-control">
-                <label class="toggle-switch" for="yahrzeitRemindersIncludeHebrew">
-                    <input type="checkbox" id="yahrzeitRemindersIncludeHebrew" name="yahrzeitRemindersIncludeHebrew" value="1" {{#if synagogue.yahrzeitReminders.includeHebrewYahrzeit}}checked{{/if}}>
-                    <span class="toggle-slider" aria-hidden="true"></span>
-                </label>
-            </div>
-        </div>
-        {{#if weeklyKaddishReminderEnabled}}
         <div class="admin-theme-setting">
             <label class="admin-theme-setting-label" for="weeklyKaddishWhatsapp">{{t 'weekly_kaddish_whatsapp_setting'}}</label>
             <div class="admin-theme-setting-control">
                 <input type="tel" id="weeklyKaddishWhatsapp" name="weeklyKaddishWhatsapp" value="{{weeklyKaddishWhatsapp}}" placeholder="972501234567" dir="ltr" class="form-control">
             </div>
         </div>
-        {{/if}}
     </form>
+    {{/if}}
 
     {{#if entries.length}}
     <div class="yahrzeit-list">

@@ -15,10 +15,57 @@
 
   const searchInput = document.getElementById('peopleSearch');
   const undatedFilter = null;
-  const genderMissingFilter = document.getElementById('genderMissingFilter');
+  const genderMissingFilter = null;
+  const peopleFilterWrap = document.getElementById('peopleFilter');
+  const peopleFilterBtn = document.getElementById('peopleFilterBtn');
+  const peopleFilterMenu = document.getElementById('peopleFilterMenu');
+  let activePeopleFilter = '';
+  function personMatchesFilter(person, key) {
+    if (key === 'gender-missing') return isGenderMissing(person);
+    if (key === 'undated') return !hasDeathDate(person);
+    if (key === 'male') return person.gender === 'male';
+    if (key === 'female') return person.gender === 'female';
+    return true;
+  }
+  function rowMatchesFilter(row, key) {
+    if (key === 'gender-missing') return row.getAttribute('data-gender-missing') === '1';
+    if (key === 'undated') return row.getAttribute('data-undated') === '1';
+    if (key === 'male' || key === 'female') return row.getAttribute('data-gender') === key;
+    return true;
+  }
+  function setPeopleFilter(key) {
+    activePeopleFilter = key || '';
+    if (peopleFilterMenu) {
+      peopleFilterMenu.querySelectorAll('[data-filter]').forEach(function (b) {
+        const on = b.getAttribute('data-filter') === activePeopleFilter;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-checked', on ? 'true' : 'false');
+      });
+      const cur = document.getElementById('peopleFilterCurrent');
+      const activeBtn = peopleFilterMenu.querySelector('[data-filter="' + activePeopleFilter + '"]');
+      if (cur) cur.textContent = activePeopleFilter && activeBtn ? ': ' + activeBtn.firstChild.textContent.trim() : '';
+      if (peopleFilterBtn) peopleFilterBtn.classList.toggle('is-active', !!activePeopleFilter);
+    }
+  }
+  function updatePeopleFilterOptions() {
+    if (!peopleFilterMenu) return;
+    let anyOption = false;
+    peopleFilterMenu.querySelectorAll('[data-filter]').forEach(function (b) {
+      const key = b.getAttribute('data-filter');
+      if (!key) return;
+      const count = people.filter(function (p) { return personMatchesFilter(p, key); }).length;
+      const countEl = b.querySelector('.people-filter-count');
+      if (countEl) countEl.textContent = '(' + count + ')';
+      b.hidden = count === 0;
+      if (count > 0) anyOption = true;
+      if (count === 0 && activePeopleFilter === key) setPeopleFilter('');
+    });
+    if (peopleFilterWrap) peopleFilterWrap.hidden = !anyOption;
+  }
   function isGenderMissing(person) { return person.gender !== 'male' && person.gender !== 'female'; }
   function syncGenderBadge(row, person) {
     row.setAttribute('data-gender-missing', isGenderMissing(person) ? '1' : '0');
+    row.setAttribute('data-gender', person.gender === 'male' || person.gender === 'female' ? person.gender : '');
     const nameLine = row.querySelector('.person-name-line');
     if (!nameLine) return;
     let b = nameLine.querySelector('.person-gender-missing-badge');
@@ -586,6 +633,7 @@
   });
 
   function applyFilters() {
+    updatePeopleFilterOptions();
     const query = getPeopleSearchQuery().toLowerCase();
     const undatedOnly = undatedFilter && undatedFilter.getAttribute('aria-pressed') === 'true';
     const rows = Array.from(list.querySelectorAll('.person-row'));
@@ -596,7 +644,8 @@
       const matchesUndated = !undatedOnly || row.getAttribute('data-undated') === '1';
       const genderOnly = genderMissingFilter && genderMissingFilter.getAttribute('aria-pressed') === 'true';
       const matchesGender = !genderOnly || row.getAttribute('data-gender-missing') === '1';
-      row.style.display = matchesQuery && matchesUndated && matchesGender ? '' : 'none';
+      const matchesFilter = rowMatchesFilter(row, activePeopleFilter);
+      row.style.display = matchesQuery && matchesUndated && matchesGender && matchesFilter ? '' : 'none';
     });
 
     const visible = rows.filter(function (row) { return row.style.display !== 'none'; });
@@ -1285,6 +1334,28 @@
     });
 
     searchInput.addEventListener('input', applyFilters);
+    if (peopleFilterBtn && peopleFilterMenu) {
+      peopleFilterBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const open = peopleFilterMenu.hidden;
+        peopleFilterMenu.hidden = !open;
+        peopleFilterBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      peopleFilterMenu.addEventListener('click', function (e) {
+        const b = e.target.closest('[data-filter]');
+        if (!b) return;
+        setPeopleFilter(b.getAttribute('data-filter'));
+        peopleFilterMenu.hidden = true;
+        peopleFilterBtn.setAttribute('aria-expanded', 'false');
+        applyFilters();
+      });
+      document.addEventListener('click', function (e) {
+        if (!peopleFilterMenu.hidden && !e.target.closest('#peopleFilter')) {
+          peopleFilterMenu.hidden = true;
+          peopleFilterBtn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
     if (genderMissingFilter) {
       genderMissingFilter.addEventListener('click', function () {
         const pressed = genderMissingFilter.getAttribute('aria-pressed') === 'true';
