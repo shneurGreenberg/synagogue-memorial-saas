@@ -1478,6 +1478,11 @@
       },
       "hasDeathDate": true,
       "photo": "92.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
@@ -3310,8 +3315,8 @@
       }
     ]
   },
-  "contentVersion": 1793580909622,
-  "exportedAt": "2026-11-02T00:55:09.622Z",
+  "contentVersion": 1793611126480,
+  "exportedAt": "2026-11-02T09:18:46.480Z",
   "jewishContent": {
     "date": "2026-11-02",
     "timezone": "Asia/Novosibirsk",
@@ -3464,6 +3469,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-11-02T00:55:09.622Z"
+    "updatedAt": "2026-11-02T09:18:46.480Z"
   }
 }
