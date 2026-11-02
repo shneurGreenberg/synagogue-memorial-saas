@@ -1,0 +1,5 @@
+    {{!-- 1.33.0 I45: deceased + their relatives (contacts) in one page --}}
+    <nav class="content-tabs people-section-tabs" aria-label="{{t 'people'}}">
+        {{#if adminPermissions.people}}<a class="content-tab{{#if (eq peopleTab 'people')}} is-active{{/if}}" href="/admin/{{synagogue.slug}}/people"{{#if (eq peopleTab 'people')}} aria-current="page"{{/if}}>{{t 'people_tab_deceased'}}</a>{{/if}}
+        {{#if adminPermissions.contactDirectory}}<a class="content-tab{{#if (eq peopleTab 'contacts')}} is-active{{/if}}" href="/admin/{{synagogue.slug}}/contact-directory"{{#if (eq peopleTab 'contacts')}} aria-current="page"{{/if}}>{{t 'people_tab_relatives'}}</a>{{/if}}
+    </nav>

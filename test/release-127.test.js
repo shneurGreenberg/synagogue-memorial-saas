@@ -135,11 +135,11 @@ describe('release 1.27 E3 Tehillim board section labels', () => {
 });
 
 describe('release 1.27 public health endpoint', () => {
-  it('returns JSON with node runtime and app version 1.32.0', () => {
+  it('returns JSON with node runtime and app version 1.33.0', () => {
     const payload = buildHealthPayload();
     assert.equal(payload.ok, true);
     assert.match(payload.node, /^v\d+\.\d+\.\d+/);
-    assert.equal(payload.version, '1.32.0');
+    assert.equal(payload.version, '1.33.0');
     assert.deepEqual(Object.keys(payload).sort(), ['node', 'ok', 'version']);
   });
 });
@@ -149,6 +149,6 @@ describe('release 1.27 changelog version', () => {
     const changelog = JSON.parse(
       fs.readFileSync(path.join(__dirname, '..', 'CHANGELOG.json'), 'utf8'),
     );
-    assert.equal(changelog[0].version, '1.32.0');
+    assert.equal(changelog[0].version, '1.33.0');
   });
 });

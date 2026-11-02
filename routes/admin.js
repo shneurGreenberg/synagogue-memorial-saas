@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const express = require('express');
 const router = express.Router();
 const Synagogue = require('../models/Synagogue');
@@ -68,6 +69,9 @@ const { resolveCommunityDisplayName } = require('../lib/community-display-name')
 const {
   createLoginRateLimiter,
   regenerateSession,
+  slugLockRemainingMs,
+  recordLoginFailure,
+  recordLoginSuccess,
   isAllowedImageUpload,
   isAllowedCommunityLogoUpload,
   publicErrorMessage,
@@ -332,11 +336,10 @@ const storage = multer.diskStorage({
         }
     },
     filename: function (req, file, cb) {
-        let ext = path.extname(file.originalname).toLowerCase();
-        if (!ext && file.mimetype && MIME_EXT[file.mimetype]) {
-            ext = MIME_EXT[file.mimetype];
-        }
-        cb(null, `${Date.now()}${ext || '.jpg'}`);
+        // 1.33.0 audit #7: extension from MIME (re-checked against magic bytes after upload) + random suffix.
+        const mime = String(file.mimetype || '').toLowerCase();
+        const ext = MIME_EXT[mime] || (mime === 'image/svg+xml' ? '.svg' : '.jpg');
+        cb(null, `${Date.now()}-${crypto.randomBytes(4).toString('hex')}${ext}`);
     },
 });
 
@@ -355,6 +358,24 @@ const upload = multer({
         }
         cb(null, true);
     },
+});
+
+// 1.33.0 audit #7: every disk upload is verified by magic bytes; bad files are deleted.
+const { verifyRequestUploads } = require('../lib/upload-magic');
+function withMagicCheck(mw) {
+    return (req, res, next) => mw(req, res, (err) => {
+        if (err) return next(err);
+        const bad = verifyRequestUploads(req);
+        if (bad) {
+            const wantsJson = req.xhr || String(req.get('Accept') || '').includes('json');
+            return wantsJson ? res.status(400).json({ ok: false, error: bad }) : res.status(400).send(bad);
+        }
+        return next();
+    });
+}
+['single', 'fields', 'array', 'any'].forEach((m) => {
+    const orig = upload[m].bind(upload);
+    upload[m] = (...args) => withMagicCheck(orig(...args));
 });
 
 const contactImportUpload = multer({
@@ -558,6 +579,13 @@ router.post('/login', loginRateLimiter, async (req, res) => {
     const { slug: slugInput, password } = req.body;
     const { slug, username } = parseSlugAndUsername(slugInput);
     const nextUrl = req.body.next;
+    if (slugLockRemainingMs(slug) > 0) {
+        return res.status(429).render('admin/login', {
+            error: 'Too many login attempts. Please try again later.',
+            layout: false,
+            next: scanPathForSlug(nextUrl, slug),
+        });
+    }
     try {
         const synagogue = await Synagogue.findOne({ slug }).select('+adminPassword');
         const namedUser = synagogue && username ? findAdminUser(synagogue, username) : null;
@@ -565,6 +593,7 @@ router.post('/login', loginRateLimiter, async (req, res) => {
             // Staff user with a personal code: only that code is accepted.
             if (await verifyPassword(password, namedUser.passwordHash)) {
                 await regenerateSession(req);
+                recordLoginSuccess(slug);
                 req.session.adminSlug = slug;
                 req.session.adminUsername = normalizeAdminUsername(username);
                 const permissions = resolveAdminPermissions(req.session, synagogue);
@@ -577,6 +606,7 @@ router.post('/login', loginRateLimiter, async (req, res) => {
             }
 
             await regenerateSession(req);
+                recordLoginSuccess(slug);
 
             if (username) {
                 const adminUser = findAdminUser(synagogue, username);
@@ -597,6 +627,7 @@ router.post('/login', loginRateLimiter, async (req, res) => {
             req.session.adminUsername = null;
             return redirectAfterAdminLogin(res, slug, FULL_ADMIN_PERMISSIONS, nextUrl);
         }
+        recordLoginFailure(slug);
         res.render('admin/login', {
             error: 'Invalid credentials',
             layout: false,
