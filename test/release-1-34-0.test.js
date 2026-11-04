@@ -118,7 +118,8 @@ describe('1.34.0 I49/I50: the permanent switch is unambiguous and correctly size
 
   it('the track is the standard 52x28 with no extra frame', () => {
     const css = read('styles/admin.scss');
-    assert.match(css, /\.admin-permanent-toggle \.toggle-slider \{ width: 52px; height: 28px;/);
+    // The track is sized explicitly so the frame can never grow past the switch itself.
+    assert.match(css, /\.admin-permanent-field \.admin-permanent-toggle \.toggle-slider \{[^}]*width: 52px;[^}]*height: 28px;/);
     assert.match(css, /\.admin-permanent-field \{ display: flex; flex-direction: column; gap: 6px; \}/);
   });
 
