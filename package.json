@@ -27,7 +27,8 @@
     "test": "node --test test/*.test.js",
     "release:check": "npm test && npm run build:board && node scripts/check-board-built-bundle.js && npm run build:css",
     "test:unit": "node --test test/public-board.test.js test/http-security.test.js test/http-etag.test.js",
-    "test:smoke": "node --test test/smoke.test.js"
+    "test:smoke": "node --test test/smoke.test.js",
+    "yahrzeit-push": "node scripts/send-yahrzeit-push.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -56,7 +57,8 @@
     "rimraf": "^3.0.2",
     "sanitize-html": "^2.17.4",
     "sass": "^1.50.0",
-    "sharp": "^0.35.5"
+    "sharp": "^0.35.5",
+    "web-push": "^3.6.7"
   },
   "overrides": {
     "@remix-run/router": "1.23.4",

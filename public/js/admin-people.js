@@ -1124,6 +1124,36 @@
     refreshFamilyNameChips(scope.closest('.modal') || scope);
   }
 
+  /* 1.34.0 I49: the permanent switch shows its state in words ("קבוע" / "לא קבוע"), so the switch
+   * position and the label can never disagree. */
+  function syncPermanentState(scope) {
+    const root = scope || document;
+    root.querySelectorAll('[data-permanent-switch]').forEach(function (input) {
+      const row = input.closest('.admin-permanent-toggle');
+      const state = row && row.querySelector('[data-permanent-state]');
+      if (!state) return;
+      state.textContent = input.checked
+        ? (input.getAttribute('data-on-label') || '')
+        : (input.getAttribute('data-off-label') || '');
+      row.classList.toggle('is-on', input.checked);
+    });
+  }
+  window.adminSyncPermanentState = syncPermanentState;
+
+  function bindPermanentSwitches() {
+    document.querySelectorAll('[data-permanent-switch]').forEach(function (input) {
+      if (input.__permanentBound) return;
+      input.__permanentBound = true;
+      input.addEventListener('change', function () {
+        syncPermanentState(input.closest('.admin-permanent-field') || document);
+      });
+    });
+    ['addPersonModal', 'editPersonModal'].forEach(function (id) {
+      const modal = document.getElementById(id);
+      if (modal) syncPermanentState(modal);
+    });
+  }
+
   function populateContactsSection(scope, person) {
     const listEl = scope && scope.querySelector('[data-contacts-list]');
     if (!listEl) {
@@ -1177,6 +1207,7 @@
     if (editPermanent) {
       editPermanent.checked = !!person.permanent;
     }
+    syncPermanentState(document.getElementById('editPersonModal'));
     const editPermanentUntil = document.getElementById('editPermanentUntil');
     if (editPermanentUntil) {
       editPermanentUntil.value = person.permanentUntil ? String(new Date(person.permanentUntil).toISOString()).slice(0, 10) : '';
@@ -1397,6 +1428,7 @@
     bindPersonRowInteractions(personCard);
 
     initLazyPhotos(list);
+    bindPermanentSwitches();
     initEditModalHandlers();
     initContactPlatformToggles();
     resetContactsSection(document.getElementById('addPersonModal'));

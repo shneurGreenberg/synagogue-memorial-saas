@@ -79,6 +79,7 @@ export default {
   zman_shkia: 'Заход солнца',
   zman_tzeit: 'Выход звёзд',
   prayer_times_title: 'Время молитв',
+  classes_title: 'Уроки',
   announcements_title: 'Объявления общины',
   permanent_mark: 'Вечная память',
 };

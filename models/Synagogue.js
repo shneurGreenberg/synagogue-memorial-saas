@@ -440,6 +440,8 @@ const SynagogueSchema = new mongoose.Schema({
   boardSectionTitles: {
     announcements: { type: String, default: '' },
     prayers: { type: String, default: '' },
+    // 1.34.0 I46: the classes part of the prayer box has its own editable heading.
+    classes: { type: String, default: '' },
     zmanim: { type: String, default: '' },
   },
   adminLanguage: { type: String, default: 'ru' }, // Separate language for admin panel
@@ -486,10 +488,43 @@ const SynagogueSchema = new mongoose.Schema({
     displayMode: { type: String, enum: ['rotate', 'showNow'], default: 'rotate' },
     interval: { type: Number, default: 10 }, // seconds for each slide
     mainDuration: { type: Number, default: 30 }, // seconds for main view
+    // 1.34.0 I52: optional alarm-clock window. Empty schedule = always show when enabled.
+    schedule: {
+      from: { type: String, default: '' },
+      to: { type: String, default: '' },
+      days: {
+        type: [{
+          _id: false,
+          day: { type: Number, default: 0, min: 0, max: 6 },
+          start: { type: String, default: '' },
+          end: { type: String, default: '' },
+        }],
+        default: [],
+      },
+    },
     images: [{
       url: String,
       text: String
     }]
+  },
+  // 1.34.0 I53: phone push notifications for upcoming yahrzeits (admin PWA installs).
+  pushSubscriptions: {
+    type: [{
+      endpoint: { type: String, default: '' },
+      keys: {
+        p256dh: { type: String, default: '' },
+        auth: { type: String, default: '' },
+      },
+      createdAt: { type: Date, default: Date.now },
+      lastSeenAt: { type: Date, default: Date.now },
+      userAgent: { type: String, default: '' },
+    }],
+    default: [],
+  },
+  yahrzeitPush: {
+    enabled: { type: Boolean, default: false },
+    daysBefore: { type: Number, default: 3, min: 0, max: 60 },
+    lastNotifiedDate: { type: String, default: '' },
   },
   presentationOverlay: {
     enabled: { type: Boolean, default: false },

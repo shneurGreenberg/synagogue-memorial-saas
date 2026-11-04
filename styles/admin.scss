@@ -2,8 +2,6 @@
 @import 'css-candle';
 @import 'logo-bg-swatches';
 
-$admin-radius: 14px;
-
 body.admin-body.admin-theme-light,
 body.admin-login-page.admin-theme-light {
   --admin-bg: #f4f5f8;
@@ -53,6 +51,13 @@ body.admin-login-page {
   --admin-success-text: #6ee7b7;
   --admin-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
   --admin-shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.55);
+  /* 1.34.0 I48: the dark theme was missing these (they only existed on the light theme), so any
+     var(--admin-radius) would have collapsed to square corners here. */
+  --admin-on: #22c55e;
+  --admin-off: #8a94a6;
+  --admin-radius: 12px;
+  --admin-radius-sm: 8px;
+  --admin-touch: 44px;
 }
 
 body.admin-body,
@@ -149,7 +154,7 @@ body.admin-login-page {
 
   .nav-link {
     font-weight: 500;
-    border-radius: 8px;
+    border-radius: var(--admin-radius-sm);
     margin: 0 2px;
     padding: 0.45rem 0.85rem !important;
     color: rgba(255, 255, 255, 0.88) !important;
@@ -180,7 +185,7 @@ body.admin-login-page {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    border-radius: 10px;
+    border-radius: var(--admin-radius-sm);
     font-weight: 600;
     border-width: 2px;
     color: #fff !important;
@@ -247,7 +252,7 @@ body.admin-login-page {
   justify-content: center;
   gap: 0.4rem;
   border: none;
-  border-radius: 12px;
+  border-radius: var(--admin-radius);
   padding: 0.65rem 1.15rem;
   font-weight: 600;
   font-size: 0.9rem;
@@ -328,7 +333,7 @@ body.admin-login-page {
   margin-bottom: 1.25rem;
   padding: 1rem 1.1rem;
   background: var(--admin-surface);
-  border-radius: $admin-radius;
+  border-radius: var(--admin-radius);
   border: 1px solid var(--admin-border);
   box-shadow: var(--admin-shadow);
 }
@@ -336,7 +341,7 @@ body.admin-login-page {
 .admin-input,
 .people-toolbar .form-control {
   border: 1px solid var(--admin-border);
-  border-radius: 10px;
+  border-radius: var(--admin-radius-sm);
   padding: 0.6rem 0.9rem;
   font-size: 0.9rem;
   background: var(--admin-surface-elevated);
@@ -366,7 +371,7 @@ body.admin-login-page {
   overflow: hidden;
   background: var(--admin-surface);
   border: 1px solid var(--admin-border);
-  border-radius: $admin-radius;
+  border-radius: var(--admin-radius);
   box-shadow: var(--admin-shadow);
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
 
@@ -399,7 +404,7 @@ body.admin-login-page {
   width: 68px;
   height: 68px;
   object-fit: contain;
-  border-radius: 10px;
+  border-radius: var(--admin-radius-sm);
 }
 
 .admin-synagogue-badge {
@@ -435,7 +440,7 @@ body.admin-login-page {
   min-height: 280px;
   max-height: 280px;
   padding: 1rem;
-  border-radius: 16px;
+  border-radius: var(--admin-radius);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.35));
   border: 1px solid var(--admin-border);
   overflow: hidden;
@@ -600,7 +605,7 @@ body.admin-login-page {
 
   .modal-content {
     border: 1px solid var(--admin-border);
-    border-radius: 20px;
+    border-radius: var(--admin-radius);
     box-shadow: var(--admin-shadow-lg);
     overflow: hidden;
     background: var(--admin-surface);
@@ -711,7 +716,7 @@ body.admin-login-page {
   width: 100%;
   text-align: center;
   padding: 0.55rem 0.75rem;
-  border-radius: 10px;
+  border-radius: var(--admin-radius-sm);
   background: var(--admin-primary-dim);
   color: var(--admin-primary);
   font-weight: 600;
@@ -758,7 +763,7 @@ body.admin-login-page {
 .admin-contact-row {
   padding: 0.9rem 1rem;
   border: 1px solid var(--admin-border);
-  border-radius: 12px;
+  border-radius: var(--admin-radius);
   background: rgba(255, 255, 255, 0.02);
 }
 
@@ -831,7 +836,7 @@ body.admin-login-page {
   padding: 0.35rem 0;
   list-style: none;
   border: 1px solid var(--admin-border);
-  border-radius: 10px;
+  border-radius: var(--admin-radius-sm);
   background: var(--admin-surface-elevated);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
   max-height: 220px;
@@ -896,7 +901,7 @@ body.admin-login-page {
   min-height: 88px;
   background: var(--admin-surface);
   border: 1px solid var(--admin-border);
-  border-radius: $admin-radius;
+  border-radius: var(--admin-radius);
   box-shadow: var(--admin-shadow);
   transition: box-shadow 0.15s ease, border-color 0.15s ease;
 
@@ -1018,7 +1023,7 @@ body.admin-login-page {
   width: 2.5rem;
   height: 2.5rem;
   padding: 0;
-  border-radius: 10px;
+  border-radius: var(--admin-radius-sm);
   border: 1px solid var(--admin-border);
   background: var(--admin-surface-elevated);
   color: var(--admin-text);
@@ -1087,7 +1092,7 @@ body.admin-login-page {
   .media-preview.media-preview-logo {
     width: 56px;
     height: 56px;
-    border-radius: 10px;
+    border-radius: var(--admin-radius-sm);
 
     img { padding: 4px; }
 
@@ -1115,7 +1120,7 @@ body.admin-login-page {
   max-height: 360px;
   overflow: auto;
   border: 1px solid var(--admin-border);
-  border-radius: 12px;
+  border-radius: var(--admin-radius);
 }
 
 .manage-contacts-table {
@@ -1193,7 +1198,7 @@ body.admin-login-page {
 .admin-person-card-contact-block {
   padding: 0.75rem 0.9rem;
   border: 1px solid var(--admin-border);
-  border-radius: 10px;
+  border-radius: var(--admin-radius);
 
   h4 {
     margin: 0 0 0.5rem;
@@ -1311,7 +1316,7 @@ body.admin-login-page {
   }
 
   .form-control {
-    border-radius: 10px;
+    border-radius: var(--admin-radius-sm);
     border: 1px solid var(--admin-border);
     padding: 0.65rem 0.85rem;
     background: var(--admin-surface-elevated);
@@ -1338,7 +1343,7 @@ body.admin-login-page {
 .admin-sunset-field {
   margin: 0.75rem 0 0;
   padding: 0.65rem 0.85rem;
-  border-radius: 10px;
+  border-radius: var(--admin-radius);
   border: 1px solid var(--admin-border-subtle, rgba(255, 255, 255, 0.12));
 
   legend {
@@ -1368,7 +1373,7 @@ body.admin-login-page {
   gap: 0.5rem;
   padding: 0.65rem 0.85rem;
   background: var(--admin-danger-bg);
-  border-radius: 10px;
+  border-radius: var(--admin-radius);
   border: 1px solid var(--admin-danger-border);
 
   input {
@@ -1481,7 +1486,7 @@ body.admin-login-page {
     align-items: baseline;
     padding: 0.55rem 0.75rem;
     border: 1px solid var(--admin-border);
-    border-radius: 10px;
+    border-radius: var(--admin-radius-sm);
     background: var(--admin-surface);
     font-size: 0.85rem;
   }
@@ -1503,7 +1508,7 @@ body.admin-login-page {
 }
 
 .admin-alert {
-  border-radius: 12px;
+  border-radius: var(--admin-radius);
   border: none;
   box-shadow: var(--admin-shadow);
   margin-bottom: 1.25rem;
@@ -1537,7 +1542,7 @@ body.admin-login-page {
 .admin-panel {
   background: var(--admin-surface);
   border: 1px solid var(--admin-border);
-  border-radius: $admin-radius;
+  border-radius: var(--admin-radius);
   box-shadow: var(--admin-shadow);
   margin-bottom: 1.25rem;
   overflow: hidden;
@@ -1634,7 +1639,7 @@ body.admin-login-page {
 
 .branding-subsection {
   border: 1px solid var(--admin-border);
-  border-radius: 12px;
+  border-radius: var(--admin-radius);
   overflow: hidden;
   background: var(--admin-bg-subtle);
 
@@ -1766,7 +1771,7 @@ body.admin-login-page {
     min-height: 180px;
     padding: 1rem;
     background: rgba(0, 0, 0, 0.12);
-    border-radius: 12px;
+    border-radius: var(--admin-radius);
     border: 1px solid var(--admin-border);
 
     img {
@@ -1862,7 +1867,7 @@ body.admin-is-busy {
     gap: 0.3rem;
     padding: 0.45rem 0.35rem 0.5rem;
     border: 1px solid var(--admin-border);
-    border-radius: 10px;
+    border-radius: var(--admin-radius);
     background: var(--admin-surface-elevated);
     text-align: center;
     min-width: 0;
@@ -1884,7 +1889,7 @@ body.admin-is-busy {
     width: 2.35rem;
     height: 2.35rem;
     padding: 2px;
-    border-radius: 8px;
+    border-radius: var(--admin-radius-sm);
     border: 1px solid var(--admin-border);
   }
 
@@ -1952,7 +1957,7 @@ body.admin-is-busy {
       justify-content: center;
       min-height: 5.5rem;
       padding: 0.25rem 0.25rem 0.1rem;
-      border-radius: 8px;
+      border-radius: var(--admin-radius);
       background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.35) 100%);
       overflow: hidden;
     }
@@ -1995,7 +2000,7 @@ body.admin-is-busy {
     gap: 0.4rem;
     padding: 0.5rem;
     border: 1px solid var(--admin-border);
-    border-radius: 10px;
+    border-radius: var(--admin-radius);
     background: var(--admin-bg-subtle);
     min-width: 0;
   }
@@ -2053,7 +2058,7 @@ body.admin-is-busy {
     gap: 0.65rem;
     padding: 0.65rem 0.75rem;
     border: 1px solid var(--admin-border);
-    border-radius: 10px;
+    border-radius: var(--admin-radius);
     background: var(--admin-bg-subtle);
   }
 
@@ -2138,7 +2143,7 @@ body.admin-is-busy {
   .settings-copy-details {
     margin-top: 0.35rem;
     border: 1px solid var(--admin-border);
-    border-radius: 10px;
+    border-radius: var(--admin-radius);
     background: var(--admin-bg-subtle);
     overflow: hidden;
 
@@ -2224,7 +2229,7 @@ body.admin-is-busy {
   gap: 0.75rem;
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--admin-border);
-  border-radius: 10px;
+  border-radius: var(--admin-radius);
   background: var(--admin-surface-elevated);
 
   input[type='color'] {
@@ -2232,7 +2237,7 @@ body.admin-is-busy {
     height: 36px;
     padding: 0;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--admin-radius-sm);
     cursor: pointer;
     background: transparent;
   }
@@ -2267,7 +2272,7 @@ body.admin-is-busy {
   gap: 0.75rem;
   padding: 0.55rem 0.85rem;
   border: 1px solid var(--admin-border);
-  border-radius: 12px;
+  border-radius: var(--admin-radius);
   background: var(--admin-surface-elevated);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
@@ -2277,7 +2282,7 @@ body.admin-is-busy {
   height: 40px;
   padding: 2px;
   border: 2px solid var(--admin-border);
-  border-radius: 10px;
+  border-radius: var(--admin-radius-sm);
   cursor: pointer;
   background: transparent;
 
@@ -2287,7 +2292,7 @@ body.admin-is-busy {
 
   &::-webkit-color-swatch {
     border: none;
-    border-radius: 6px;
+    border-radius: var(--admin-radius-sm);
   }
 }
 
@@ -2303,7 +2308,7 @@ body.admin-is-busy {
 
 .admin-input-modern,
 .admin-select-modern {
-  border-radius: 12px !important;
+  border-radius: var(--admin-radius-sm);
   padding: 0.65rem 0.95rem !important;
   font-size: 0.95rem !important;
   border: 1px solid var(--admin-border) !important;
@@ -2346,7 +2351,7 @@ body.admin-is-busy {
   gap: 0.65rem;
   padding: 1rem;
   border: 1px solid var(--admin-border);
-  border-radius: 12px;
+  border-radius: var(--admin-radius);
   background: var(--admin-bg-subtle);
 
   &.media-upload-card-flat {
@@ -2368,7 +2373,7 @@ body.admin-is-busy {
 .media-preview {
   width: 100%;
   height: 120px;
-  border-radius: 10px;
+  border-radius: var(--admin-radius);
   overflow: hidden;
   background: var(--admin-surface-elevated);
   display: flex;
@@ -2587,7 +2592,7 @@ body.admin-is-busy {
   padding: 2.5rem 1.5rem;
   color: var(--admin-text-muted);
   background: var(--admin-bg-subtle);
-  border-radius: 12px;
+  border-radius: var(--admin-radius);
   border: 1px dashed var(--admin-border);
 
   p {
@@ -2635,7 +2640,7 @@ body.admin-is-busy {
   gap: 0.75rem;
   padding: 0.85rem;
   border: 1px solid var(--admin-border);
-  border-radius: 12px;
+  border-radius: var(--admin-radius);
   background: var(--admin-surface-elevated, var(--admin-surface));
   overflow: hidden;
 
@@ -2659,7 +2664,7 @@ body.admin-is-busy {
 .saved-view-thumb {
   position: relative;
   aspect-ratio: 16 / 9;
-  border-radius: 8px;
+  border-radius: var(--admin-radius-sm);
   overflow: hidden;
   background: rgba(0, 0, 0, 0.08);
 
@@ -2775,7 +2780,7 @@ body.admin-is-busy {
   flex: 1 1 100%;
   margin: 0;
   padding: 0.55rem 0.75rem;
-  border-radius: 8px;
+  border-radius: var(--admin-radius-sm);
   font-size: 0.92rem;
   line-height: 1.4;
 
@@ -2826,7 +2831,7 @@ body.admin-is-busy {
   position: sticky;
   top: 1rem;
   padding: 1rem;
-  border-radius: 14px;
+  border-radius: var(--admin-radius);
   border: 1px solid var(--admin-border);
   background: rgba(0, 0, 0, 0.28);
 }
@@ -2839,7 +2844,7 @@ body.admin-is-busy {
 .events-board-preview-panel {
   margin-top: 0.85rem;
   padding: 0.85rem;
-  border-radius: 12px;
+  border-radius: var(--admin-radius);
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.55));
 }
 
@@ -2863,7 +2868,7 @@ body.admin-is-busy {
     display: block;
     padding: 12px 10px;
     border: 1px solid rgba(207, 175, 31, 0.42);
-    border-radius: 10px;
+    border-radius: var(--admin-radius);
     text-align: center;
     background: linear-gradient(180deg, rgba(207, 175, 31, 0.16), rgba(0, 0, 0, 0.18));
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.06);
@@ -2922,7 +2927,7 @@ body.admin-is-busy {
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem 1.15rem;
-  border-radius: $admin-radius;
+  border-radius: var(--admin-radius);
   border: 1px solid var(--admin-border);
   background: var(--admin-surface);
 }
@@ -3028,7 +3033,7 @@ body.admin-is-busy {
   align-items: center;
   gap: 0.85rem;
   padding: 1.25rem 1.75rem;
-  border-radius: 14px;
+  border-radius: var(--admin-radius);
   background: var(--admin-surface);
   border: 1px solid var(--admin-border);
   box-shadow: var(--admin-shadow-lg);
@@ -3059,7 +3064,7 @@ body.admin-is-busy {
   font-size: 0.8rem;
   background: var(--admin-bg-subtle);
   border: 1px solid var(--admin-border);
-  border-radius: 10px;
+  border-radius: var(--admin-radius);
   padding: 0.75rem 1rem;
   overflow-x: auto;
   color: var(--admin-text-muted);
@@ -3094,7 +3099,7 @@ body.admin-login-page {
     max-width: 420px;
     background: var(--admin-surface);
     border: 1px solid var(--admin-border);
-    border-radius: 20px;
+    border-radius: var(--admin-radius);
     box-shadow: var(--admin-shadow-lg);
     overflow: hidden;
   }
@@ -3287,7 +3292,7 @@ body.admin-body.admin-rtl {
     height: auto;
     min-height: 160px;
     max-height: min(70vh, calc((100vw - 2.5rem) * 9 / 16));
-    border-radius: 12px;
+    border-radius: var(--admin-radius);
     overflow: hidden;
     border: 1px solid var(--admin-border);
     background: #000;
@@ -3658,7 +3663,7 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
   height: 1.65rem;
   padding: 0;
   border: 1px solid var(--admin-border);
-  border-radius: 6px;
+  border-radius: var(--admin-radius-sm);
   background: var(--admin-surface-elevated);
   color: var(--admin-text);
   font-size: 1rem;
@@ -3680,7 +3685,7 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
   min-width: 0;
   padding: 0.2rem 0.35rem;
   border: 1px solid var(--admin-border);
-  border-radius: 6px;
+  border-radius: var(--admin-radius-sm);
   background: var(--admin-bg);
   color: var(--admin-text);
   font-size: 0.82rem;
@@ -3757,7 +3762,7 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
 
 .yahrzeit-upcoming-details {
   border: 1px solid var(--admin-border);
-  border-radius: 12px;
+  border-radius: var(--admin-radius);
   background: var(--admin-surface-elevated);
   padding: 0.65rem 0.85rem;
 
@@ -3876,7 +3881,7 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
 .yahrzeit-card {
   background: var(--admin-panel-bg);
   border: 1px solid var(--admin-border);
-  border-radius: 14px;
+  border-radius: var(--admin-radius);
   padding: 1.25rem;
 }
 
@@ -3888,7 +3893,7 @@ html[dir='rtl'] .settings-preview-panel .preview-hint {
 
 .yahrzeit-tile-preview {
   position: relative;
-  border-radius: 16px;
+  border-radius: var(--admin-radius);
   overflow: hidden;
   width: 100%;
   height: 220px;
@@ -4052,7 +4057,7 @@ body.admin-theme-light {
   grid-column: 1 / -1;
   margin: 0;
   padding: 0.75rem 1rem;
-  border-radius: 10px;
+  border-radius: var(--admin-radius);
   background: rgba(67, 160, 71, 0.14);
   color: #81c784;
   font-weight: 600;
@@ -4244,7 +4249,7 @@ body.admin-theme-light {
   margin-top: 0.5rem;
   padding: 1rem 1.1rem;
   border: 1px solid var(--admin-border);
-  border-radius: 12px;
+  border-radius: var(--admin-radius);
   background: var(--admin-surface-elevated);
   display: flex;
   flex-direction: column;
@@ -4301,7 +4306,7 @@ body.admin-theme-light {
 
 .slide-card {
   border: 1px solid var(--admin-border);
-  border-radius: 14px;
+  border-radius: var(--admin-radius);
   overflow: hidden;
   background: var(--admin-surface-elevated);
   box-shadow: var(--admin-shadow);
@@ -4397,7 +4402,7 @@ body.admin-theme-light {
   max-height: 80vh;
   padding: 0;
   border: 1px solid var(--admin-border);
-  border-radius: 14px;
+  border-radius: var(--admin-radius);
   background: var(--admin-surface);
   color: var(--admin-text);
 
@@ -4431,7 +4436,7 @@ body.admin-theme-light {
   color: var(--admin-text);
   opacity: 0.7;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: var(--admin-radius-sm);
 
   &:hover {
     opacity: 1;
@@ -4491,7 +4496,7 @@ body.admin-theme-light {
 
 .weekly-kaddish-details {
   border: 1px solid var(--admin-border);
-  border-radius: 12px;
+  border-radius: var(--admin-radius);
   background: var(--admin-surface-elevated);
   padding: 0.65rem 0.85rem;
 }
@@ -4582,7 +4587,7 @@ body.admin-theme-light {
 .admin-person-invites-panel {
   margin-bottom: 1.5rem;
   padding: 1rem 1.1rem;
-  border-radius: 12px;
+  border-radius: var(--admin-radius);
   background: rgba(0, 0, 0, 0.18);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -4612,7 +4617,7 @@ body.admin-theme-light {
   gap: 0.75rem 1rem;
   align-items: start;
   padding: 0.75rem;
-  border-radius: 10px;
+  border-radius: var(--admin-radius);
   background: rgba(255, 255, 255, 0.04);
 }
 
@@ -4643,7 +4648,7 @@ body.admin-theme-light {
   flex-direction: column;
   gap: 0.5rem;
   padding: 0.75rem;
-  border-radius: 10px;
+  border-radius: var(--admin-radius);
   background: rgba(255, 255, 255, 0.04);
 
   &.is-inactive {
@@ -4671,8 +4676,30 @@ body.admin-theme-light {
 }
 
 /* 1.29: permanent deceased + board mode / prayer times */
+/* 1.34.0 I49/I50: the "permanent" control is a normal switch (52x28 track, 22px thumb, no outer
+   frame of its own) whose label spells the state out, so it can't read ambiguously.
+   I50 root cause: `.form-field label { display: block }` out-specified `.toggle-switch`, so the
+   slider <span> stayed inline and silently ignored its 52x28 size — the track collapsed to zero
+   width while its container kept the height, which read as "the frame is bigger than the button".
+   The rules below re-assert the flex box at a specificity that wins inside a form field. */
 .admin-permanent-field { display: flex; flex-direction: column; gap: 6px; }
-.admin-permanent-toggle { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; }
+.form-field .toggle-switch,
+.form-field label.toggle-switch,
+.admin-permanent-field .admin-permanent-toggle {
+  display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
+  margin: 0; padding: 0; border: 0; background: none; width: auto; min-height: 0;
+  font-weight: 600; text-transform: none; letter-spacing: normal;
+}
+.form-field .toggle-switch .toggle-slider,
+.admin-permanent-field .admin-permanent-toggle .toggle-slider {
+  display: block; width: 52px; height: 28px; box-shadow: none; border: 0; flex: 0 0 52px;
+}
+.admin-permanent-state {
+  font-size: 0.95rem; font-weight: 700; line-height: 1.2; min-width: 4.5em;
+  color: var(--admin-text-muted);
+}
+.admin-permanent-toggle.is-on .admin-permanent-state { color: var(--admin-on); }
+.admin-permanent-caption { font-size: 0.82rem; color: var(--admin-text-muted); }
 .admin-permanent-until { display: flex; flex-direction: column; gap: 4px; font-size: 0.9em; max-width: 220px; }
 .board-mode-settings { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
 .prayer-times-title { font-size: 1rem; margin: 4px 0; }
@@ -4699,9 +4726,9 @@ body.admin-theme-light {
 /* 1.31.4 I32b: people filter menu */
 .people-filter { position: relative; display: inline-block; }
 .people-filter[hidden] { display: none; }
-.people-filter-menu { position: absolute; top: calc(100% + 4px); inset-inline-start: 0; z-index: 30; min-width: 180px; background: #fff; border: 1px solid #d6dbe3; border-radius: 10px; box-shadow: 0 8px 24px rgba(15,23,42,.14); padding: 6px; display: flex; flex-direction: column; gap: 2px; }
+.people-filter-menu { position: absolute; top: calc(100% + 4px); inset-inline-start: 0; z-index: 30; min-width: 180px; background: #fff; border: 1px solid #d6dbe3; border-radius: var(--admin-radius); box-shadow: 0 8px 24px rgba(15,23,42,.14); padding: 6px; display: flex; flex-direction: column; gap: 2px; }
 .people-filter-menu[hidden] { display: none; }
-.people-filter-menu button { background: none; border: 0; text-align: start; padding: 8px 10px; border-radius: 8px; cursor: pointer; font: inherit; color: #1f2937; }
+.people-filter-menu button { background: none; border: 0; text-align: start; padding: 8px 10px; border-radius: var(--admin-radius-sm); cursor: pointer; font: inherit; color: #1f2937; }
 .people-filter-menu button[hidden] { display: none; }
 .people-filter-menu button:hover { background: #f1f5f9; }
 .people-filter-menu button.is-active { background: #e0ecff; font-weight: 600; }
@@ -4768,8 +4795,8 @@ body.admin-theme-light {
 .admin-sunset-field .admin-seg { margin-top: 4px; }
 
 /* 1.32.0 I42: "board content" tabs + prayers/classes editor */
-.content-tabs { display: flex; gap: 6px; margin: 0 0 16px; padding: 4px; border-radius: 12px; background: rgba(128,128,128,.14); }
-.content-tab { flex: 1 1 0; border: 0; background: none; color: inherit; padding: 10px 8px; border-radius: 9px; font-weight: 600; cursor: pointer; font: inherit; font-weight: 600; }
+.content-tabs { display: flex; gap: 6px; margin: 0 0 16px; padding: 4px; border-radius: var(--admin-radius); background: rgba(128,128,128,.14); }
+.content-tab { flex: 1 1 0; border: 0; background: none; color: inherit; padding: 10px 8px; border-radius: var(--admin-radius-sm); font-weight: 600; cursor: pointer; font: inherit; font-weight: 600; }
 .content-tab.is-active { background: var(--admin-primary); color: #fff; box-shadow: 0 2px 8px var(--admin-primary-dim); }
 .content-tab-pane[hidden] { display: none !important; }
 .prayer-times-form .prayer-times-rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
@@ -4782,14 +4809,14 @@ body.admin-theme-light {
 
 /* 1.32.0 I42: phone admin: no hamburger, home tiles, back bar, floating main action */
 .admin-mobile-backbar { display: none; }
-.admin-home-preview { display: block; border-radius: 14px; overflow: hidden; margin-bottom: 16px; background: #000; }
+.admin-home-preview { display: block; border-radius: var(--admin-radius); overflow: hidden; margin-bottom: 16px; background: #000; }
 .admin-home-preview-frame-wrap { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; }
 .admin-home-preview-frame { position: absolute; top: 0; left: 0; width: 400%; height: 400%; border: 0; transform: scale(.25); transform-origin: 0 0; pointer-events: none; }
 .admin-home-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (min-width: 768px) { .admin-home-tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .admin-home-tile {
   position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-  min-height: 112px; padding: 16px 10px; border-radius: 16px; text-decoration: none !important; color: inherit !important;
+  min-height: 112px; padding: 16px 10px; border-radius: var(--admin-radius); text-decoration: none !important; color: inherit !important;
   background: rgba(128,128,128,.14); border: 1px solid rgba(128,128,128,.25); text-align: center;
 }
 .admin-home-tile:active { transform: scale(.98); }
@@ -4818,10 +4845,86 @@ body.admin-theme-light {
   }
   .admin-mobile-fab[hidden] { display: none; }
 }
-.admin-sunset-field .admin-seg { display: flex; flex-wrap: nowrap; border-radius: 22px; }
+
+/* 1.34.0 I53: yahrzeit push notifications panel on the yahrzeit page */
+.yahrzeit-push-panel .admin-panel-body { display: flex; flex-direction: column; gap: 0.85rem; }
+.yahrzeit-push-form { display: flex; flex-direction: column; gap: 0.75rem; }
+.yahrzeit-push-subscribe { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; }
+.yahrzeit-push-status { margin: 0; font-size: 0.9rem; font-weight: 600; color: var(--admin-text-muted); }
+.yahrzeit-push-status[data-state="subscribed"] { color: var(--admin-on); }
+.yahrzeit-push-status[data-state="blocked"],
+.yahrzeit-push-status[data-state="error"] { color: var(--admin-danger); }
+
+/* 1.34.0 I52: alarm-clock scheduler in the slideshow tab */
+.slideshow-schedule { margin-top: 1rem; padding-top: 0.85rem; border-top: 1px solid var(--admin-border); }
+.slideshow-schedule-title { font-size: 0.95rem; font-weight: 700; margin: 0 0 0.15rem; }
+.slideshow-schedule-range { margin-top: 0.6rem; }
+.slideshow-schedule-days { display: flex; flex-direction: column; gap: 6px; margin-top: 0.75rem; }
+.slideshow-schedule-day {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+  padding: 8px 10px; border: 1px solid var(--admin-border); border-radius: var(--admin-radius);
+  background: var(--admin-surface-elevated);
+}
+.slideshow-schedule-day.is-on { border-color: var(--admin-primary); background: var(--admin-primary-dim); }
+.slideshow-schedule-day-head { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-weight: 600; min-width: 6.5rem; cursor: pointer; }
+.slideshow-schedule-day-times { display: flex; align-items: center; gap: 6px; flex: 1 1 auto; min-width: 0; }
+.slideshow-schedule-day-times .form-control { max-width: 130px; min-width: 0; }
+.slideshow-schedule-day:not(.is-on) .slideshow-schedule-day-times { opacity: 0.45; }
+.slideshow-schedule-dash { opacity: 0.6; }
+.slideshow-schedule-summary {
+  margin: 0.7rem 0 0; padding: 8px 12px; border-radius: var(--admin-radius-sm);
+  background: var(--admin-bg-subtle); font-size: 0.88rem; font-weight: 600;
+  display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline;
+}
+.slideshow-schedule.has-window .slideshow-schedule-summary { background: var(--admin-primary-dim); }
+
+/* 1.34.0 I47: one big always-visible "save" bar on phones, fixed above the tile navigation.
+ * It is the only save button on a phone, so no settings screen can be left without one. */
+.admin-mobile-savebar { display: none; }
+@media (max-width: 767.98px) {
+  .admin-mobile-savebar {
+    display: block;
+    position: fixed;
+    z-index: 1030;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+    background: var(--admin-surface-elevated);
+    border-top: 1px solid var(--admin-border);
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.28);
+  }
+  .admin-mobile-savebar[hidden] { display: none; }
+  .admin-mobile-savebar-btn {
+    display: block;
+    width: 100%;
+    min-height: 52px;
+    padding: 14px 18px;
+    border: 0;
+    border-radius: var(--admin-radius);
+    background: var(--admin-primary);
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    font-size: 1.05rem;
+    cursor: pointer;
+  }
+  .admin-mobile-savebar-btn:active { transform: scale(0.995); }
+  /* The floating action button and the save bar never both exist: the bar owns the bottom. */
+  body.has-mobile-savebar .admin-mobile-fab { display: none; }
+  /* Keep the last fields of a page clear of the fixed bar. */
+  body.has-mobile-savebar .admin-container { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+  /* On a phone the per-section save buttons are gone; the big bar replaces them. */
+  .admin-body .form-actions-sticky > button[type="submit"]:not(.refresh-display-btn),
+  .admin-body .slideshow-panel-save,
+  .admin-body .prayer-times-save {
+    display: none;
+  }
+}
+.admin-sunset-field .admin-seg { display: flex; flex-wrap: nowrap; border-radius: 999px; }
 .admin-sunset-field .admin-seg-option { flex: 1 1 0; min-width: 0; }
-.admin-sunset-field .admin-seg-option span { width: 100%; min-width: 0; white-space: normal; padding: 7px 10px; font-size: .85rem; border-radius: 18px; }
-.admin-alert-success { padding: 10px 14px; border-radius: 10px; background: rgba(34,197,94,.15); border: 1px solid rgba(34,197,94,.4); color: var(--admin-success-text); font-weight: 600; }
+.admin-sunset-field .admin-seg-option span { width: 100%; min-width: 0; white-space: normal; padding: 7px 10px; font-size: .85rem; border-radius: 999px; }
+.admin-alert-success { padding: 10px 14px; border-radius: var(--admin-radius); background: rgba(34,197,94,.15); border: 1px solid rgba(34,197,94,.4); color: var(--admin-success-text); font-weight: 600; }
 
 /* 1.33.0 I44 + audit #12: unified tokens, focus, touch targets, mobile cleanups */
 .admin-body .btn-admin, .admin-body .btn-admin-primary { border-radius: var(--admin-radius-sm); }

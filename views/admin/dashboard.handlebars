@@ -64,7 +64,7 @@
     <form method="POST" action="/admin/{{synagogue.slug}}/refresh-screens" id="refreshDisplayForm" data-confirm="{{t 'refresh_display_confirm'}}" onsubmit="return confirm(this.getAttribute('data-confirm'));"></form>
 
 
-    <form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data" class="settings-form" id="settingsForm" data-save-label="{{t 'save'}}" data-slug="{{synagogue.slug}}">
+    <form method="POST" action="/admin/{{synagogue.slug}}/settings" enctype="multipart/form-data" class="settings-form" id="settingsForm" data-save-label="{{t 'save'}}" data-slug="{{synagogue.slug}}" data-mobile-save="1" data-mobile-save-label="{{t 'save'}}">
         {{#if adminPermissions.settingsPreview}}
         <section class="admin-panel settings-preview-panel admin-panel-collapsible is-expanded">
             <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="true">
@@ -440,8 +440,8 @@
                                 <input type="text" dir="auto" maxlength="60" class="form-control admin-input-modern" name="sectionTitle_prayers" id="sectionTitle_prayers" value="{{sectionTitles.prayers}}" placeholder="{{sectionTitleDefaults.prayers}}">
                             </div>
                             <div class="form-field">
-                                <label for="sectionTitle_announcements">{{t 'section_title_announcements'}}</label>
-                                <input type="text" dir="auto" maxlength="60" class="form-control admin-input-modern" name="sectionTitle_announcements" id="sectionTitle_announcements" value="{{sectionTitles.announcements}}" placeholder="{{sectionTitleDefaults.announcements}}">
+                                <label for="sectionTitle_classes">{{t 'section_title_classes'}}</label>
+                                <input type="text" dir="auto" maxlength="60" class="form-control admin-input-modern" name="sectionTitle_classes" id="sectionTitle_classes" value="{{sectionTitles.classes}}" placeholder="{{sectionTitleDefaults.classes}}">
                             </div>
                         </div>
                         </div>
@@ -620,7 +620,7 @@
 
         {{#if canSaveBoardSettings}}
         <div class="form-actions-sticky">
-            <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon">{{{adminIcon 'save'}}}{{t 'save'}}</button>
+            <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon" data-mobile-save-primary>{{{adminIcon 'save'}}}{{t 'save'}}</button>
             <button type="submit" form="refreshDisplayForm" class="btn-admin btn-admin-secondary btn-admin-sm refresh-display-btn">{{t 'refresh_display_screens'}}</button>
         </div>
         {{/if}}
@@ -784,7 +784,7 @@
                 })(),
                 sectionTitle_zmanim: (document.getElementById('sectionTitle_zmanim') || {}).value || '',
                 sectionTitle_prayers: (document.getElementById('sectionTitle_prayers') || {}).value || '',
-                sectionTitle_announcements: (document.getElementById('sectionTitle_announcements') || {}).value || '',
+                sectionTitle_classes: (document.getElementById('sectionTitle_classes') || {}).value || '',
             }, readFontScalePatch(), readMemorialQrPatch());
         }
 
@@ -854,7 +854,7 @@
         });
         // 1.30.0 I14: combined text-size steppers update the live preview immediately.
         // 1.32.0 I38: custom headings update the preview too
-        ['sectionTitle_zmanim', 'sectionTitle_prayers', 'sectionTitle_announcements'].forEach(function (id) {
+        ['sectionTitle_zmanim', 'sectionTitle_prayers', 'sectionTitle_classes'].forEach(function (id) {
             var el = document.getElementById(id);
             if (el) el.addEventListener('input', schedulePreview);
         });

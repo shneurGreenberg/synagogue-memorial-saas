@@ -80,6 +80,7 @@ export default {
   zman_shkia: 'Sunset',
   zman_tzeit: 'Nightfall',
   prayer_times_title: 'Prayer times',
+  classes_title: 'Classes',
   announcements_title: 'Community announcements',
   permanent_mark: 'Eternal memory',
 };

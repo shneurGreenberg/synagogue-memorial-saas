@@ -682,4 +682,12 @@ app.get('/s/:slug', async (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log('Started at port', PORT);
+  // 1.34.0 I53: daily yahrzeit push check. Delayed, once per day per community, disableable with
+  // DISABLE_PUSH_SCHEDULER=1, and it never throws into the request path.
+  try {
+    const { startPushScheduler } = require('./lib/push-scheduler');
+    startPushScheduler();
+  } catch (err) {
+    console.warn('[push] scheduler did not start:', err && err.message ? err.message : err);
+  }
 });

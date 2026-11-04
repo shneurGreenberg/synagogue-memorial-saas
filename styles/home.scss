@@ -2726,8 +2726,7 @@ body.board-lang-he {
 }
 
 /* 1.32.0 I39: long (1-2 line) prayer/class labels align like the other rows (start side, wrapping),
-   time stays vertically centred against the multi-line label; classes follow prayers after a thin
-   divider in the same colour as the other row lines. */
+   time stays vertically centred against the multi-line label. */
 .main-container .synagogue-info-prayers .synagogue-info-row {
   align-items: center;
   dt {
@@ -2740,11 +2739,22 @@ body.board-lang-he {
   }
   dd { flex: 0 0 auto; align-self: center; }
 }
-.main-container .synagogue-info-prayers .synagogue-info-row--first-class {
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  margin-top: 0.35em;
-  padding-top: 0.35em !important;
+/* 1.34.0 I46: the classes part of the prayer box has its own heading, in the same style as the
+   box heading but smaller, with a subtle divider under it. */
+.main-container .synagogue-info-prayers .synagogue-info-group-title {
+  margin: 0.5em 0 0.15em;
+  padding-bottom: 0.15em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: calc(clamp(12px, 1.02vw, 19px) * var(--combined-info-scale, 1));
+  font-weight: 700;
+  color: var(--accent-color, #ffd54f);
+  text-align: center;
 }
+.main-container .synagogue-info-prayers .synagogue-info-row--class:first-of-type { border-bottom-style: dashed; }
+
+/* 1.34.0 I51: the community messages box has no heading; without one the text needs its own
+   breathing room instead of sitting right under the frame. */
+.synagogue-info-panel--two-col .synagogue-info-announcements--untitled { justify-content: center; padding-top: clamp(8px, 1vw, 18px); }
 
 /* 1.32.0 I41: old TVs (Xiaomi streamer / old Android WebView) drew a black square around the QR codes.
    Keep the QR rendering dead simple: solid white frame + white image background, no shadows, no
