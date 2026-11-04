@@ -3313,10 +3313,16 @@
         "text": "",
         "_id": "6ab66443af5d7118476fd976"
       }
-    ]
+    ],
+    "schedule": {
+      "from": "",
+      "to": "",
+      "days": []
+    },
+    "scheduleActive": false
   },
-  "contentVersion": 1793782606158,
-  "exportedAt": "2026-11-04T08:56:46.158Z",
+  "contentVersion": 1793782939809,
+  "exportedAt": "2026-11-04T09:02:19.809Z",
   "jewishContent": {
     "date": "2026-11-04",
     "timezone": "Asia/Novosibirsk",
@@ -3491,6 +3497,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-11-04T08:56:46.158Z"
+    "updatedAt": "2026-11-04T09:02:19.809Z"
   }
 }
