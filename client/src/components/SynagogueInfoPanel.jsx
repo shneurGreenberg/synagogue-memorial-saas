@@ -98,11 +98,14 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
     lng: loc.lng,
   });
   const allRows = (data.prayerTimes || []).filter((row) => row && row.label && row.time);
-  // 1.32.0 I39: prayers first, then classes, separated by a thin line
-  const prayers = allRows.filter((row) => row.kind !== 'class').concat(allRows.filter((row) => row.kind === 'class'));
-  const firstClassIndex = prayers.findIndex((row) => row.kind === 'class');
+  // 1.32.0 I39: prayers first, then classes
+  // 1.34.0 I46: the classes group gets its own heading (so the two groups are not one list)
+  const prayerRows = allRows.filter((row) => row.kind !== 'class');
+  const classRows = allRows.filter((row) => row.kind === 'class');
+  const prayers = prayerRows.concat(classRows);
   const titles = data.boardSectionTitles || {};
   const heading = (key, fallbackKey) => (String(titles[key] || '').trim() || t(fallbackKey));
+  // 1.34.0 I51: community messages have no heading at all any more.
   const announcements = communityEvents || [];
   const [slide, setSlide] = useState(0);
   useEffect(() => {
@@ -114,8 +117,8 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
   const zmanimRef = useRef(null);
   const prayersRef = useRef(null);
   const announcementRef = useRef(null);
-  const zmanimLoop = useLoopScroll(zmanimRef, [zmanim.length, prayers.length, data.combinedInfoScale]);
-  const prayersLoop = useLoopScroll(prayersRef, [prayers.length, data.combinedInfoScale]);
+  const zmanimLoop = useLoopScroll(zmanimRef, [zmanim.length, prayers.length, prayerRows.length, classRows.length, data.combinedInfoScale]);
+  const prayersLoop = useLoopScroll(prayersRef, [prayers.length, prayerRows.length, classRows.length, data.combinedInfoScale]);
   useAutoScroll(announcementRef, [slide, announcements.length, data.combinedAnnouncementScale]);
   const current = announcements.length ? announcements[slide % announcements.length] : null;
 
@@ -149,23 +152,30 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
           <div className="synagogue-info-box-scroll synagogue-info-loop" ref={prayersRef}>
             {(prayersLoop ? ['a', 'b'] : ['a']).map((copy) => (
               <dl className="synagogue-info-list synagogue-info-loop-copy" key={copy} aria-hidden={copy === 'b' ? 'true' : undefined}>
-                {prayers.map((row, index) => (
-                  <div
-                    className={`synagogue-info-row synagogue-info-row--${row.kind === 'class' ? 'class' : 'prayer'}${index === firstClassIndex && index > 0 ? ' synagogue-info-row--first-class' : ''}`}
-                    key={`${row.label}-${index}`}
-                  >
+                {prayerRows.map((row, index) => (
+                  <div className="synagogue-info-row synagogue-info-row--prayer" key={`prayer-${row.label}-${index}`}>
                     <dt dir="auto">{row.label}</dt>
                     <dd>{row.time}</dd>
                   </div>
                 ))}
+                {classRows.length > 0 && (
+                  <React.Fragment>
+                    <div className="synagogue-info-group-title" dir="auto">{heading('classes', 'classes_title')}</div>
+                    {classRows.map((row, index) => (
+                      <div className="synagogue-info-row synagogue-info-row--class" key={`class-${row.label}-${index}`}>
+                        <dt dir="auto">{row.label}</dt>
+                        <dd>{row.time}</dd>
+                      </div>
+                    ))}
+                  </React.Fragment>
+                )}
               </dl>
             ))}
           </div>
         </section>
       )}
       </div>
-      <section className="synagogue-info-block synagogue-info-announcements">
-        <h2 className="synagogue-info-title" dir="auto">{heading('announcements', 'announcements_title')}</h2>
+      <section className="synagogue-info-block synagogue-info-announcements synagogue-info-announcements--untitled">
         {current ? (
           <div className="synagogue-info-announcement-carousel" key={`${current.id}-${slide}`}>
             <div className="synagogue-info-announcement synagogue-info-box-scroll" ref={announcementRef}>

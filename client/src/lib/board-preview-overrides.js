@@ -141,7 +141,8 @@ export function mergePreviewPatch(data, patch) {
     if (patch[key] !== undefined && patch[key] !== '' && Number.isFinite(n)) next[key] = n;
   });
   // 1.32.0 I38: custom box headings
-  ['announcements', 'prayers', 'zmanim'].forEach((key) => {
+  // 1.34.0 I46: classes has its own heading; 1.34.0 I51: announcements has none any more
+  ['prayers', 'classes', 'zmanim'].forEach((key) => {
     const v = patch[`sectionTitle_${key}`];
     if (v !== undefined) {
       next.boardSectionTitles = { ...(next.boardSectionTitles || {}), [key]: String(v || '').trim() };
@@ -183,6 +184,9 @@ export function previewPatchFromSearchParams(params) {
     || params.has('boardSubtitleWeight')
     || params.has('fontScale_boardSubtitle')
     || params.has('previewLang')
+    || params.has('sectionTitle_prayers')
+    || params.has('sectionTitle_classes')
+    || params.has('sectionTitle_zmanim')
     || params.has('memorialQrTitleScale');
 
   if (!hasPreview) {
@@ -221,6 +225,9 @@ export function previewPatchFromSearchParams(params) {
     }
   });
   if (params.has('previewLang')) patch.previewLang = params.get('previewLang');
+  ['prayers', 'classes', 'zmanim'].forEach((key) => {
+    if (params.has(`sectionTitle_${key}`)) patch[`sectionTitle_${key}`] = params.get(`sectionTitle_${key}`);
+  });
   [
     'memorialQrTitle', 'memorialQrText', 'donationQrTitle', 'donationQrText',
     'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale',

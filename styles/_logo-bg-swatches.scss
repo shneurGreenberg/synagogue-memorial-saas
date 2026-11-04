@@ -39,7 +39,8 @@
     display: block;
     width: 2.25rem;
     height: 2.25rem;
-    border-radius: 8px;
+    /* 1.34.0 I48: colour swatches use the same radii family as every other control. */
+    border-radius: var(--admin-radius-sm, 8px);
     border: 2px solid rgba(127, 127, 127, 0.45);
     box-sizing: border-box;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;

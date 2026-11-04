@@ -22,7 +22,7 @@
             <div class="admin-panel-body">
                 {{#if prayersSaved}}<p class="admin-alert admin-alert-success" role="status">{{t 'saved'}}</p>{{/if}}
                 {{#unless (eq boardMode 'combined')}}<p class="field-hint prayer-mode-hint">{{t 'prayer_times_combined_only'}}</p>{{/unless}}
-                <form method="POST" action="/admin/{{synagogue.slug}}/prayer-times" id="prayerTimesForm" class="prayer-times-form">
+                <form method="POST" action="/admin/{{synagogue.slug}}/prayer-times" id="prayerTimesForm" class="prayer-times-form" data-mobile-save="1" data-mobile-save-label="{{t 'save'}}">
                     <input type="hidden" name="prayerTimesSection" value="1">
                     <h3 class="prayer-group-title">{{t 'prayers_group'}}</h3>
                     <div class="prayer-times-rows" id="prayerRows" data-kind="prayer">
@@ -50,7 +50,7 @@
                     </div>
                     <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm prayer-add-btn" data-add-kind="class">+ {{t 'add_class'}}</button>
                     <div class="prayer-times-save">
-                        <button type="submit" class="btn-admin btn-admin-primary" data-mobile-fab>{{t 'save'}}</button>
+                        <button type="submit" class="btn-admin btn-admin-primary" data-mobile-save-primary>{{t 'save'}}</button>
                     </div>
                 </form>
                 <template id="prayerRowTemplate">
@@ -77,7 +77,7 @@
     </div>
     <div class="admin-panel-body">
         <form method="POST" action="/admin/{{synagogue.slug}}/slideshow/settings" class="slideshow-panel-form"
-            id="slideshowPanelForm">
+            id="slideshowPanelForm" data-mobile-save="1" data-mobile-save-label="{{t 'save'}}">
             <div class="slideshow-panel-layout">
                 <div class="slideshow-panel-controls">
                     <div class="slideshow-mode-switch" id="slideshowModeSwitch" role="radiogroup"
@@ -121,8 +121,55 @@
                         </div>
                     </div>
 
+                    {{!-- 1.34.0 I52: alarm-clock scheduling. No range and no day windows = always show. --}}
+                    <div class="slideshow-schedule" id="slideshowSchedule">
+                        <h3 class="slideshow-schedule-title">{{t 'slideshow_schedule_title'}}</h3>
+                        <p class="field-hint">{{t 'slideshow_schedule_hint'}}</p>
+
+                        <div class="settings-two-col slideshow-schedule-range">
+                            <div class="form-field">
+                                <label for="scheduleFrom">{{t 'slideshow_schedule_from'}}</label>
+                                <input type="date" class="form-control admin-input-modern" name="scheduleFrom" id="scheduleFrom"
+                                    value="{{synagogue.slideshow.schedule.from}}" dir="ltr">
+                            </div>
+                            <div class="form-field">
+                                <label for="scheduleTo">{{t 'slideshow_schedule_to'}}</label>
+                                <input type="date" class="form-control admin-input-modern" name="scheduleTo" id="scheduleTo"
+                                    value="{{synagogue.slideshow.schedule.to}}" dir="ltr">
+                            </div>
+                        </div>
+
+                        <div class="slideshow-schedule-days" role="group" aria-label="{{t 'slideshow_schedule_days'}}">
+                            {{#each synagogue.slideshow.scheduleDays}}
+                            <div class="slideshow-schedule-day{{#if this.active}} is-on{{/if}}" data-schedule-day="{{this.day}}">
+                                <label class="slideshow-schedule-day-head">
+                                    <input type="checkbox" name="scheduleDay_{{this.day}}" value="1" {{#if this.active}}checked{{/if}}>
+                                    <span>{{t this.labelKey}}</span>
+                                </label>
+                                <div class="slideshow-schedule-day-times">
+                                    <input type="time" class="form-control admin-input-modern" name="scheduleStart_{{this.day}}"
+                                        value="{{this.start}}" aria-label="{{t 'slideshow_schedule_start'}}" dir="ltr">
+                                    <span class="slideshow-schedule-dash" aria-hidden="true">–</span>
+                                    <input type="time" class="form-control admin-input-modern" name="scheduleEnd_{{this.day}}"
+                                        value="{{this.end}}" aria-label="{{t 'slideshow_schedule_end'}}" dir="ltr">
+                                </div>
+                            </div>
+                            {{/each}}
+                        </div>
+
+                        <p class="slideshow-schedule-summary" id="slideshowScheduleSummary" role="status">
+                            {{#if synagogue.slideshow.scheduleHasWindow}}
+                            {{t 'slideshow_schedule_summary_on'}}
+                            {{#if synagogue.slideshow.scheduleRangeLabel}}<strong>{{synagogue.slideshow.scheduleRangeLabel}}</strong>{{/if}}
+                            {{#if synagogue.slideshow.scheduleWindowsLabel}}<span>{{synagogue.slideshow.scheduleWindowsLabel}}</span>{{/if}}
+                            {{else}}
+                            {{t 'slideshow_schedule_summary_always'}}
+                            {{/if}}
+                        </p>
+                    </div>
+
                     <div class="slideshow-panel-save">
-                        <button type="submit" class="btn-admin btn-admin-primary btn-admin-sm">{{t 'save'}}</button>
+                        <button type="submit" class="btn-admin btn-admin-primary btn-admin-sm" data-mobile-save-primary>{{t 'save'}}</button>
                     </div>
                 </div>
 
@@ -157,6 +204,14 @@
     window.slideshowAdminConfig = {
         uploadUrl: '/admin/{{synagogue.slug}}/slideshow/add'
     };
+    window.slideshowAdminLabels.weekdays = [
+        '{{t 'weekday_0'}}', '{{t 'weekday_1'}}', '{{t 'weekday_2'}}', '{{t 'weekday_3'}}',
+        '{{t 'weekday_4'}}', '{{t 'weekday_5'}}', '{{t 'weekday_6'}}'
+    ];
+    window.slideshowAdminLabels.scheduleShown = '{{t 'slideshow_schedule_summary_on'}}';
+    window.slideshowAdminLabels.scheduleAlways = '{{t 'slideshow_schedule_summary_always'}}';
+    window.slideshowAdminLabels.scheduleFromPrefix = '{{t 'slideshow_schedule_from'}} ';
+    window.slideshowAdminLabels.scheduleToPrefix = '{{t 'slideshow_schedule_to'}} ';
 </script>
 
 
@@ -176,7 +231,7 @@
             <h2>{{t 'add_community_event'}}</h2>
         </div>
         <div class="admin-panel-body events-form-layout">
-            <form method="POST" action="/admin/{{synagogue.slug}}/events/add" class="add-event-form events-editor-form" id="addEventForm">
+            <form method="POST" action="/admin/{{synagogue.slug}}/events/add" class="add-event-form events-editor-form" id="addEventForm" data-mobile-save="1" data-mobile-save-label="{{t 'schedule_event'}}">
                 <div class="events-editor-fields">
                 <div class="form-field">
                     <label for="eventTitle">{{t 'event_title'}}</label>
@@ -221,7 +276,7 @@
 
                     <div class="event-form-actions events-scheduling-actions">
                         <div class="admin-form-feedback" id="addEventFormFeedback" role="alert" aria-live="polite" hidden></div>
-                        <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon" data-publish-now="0">
+                        <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon" data-publish-now="0" data-mobile-save-primary>
                             {{{adminIcon 'schedule' class='btn-admin-inline-icon'}}}
                             {{t 'schedule_event'}}
                         </button>

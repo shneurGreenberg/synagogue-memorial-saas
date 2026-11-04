@@ -52,7 +52,7 @@ const {
   parseBoardSubtitleThemeFromBody,
   boardSubtitleThemeToUpdate,
 } = require('../lib/board-subtitle');
-const { parseSlideshowSettingsBody } = require('../lib/slideshow-admin-settings');
+const { parseSlideshowSettingsBody, parseSlideshowScheduleFromBody, hasSlideshowSchedulePayload } = require('../lib/slideshow-admin-settings');
 const {
   parseFontScalesFromBody,
   normalizeTileOpacity,
@@ -700,7 +700,7 @@ const ADMIN_PAGE_SCRIPTS = {
     'admin/contacts': ['admin-contact-directory.js', 'contact-platform-ui.js'],
     'admin/events': ['admin-events.js', 'admin-slideshow.js'],
     'admin/users': ['admin-users.js'],
-    'admin/yahrzeit': ['admin-person-card.js', 'admin-yahrzeit.js', 'admin-death-date.js', 'admin-tile-capture.js'],
+    'admin/yahrzeit': ['admin-person-card.js', 'admin-yahrzeit.js', 'admin-death-date.js', 'admin-tile-capture.js', 'admin-push.js'],
 };
 
 const ADMIN_NAV_BY_VIEW = {
@@ -1416,6 +1416,123 @@ router.post('/:slug/yahrzeit/settings', requireAdmin, requirePermission('people'
     }
 });
 
+/* 1.34.0 I53: phone push subscriptions for the installed admin app.
+ * The browser subscribes only after an explicit click; these routes just store/remove it. */
+router.get('/:slug/push/config', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false });
+    try {
+        const { getPublicKey, isWebPushConfigured } = require('../lib/web-push');
+        const { normalizeYahrzeitPush } = require('../lib/yahrzeit-push');
+        const synagogue = await Synagogue.findOne(
+            { slug: req.params.slug },
+            { yahrzeitPush: 1, pushSubscriptions: 1 },
+        ).lean();
+        return res.json({
+            ok: true,
+            supported: isWebPushConfigured(),
+            publicKey: getPublicKey(),
+            settings: normalizeYahrzeitPush(synagogue && synagogue.yahrzeitPush),
+            subscribers: (synagogue && synagogue.pushSubscriptions ? synagogue.pushSubscriptions.length : 0),
+        });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
+    }
+});
+
+router.post('/:slug/push/subscribe', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false });
+    try {
+        const { normalizeSubscriptionPayload, upsertPushSubscription, isWebPushConfigured } = require('../lib/web-push');
+        if (!isWebPushConfigured()) {
+            return res.status(503).json({ ok: false, error: 'push_not_configured' });
+        }
+        const entry = normalizeSubscriptionPayload({
+            endpoint: req.body && req.body.endpoint,
+            keys: req.body && req.body.keys,
+            userAgent: req.get('user-agent') || '',
+        });
+        if (!entry) {
+            return res.status(400).json({ ok: false, error: 'invalid_subscription' });
+        }
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }, { pushSubscriptions: 1 }).lean();
+        const next = upsertPushSubscription(synagogue && synagogue.pushSubscriptions, entry);
+        await Synagogue.updateOne({ slug: req.params.slug }, { $set: { pushSubscriptions: next } });
+        invalidateAdminSynagogueCache(req.params.slug);
+        return res.json({ ok: true, count: next.length });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
+    }
+});
+
+router.post('/:slug/push/unsubscribe', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false });
+    try {
+        const { removePushSubscription } = require('../lib/web-push');
+        const endpoint = String((req.body && req.body.endpoint) || '').trim();
+        if (!endpoint) {
+            return res.status(400).json({ ok: false, error: 'missing_endpoint' });
+        }
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }, { pushSubscriptions: 1 }).lean();
+        const next = removePushSubscription(synagogue && synagogue.pushSubscriptions, endpoint);
+        await Synagogue.updateOne({ slug: req.params.slug }, { $set: { pushSubscriptions: next } });
+        invalidateAdminSynagogueCache(req.params.slug);
+        return res.json({ ok: true, count: next.length });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
+    }
+});
+
+/* 1.34.0 I53: send a test notification to this community's devices (explicit button only). */
+router.post('/:slug/push/test', requireAdmin, requirePermission('people'), async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).json({ ok: false });
+    try {
+        const { isWebPushConfigured, sendPushToSubscriptions } = require('../lib/web-push');
+        if (!isWebPushConfigured()) {
+            return res.status(503).json({ ok: false, error: 'push_not_configured' });
+        }
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }, { pushSubscriptions: 1 }).lean();
+        const result = await sendPushToSubscriptions(synagogue && synagogue.pushSubscriptions, {
+            title: 'Kaddish',
+            body: 'התראת בדיקה — ההתראות עובדות.',
+            url: `/admin/${req.params.slug}/yahrzeit`,
+            tag: 'yahrzeit-test',
+            dir: 'rtl',
+            lang: 'he',
+        });
+        if (result.dropped && result.dropped.length) {
+            const { removePushSubscription } = require('../lib/web-push');
+            let remaining = (synagogue && synagogue.pushSubscriptions) || [];
+            result.dropped.forEach((endpoint) => { remaining = removePushSubscription(remaining, endpoint); });
+            await Synagogue.updateOne({ slug: req.params.slug }, { $set: { pushSubscriptions: remaining } });
+        }
+        return res.json({ ok: true, sent: result.sent, removed: result.removed || 0 });
+    } catch (err) {
+        return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
+    }
+});
+
+/* 1.34.0 I53: the yahrzeit-push switch + how many days ahead, saved from the yahrzeit page. */
+router.post('/:slug/push/settings', requireAdmin, requirePermission('people'), parseFormBody, async (req, res) => {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { parseYahrzeitPushFromBody } = require('../lib/yahrzeit-push');
+        const parsed = parseYahrzeitPushFromBody(req.body);
+        await Synagogue.updateOne({ slug: req.params.slug }, {
+            $set: {
+                'yahrzeitPush.enabled': parsed.enabled,
+                'yahrzeitPush.daysBefore': parsed.daysBefore,
+            },
+        });
+        invalidateAdminSynagogueCache(req.params.slug);
+        if (req.get('X-Requested-With') === 'fetch' || wantsJson(req)) {
+            return res.json({ ok: true, settings: parsed });
+        }
+        return res.redirect(`/admin/${req.params.slug}/yahrzeit?saved=1`);
+    } catch (err) {
+        return res.status(500).send(publicErrorMessage(err));
+    }
+});
+
 router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     const timing = createAdminTiming(res, `GET /admin/${req.params.slug}/yahrzeit`);
@@ -1465,10 +1582,20 @@ router.get('/:slug/yahrzeit', requireAdmin, requirePermission('people'), async (
                 : '';
         }
 
+        // 1.34.0 I53: the phone-push settings block on the yahrzeit page.
+        const { normalizeYahrzeitPush } = require('../lib/yahrzeit-push');
+        const { isWebPushConfigured } = require('../lib/web-push');
+
         renderAdmin(res, 'admin/yahrzeit', {
             weeklyKaddish: weeklyKaddish.entries.length ? weeklyKaddish : null,
             weeklyKaddishReminderEnabled,
             weeklyKaddishWhatsapp: weeklyKaddishReminderEnabled ? (synagogue.weeklyKaddishWhatsapp || '') : '',
+            yahrzeitPush: normalizeYahrzeitPush(synagogue.yahrzeitPush),
+            yahrzeitPushSupported: isWebPushConfigured(),
+            yahrzeitPushPublicKey: require('../lib/web-push').getPublicKey(),
+            yahrzeitPushSubscribers: Array.isArray(synagogue.pushSubscriptions)
+                ? synagogue.pushSubscriptions.length
+                : 0,
             synagogue: enriched,
             adminUser: req.adminUser,
             adminPermissions: req.adminPermissions,
@@ -2224,14 +2351,20 @@ router.post('/:slug/slideshow/settings', requireAdmin, requireAnyPermission('eve
     try {
         const { interval, mainDuration } = req.body || {};
         const { isEnabled, mode } = parseSlideshowSettingsBody(req.body);
-        await Synagogue.updateOne({ slug: req.params.slug }, {
-            $set: {
-                'slideshow.enabled': isEnabled,
-                'slideshow.displayMode': mode,
-                'slideshow.interval': parseInt(interval, 10) || 10,
-                'slideshow.mainDuration': parseInt(mainDuration, 10) || 30
-            }
-        });
+        const update = {
+            'slideshow.enabled': isEnabled,
+            'slideshow.displayMode': mode,
+            'slideshow.interval': parseInt(interval, 10) || 10,
+            'slideshow.mainDuration': parseInt(mainDuration, 10) || 30
+        };
+        // 1.34.0 I52: alarm-clock schedule (empty = always show while enabled).
+        if (hasSlideshowSchedulePayload(req.body)) {
+            const schedule = parseSlideshowScheduleFromBody(req.body);
+            update['slideshow.schedule.from'] = schedule.from;
+            update['slideshow.schedule.to'] = schedule.to;
+            update['slideshow.schedule.days'] = schedule.days;
+        }
+        await Synagogue.updateOne({ slug: req.params.slug }, { $set: update });
         invalidateBoardCache(req.params.slug);
         invalidateAdminSynagogueCache(req.params.slug);
         return res.json({ ok: true, slideshow: await fetchSlideshow(req.params.slug) });

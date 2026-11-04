@@ -75,6 +75,7 @@ export default {
   zman_shkia: 'שקיעה',
   zman_tzeit: 'צאת הכוכבים',
   prayer_times_title: 'זמני תפילות',
+  classes_title: 'שיעורים',
   announcements_title: 'הודעות הקהילה',
   permanent_mark: 'לזכר עולם',
 };

@@ -19,6 +19,7 @@ test('1.32.0 I39: parse kind from the form body', () => {
 });
 
 test('1.32.0 I38: section titles normalize, defaults per language', () => {
-  assert.deepStrictEqual(normalizeSectionTitles({ prayers: '  זמנים  ' }), { announcements: '', prayers: 'זמנים', zmanim: '' });
+  // 1.34.0 I46/I51: the classes heading replaced the announcements heading.
+  assert.deepStrictEqual(normalizeSectionTitles({ prayers: '  זמנים  ' }), { prayers: 'זמנים', classes: '', zmanim: '' });
   assert.strictEqual(defaultSectionTitles('he').zmanim, 'זמני היום');
 });

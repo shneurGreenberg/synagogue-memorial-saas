@@ -126,6 +126,64 @@
 {{/if}}
 {{/if}}
 
+    {{!-- 1.34.0 I53: phone notifications for the installed admin app. Turned on only by an explicit
+         click, never automatically. --}}
+    <section class="admin-panel yahrzeit-push-panel" id="yahrzeitPushPanel"
+        data-slug="{{synagogue.slug}}"
+        data-supported="{{#if yahrzeitPushSupported}}1{{else}}0{{/if}}"
+        data-public-key="{{yahrzeitPushPublicKey}}"
+        data-enabled="{{#if yahrzeitPush.enabled}}1{{else}}0{{/if}}">
+        <div class="admin-panel-header">
+            <h2 class="admin-panel-title">
+                <svg class="admin-panel-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2m6-6V11a6 6 0 0 0-5-5.91V4a1 1 0 1 0-2 0v1.09A6 6 0 0 0 6 11v5l-2 2v1h16v-1l-2-2Z"/></svg>
+                {{t 'yahrzeit_push_title'}}
+            </h2>
+        </div>
+        <div class="admin-panel-body">
+            <p class="field-hint">{{t 'yahrzeit_push_hint'}}</p>
+
+            {{#unless yahrzeitPushSupported}}
+            <p class="admin-alert admin-alert-warning" role="status">{{t 'yahrzeit_push_not_configured'}}</p>
+            {{/unless}}
+
+            <form method="POST" action="/admin/{{synagogue.slug}}/push/settings" class="yahrzeit-push-form"
+                data-mobile-save="1" data-mobile-save-label="{{t 'save'}}">
+                <div class="admin-theme-setting">
+                    <div class="admin-theme-setting-label">{{t 'yahrzeit_push_enable'}}</div>
+                    <div class="admin-theme-setting-control">
+                        <label class="toggle-switch" for="yahrzeitPushEnabled">
+                            <input type="hidden" name="yahrzeitPushEnabled" value="0">
+                            <input type="checkbox" id="yahrzeitPushEnabled" name="yahrzeitPushEnabled" value="1"
+                                {{#if yahrzeitPush.enabled}}checked{{/if}}>
+                            <span class="toggle-slider" aria-hidden="true"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="admin-theme-setting">
+                    <label class="admin-theme-setting-label" for="yahrzeitPushDaysBefore">{{t 'yahrzeit_push_days_before'}}</label>
+                    <div class="admin-theme-setting-control">
+                        <input type="number" class="form-control admin-input-modern" name="yahrzeitPushDaysBefore"
+                            id="yahrzeitPushDaysBefore" min="0" max="60" step="1" value="{{yahrzeitPush.daysBefore}}">
+                    </div>
+                </div>
+                <div class="form-actions-sticky">
+                    <button type="submit" class="btn-admin btn-admin-primary" data-mobile-save-primary>{{t 'save'}}</button>
+                </div>
+            </form>
+
+            <div class="yahrzeit-push-subscribe">
+                <button type="button" class="btn-admin btn-admin-secondary" id="yahrzeitPushSubscribeBtn">
+                    {{t 'yahrzeit_push_subscribe'}}
+                </button>
+                <button type="button" class="btn-admin btn-admin-ghost" id="yahrzeitPushTestBtn">
+                    {{t 'yahrzeit_push_test'}}
+                </button>
+                <p class="yahrzeit-push-status" id="yahrzeitPushStatus" role="status">{{t 'yahrzeit_push_status_idle'}}</p>
+                <p class="field-hint">{{t 'yahrzeit_push_devices'}} <strong>{{yahrzeitPushSubscribers}}</strong></p>
+            </div>
+        </div>
+    </section>
+
     {{#if weeklyKaddishReminderEnabled}}
     <form method="POST" action="/admin/{{synagogue.slug}}/yahrzeit/settings" class="yahrzeit-settings-form board-features-grid">
         <p class="yahrzeit-settings-saved" id="yahrzeitSettingsSaved" data-saved-label="{{t 'saved_settings'}}" hidden role="status">{{t 'saved_settings'}}</p>
@@ -321,5 +379,21 @@
     {{/if}}
 </div>
 
+<script>
+    window.yahrzeitPushLabels = {
+        subscribe: '{{t 'yahrzeit_push_subscribe'}}',
+        unsubscribe: '{{t 'yahrzeit_push_unsubscribe'}}',
+        idle: '{{t 'yahrzeit_push_status_idle'}}',
+        ready: '{{t 'yahrzeit_push_status_ready'}}',
+        subscribed: '{{t 'yahrzeit_push_status_subscribed'}}',
+        blocked: '{{t 'yahrzeit_push_status_blocked'}}',
+        unsupported: '{{t 'yahrzeit_push_status_unsupported'}}',
+        notConfigured: '{{t 'yahrzeit_push_status_not_configured'}}',
+        declined: '{{t 'yahrzeit_push_status_declined'}}',
+        error: '{{t 'yahrzeit_push_status_error'}}',
+        sending: '{{t 'yahrzeit_push_status_sending'}}',
+        testSent: '{{t 'yahrzeit_push_status_test_sent'}}'
+    };
+</script>
 <script id="yahrzeit-people-data" type="application/json">{{{json yahrzeitPeople}}}</script>
 {{> admin-person-card-modal}}

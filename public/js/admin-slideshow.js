@@ -167,6 +167,81 @@
     }
   }
 
+  /* 1.34.0 I52: the schedule is a small alarm clock. A weekday row turns on as soon as it has a
+   * time (or is ticked), and the summary under it always says in words when the slideshow shows. */
+  var WEEKDAY_LABELS = labels.weekdays || ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+
+  function scheduleRows() {
+    var box = document.getElementById('slideshowSchedule');
+    if (!box) return [];
+    return Array.prototype.slice.call(box.querySelectorAll('[data-schedule-day]'));
+  }
+
+  function syncScheduleRow(row) {
+    if (!row) return;
+    var check = row.querySelector('input[type="checkbox"]');
+    var start = row.querySelector('input[name^="scheduleStart_"]');
+    var end = row.querySelector('input[name^="scheduleEnd_"]');
+    var hasTime = !!(start && start.value && end && end.value);
+    // Typing a window turns the day on; clearing it turns the day off.
+    if (hasTime && check) check.checked = true;
+    if (check && !check.checked) {
+      if (start) start.value = '';
+      if (end) end.value = '';
+      hasTime = false;
+    }
+    row.classList.toggle('is-on', !!(check && check.checked));
+    row.classList.toggle('has-time', hasTime);
+  }
+
+  function syncScheduleSummary() {
+    var out = document.getElementById('slideshowScheduleSummary');
+    if (!out) return;
+    var box = document.getElementById('slideshowSchedule');
+    var from = (document.getElementById('scheduleFrom') || {}).value || '';
+    var to = (document.getElementById('scheduleTo') || {}).value || '';
+    var windows = [];
+    scheduleRows().forEach(function (row) {
+      var check = row.querySelector('input[type="checkbox"]');
+      if (!check || !check.checked) return;
+      var start = row.querySelector('input[name^="scheduleStart_"]');
+      var end = row.querySelector('input[name^="scheduleEnd_"]');
+      if (!start || !end || !start.value || !end.value) return;
+      var day = Number(row.getAttribute('data-schedule-day'));
+      windows.push(WEEKDAY_LABELS[day] + ' ' + start.value + '–' + end.value);
+    });
+    var parts = [];
+    if (from && to) parts.push(from + ' – ' + to);
+    else if (from) parts.push((labels.scheduleFromPrefix || 'מ־') + from);
+    else if (to) parts.push((labels.scheduleToPrefix || 'עד ') + to);
+    if (windows.length) parts.push(windows.join(' · '));
+    out.textContent = parts.length
+      ? (labels.scheduleShown || '') + ' ' + parts.join(' · ')
+      : (labels.scheduleAlways || '');
+    if (box) box.classList.toggle('has-window', parts.length > 0);
+  }
+
+  function bindSchedule() {
+    var box = document.getElementById('slideshowSchedule');
+    if (!box) return;
+    scheduleRows().forEach(syncScheduleRow);
+    box.addEventListener('change', function (event) {
+      var row = event.target.closest('[data-schedule-day]');
+      if (row) syncScheduleRow(row);
+      syncScheduleSummary();
+    });
+    box.addEventListener('input', function (event) {
+      var row = event.target.closest('[data-schedule-day]');
+      if (row) syncScheduleRow(row);
+      syncScheduleSummary();
+    });
+    ['scheduleFrom', 'scheduleTo'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('change', syncScheduleSummary);
+    });
+    syncScheduleSummary();
+  }
+
   var panelForm = document.querySelector('.slideshow-panel-form');
   if (panelForm) {
     panelForm.addEventListener('submit', function (event) {
@@ -181,6 +256,7 @@
     });
 
     syncSlideshowPanelUi(panelForm);
+    bindSchedule();
   }
 
   var imageInput = document.getElementById('slideshowImageInput');
