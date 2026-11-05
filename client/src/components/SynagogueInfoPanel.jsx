@@ -117,8 +117,10 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
   const zmanimRef = useRef(null);
   const prayersRef = useRef(null);
   const announcementRef = useRef(null);
-  const zmanimLoop = useLoopScroll(zmanimRef, [zmanim.length, prayers.length, prayerRows.length, classRows.length, data.combinedInfoScale]);
-  const prayersLoop = useLoopScroll(prayersRef, [prayers.length, prayerRows.length, classRows.length, data.combinedInfoScale]);
+  const zmanimScale = data.combinedZmanimScale ?? data.combinedInfoScale;
+  const prayersScale = data.combinedPrayersScale ?? data.combinedInfoScale;
+  const zmanimLoop = useLoopScroll(zmanimRef, [zmanim.length, prayers.length, prayerRows.length, classRows.length, zmanimScale]);
+  const prayersLoop = useLoopScroll(prayersRef, [prayers.length, prayerRows.length, classRows.length, prayersScale]);
   useAutoScroll(announcementRef, [slide, announcements.length, data.combinedAnnouncementScale]);
   const current = announcements.length ? announcements[slide % announcements.length] : null;
 
@@ -126,12 +128,17 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
     <div
       className="synagogue-info-panel synagogue-info-panel--two-col"
       style={{
-        '--combined-info-scale': clampScale(data.combinedInfoScale),
+        '--combined-zmanim-scale': clampScale(zmanimScale),
+        '--combined-prayers-scale': clampScale(prayersScale),
+        '--combined-info-scale': clampScale(zmanimScale),
         '--combined-announcement-scale': clampScale(data.combinedAnnouncementScale),
       }}
     >
       <div className="synagogue-info-col synagogue-info-col--boxes synagogue-info-col--side-by-side">
-      <section className="synagogue-info-block synagogue-info-zmanim">
+      <section
+        className="synagogue-info-block synagogue-info-zmanim"
+        style={{ '--combined-info-scale': clampScale(zmanimScale) }}
+      >
         <h2 className="synagogue-info-title">{heading('zmanim', 'zmanim_title')}</h2>
         <div className="synagogue-info-box-scroll synagogue-info-loop" ref={zmanimRef}>
           {(zmanimLoop ? ['a', 'b'] : ['a']).map((copy) => (
@@ -147,7 +154,10 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
         </div>
       </section>
       {prayers.length > 0 && (
-        <section className="synagogue-info-block synagogue-info-prayers">
+        <section
+          className="synagogue-info-block synagogue-info-prayers"
+          style={{ '--combined-info-scale': clampScale(prayersScale) }}
+        >
           <h2 className="synagogue-info-title" dir="auto">{heading('prayers', 'prayer_times_title')}</h2>
           <div className="synagogue-info-box-scroll synagogue-info-loop" ref={prayersRef}>
             {(prayersLoop ? ['a', 'b'] : ['a']).map((copy) => (

@@ -22,8 +22,10 @@ function MemorialSubmissionPanelBase({ t }) {
   if (publicSubmission.showRegistrationQr === false) {
     return null;
   }
-  const title = String(panel.titleText || '').trim() || t('memorial_submission_title');
-  const text = String(panel.textText || '').trim() || t('memorial_submission_scan');
+  const rawTitle = String(panel.titleText || '').trim();
+  const rawText = String(panel.textText || '').trim();
+  // 1.35.0 I60: one heading only; if only the old subtitle had text, promote it.
+  const title = rawTitle || rawText || t('memorial_submission_title');
   const titleScale = effectiveMemorialQrScale(panel, 'titleScale');
   const textScale = effectiveMemorialQrScale(panel, 'textScale');
   const qrScale = effectiveMemorialQrScale(panel, 'qrScale');
@@ -50,7 +52,6 @@ function MemorialSubmissionPanelBase({ t }) {
     >
       <div className="memorial-submission-qr-header">
         <h2 dir="auto">{title}</h2>
-        <p className="memorial-submission-text" dir="auto">{text}</p>
       </div>
       <div className="memorial-submission-qr-body">
         <div className="memorial-submission-qr-frame" aria-hidden="true">

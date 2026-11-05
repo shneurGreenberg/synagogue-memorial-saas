@@ -18,7 +18,8 @@ import {
 import { isStaticSite } from '../lib/asset-url';
 import {
   getBoardTimezone,
-  getDayKeyInTimezone,
+  getCalendarDayKey,
+  getBoardDayBoundaryOptions,
   subscribeToCalendarDayChange,
 } from '../lib/board-calendar';
 import { resolveBoardTimezone } from '../lib/timezone';
@@ -54,7 +55,7 @@ export function BoardDataProvider({ slug, children }) {
   const previewMode = isBoardPreviewMode();
   const [data, setData] = useState(initialBoardData);
   const [revision, setRevision] = useState(0);
-  const [calendarDayKey, setCalendarDayKey] = useState(() => getDayKeyInTimezone(getBoardTimezone()));
+  const [calendarDayKey, setCalendarDayKey] = useState(() => getCalendarDayKey(getBoardTimezone()));
   const boardVersionRef = useRef(readEmbeddedContentVersion());
   const publishedVersionRef = useRef(readPublishedBoardVersion());
   const codeVersionRef = useRef(null);
@@ -289,9 +290,10 @@ export function BoardDataProvider({ slug, children }) {
 
   useEffect(() => {
     const timezone = resolveBoardTimezone(data);
-    setCalendarDayKey(getDayKeyInTimezone(timezone));
-    return subscribeToCalendarDayChange(setCalendarDayKey, timezone);
-  }, [data.location?.timezone, data.location?.city]);
+    const options = getBoardDayBoundaryOptions(data);
+    setCalendarDayKey(getCalendarDayKey(timezone, new Date(), options));
+    return subscribeToCalendarDayChange(setCalendarDayKey, timezone, options);
+  }, [data.location?.timezone, data.location?.city, data.location?.lat, data.location?.long, data.boardCalendar, data.hebrewDatesOnly]);
 
   const value = useMemo(
     () => ({ data, revision, calendarDayKey, uiLang, setUiLang, applyPreviewPatch }),
@@ -312,7 +314,7 @@ export function useBoardData() {
     return {
       data: getBoardDataFallback(),
       revision: 0,
-      calendarDayKey: getDayKeyInTimezone(getBoardTimezone()),
+      calendarDayKey: getCalendarDayKey(getBoardTimezone()),
       uiLang: getDisplayLanguage(),
     };
   }

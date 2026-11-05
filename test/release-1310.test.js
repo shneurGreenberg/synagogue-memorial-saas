@@ -154,7 +154,7 @@ describe('1.31.0 I20/I24', () => {
   it('preview popovers cover barcodes, texts and toggles with a hidden-parts list', () => {
     const js = read('public/js/admin-preview-editor.js');
     assert.match(js, /donation-qr-panel/);
-    assert.match(js, /donationQrText/);
+    assert.match(js, /donationQrTitle/); // 1.35.0 I60: subtitle field removed
     assert.match(js, /previewHiddenParts/);
     assert.match(js, /TOGGLE_IDS\(\)\.forEach/);
     assert.doesNotMatch(js, /contenteditable/i);

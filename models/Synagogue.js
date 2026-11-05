@@ -434,6 +434,9 @@ const SynagogueSchema = new mongoose.Schema({
   boardMode: { type: String, enum: ['memorial', 'combined'], default: 'memorial' },
   // 1.29.5 I2: text size (%) of the combined board's bottom half.
   combinedInfoScale: { type: Number, default: 100 },
+  // 1.35.0 I59: separate scales; legacy combinedInfoScale is the shared default for both.
+  combinedZmanimScale: { type: Number, default: undefined },
+  combinedPrayersScale: { type: Number, default: undefined },
   combinedAnnouncementScale: { type: Number, default: 100 },
   prayerTimes: { type: [{ _id: false, label: { type: String, default: '' }, time: { type: String, default: '' }, kind: { type: String, enum: ['prayer', 'class'], default: 'prayer' } }], default: [] },
   // 1.32.0 I38: custom headings for the combined board boxes (empty = default text per language)

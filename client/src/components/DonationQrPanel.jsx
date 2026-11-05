@@ -31,8 +31,10 @@ function DonationQrPanelBase({ t }) {
     return null;
   }
 
-  const title = String(panel.donationTitleText || '').trim() || t('donation_qr_title');
-  const text = String(panel.donationTextText || '').trim() || t('donation_qr_scan');
+  const rawTitle = String(panel.donationTitleText || '').trim();
+  const rawText = String(panel.donationTextText || '').trim();
+  // 1.35.0 I60: one heading only; if only the old subtitle had text, promote it.
+  const title = rawTitle || rawText || t('donation_qr_title');
   const titleScale = effectiveMemorialQrScale(panel, 'titleScale');
   const textScale = effectiveMemorialQrScale(panel, 'textScale');
   const qrScale = effectiveMemorialQrScale(panel, 'qrScale');
@@ -59,7 +61,6 @@ function DonationQrPanelBase({ t }) {
     >
       <div className="memorial-submission-qr-header">
         <h2 dir="auto">{title}</h2>
-        <p className="memorial-submission-text" dir="auto">{text}</p>
       </div>
       <div className="memorial-submission-qr-body">
         <div className="memorial-submission-qr-frame" aria-hidden="true">

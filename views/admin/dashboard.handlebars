@@ -99,6 +99,22 @@
         </section>
         {{/if}}
 
+        {{!-- 1.35.0 I55: board calendar must be findable on mobile without opening collapsed "board features". --}}
+        {{#if adminPermissions.settingsFeatures}}
+        <section class="admin-panel board-calendar-visible-panel">
+            <div class="admin-panel-body settings-panel-body" style="padding-top: 12px; padding-bottom: 12px;">
+                <div class="form-field board-calendar-field board-calendar-field--visible">
+                    <label for="boardCalendar">{{t 'board_calendar'}}</label>
+                    <select name="boardCalendar" id="boardCalendar" class="form-control admin-select-modern">
+                        <option value="hebrew" {{#if (eq boardCalendar 'hebrew')}}selected{{/if}}>{{t 'board_calendar_hebrew'}}</option>
+                        <option value="gregorian" {{#if (eq boardCalendar 'gregorian')}}selected{{/if}}>{{t 'board_calendar_gregorian'}}</option>
+                    </select>
+                    <span class="field-hint">{{t 'board_calendar_help'}}</span>
+                </div>
+            </div>
+        </section>
+        {{/if}}
+
         {{#if (and (or adminPermissions.settingsAppearance adminPermissions.settingsPreview) adminPermissions.settingsSavedViews)}}
         <section class="admin-panel saved-views-panel admin-panel-collapsible is-collapsed">
             <button type="button" class="admin-panel-header admin-panel-toggle" aria-expanded="false">
@@ -420,9 +436,14 @@
                             <h4 class="typography-controls-title">{{t 'board_mode_combined'}}</h4>
                         <div class="font-scale-grid combined-text-size-controls">
                             <div class="slider-field-modern settings-slider-compact">
-                                <label for="combinedInfoScale">{{t 'combined_info_scale'}}</label>
-                                {{> admin-settings-number-stepper name="combinedInfoScale" id="combinedInfoScale" min="50" max="250" step="5"
-                                    value=combinedInfoScale suffix="%" compact=true}}
+                                <label for="combinedZmanimScale">{{t 'combined_zmanim_scale'}}</label>
+                                {{> admin-settings-number-stepper name="combinedZmanimScale" id="combinedZmanimScale" min="50" max="250" step="5"
+                                    value=combinedZmanimScale suffix="%" compact=true}}
+                            </div>
+                            <div class="slider-field-modern settings-slider-compact">
+                                <label for="combinedPrayersScale">{{t 'combined_prayers_scale'}}</label>
+                                {{> admin-settings-number-stepper name="combinedPrayersScale" id="combinedPrayersScale" min="50" max="250" step="5"
+                                    value=combinedPrayersScale suffix="%" compact=true}}
                             </div>
                             <div class="slider-field-modern settings-slider-compact">
                                 <label for="combinedAnnouncementScale">{{t 'combined_announcement_scale'}}</label>
@@ -547,14 +568,6 @@
                             <option value="combined" {{#if (eq boardMode 'combined')}}selected{{/if}}>{{t 'board_mode_combined'}}</option>
                         </select>
                         <span class="field-hint">{{t 'board_mode_help'}}</span>
-                    </div>
-                    <div class="form-field board-calendar-field">
-                        <label for="boardCalendar">{{t 'board_calendar'}}</label>
-                        <select name="boardCalendar" id="boardCalendar" class="form-control admin-select-modern">
-                            <option value="hebrew" {{#if (eq boardCalendar 'hebrew')}}selected{{/if}}>{{t 'board_calendar_hebrew'}}</option>
-                            <option value="gregorian" {{#if (eq boardCalendar 'gregorian')}}selected{{/if}}>{{t 'board_calendar_gregorian'}}</option>
-                        </select>
-                        <span class="field-hint">{{t 'board_calendar_help'}}</span>
                     </div>
                     <div class="form-field date-display-field">
                         <label for="dateDisplay">{{t 'date_display'}}</label>
@@ -774,8 +787,12 @@
                     var el = document.getElementById('boardMode');
                     return el ? el.value : 'memorial';
                 })(),
-                combinedInfoScale: (function () {
-                    var el = document.getElementById('combinedInfoScale');
+                combinedZmanimScale: (function () {
+                    var el = document.getElementById('combinedZmanimScale');
+                    return el ? el.value : '';
+                })(),
+                combinedPrayersScale: (function () {
+                    var el = document.getElementById('combinedPrayersScale');
                     return el ? el.value : '';
                 })(),
                 combinedAnnouncementScale: (function () {
@@ -858,7 +875,7 @@
             var el = document.getElementById(id);
             if (el) el.addEventListener('input', schedulePreview);
         });
-        ['combinedInfoScale', 'combinedAnnouncementScale'].forEach(function (id) {
+        ['combinedZmanimScale', 'combinedPrayersScale', 'combinedAnnouncementScale'].forEach(function (id) {
             var el = document.getElementById(id);
             if (el) {
                 el.addEventListener('input', schedulePreview);

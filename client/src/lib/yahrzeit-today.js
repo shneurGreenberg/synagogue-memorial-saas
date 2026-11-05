@@ -4,6 +4,7 @@ import { personHasDeathDate } from '../../../lib/death-date';
 import {
   getGregorianDateInTimezone,
   getHebrewDateInTimezone,
+  getBoardDayBoundaryOptions,
 } from './board-calendar';
 
 function isGregorianYahrzeitToday(death, timezone, now = new Date()) {
@@ -15,33 +16,39 @@ function isGregorianYahrzeitToday(death, timezone, now = new Date()) {
   return today.getMonth() + 1 === death.month && today.getDate() === death.date;
 }
 
-function isHebrewYahrzeitToday(death, timezone, now = new Date()) {
+function isHebrewYahrzeitToday(death, timezone, now = new Date(), options = {}) {
   if (!death || !death.year || !death.month || !death.date) {
     return false;
   }
 
   const deathGregorian = new Date(death.year, death.month - 1, death.date);
   const deathHebrew = new Hebcal.HDate(deathGregorian);
-  const todayHebrew = getHebrewDateInTimezone(timezone, now);
+  const todayHebrew = getHebrewDateInTimezone(timezone, now, options);
 
   return deathHebrew.getMonth() === todayHebrew.getMonth()
     && deathHebrew.getDate() === todayHebrew.getDate();
 }
 
-export function isPersonYahrzeitToday(person, timezone, now = new Date(), calendar = 'gregorian') {
+export function isPersonYahrzeitToday(person, timezone, now = new Date(), calendar = 'gregorian', options = {}) {
   if (!personHasDeathDate(person)) {
     return false;
   }
 
   const death = person.gregorianDateOfDeath;
+  const boundary = {
+    calendar,
+    lat: options.lat,
+    lng: options.lng,
+  };
 
   // 1.30.0 I10: a board run by the Hebrew calendar only counts the Hebrew anniversary.
+  // 1.35.0 I58: Hebrew "today" rolls at sunset when lat/lng are known.
   if (calendar === 'hebrew') {
-    return isHebrewYahrzeitToday(death, timezone, now);
+    return isHebrewYahrzeitToday(death, timezone, now, boundary);
   }
 
   // 1.31.4 I37: a board run by the Gregorian calendar only counts the Gregorian anniversary.
   return isGregorianYahrzeitToday(death, timezone, now);
 }
 
-export { daysUntilHebrewYahrzeit };
+export { daysUntilHebrewYahrzeit, getBoardDayBoundaryOptions };

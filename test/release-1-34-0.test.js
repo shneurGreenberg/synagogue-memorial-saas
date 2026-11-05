@@ -204,7 +204,8 @@ describe('1.34.0 release bookkeeping', () => {
     const raw = JSON.parse(read('CHANGELOG.json'));
     const entry = raw.find((e) => e.version === '1.34.0');
     assert.ok(entry, 'missing 1.34.0');
-    assert.equal(entry.version, raw[0].version, 'newest first');
+    assert.ok(raw[0].version === '1.35.0', 'newest first is current release');
+    assert.ok(raw.find((e) => e.version === '1.34.0'));
     assert.ok(entry.items.length >= 8, `only ${entry.items.length} items`);
   });
 });
