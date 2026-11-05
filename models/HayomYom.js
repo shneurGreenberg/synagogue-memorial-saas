@@ -8,7 +8,7 @@ const HayomYomSchema = new mongoose.Schema({
     he: { type: String, default: '' },
     ru: { type: String, default: '' },
   },
-  // 1.29.5 I6: where text.he came from; only 'chabadlibrary' (original) is trusted.
+  // 1.29.5 I6 / 1.35.0 I57: trusted Hebrew sources are 'chabadlibrary' and 'luach.day'.
   hebrewSource: { type: String, default: '' },
   lessons5703: {
     chumash: {

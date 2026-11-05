@@ -136,7 +136,7 @@ export function mergePreviewPatch(data, patch) {
   if (patch.boardMode === 'combined' || patch.boardMode === 'memorial') {
     next.boardMode = patch.boardMode;
   }
-  ['combinedInfoScale', 'combinedAnnouncementScale'].forEach((key) => {
+  ['combinedInfoScale', 'combinedZmanimScale', 'combinedPrayersScale', 'combinedAnnouncementScale'].forEach((key) => {
     const n = Number(patch[key]);
     if (patch[key] !== undefined && patch[key] !== '' && Number.isFinite(n)) next[key] = n;
   });

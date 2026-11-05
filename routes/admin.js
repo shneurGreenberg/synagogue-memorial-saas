@@ -1307,6 +1307,7 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
         }
         const enriched = enrichSynagogueForAdmin(synagogue);
         const activeSavedView = findSavedView(enriched.savedViews, enriched.activeSavedViewId);
+        const combinedScales = require('../lib/combined-info-scales').resolveCombinedInfoScales(enriched);
         renderAdmin(res, 'admin/dashboard', {
             synagogue: enriched,
             adminUser: req.adminUser,
@@ -1328,8 +1329,10 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
             boardMode: normalizeBoardMode(enriched.boardMode),
             boardCalendar: require('../lib/board-date-settings').resolveBoardCalendar(enriched),
             dateDisplay: require('../lib/board-date-settings').resolveDateDisplay(enriched),
-            combinedInfoScale: Number(enriched.combinedInfoScale) || 100,
-            combinedAnnouncementScale: Number(enriched.combinedAnnouncementScale) || 100,
+            combinedInfoScale: combinedScales.combinedInfoScale,
+            combinedZmanimScale: combinedScales.combinedZmanimScale,
+            combinedPrayersScale: combinedScales.combinedPrayersScale,
+            combinedAnnouncementScale: combinedScales.combinedAnnouncementScale,
             prayerTimeRows: prayerTimeRowsForAdmin(enriched),
             sectionTitles: require('../lib/board-mode').normalizeSectionTitles(enriched.boardSectionTitles),
             sectionTitleDefaults: require('../lib/board-mode').defaultSectionTitles(enriched.language),

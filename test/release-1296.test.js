@@ -20,7 +20,8 @@ test('1.29.6 I8: combined text-size controls live with typography settings', () 
   const grp = v.indexOf('combinedTextSizeGroup');
   const prayer = v.indexOf('id="prayerTimesSettings"');
   assert.ok(typo > 0 && grp > typo && grp < prayer);
-  assert.match(v, /name="combinedInfoScale"/);
+  assert.match(v, /name="combinedZmanimScale"/);
+  assert.match(v, /name="combinedPrayersScale"/);
   assert.match(v, /name="combinedAnnouncementScale"/);
 });
 

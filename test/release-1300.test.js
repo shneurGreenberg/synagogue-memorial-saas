@@ -77,7 +77,7 @@ describe('1.30.0 I10: board calendar + dates shown', () => {
     const tomorrow = new Hebcal.HDate(h.getDate(), h.getMonth(), h.getFullYear()).next();
     const g2 = new Hebcal.HDate(tomorrow.getDate(), tomorrow.getMonth(), tomorrow.getFullYear() - 10).greg();
     assert.equal(daysUntilHebrewYahrzeit({ year: g2.getFullYear(), month: g2.getMonth() + 1, date: g2.getDate() }, today), 1);
-    assert.match(read('client/src/pages/HomePage.jsx'), /isPersonYahrzeitToday\(person, timezone, referenceDate, calendar\)/);
+    assert.match(read('client/src/pages/HomePage.jsx'), /isPersonYahrzeitToday\(person, timezone, referenceDate, calendar, boundary\)/);
   });
 });
 
@@ -128,8 +128,8 @@ describe('1.30.0 I13/I14: combined text-size controls', () => {
     assert.ok(PUBLIC_BOARD_FIELDS.includes('combinedInfoScale'));
     const scss = read('styles/home.scss');
     assert.match(scss, /\.main-container \.synagogue-info-panel--two-col \.synagogue-info-col \.synagogue-info-row \{\s*font-size: calc\(clamp\(10px, 0\.82vw, 16px\) \* var\(--combined-info-scale, 1\)\) !important;/);
-    assert.match(read('client/src/components/SynagogueInfoPanel.jsx'), /'--combined-info-scale': clampScale\(data\.combinedInfoScale\)/);
-    assert.match(v, /\['combinedInfoScale', 'combinedAnnouncementScale'\]\.forEach\(function \(id\) \{\s*var el = document\.getElementById\(id\);\s*if \(el\) \{\s*el\.addEventListener\('input', schedulePreview\);/);
+    assert.match(read('client/src/components/SynagogueInfoPanel.jsx'), /'--combined-info-scale': clampScale\(zmanimScale\)/);
+    assert.match(v, /\['combinedZmanimScale', 'combinedPrayersScale', 'combinedAnnouncementScale'\]\.forEach\(function \(id\) \{/);
   });
 });
 

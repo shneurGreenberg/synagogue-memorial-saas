@@ -49,5 +49,11 @@ export function sanitizeRichText(html) {
     return sanitizeTag(match, name, attrs, slash === '/');
   });
 
+  // 1.35.0 I56: plain Enter newlines become <br/> so they survive even without CSS pre-line.
+  // Skip when the text already contains block tags that imply their own breaks.
+  if (!/<br\s*\/?\s*>|<p\b|<div\b|<li\b/i.test(value)) {
+    value = value.replace(/\r\n|\r|\n/g, '<br/>');
+  }
+
   return value;
 }

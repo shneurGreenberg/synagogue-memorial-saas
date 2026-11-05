@@ -13,6 +13,9 @@ import {
 import {
   getGregorianDateInTimezone,
   getHebrewDateInTimezone,
+  getCalendarDayKey,
+  getBoardDayBoundaryOptions,
+  subscribeToCalendarDayChange,
 } from '../lib/board-calendar';
 import { resolveBoardTimezone } from '../lib/timezone';
 import {
@@ -89,6 +92,10 @@ function setPersonDates(card) {
 function buildPeopleList(appData, referenceDate = new Date(), timezone = resolveBoardTimezone(appData)) {
   const currentDayOfYear = getCurrentDayOfYear(referenceDate);
   const calendar = resolveBoardCalendar(appData);
+  const boundary = getBoardDayBoundaryOptions(appData);
+  const todayHebrew = calendar === 'hebrew'
+    ? getHebrewDateInTimezone(timezone, referenceDate, boundary)
+    : null;
 
   const sorted = (appData.people || [])
     .slice(0)
@@ -114,15 +121,16 @@ function buildPeopleList(appData, referenceDate = new Date(), timezone = resolve
       }
 
       // 1.30.0 I10: Hebrew-calendar boards order by the next Hebrew anniversary.
-      if (calendar === 'hebrew') {
+      // 1.35.0 I58: "today" for that count follows sunset on Hebrew boards.
+      if (calendar === 'hebrew' && todayHebrew) {
         const hebrewDays = daysUntilHebrewYahrzeit(
           person.gregorianDateOfDeath,
-          getGregorianDateInTimezone(timezone, referenceDate),
+          todayHebrew.greg(),
         );
         if (hebrewDays != null) person.gregorianDayOfMemory = hebrewDays;
       }
 
-      person.passedToday = isPersonYahrzeitToday(person, timezone, referenceDate, calendar);
+      person.passedToday = isPersonYahrzeitToday(person, timezone, referenceDate, calendar, boundary);
 
       return person;
     })
@@ -142,19 +150,16 @@ function computeDayKey() {
   try {
     const appData = getAppData();
     const timezone = resolveBoardTimezone(appData);
-    const g = getGregorianDateInTimezone(timezone);
-    const h = getHebrewDateInTimezone(timezone);
-    const gk = g instanceof Date ? `${g.getFullYear()}-${g.getMonth()}-${g.getDate()}` : String(g);
-    const hk = h && typeof h.getDate === 'function' ? `${h.getFullYear()}-${h.getMonth()}-${h.getDate()}` : String(h);
-    return `${gk}|${hk}`;
+    return getCalendarDayKey(timezone, new Date(), getBoardDayBoundaryOptions(appData));
   } catch {
     return '';
   }
 }
 
 function buildCalendarState(appData, timezone = resolveBoardTimezone(appData)) {
+  const boundary = getBoardDayBoundaryOptions(appData);
   const gregorianDate = getGregorianDateInTimezone(timezone);
-  const hebrewDate = getHebrewDateInTimezone(timezone);
+  const hebrewDate = getHebrewDateInTimezone(timezone, new Date(), boundary);
   const allPeople = buildPeopleList(appData, gregorianDate, timezone);
   const dailyCite = getDailyCite(appData, hebrewDate);
 
@@ -305,19 +310,19 @@ class HomePageBase extends React.Component {
   }
 
   componentDidMount() {
-    // 1.29.5 I5: recompute "yahrzeit today" when the day changes (community timezone), same as on load.
+    // 1.35.0 I54/I58: one timer to the next day boundary (midnight or sunset) + wake listeners.
+    // Replaces the old per-minute setInterval.
     this.dayKey = computeDayKey();
-    this.dayTimer = window.setInterval(() => {
-      const key = computeDayKey();
-      if (key !== this.dayKey) {
-        this.dayKey = key;
-        this.refreshCalendarState();
-      }
-    }, 60 * 1000);
+    this.unsubscribeDay = subscribeToCalendarDayChange((nextKey) => {
+      this.dayKey = nextKey;
+      this.refreshCalendarState();
+    });
   }
 
   componentWillUnmount() {
-    window.clearInterval(this.dayTimer);
+    if (typeof this.unsubscribeDay === 'function') {
+      this.unsubscribeDay();
+    }
   }
 
   renderCombinedGrid() {

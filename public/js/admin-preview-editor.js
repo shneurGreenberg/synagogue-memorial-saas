@@ -31,7 +31,7 @@
     { key: 'logo', selector: '.community-logo-img, .community-logo-flip', fields: [], move: ['.settings-media-tile--logo'] },
     { key: 'header', selector: '.board-header', fields: ['boardTitleText', 'primaryColor', 'fontScale_boardHeader',
       'boardSubtitleEnabled', 'boardSubtitleText', 'boardSubtitleColor', 'boardSubtitleWeight', 'fontScale_boardSubtitle'] },
-    { key: 'bottom', selector: '.synagogue-info-panel', fields: ['boardMode', 'sectionTitle_zmanim', 'sectionTitle_prayers', 'sectionTitle_classes', 'combinedInfoScale', 'combinedAnnouncementScale', 'accentColor'] },
+    { key: 'bottom', selector: '.synagogue-info-panel', fields: ['boardMode', 'sectionTitle_zmanim', 'sectionTitle_prayers', 'sectionTitle_classes', 'combinedZmanimScale', 'combinedPrayersScale', 'combinedAnnouncementScale', 'accentColor'] },
     { key: 'candle', selector: '.css-candle, .prayer-reading-candle', fields: [], move: ['.settings-candle-preview-tile'] },
     { key: 'tiles', selector: '.cards-grid .card, .cards-grid-kadish .card', fields: ['primaryColor', 'textColor', 'tileColor',
       'tileOpacity', 'tileBorderColor', 'tileBorderWidth', 'tileBorderRadius', 'fontScale_tileTitle', 'fontScale_tileDate', 'fontScale_torahNames',
@@ -42,9 +42,9 @@
     { key: 'weather', selector: '.weather-panel', fields: ['feature_weather', 'fontScale_weather'] },
     { key: 'prayers', selector: '.memorial-prayers', fields: ['feature_kelMaleRachamim', 'feature_izkor', 'fontScale_prayers', 'fontScale_prayerOverlay'] },
     { key: 'donationQr', selector: '.donation-qr-panel', fields: ['publicSubmissionShowDonationQr', 'donationQrTitle',
-      'donationQrText', 'publicSubmissionDonationUrl', 'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale'], move: ['input[name="donationQrImage"]'] },
+      'publicSubmissionDonationUrl', 'memorialQrTitleScale', 'memorialQrQrScale'], move: ['input[name="donationQrImage"]'] },
     { key: 'memorialQr', selector: '.memorial-submission-panel', fields: ['publicSubmissionShowRegistrationQr', 'memorialQrTitle',
-      'memorialQrText', 'memorialQrTitleScale', 'memorialQrTextScale', 'memorialQrQrScale'], move: ['input[name="registrationQrImage"]'] },
+      'memorialQrTitleScale', 'memorialQrQrScale'], move: ['input[name="registrationQrImage"]'] },
     // 1.31.3 I30: background images (sides, tiles, middle) are replaced from the preview.
     // 1.31.4 I33: every background (page, tiles, middle) can always be replaced or removed from both
     // the column panels and the middle panel.
@@ -53,7 +53,7 @@
         var parts = el && el.classList && el.classList.contains('left') ? LEFT_PARTS : RIGHT_PARTS;
         return parts.concat(SIDE_STYLE_FIELDS);
       } },
-    { key: 'middle', selector: '.middle', fields: MIDDLE_PARTS.concat(['panelBorderColor', 'panelBorderWidth', 'panelBorderRadius', 'tileColor', 'boardMode']),
+    { key: 'middle', selector: '.middle', fields: MIDDLE_PARTS.concat(['boardCalendar', 'dateDisplay', 'panelBorderColor', 'panelBorderWidth', 'panelBorderRadius', 'tileColor', 'boardMode']),
       move: ['.settings-media-tile--bg-middle', '.settings-media-tile--bg-page', '.settings-media-tile--bg-tiles'] },
   ];
 

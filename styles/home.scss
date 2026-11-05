@@ -2551,7 +2551,14 @@ body.tile-export-mode {
   dd { margin: 0; font-variant-numeric: tabular-nums; font-weight: 700; direction: ltr; }
 }
 .synagogue-info-announcement-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
-.synagogue-info-announcement { font-size: clamp(11px, 0.95vw, 18px); strong { display: block; } p { margin: 0; } }
+.synagogue-info-announcement {
+  font-size: clamp(11px, 0.95vw, 18px);
+  /* 1.35.0 I56: Enter newlines in community messages show as line breaks on the board. */
+  white-space: pre-line;
+  strong { display: block; white-space: pre-line; }
+  p { margin: 0; white-space: pre-line; }
+  div { white-space: pre-line; }
+}
 @media (max-width: 900px) {
   html:not(.board-scaled) {
     .main-container.board-mode-combined .middle .wooden-panel { max-height: none; min-height: 0; }
@@ -2782,3 +2789,4 @@ body.board-lang-he {
 }
 .memorial-submission-qr-link,
 .memorial-submission-qr-link:hover { transform: none !important; transition: none !important; }
+
