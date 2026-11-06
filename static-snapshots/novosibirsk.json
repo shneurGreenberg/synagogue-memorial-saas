@@ -3325,8 +3325,8 @@
   "combinedZmanimScale": 100,
   "combinedPrayersScale": 100,
   "combinedAnnouncementScale": 100,
-  "contentVersion": 1793919583596,
-  "exportedAt": "2026-11-05T22:59:43.596Z",
+  "contentVersion": 1793956452810,
+  "exportedAt": "2026-11-06T09:14:12.810Z",
   "jewishContent": {
     "date": "2026-11-06",
     "timezone": "Asia/Novosibirsk",
@@ -3369,10 +3369,10 @@
     "upcomingHolidays": [
       {
         "date": "2026-12-04",
-        "dateEnd": "2026-12-05",
+        "dateEnd": "2026-12-06",
         "title": "Ханука",
         "hebrew": "חנוכה: א׳ נר",
-        "hebrewEnd": "חנוכה: ב׳ נרות",
+        "hebrewEnd": "חנוכה: ג׳ נרות",
         "subcat": "major",
         "link": "",
         "isRange": true
@@ -3455,10 +3455,10 @@
     "upcomingHolidays": [
       {
         "date": "2026-12-04",
-        "dateEnd": "2026-12-05",
+        "dateEnd": "2026-12-06",
         "title": "Ханука",
         "hebrew": "חנוכה: א׳ נר",
-        "hebrewEnd": "חנוכה: ב׳ נרות",
+        "hebrewEnd": "חנוכה: ג׳ נרות",
         "subcat": "major",
         "link": "",
         "isRange": true
@@ -3501,6 +3501,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-11-05T22:59:43.596Z"
+    "updatedAt": "2026-11-06T09:14:12.810Z"
   }
 }
