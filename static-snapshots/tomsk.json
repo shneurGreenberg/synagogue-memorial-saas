@@ -6326,43 +6326,43 @@
   "combinedZmanimScale": 100,
   "combinedPrayersScale": 100,
   "combinedAnnouncementScale": 100,
-  "contentVersion": 1794217004171,
-  "exportedAt": "2026-11-09T09:36:44.171Z",
+  "contentVersion": 1794303457636,
+  "exportedAt": "2026-11-10T09:37:37.636Z",
   "jewishContent": {
-    "date": "2026-11-09",
+    "date": "2026-11-10",
     "timezone": "Asia/Tomsk",
     "dailyLearning": {
-      "date": "2026-11-09",
+      "date": "2026-11-10",
       "timezone": "Asia/Tomsk",
       "chumash": {
-        "label": "Толдот, 2-я часть"
+        "label": "Толдот, 3-я часть"
       },
       "tehillim": {
-        "label": "Псалмы 140-144"
+        "label": "Псалмы 145-150"
       },
       "tanya": {
         "label": "Кунтрес Ахарон, гл. 3"
       },
       "rambam": {
-        "label": "Запрещенный половой акт 21"
+        "label": "Запрещенный половой акт 22"
       },
       "rambam3": {
-        "label": "Шхеним 10-12"
+        "label": "Шхеним 13-14, Шлухин ве-шутафин 1"
       },
       "hayomYom": {
         "available": true,
-        "text": "Благослови Рош Ходеш Кислева. Произнесите весь Tehillim ранним утром. День Фарбренгена. Мы не можем адекватно описать великую заслугу тех, кто участвует в священном Аводе, произнося Техиллим с Миньян, и большое удовольствие, которое вызывает эта Авода в Высоту, как обсуждается в священных текстах и в очень крошечной части в Kuntres Takanat Amirat Tehillim B 'rabim (Koveitz Michtavim 1). Как вам, Израилю, повезло, и за это все вы будете благословлены",
+        "text": "Были периоды, когда R. Yekusiel Liepler, шасси Alter Rebbe, Davened Shacharit, Mincha и Maariv один за другим, не было времени для интервалов. Примечания: * Этот день отмечается хасидами как знак хорошего здоровья в 5738 (1977) году рабби Шлиты.",
         "hebrewMonth": 8,
-        "hebrewDay": 29,
+        "hebrewDay": 30,
         "lessons5703": {
           "chumash": {
-            "label": "Толдот, Шевии с Раши."
+            "label": "Вайейцей, первый Парша с Раши."
           },
           "tehillim": {
-            "label": "140-150"
+            "label": "1-9."
           },
           "tanya": {
-            "label": "Вернуться к (с. 599) …дети в Ацилут. (с. 601)."
+            "label": "Чтобы понять (стр. 601). Малый Лик.(стр. 603)."
           }
         }
       }
@@ -6377,6 +6377,26 @@
         "subcat": "major",
         "link": "",
         "isRange": true
+      },
+      {
+        "date": "2026-12-10",
+        "dateEnd": "2026-12-10",
+        "title": "Праздник дочерей",
+        "hebrew": "חג הבנות",
+        "hebrewEnd": "חג הבנות",
+        "subcat": "minor",
+        "link": "",
+        "isRange": false
+      },
+      {
+        "date": "2026-12-10",
+        "dateEnd": "2026-12-10",
+        "title": "Ханука",
+        "hebrew": "חנוכה: ז׳ נרות",
+        "hebrewEnd": "חנוכה: ז׳ נרות",
+        "subcat": "major",
+        "link": "",
+        "isRange": false
       }
     ],
     "chabadDates": [
@@ -6462,6 +6482,26 @@
         "subcat": "major",
         "link": "",
         "isRange": true
+      },
+      {
+        "date": "2026-12-10",
+        "dateEnd": "2026-12-10",
+        "title": "Праздник дочерей",
+        "hebrew": "חג הבנות",
+        "hebrewEnd": "חג הבנות",
+        "subcat": "minor",
+        "link": "",
+        "isRange": false
+      },
+      {
+        "date": "2026-12-10",
+        "dateEnd": "2026-12-10",
+        "title": "Ханука",
+        "hebrew": "חנוכה: ז׳ נרות",
+        "hebrewEnd": "חנוכה: ז׳ נרות",
+        "subcat": "major",
+        "link": "",
+        "isRange": false
       }
     ],
     "chabadDates": [
@@ -6501,6 +6541,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-11-09T09:36:44.171Z"
+    "updatedAt": "2026-11-10T09:37:37.636Z"
   }
 }
