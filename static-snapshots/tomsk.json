@@ -5162,7 +5162,7 @@
     },
     {
       "id": 392,
-      "name": "Шмуклярская Хана Абрамасовна(Дочь Абрамаса)",
+      "name": "Шмуклярская Хана Абрамасовна(бат Абрамаса)",
       "gregorianDateOfDeath": {
         "month": 7,
         "date": 12,
@@ -6326,8 +6326,8 @@
   "combinedZmanimScale": 100,
   "combinedPrayersScale": 100,
   "combinedAnnouncementScale": 100,
-  "contentVersion": 1794370709788,
-  "exportedAt": "2026-11-11T04:18:29.788Z",
+  "contentVersion": 1794370995322,
+  "exportedAt": "2026-11-11T04:23:15.322Z",
   "jewishContent": {
     "date": "2026-11-11",
     "timezone": "Asia/Tomsk",
@@ -6541,6 +6541,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-11-11T04:18:29.788Z"
+    "updatedAt": "2026-11-11T04:23:15.322Z"
   }
 }
