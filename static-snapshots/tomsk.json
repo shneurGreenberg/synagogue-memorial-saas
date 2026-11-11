@@ -6326,34 +6326,34 @@
   "combinedZmanimScale": 100,
   "combinedPrayersScale": 100,
   "combinedAnnouncementScale": 100,
-  "contentVersion": 1794303457636,
-  "exportedAt": "2026-11-10T09:37:37.636Z",
+  "contentVersion": 1794369633810,
+  "exportedAt": "2026-11-11T04:00:33.810Z",
   "jewishContent": {
-    "date": "2026-11-10",
+    "date": "2026-11-11",
     "timezone": "Asia/Tomsk",
     "dailyLearning": {
-      "date": "2026-11-10",
+      "date": "2026-11-11",
       "timezone": "Asia/Tomsk",
       "chumash": {
-        "label": "Толдот, 3-я часть"
+        "label": "Толдот, 4-я часть"
       },
       "tehillim": {
-        "label": "Псалмы 145-150"
+        "label": "Псалмы 1-9"
       },
       "tanya": {
         "label": "Кунтрес Ахарон, гл. 3"
       },
       "rambam": {
-        "label": "Запрещенный половой акт 22"
+        "label": "Запрещённая пища 1"
       },
       "rambam3": {
-        "label": "Шхеним 13-14, Шлухин ве-шутафин 1"
+        "label": "Шлухин ве-шутафин 2-4"
       },
       "hayomYom": {
         "available": true,
         "text": "Были периоды, когда R. Yekusiel Liepler, шасси Alter Rebbe, Davened Shacharit, Mincha и Maariv один за другим, не было времени для интервалов. Примечания: * Этот день отмечается хасидами как знак хорошего здоровья в 5738 (1977) году рабби Шлиты.",
-        "hebrewMonth": 8,
-        "hebrewDay": 30,
+        "hebrewMonth": 9,
+        "hebrewDay": 1,
         "lessons5703": {
           "chumash": {
             "label": "Вайейцей, первый Парша с Раши."
@@ -6390,13 +6390,13 @@
       },
       {
         "date": "2026-12-10",
-        "dateEnd": "2026-12-10",
+        "dateEnd": "2026-12-11",
         "title": "Ханука",
         "hebrew": "חנוכה: ז׳ נרות",
-        "hebrewEnd": "חנוכה: ז׳ נרות",
+        "hebrewEnd": "חנוכה: ח׳ נרות",
         "subcat": "major",
         "link": "",
-        "isRange": false
+        "isRange": true
       }
     ],
     "chabadDates": [
@@ -6495,13 +6495,13 @@
       },
       {
         "date": "2026-12-10",
-        "dateEnd": "2026-12-10",
+        "dateEnd": "2026-12-11",
         "title": "Ханука",
         "hebrew": "חנוכה: ז׳ נרות",
-        "hebrewEnd": "חנוכה: ז׳ נרות",
+        "hebrewEnd": "חנוכה: ח׳ נרות",
         "subcat": "major",
         "link": "",
-        "isRange": false
+        "isRange": true
       }
     ],
     "chabadDates": [
@@ -6541,6 +6541,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-11-10T09:37:37.636Z"
+    "updatedAt": "2026-11-11T04:00:33.810Z"
   }
 }

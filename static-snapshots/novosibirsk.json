@@ -4,8 +4,8 @@
   "title": "Проект памяти наших родных \"Кадиш\"",
   "boardTitleText": "Проект памяти наших родных \"Кадиш\"",
   "boardSubtitle": {
-    "enabled": false,
-    "text": ""
+    "enabled": true,
+    "text": "Еврейская община - Новосибирск"
   },
   "titles": {
     "ru": "Проект памяти наших родных \"Кадиш\"",
@@ -24,17 +24,17 @@
     "textColor": "#ffffff",
     "accentColor": "#ffd54f",
     "logo": "1791774465289-opt.webp",
-    "tileColor": "#8c7418",
+    "tileColor": "#330a0a",
     "fontScales": {
       "tileTitle": 100,
       "tileDate": 100,
       "clock": 100,
       "boardHeader": 100,
-      "boardSubtitle": 100,
-      "sidebar": 100,
+      "boardSubtitle": 150,
+      "sidebar": 125,
       "prayers": 100,
-      "dailyStudy": 100,
-      "hayomYom": 100,
+      "dailyStudy": 145,
+      "hayomYom": 155,
       "prayerOverlay": 100,
       "torahNames": 100,
       "weather": 100,
@@ -74,7 +74,9 @@
     "tileBorderWidth": 1,
     "boardSubtitleColor": "#f0f0f0",
     "boardSubtitleFont": "",
-    "boardSubtitleWeight": "400"
+    "boardSubtitleWeight": "400",
+    "clockColor": "#ffffff",
+    "shabbatColor": "#ffd54f"
   },
   "people": [
     {
@@ -3225,6 +3227,25 @@
       },
       "title": "",
       "text": ""
+    },
+    {
+      "id": 208,
+      "name": "Фрейдл Рахель Бат Исраэль",
+      "gregorianDateOfDeath": {
+        "month": 11,
+        "date": 10,
+        "year": 2023
+      },
+      "hasDeathDate": true,
+      "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
+      "title": "",
+      "permanent": true,
+      "text": ""
     }
   ],
   "dailyCites": [
@@ -3237,17 +3258,54 @@
       "_id": "6a216d57d8486ca1e4020487"
     }
   ],
-  "communityEvents": [],
+  "communityEvents": [
+    {
+      "title": "Добро пожаловать к посланникам Ребе!",
+      "text": "Еврейская община приветствует своих представителей на Всемирной конференции посланников еврейской общины, раввина Залмана Заклеса и Сашу Спикельмана.",
+      "titles": {
+        "ru": "Добро пожаловать к посланникам Ребе!",
+        "en": "Добро пожаловать к посланникам Ребе!",
+        "he": "Добро пожаловать к посланникам Ребе!"
+      },
+      "texts": {
+        "ru": "Еврейская община приветствует своих представителей на Всемирной конференции посланников еврейской общины, раввина Залмана Заклеса и Сашу Спикельмана.",
+        "en": "Еврейская община приветствует своих представителей на Всемирной конференции посланников еврейской общины, раввина Залмана Заклеса и Сашу Спикельмана.",
+        "he": "Еврейская община приветствует своих представителей на Всемирной конференции посланников еврейской общины, раввина Залмана Заклеса и Сашу Спикельмана."
+      },
+      "startAt": "2026-11-11T02:48:46.019Z",
+      "sortOrder": 0,
+      "_id": "6af3d78ec21a31dafdc2efb4",
+      "createdAt": "2026-11-11T02:48:46.027Z"
+    },
+    {
+      "title": "Рош Ходеш Кислев",
+      "text": "В этот день мы отмечаем начало месяца Кислев, а также выздоровление Ребе в 1938 году после перенесенного сердечного приступа.",
+      "titles": {
+        "ru": "Рош Ходеш Кислев",
+        "en": "Рош Ходеш Кислев",
+        "he": "Рош Ходеш Кислев"
+      },
+      "texts": {
+        "ru": "В этот день мы отмечаем начало месяца Кислев, а также выздоровление Ребе в 1938 году после перенесенного сердечного приступа.",
+        "en": "В этот день мы отмечаем начало месяца Кислев, а также выздоровление Ребе в 1938 году после перенесенного сердечного приступа.",
+        "he": "В этот день мы отмечаем начало месяца Кислев, а также выздоровление Ребе в 1938 году после перенесенного сердечного приступа."
+      },
+      "startAt": "2026-11-11T02:50:28.837Z",
+      "sortOrder": 1,
+      "_id": "6af3d7f4c21a31dafdc2eff0",
+      "createdAt": "2026-11-11T02:50:28.839Z"
+    }
+  ],
   "boardFeatures": {
-    "dailyChumash": false,
-    "dailyTehillim": false,
-    "dailyRambam": false,
-    "dailyTanya": false,
-    "hayomYom": false,
+    "dailyChumash": true,
+    "dailyTehillim": true,
+    "dailyRambam": true,
+    "dailyTanya": true,
+    "hayomYom": true,
     "upcomingHolidays": true,
     "chabadDates": true,
-    "communityEvents": true,
-    "kelMaleRachamim": true,
+    "communityEvents": false,
+    "kelMaleRachamim": false,
     "izkor": false,
     "weather": true,
     "officialLogo": false
@@ -3255,7 +3313,7 @@
   "publicSubmission": {
     "enabled": true,
     "donationUrl": "https://gotov.org/neokc-beyt-menahem",
-    "donationQrImage": "",
+    "donationQrImage": "community-qr/novosibirsk-donation.png",
     "registrationQrImage": "",
     "showDonationQr": true,
     "showRegistrationQr": true
@@ -3285,7 +3343,7 @@
     "textText": "Сканируйте QR-код для регистрации близких",
     "donationTitleText": "Цдака — пожертвование",
     "donationTextText": "Отсканируйте QR-код, чтобы сделать пожертвование в память о близких",
-    "titleScale": 100,
+    "titleScale": 110,
     "textScale": 100,
     "qrScale": 80,
     "titleScaleBaseline": 100,
@@ -3321,38 +3379,74 @@
     },
     "scheduleActive": false
   },
+  "boardMode": "combined",
   "combinedInfoScale": 100,
-  "combinedZmanimScale": 100,
-  "combinedPrayersScale": 100,
-  "combinedAnnouncementScale": 100,
-  "contentVersion": 1794303452849,
-  "exportedAt": "2026-11-10T09:37:32.849Z",
+  "combinedZmanimScale": 140,
+  "combinedPrayersScale": 150,
+  "combinedAnnouncementScale": 130,
+  "hebrewDatesOnly": false,
+  "boardCalendar": "gregorian",
+  "dateDisplay": "both",
+  "prayerTimes": [
+    {
+      "label": "Шахарит",
+      "time": "09:00",
+      "kind": "prayer"
+    },
+    {
+      "label": "Шахарит в Шаббат",
+      "time": "10:00",
+      "kind": "prayer"
+    },
+    {
+      "label": "Колэл Тора",
+      "time": "09:50",
+      "kind": "class"
+    },
+    {
+      "label": "История на иврите",
+      "time": "10:35",
+      "kind": "class"
+    },
+    {
+      "label": "Мероприятие «Яхад» для молодежи",
+      "time": "13:00",
+      "kind": "class"
+    }
+  ],
+  "boardSectionTitles": {
+    "classes": "",
+    "prayers": "",
+    "zmanim": ""
+  },
+  "contentVersion": 1794369629799,
+  "exportedAt": "2026-11-11T04:00:29.799Z",
   "jewishContent": {
-    "date": "2026-11-10",
+    "date": "2026-11-11",
     "timezone": "Asia/Novosibirsk",
     "dailyLearning": {
-      "date": "2026-11-10",
+      "date": "2026-11-11",
       "timezone": "Asia/Novosibirsk",
       "chumash": {
-        "label": "Толдот, 3-я часть"
+        "label": "Толдот, 4-я часть"
       },
       "tehillim": {
-        "label": "Псалмы 145-150"
+        "label": "Псалмы 1-9"
       },
       "tanya": {
         "label": "Кунтрес Ахарон, гл. 3"
       },
       "rambam": {
-        "label": "Запрещенный половой акт 22"
+        "label": "Запрещённая пища 1"
       },
       "rambam3": {
-        "label": "Шхеним 13-14, Шлухин ве-шутафин 1"
+        "label": "Шлухин ве-шутафин 2-4"
       },
       "hayomYom": {
         "available": true,
         "text": "Были периоды, когда R. Yekusiel Liepler, шасси Alter Rebbe, Davened Shacharit, Mincha и Maariv один за другим, не было времени для интервалов. Примечания: * Этот день отмечается хасидами как знак хорошего здоровья в 5738 (1977) году рабби Шлиты.",
-        "hebrewMonth": 8,
-        "hebrewDay": 30,
+        "hebrewMonth": 9,
+        "hebrewDay": 1,
         "lessons5703": {
           "chumash": {
             "label": "Вайейцей, первый Парша с Раши."
@@ -3389,13 +3483,13 @@
       },
       {
         "date": "2026-12-10",
-        "dateEnd": "2026-12-10",
+        "dateEnd": "2026-12-11",
         "title": "Ханука",
         "hebrew": "חנוכה: ז׳ נרות",
-        "hebrewEnd": "חנוכה: ז׳ נרות",
+        "hebrewEnd": "חנוכה: ח׳ נרות",
         "subcat": "major",
         "link": "",
-        "isRange": false
+        "isRange": true
       }
     ],
     "chabadDates": [
@@ -3453,7 +3547,7 @@
       "officialLogo": false,
       "upcomingHolidays": true,
       "chabadDates": true,
-      "communityEvents": true,
+      "communityEvents": false,
       "weather": true
     },
     "theme": {
@@ -3471,7 +3565,44 @@
         "_id": "6a216d57d8486ca1e4020487"
       }
     ],
-    "communityEvents": [],
+    "communityEvents": [
+      {
+        "title": "Добро пожаловать к посланникам Ребе!",
+        "text": "Еврейская община приветствует своих представителей на Всемирной конференции посланников еврейской общины, раввина Залмана Заклеса и Сашу Спикельмана.",
+        "titles": {
+          "ru": "Добро пожаловать к посланникам Ребе!",
+          "en": "Добро пожаловать к посланникам Ребе!",
+          "he": "Добро пожаловать к посланникам Ребе!"
+        },
+        "texts": {
+          "ru": "Еврейская община приветствует своих представителей на Всемирной конференции посланников еврейской общины, раввина Залмана Заклеса и Сашу Спикельмана.",
+          "en": "Еврейская община приветствует своих представителей на Всемирной конференции посланников еврейской общины, раввина Залмана Заклеса и Сашу Спикельмана.",
+          "he": "Еврейская община приветствует своих представителей на Всемирной конференции посланников еврейской общины, раввина Залмана Заклеса и Сашу Спикельмана."
+        },
+        "startAt": "2026-11-11T02:48:46.019Z",
+        "sortOrder": 0,
+        "_id": "6af3d78ec21a31dafdc2efb4",
+        "createdAt": "2026-11-11T02:48:46.027Z"
+      },
+      {
+        "title": "Рош Ходеш Кислев",
+        "text": "В этот день мы отмечаем начало месяца Кислев, а также выздоровление Ребе в 1938 году после перенесенного сердечного приступа.",
+        "titles": {
+          "ru": "Рош Ходеш Кислев",
+          "en": "Рош Ходеш Кислев",
+          "he": "Рош Ходеш Кислев"
+        },
+        "texts": {
+          "ru": "В этот день мы отмечаем начало месяца Кислев, а также выздоровление Ребе в 1938 году после перенесенного сердечного приступа.",
+          "en": "В этот день мы отмечаем начало месяца Кислев, а также выздоровление Ребе в 1938 году после перенесенного сердечного приступа.",
+          "he": "В этот день мы отмечаем начало месяца Кислев, а также выздоровление Ребе в 1938 году после перенесенного сердечного приступа."
+        },
+        "startAt": "2026-11-11T02:50:28.837Z",
+        "sortOrder": 1,
+        "_id": "6af3d7f4c21a31dafdc2eff0",
+        "createdAt": "2026-11-11T02:50:28.839Z"
+      }
+    ],
     "upcomingHolidays": [
       {
         "date": "2026-12-04",
@@ -3495,13 +3626,13 @@
       },
       {
         "date": "2026-12-10",
-        "dateEnd": "2026-12-10",
+        "dateEnd": "2026-12-11",
         "title": "Ханука",
         "hebrew": "חנוכה: ז׳ נרות",
-        "hebrewEnd": "חנוכה: ז׳ נרות",
+        "hebrewEnd": "חנוכה: ח׳ נרות",
         "subcat": "major",
         "link": "",
-        "isRange": false
+        "isRange": true
       }
     ],
     "chabadDates": [
@@ -3541,6 +3672,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-11-10T09:37:32.849Z"
+    "updatedAt": "2026-11-11T04:00:29.799Z"
   }
 }
