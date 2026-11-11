@@ -24,15 +24,13 @@
                 {{#unless (eq boardMode 'combined')}}<p class="field-hint prayer-mode-hint">{{t 'prayer_times_combined_only'}}</p>{{/unless}}
                 <form method="POST" action="/admin/{{synagogue.slug}}/prayer-times" id="prayerTimesForm" class="prayer-times-form" data-mobile-save="1" data-mobile-save-label="{{t 'save'}}">
                     <input type="hidden" name="prayerTimesSection" value="1">
+                    {{!-- 1.36.0 I62/I63: rows are reorderable (drag the ⋮⋮ handle with mouse or finger, or
+                         use ▲/▼); lessons can have small sub-heading rows (e.g. a weekday). --}}
                     <h3 class="prayer-group-title">{{t 'prayers_group'}}</h3>
+                    <p class="field-hint prayer-reorder-hint">{{t 'prayer_reorder_hint'}}</p>
                     <div class="prayer-times-rows" id="prayerRows" data-kind="prayer">
                         {{#each prayerTimeRows}}{{#unless this.isClass}}
-                        <div class="prayer-times-row" data-kind="prayer">
-                            <input type="hidden" data-f="kind" value="prayer">
-                            <input type="text" dir="auto" data-f="label" value="{{this.label}}" class="form-control" maxlength="60" placeholder="{{t 'prayer_label'}}" aria-label="{{t 'prayer_label'}}">
-                            <input type="time" data-f="time" value="{{this.time}}" class="form-control" aria-label="{{t 'prayer_time'}}">
-                            <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm prayer-row-remove" aria-label="{{t 'delete'}}">✕</button>
-                        </div>
+                        {{> admin-prayer-row row=this kind="prayer"}}
                         {{/unless}}{{/each}}
                     </div>
                     <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm prayer-add-btn" data-add-kind="prayer">+ {{t 'add_prayer'}}</button>
@@ -40,28 +38,21 @@
                     <h3 class="prayer-group-title">{{t 'classes_group'}}</h3>
                     <div class="prayer-times-rows" id="classRows" data-kind="class">
                         {{#each prayerTimeRows}}{{#if this.isClass}}
-                        <div class="prayer-times-row" data-kind="class">
-                            <input type="hidden" data-f="kind" value="class">
-                            <input type="text" dir="auto" data-f="label" value="{{this.label}}" class="form-control" maxlength="60" placeholder="{{t 'class_label'}}" aria-label="{{t 'class_label'}}">
-                            <input type="time" data-f="time" value="{{this.time}}" class="form-control" aria-label="{{t 'prayer_time'}}">
-                            <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm prayer-row-remove" aria-label="{{t 'delete'}}">✕</button>
-                        </div>
+                        {{#if this.isHeading}}{{> admin-prayer-row row=this kind="heading"}}{{else}}{{> admin-prayer-row row=this kind="class"}}{{/if}}
                         {{/if}}{{/each}}
                     </div>
-                    <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm prayer-add-btn" data-add-kind="class">+ {{t 'add_class'}}</button>
+                    <div class="prayer-add-row">
+                        <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm prayer-add-btn" data-add-kind="class">+ {{t 'add_class'}}</button>
+                        <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm prayer-add-btn" data-add-kind="heading">+ {{t 'add_class_heading'}}</button>
+                    </div>
                     <div class="prayer-times-save">
                         <button type="submit" class="btn-admin btn-admin-primary" data-mobile-save-primary>{{t 'save'}}</button>
                     </div>
                 </form>
-                <template id="prayerRowTemplate">
-                    <div class="prayer-times-row">
-                        <input type="hidden" data-f="kind" value="prayer">
-                        <input type="text" dir="auto" data-f="label" value="" class="form-control" maxlength="60">
-                        <input type="time" data-f="time" value="" class="form-control" aria-label="{{t 'prayer_time'}}">
-                        <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm prayer-row-remove" aria-label="{{t 'delete'}}">✕</button>
-                    </div>
-                </template>
-                <script>window.prayerFormLabels = { prayer: '{{t 'prayer_label'}}', 'class': '{{t 'class_label'}}' };</script>
+                <template id="prayerRowTemplate-prayer">{{> admin-prayer-row row=null kind="prayer"}}</template>
+                <template id="prayerRowTemplate-class">{{> admin-prayer-row row=null kind="class"}}</template>
+                <template id="prayerRowTemplate-heading">{{> admin-prayer-row row=null kind="heading"}}</template>
+                <script>window.prayerFormLabels = { prayer: '{{t 'prayer_label'}}', 'class': '{{t 'class_label'}}', heading: '{{t 'class_heading_label'}}' };</script>
             </div>
         </section>
     </div>

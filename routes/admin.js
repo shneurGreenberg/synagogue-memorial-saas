@@ -696,7 +696,7 @@ const getInitials = (name) => {
 
 const ADMIN_PAGE_SCRIPTS = {
     'admin/dashboard': [],
-    'admin/people': ['admin-death-date.js', 'admin-people.js', 'admin-person-card.js', 'contact-platform-ui.js'],
+    'admin/people': ['admin-death-date.js', 'admin-deceased-name.js', 'admin-people.js', 'admin-person-card.js', 'contact-platform-ui.js'],
     'admin/contacts': ['admin-contact-directory.js', 'contact-platform-ui.js'],
     'admin/events': ['admin-events.js', 'admin-slideshow.js'],
     'admin/users': ['admin-users.js'],
@@ -2213,9 +2213,13 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
         await syncContactsToDirectory(req.params.slug, synagogue, contacts);
         const maxId = synagogue.people.reduce((max, p) => p.id > max ? p.id : max, 0);
 
+        // 1.36.0 I67: like the public add-name form — deceased name and father's name are separate
+        // fields and בן/בת (бен/бат) is added from the male/female choice.
+        const { buildDeceasedBoardNameFromAdminForm } = require('../lib/admin-deceased-name');
+        const boardName = buildDeceasedBoardNameFromAdminForm(req.body, synagogue && synagogue.language);
         const newPerson = {
             id: maxId + 1,
-            name,
+            name: boardName.name,
             text: sanitizeRichText(text),
             internalNotes: normalizeInternalNotes(req.body.internalNotes),
             photo: req.file ? await optimizeUploadedImage(req.file.path, 'photo') : '',
@@ -2228,7 +2232,7 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
         {
             const { normalizeGender, inferPersonGender } = require('../lib/deceased-gender');
             const chosen = normalizeGender(req.body.gender);
-            newPerson.gender = chosen !== 'unknown' ? chosen : inferPersonGender({ name });
+            newPerson.gender = chosen !== 'unknown' ? chosen : (boardName.gender || inferPersonGender({ name: newPerson.name }));
         }
         const diedAfterSunset = parseDiedAfterSunset(req.body.diedAfterSunset);
         if (deathDate) {

@@ -97,11 +97,13 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
     lat: loc.lat,
     lng: loc.lng,
   });
-  const allRows = (data.prayerTimes || []).filter((row) => row && row.label && row.time);
+  // 1.36.0 I62/I63: rows come in the admin's saved (dragged) order; 'heading' rows are small
+  // sub-headings (e.g. a weekday) inside the lessons group and have no time.
+  const allRows = (data.prayerTimes || []).filter((row) => row && row.label && (row.time || row.kind === 'heading'));
   // 1.32.0 I39: prayers first, then classes
   // 1.34.0 I46: the classes group gets its own heading (so the two groups are not one list)
-  const prayerRows = allRows.filter((row) => row.kind !== 'class');
-  const classRows = allRows.filter((row) => row.kind === 'class');
+  const prayerRows = allRows.filter((row) => row.kind !== 'class' && row.kind !== 'heading');
+  const classRows = allRows.filter((row) => row.kind === 'class' || row.kind === 'heading');
   const prayers = prayerRows.concat(classRows);
   const titles = data.boardSectionTitles || {};
   const heading = (key, fallbackKey) => (String(titles[key] || '').trim() || t(fallbackKey));
@@ -171,12 +173,16 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
                 {classRows.length > 0 && (
                   <React.Fragment>
                     <div className="synagogue-info-group-title" dir="auto">{heading('classes', 'classes_title')}</div>
-                    {classRows.map((row, index) => (
+                    {classRows.map((row, index) => (row.kind === 'heading' ? (
+                      <div className="synagogue-info-subheading" dir="auto" key={`heading-${row.label}-${index}`}>
+                        {row.label}
+                      </div>
+                    ) : (
                       <div className="synagogue-info-row synagogue-info-row--class" key={`class-${row.label}-${index}`}>
                         <dt dir="auto">{row.label}</dt>
                         <dd>{row.time}</dd>
                       </div>
-                    ))}
+                    )))}
                   </React.Fragment>
                 )}
               </dl>

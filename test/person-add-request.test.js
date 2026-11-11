@@ -67,6 +67,6 @@ test('buildPersonFromAddRequest handles old and new deceased fields', () => {
     gregorianDateOfDeath: { month: 2, date: 3, year: 2022 },
     submitter: { name: 'Contact', phone: '+972501234567', platform: 'whatsapp' },
   }, 'en');
-  assert.match(newFormat.name, /daughter/);
+  assert.match(newFormat.name, / bat Yitzchak$/); // 1.36.0: ben/bat instead of son/daughter
   assert.equal(newFormat.diedAfterSunset, true);
 });

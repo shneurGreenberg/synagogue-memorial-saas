@@ -197,7 +197,7 @@ describe('admin person-add-request approve and dismiss', () => {
     assert.equal(after.personAddRequests[0].id, publicId);
     assert.equal(after.people.length, 2);
     assert.match(after.people[1].name, /Иванов Иван/);
-    assert.match(after.people[1].name, /сын/);
+    assert.match(after.people[1].name, / бен Петр$/);
     assert.equal(after.people[1].contacts[0].phone, '89001234567');
   });
 
@@ -213,7 +213,7 @@ describe('admin person-add-request approve and dismiss', () => {
     assert.equal(after.personAddRequests[1].status, 'dismissed');
     const added = after.people.find((person) => person.name.includes('Cohen'));
     assert.ok(added);
-    assert.match(added.name, /дочь/);
+    assert.match(added.name, / bat David$/);
     assert.equal(added.diedAfterSunset, true);
     assert.equal(added.contacts[0].phone, '+14155552671');
     assert.equal(added.contacts[0].platform, 'whatsapp');
