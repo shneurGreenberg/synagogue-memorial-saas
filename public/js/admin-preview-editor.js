@@ -323,6 +323,8 @@
 
   document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') closePanel(); });
   document.addEventListener('mousedown', function (ev) {
+    // 1.36.0 I70: the admin colour picker popover belongs to the colour field inside this panel.
+    if (ev.target && ev.target.closest && ev.target.closest('.admin-color-popover')) return;
     if (panel && !panel.contains(ev.target)) closePanel();
   });
 

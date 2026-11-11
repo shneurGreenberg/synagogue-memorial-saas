@@ -55,3 +55,19 @@ export function combinedSlots(people, slotCount) {
   const others = list.filter((p) => !(p.passedToday || p.isPermanent));
   return [...pinned, ...others].slice(0, slotCount);
 }
+
+/**
+ * 1.36.0 I66: combined board with exactly one yahrzeit today — that person becomes one large tile
+ * in the centre of the top section (2×2 of the 4×2 grid), the remaining people fill the four side
+ * slots in the usual order. Several same-day yahrzeits (or none) → null, i.e. the normal equal
+ * tiles, exactly like memorial mode.
+ */
+export function combinedFeaturedLayout(people, slotCount = 8) {
+  const list = people || [];
+  const today = list.filter((p) => p && p.passedToday);
+  if (today.length !== 1) return null;
+  const center = today[0];
+  const rest = combinedSlots(list.filter((p) => p !== center), Math.max(0, slotCount - 4));
+  const sides = [0, 1, 2, 3].map((i) => rest[i]);
+  return { center, sides };
+}

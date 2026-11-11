@@ -276,7 +276,7 @@
       flex-direction: row;
       flex-wrap: wrap;
       align-items: baseline;
-      gap: 4px;
+      gap: 0;
       margin-bottom: 2px;
     }
 
@@ -289,6 +289,9 @@
     .daily-gate-sublabel {
       font-size: clamp(9px, 0.8vw, 11px);
       opacity: 0.85;
+      /* 1.36.0 I61: «שלושה פרקים» / «פרק אחד» sat glued to «רמב״ם» — old TV WebViews ignore flex
+         `gap`, so the space is a real margin on both sides (works in RTL and LTR). */
+      margin: 0 0.45em;
     }
 
     .daily-gate-value {
@@ -2469,15 +2472,41 @@ body.tile-export-mode {
   }
 }
 
-/* 1.29: permanent deceased frame */
-.main-container .card.card-permanent {
+/* 1.29: permanent deceased frame
+   1.36.0 I68: the outer ring used `outline`, which older Chromium/WebViews draw as a square box
+   around the tile (outline ignores border-radius there), and the theme's tile rule
+   (ThemeStyles GLASS_SELECTORS, !important) wiped the box-shadow and border. The ring is now a
+   box-shadow spread (follows the tile's border-radius everywhere) with enough specificity to beat
+   the theme rule, in every layout (memorial grid, large centre tile, combined board). */
+.main-container .card.card-permanent,
+.main-container .cards-grid .card.card-permanent {
   border: 3px double #d4af37 !important;
-  outline: 2px solid rgba(212, 175, 55, 0.85);
-  outline-offset: 2px;
-  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.55), 0 0 14px rgba(212, 175, 55, 0.45), inset 0 0 12px rgba(212, 175, 55, 0.18);
+  border-radius: var(--tile-border-radius, 12px) !important;
+  outline: none !important;
+  box-shadow:
+    0 0 0 2px rgba(0, 0, 0, 0.35),
+    0 0 0 4px rgba(212, 175, 55, 0.85),
+    0 0 14px 4px rgba(212, 175, 55, 0.4),
+    inset 0 0 12px rgba(212, 175, 55, 0.18) !important;
 }
-.main-container .card.card-permanent.card-yahrzeit-today {
-  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.7), 0 0 12px var(--accent-color, #ffd54f), 0 0 24px var(--primary-color, #cfaf1f);
+.main-container .card.card-permanent.card-yahrzeit-today,
+.main-container .cards-grid .card.card-permanent.card-yahrzeit-today {
+  box-shadow:
+    0 0 0 2px rgba(0, 0, 0, 0.35),
+    0 0 0 4px rgba(212, 175, 55, 0.85),
+    0 0 12px 4px var(--accent-color, #ffd54f),
+    0 0 24px 4px var(--primary-color, #cfaf1f) !important;
+}
+/* 1.36.0 I68: same-day yahrzeit highlight — keep its glow (the theme rule used to override it) and
+   keep it on the tile's own rounded border, never a square outline. */
+.main-container .cards-grid .card.card-yahrzeit-today:not(.card-permanent) {
+  border-color: var(--accent-color, #ffd54f) !important;
+  border-width: 2px !important;
+  border-style: solid !important;
+  outline: none !important;
+  box-shadow:
+    0 0 10px var(--accent-color, #ffd54f),
+    0 0 22px var(--primary-color, #cfaf1f) !important;
 }
 .card-permanent-mark {
   position: absolute;
@@ -2758,6 +2787,18 @@ body.board-lang-he {
   text-align: center;
 }
 .main-container .synagogue-info-prayers .synagogue-info-row--class:first-of-type { border-bottom-style: dashed; }
+/* 1.36.0 I63: small sub-headings inside the lessons list (e.g. a weekday) — same colour as the
+   lessons heading, smaller text, lessons of that day listed under it. */
+.main-container .synagogue-info-prayers .synagogue-info-subheading {
+  margin: 0.45em 0 0.1em;
+  font-size: calc(clamp(10px, 0.86vw, 16px) * var(--combined-info-scale, 1));
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--accent-color, #ffd54f);
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+.main-container .synagogue-info-prayers .synagogue-info-group-title + .synagogue-info-subheading { margin-top: 0.2em; }
 
 /* 1.34.0 I51: the community messages box has no heading; without one the text needs its own
    breathing room instead of sitting right under the frame. */
@@ -2790,3 +2831,57 @@ body.board-lang-he {
 .memorial-submission-qr-link,
 .memorial-submission-qr-link:hover { transform: none !important; transition: none !important; }
 
+
+/* 1.36.0 I65: gentle automatic rounded corners on the barcode / QR images. Only for browsers new
+   enough to support aspect-ratio (Chromium 88+) — the old TV WebViews from 1.32.0 I41 keep the
+   plain square QR that renders reliably there. Rounding is on the image + its white frame
+   themselves (no overflow clipping, no shadows/filters), so scanners still read it. */
+@supports (aspect-ratio: 1 / 1) {
+  .memorial-submission-qr-frame,
+  .main-container .memorial-submission-qr-frame {
+    border-radius: 7%;
+  }
+  .memorial-submission-qr,
+  .main-container .memorial-submission-qr,
+  .main-container .left .memorial-submission-qr,
+  .main-container .right .memorial-submission-qr {
+    border-radius: 7% !important;
+  }
+}
+
+/* 1.36.0 I69: the prayer-times box and the «זמני היום» box touched each other. The flex `gap`
+   with clamp() is dropped by older board browsers (clamp < Chromium 79, flex gap < Chromium 84),
+   so the space between the two boxes is a real margin with a plain-px fallback. */
+.synagogue-info-panel {
+  gap: 10px;
+  gap: clamp(6px, 0.8vw, 14px);
+}
+.synagogue-info-panel--two-col .synagogue-info-col--boxes.synagogue-info-col--side-by-side {
+  gap: 0;
+}
+.synagogue-info-panel--two-col .synagogue-info-col--side-by-side > .synagogue-info-block + .synagogue-info-block {
+  -webkit-margin-start: 10px;
+  margin-inline-start: 10px;
+  margin-inline-start: clamp(6px, 0.8vw, 14px);
+}
+
+/* 1.36.0 I66: combined board, exactly one yahrzeit today → large tile centred in the top section */
+.main-container.board-mode-combined .middle .cards-grid.cards-grid-combined-featured {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  .kc-r1c1 { grid-column: 1; grid-row: 1; }
+  .kc-r2c1 { grid-column: 1; grid-row: 2; }
+  .kc-r1c4 { grid-column: 4; grid-row: 1; }
+  .kc-r2c4 { grid-column: 4; grid-row: 2; }
+  .combined-center { grid-column: 2 / span 2; grid-row: 1 / span 2; min-width: 0; min-height: 0; display: flex; }
+}
+@media (max-width: 900px) {
+  html:not(.board-scaled) .main-container.board-mode-combined .middle .cards-grid.cards-grid-combined-featured {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    .combined-center { grid-column: 1 / span 2; grid-row: 1; min-height: 180px; }
+    .kc-r1c1 { grid-column: 1; grid-row: 2; }
+    .kc-r1c4 { grid-column: 2; grid-row: 2; }
+    .kc-r2c1 { grid-column: 1; grid-row: 3; }
+    .kc-r2c4 { grid-column: 2; grid-row: 3; }
+  }
+}

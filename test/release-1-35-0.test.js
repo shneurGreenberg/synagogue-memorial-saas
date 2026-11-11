@@ -157,15 +157,15 @@ describe('1.35.0 I60: one barcode heading', () => {
 });
 
 describe('1.35.0 version', () => {
-  it('changelog leads with 1.35.0', () => {
+  it('changelog leads with the current release', () => {
     const raw = JSON.parse(read('CHANGELOG.json'));
-    assert.equal(raw[0].version, '1.35.0');
+    assert.equal(raw[0].version, '1.36.0');
     delete require.cache[require.resolve('../lib/changelog')];
     // Force reload by clearing the module's internal cache via re-require after file read path
     const changelogPath = require.resolve('../lib/changelog');
     delete require.cache[changelogPath];
     const mod = require('../lib/changelog');
     // loadChangelog caches in module scope; re-require is enough after delete
-    assert.equal(mod.currentCodeVersion(), '1.35.0');
+    assert.equal(mod.currentCodeVersion(), '1.36.0');
   });
 });

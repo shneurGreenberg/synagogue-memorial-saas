@@ -48,7 +48,7 @@ import { JewishContentPanels } from '../components/JewishContentPanels';
 import { TorahReadingOverlay } from '../components/TorahReadingOverlay';
 import { usePhotoPrefetch } from '../hooks/usePhotoPrefetch';
 import { SynagogueInfoPanel } from '../components/SynagogueInfoPanel';
-import { isPermanentActive, orderWithPermanent, combinedSlots } from '../lib/zmanim';
+import { isPermanentActive, orderWithPermanent, combinedSlots, combinedFeaturedLayout } from '../lib/zmanim';
 
 const COMBINED_SLOTS = 8;
 
@@ -326,6 +326,29 @@ class HomePageBase extends React.Component {
   }
 
   renderCombinedGrid() {
+    // 1.36.0 I66: exactly one yahrzeit today → one large tile in the centre of the top section
+    // (same rule as memorial mode: several same-day yahrzeits stay equal small tiles with a glow).
+    const featured = combinedFeaturedLayout(this.state.allPeople, COMBINED_SLOTS);
+    if (featured) {
+      const wrap = (className, entry) => (
+        <div key={className} className={className}>
+          <MemorialCard entry={entry} onOpen={this.props.onOpenCard} />
+        </div>
+      );
+      return (
+        <div className="cards-area combined-cards-area">
+          <div className="cards-grid cards-grid-combined cards-grid-combined-featured">
+            {wrap('kc-r1c1', featured.sides[0])}
+            {wrap('kc-r2c1', featured.sides[1])}
+            <div className="kadish-center combined-center">
+              <MemorialCard entry={featured.center} big onOpen={this.props.onOpenCard} />
+            </div>
+            {wrap('kc-r1c4', featured.sides[2])}
+            {wrap('kc-r2c4', featured.sides[3])}
+          </div>
+        </div>
+      );
+    }
     const entries = combinedSlots(this.state.allPeople, COMBINED_SLOTS);
     return (
       <div className="cards-area combined-cards-area">

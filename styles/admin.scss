@@ -4945,3 +4945,85 @@ body.admin-theme-light {
 .people-section-tabs .content-tab { text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; }
 .people-section-tabs .content-tab:hover { text-decoration: none; }
 .admin-save-toast { position: fixed; inset-inline: 16px; bottom: 16px; z-index: 3000; padding: 12px 16px; border-radius: var(--admin-radius); background: var(--admin-danger); color: #fff; font-weight: 600; box-shadow: var(--admin-shadow-lg); }
+
+/* 1.36.0 I62/I63: reorderable prayers / lessons rows (drag handle + ▲/▼), lesson sub-headings */
+.prayer-times-form .prayer-times-row { position: relative; border-radius: var(--admin-radius-sm, 8px); }
+.prayer-times-form .prayer-row-handle {
+  flex: 0 0 auto;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 38px; padding: 0;
+  border: 1px dashed rgba(128, 128, 128, .45); border-radius: var(--admin-radius-sm, 8px);
+  background: transparent; color: inherit; opacity: .75;
+  cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none;
+}
+.prayer-times-form .prayer-row-handle:hover { opacity: 1; }
+.prayer-times-form.is-reordering, .prayer-times-form.is-reordering * { cursor: grabbing !important; -webkit-user-select: none; user-select: none; }
+.prayer-times-form .prayer-times-row.is-dragging {
+  z-index: 2;
+  background: var(--admin-primary-dim, rgba(207, 175, 31, .18));
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+}
+.prayer-times-form .prayer-times-row.is-moved { animation: prayer-row-moved .5s ease; }
+@keyframes prayer-row-moved { from { background: var(--admin-primary-dim, rgba(207, 175, 31, .25)); } to { background: transparent; } }
+.prayer-times-form .prayer-row-move { flex: 0 0 auto; display: inline-flex; flex-direction: column; gap: 2px; }
+.prayer-times-form .prayer-row-move button {
+  width: 30px; height: 18px; padding: 0; line-height: 1; font-size: 10px;
+  border: 1px solid rgba(128, 128, 128, .4); border-radius: var(--admin-radius-sm, 8px); background: transparent; color: inherit; cursor: pointer;
+}
+.prayer-times-form .prayer-times-rows > .prayer-times-row:first-child .prayer-row-up,
+.prayer-times-form .prayer-times-rows > .prayer-times-row:last-child .prayer-row-down { opacity: .3; }
+.prayer-times-form .prayer-times-row--heading .prayer-heading-input {
+  font-weight: 700;
+  color: var(--admin-primary, #cfaf1f);
+  border-style: dashed;
+}
+.prayer-times-form .prayer-add-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.prayer-reorder-hint { margin: -4px 0 8px; }
+@media (max-width: 640px) {
+  /* Phone: name gets the full width, time sits under it; handle and ▲/▼/✕ stay at the sides. */
+  .prayer-times-form .prayer-times-row {
+    display: grid; gap: 4px 6px; align-items: center;
+    grid-template-columns: 36px minmax(0, 1fr) auto auto;
+    grid-template-areas: "h l m r" "h t m r";
+  }
+  .prayer-times-form .prayer-times-row--heading { grid-template-areas: "h l m r"; }
+  .prayer-times-form .prayer-times-row .prayer-row-handle { grid-area: h; }
+  .prayer-times-form .prayer-times-row input[data-f="label"] { grid-area: l; width: 100%; }
+  .prayer-times-form .prayer-times-row input[type="time"] { grid-area: t; width: 100%; max-width: 160px; }
+  .prayer-times-form .prayer-times-row .prayer-row-move { grid-area: m; }
+  .prayer-times-form .prayer-times-row .prayer-row-remove { grid-area: r; }
+  .prayer-times-form .prayer-row-handle { width: 36px; height: 42px; }
+  .prayer-times-form .prayer-row-move button { width: 28px; height: 20px; }
+}
+
+/* 1.36.0 I70: own colour picker — three LTR sliders whose gradients match their values */
+.admin-color-popover {
+  position: fixed; z-index: 10050; width: 290px; max-width: calc(100vw - 16px);
+  padding: 12px; border-radius: var(--admin-radius, 12px);
+  background: var(--admin-surface, #fff); color: var(--admin-text, #111);
+  border: 1px solid rgba(128, 128, 128, .35); box-shadow: 0 12px 32px rgba(0, 0, 0, .3);
+  direction: ltr; text-align: left;
+}
+.admin-color-popover[hidden] { display: none !important; }
+.admin-color-popover.is-sheet { left: 8px !important; right: 8px; bottom: 8px; top: auto !important; width: auto; max-width: none; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+.admin-color-popover-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.admin-color-popover-swatch { flex: 0 0 auto; width: 40px; height: 40px; border-radius: var(--admin-radius-sm, 8px); border: 1px solid rgba(128, 128, 128, .5); }
+.admin-color-popover-hex { flex: 1 1 auto; min-width: 0; font-family: ui-monospace, Menlo, Consolas, monospace; direction: ltr; text-align: left; }
+.admin-color-popover-row { display: block; margin: 0 0 12px; }
+.admin-color-popover-label { display: block; font-size: .8rem; opacity: .8; margin-bottom: 4px; }
+[dir="rtl"] .admin-color-popover-label { direction: rtl; text-align: right; }
+.admin-color-slider {
+  -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 18px; margin: 0;
+  border-radius: 999px; border: 1px solid rgba(128, 128, 128, .45); outline: none; direction: ltr;
+  touch-action: pan-y;
+}
+.admin-color-slider::-webkit-slider-runnable-track { -webkit-appearance: none; height: 18px; background: transparent; border: 0; }
+.admin-color-slider::-moz-range-track { height: 18px; background: transparent; border: 0; }
+.admin-color-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 24px; height: 24px; margin-top: -4px; border-radius: 50%;
+  background: #fff; border: 2px solid #333; box-shadow: 0 1px 4px rgba(0, 0, 0, .45); cursor: pointer;
+}
+.admin-color-slider::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: #fff; border: 2px solid #333; cursor: pointer; }
+.admin-color-slider:focus-visible { box-shadow: 0 0 0 3px var(--admin-primary-dim, rgba(99, 102, 241, .3)); }
+.admin-color-popover-foot { display: flex; justify-content: flex-end; }
+@media (max-width: 640px) { .admin-color-slider { height: 24px; } .admin-color-slider::-webkit-slider-runnable-track { height: 24px; } .admin-color-slider::-webkit-slider-thumb { width: 30px; height: 30px; margin-top: -4px; } }

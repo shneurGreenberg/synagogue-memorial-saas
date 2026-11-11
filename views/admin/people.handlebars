@@ -143,9 +143,15 @@
                             <span class="seed-notice">{{t 'photo_hint'}}</span>
                         </div>
                         <div class="person-form-fields">
+                            {{!-- 1.36.0 I67: same as the public add-name form — the deceased's name and the
+                                 father's name are separate; בן/בת (бен/бат) is added from the gender choice. --}}
                             <div class="form-field">
-                                <label for="addName">{{t 'name'}}</label>
-                                <input type="text" dir="auto" name="name" id="addName" class="form-control" required placeholder="{{t 'name_placeholder'}}">
+                                <label for="addName">{{t 'deceased_name_label'}}</label>
+                                <input type="text" dir="auto" name="name" id="addName" class="form-control" required placeholder="{{t 'deceased_name_placeholder'}}" data-deceased-name-part="name">
+                            </div>
+                            <div class="form-field">
+                                <label for="addFatherName">{{t 'person_add_request_father'}}</label>
+                                <input type="text" dir="auto" name="fatherName" id="addFatherName" class="form-control" maxlength="120" placeholder="{{t 'father_name_placeholder'}}" data-deceased-name-part="father">
                             </div>
                             <div class="form-field admin-gender-field">
                                 <label>{{t 'gender_label'}}</label>
@@ -155,6 +161,8 @@
                                     <label class="admin-seg-option"><input type="radio" name="gender" value="female" id="addGenderFemale"><span>{{t 'gender_female'}}</span></label>
                                 </div>
                             </div>
+                            <p class="field-hint admin-board-name-preview" id="addBoardNamePreview" data-deceased-name-preview
+                                data-label="{{t 'board_name_preview'}}" data-lang="{{synagogue.language}}" hidden></p>
                             {{> admin-death-date-fields prefix="add"}}
                             <div class="form-field admin-permanent-field">
                                 <input type="hidden" name="permanent" value="0">

@@ -29,7 +29,7 @@ describe('deceased board name', () => {
         gender: 'male',
         lang: 'ru',
       }),
-      'Виктор сын Александра',
+      'Виктор бен Александра',
     );
     assert.equal(
       buildDeceasedBoardName({
@@ -38,7 +38,20 @@ describe('deceased board name', () => {
         gender: 'female',
         lang: 'en',
       }),
-      'Jane daughter John',
+      'Jane bat John',
     );
+  });
+
+  it('1.36.0: picks בן/בת, бен/бат or ben/bat by the script the name is written in', () => {
+    const { detectNameScript, genderPrefix } = require('../lib/deceased-board-name');
+    assert.equal(detectNameScript('שרה'), 'he');
+    assert.equal(detectNameScript('Софья'), 'ru');
+    assert.equal(detectNameScript('Sarah'), 'en');
+    assert.equal(detectNameScript('123'), '');
+    assert.equal(genderPrefix('female', 'ru'), 'бат');
+    assert.equal(genderPrefix('male', 'he'), 'בן');
+    assert.equal(buildDeceasedBoardName({ deceasedName: 'שרה', fatherName: 'אברהם', gender: 'female', lang: 'ru' }), 'שרה בת אברהם');
+    assert.equal(buildDeceasedBoardName({ deceasedName: 'Софья', fatherName: 'Рувима', gender: 'female', lang: 'he' }), 'Софья бат Рувима');
+    assert.equal(buildDeceasedBoardName({ deceasedName: 'Иван', fatherName: '', gender: 'male', lang: 'ru' }), 'Иван');
   });
 });

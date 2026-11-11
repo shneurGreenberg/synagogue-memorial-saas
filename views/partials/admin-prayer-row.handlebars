@@ -1,0 +1,22 @@
+{{!-- 1.36.0 I62/I63: one reorderable row of the prayers / lessons editor.
+     kind: prayer | class | heading (a sub-heading inside the lessons list; no time). --}}
+<div class="prayer-times-row{{#if (eq kind 'heading')}} prayer-times-row--heading{{/if}}" data-kind="{{kind}}">
+    <button type="button" class="prayer-row-handle" aria-label="{{t 'prayer_drag_handle'}}" title="{{t 'prayer_drag_handle'}}">
+        <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18"><path fill="currentColor" d="M9 5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0 7a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-1.5 8.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM18 5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-1.5 8.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM18 19a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg>
+    </button>
+    <input type="hidden" data-f="kind" value="{{kind}}">
+    {{#if (eq kind 'heading')}}
+    <input type="text" dir="auto" data-f="label" value="{{row.label}}" class="form-control prayer-heading-input" maxlength="60" placeholder="{{t 'class_heading_label'}}" aria-label="{{t 'class_heading_label'}}">
+    {{else if (eq kind 'class')}}
+    <input type="text" dir="auto" data-f="label" value="{{row.label}}" class="form-control" maxlength="60" placeholder="{{t 'class_label'}}" aria-label="{{t 'class_label'}}">
+    <input type="time" data-f="time" value="{{row.time}}" class="form-control" aria-label="{{t 'prayer_time'}}">
+    {{else}}
+    <input type="text" dir="auto" data-f="label" value="{{row.label}}" class="form-control" maxlength="60" placeholder="{{t 'prayer_label'}}" aria-label="{{t 'prayer_label'}}">
+    <input type="time" data-f="time" value="{{row.time}}" class="form-control" aria-label="{{t 'prayer_time'}}">
+    {{/if}}
+    <span class="prayer-row-move">
+        <button type="button" class="prayer-row-up" aria-label="{{t 'event_move_up'}}" title="{{t 'event_move_up'}}">▲</button>
+        <button type="button" class="prayer-row-down" aria-label="{{t 'event_move_down'}}" title="{{t 'event_move_down'}}">▼</button>
+    </span>
+    <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm prayer-row-remove" aria-label="{{t 'delete'}}">✕</button>
+</div>
