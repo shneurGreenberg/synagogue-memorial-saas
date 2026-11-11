@@ -609,8 +609,8 @@ router.post('/api/name-normalization', requireMasterApi, async (req, res) => {
         if (!['dry-run', 'apply', 'restore'].includes(mode)) {
             return res.status(400).json({ error: 'mode must be dry-run, apply or restore' });
         }
-        if (req.body && req.body.rule && !['ben-bat', 'patronymic'].includes(String(req.body.rule))) {
-            return res.status(400).json({ error: 'rule must be ben-bat or patronymic' });
+        if (req.body && req.body.rule && !['ben-bat', 'patronymic', 'drop-patronymic-dup'].includes(String(req.body.rule))) {
+            return res.status(400).json({ error: 'rule must be ben-bat, patronymic or drop-patronymic-dup' });
         }
         const result = await runNameNormalization(Synagogue.db.db, {
             mode,
