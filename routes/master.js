@@ -609,10 +609,14 @@ router.post('/api/name-normalization', requireMasterApi, async (req, res) => {
         if (!['dry-run', 'apply', 'restore'].includes(mode)) {
             return res.status(400).json({ error: 'mode must be dry-run, apply or restore' });
         }
+        if (req.body && req.body.rule && !['ben-bat', 'patronymic'].includes(String(req.body.rule))) {
+            return res.status(400).json({ error: 'rule must be ben-bat or patronymic' });
+        }
         const result = await runNameNormalization(Synagogue.db.db, {
             mode,
             runId: String((req.body && req.body.runId) || ''),
             slug: String((req.body && req.body.slug) || ''),
+            rule: String((req.body && req.body.rule) || 'ben-bat'),
         });
         (result.communities || []).forEach((s) => {
             invalidateAdminSynagogueCache(s);
