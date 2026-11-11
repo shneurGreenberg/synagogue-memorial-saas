@@ -1,5 +1,5 @@
 # 1.36.1 I64: manual, one-off сын/дочь → бен/бат normalisation of existing deceased names.
-# Runs only from main, only when dispatched by someone with write access. Apply requires typing APPLY.
+# Writes only from main, only when dispatched by someone with write access. Apply requires typing APPLY.
 name: Name normalization (manual)
 on:
   workflow_dispatch:
@@ -25,7 +25,8 @@ concurrency:
   cancel-in-progress: false
 jobs:
   run:
-    if: github.ref == 'refs/heads/main'
+    # dry-run (read-only) may run from any branch; apply/restore only from main.
+    if: github.ref == 'refs/heads/main' || inputs.mode == 'dry-run'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

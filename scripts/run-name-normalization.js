@@ -26,7 +26,8 @@ const redact = (msg) => String(msg || '').replace(/mongodb(\+srv)?:\/\/\S+/g, '[
   console.log(`MODE ${mode}`);
   console.log(JSON.stringify(rest, null, 2));
   (rows || []).forEach((r) => {
-    console.log(['ROW', r.community, r.id, r.rule, r.ambiguous ? `SKIP(${r.note})` : 'ok',
+    const status = r.ambiguous ? `SKIP(${r.note})` : (r.uncertain ? `UNCERTAIN(${r.note})` : (r.kind === 'gender' ? `ok(${r.note})` : 'ok'));
+    console.log([r.kind === 'gender' ? 'GENDER' : 'ROW', r.community, r.id, r.rule, status,
       `gender ${r.oldGender || '-'}→${r.newGender || '-'}`, `${r.oldName} => ${r.newName}`].join(' | '));
   });
   await mongoose.disconnect();
