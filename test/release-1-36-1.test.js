@@ -59,7 +59,7 @@ describe('1.36.1 I64: name normalisation run (dry-run / apply / restore)', () =>
 
   it('dry-run counts per community and writes nothing', async () => {
     const db = fakeDb(SEED);
-    const { summary, rows } = await planNormalization(db.collection('synagogues'));
+    const { summary, rows } = await planNormalization(db.collection('synagogues'), { inferGender: false });
     assert.equal(summary.nameChanges, 4);
     assert.equal(summary.skippedAmbiguous, 1);
     assert.equal(summary.genderSet, 3); // ids 1, 3 (unknown → female) and tomsk 1
@@ -71,7 +71,7 @@ describe('1.36.1 I64: name normalisation run (dry-run / apply / restore)', () =>
 
   it('apply backs up first, rewrites, skips ambiguous; re-run finds nothing; restore undoes by runId', async () => {
     const db = fakeDb(SEED);
-    const res = await runNameNormalization(db, { mode: 'apply' });
+    const res = await runNameNormalization(db, { mode: 'apply', inferGender: false });
     assert.match(res.runId, /^bb-\d{8}T\d{6}-[0-9a-f]{6}$/);
     assert.equal(res.updated, 4);
     assert.deepEqual(res.communities.sort(), ['novosibirsk', 'tomsk']);
@@ -84,7 +84,7 @@ describe('1.36.1 I64: name normalisation run (dry-run / apply / restore)', () =>
     assert.equal(nsk[2].gender, 'female');
     assert.equal(nsk[5].name, 'Анна дочь Моше'); // ambiguous left alone
     assert.equal(nsk[4].gender, ''); // untouched
-    const again = await runNameNormalization(db, { mode: 'dry-run' });
+    const again = await runNameNormalization(db, { mode: 'dry-run', inferGender: false });
     assert.equal(again.summary.nameChanges, 0);
 
     // A later manual edit is not clobbered by restore.
@@ -107,7 +107,7 @@ describe('1.36.1 I64: name normalisation run (dry-run / apply / restore)', () =>
       if (first) { first = false; db.data.synagogues[0].people[0].name = 'edited'; }
       return origUpdate(...a);
     };
-    const res = await applyNormalization(syn, db.collection(BACKUP_COLLECTION));
+    const res = await applyNormalization(syn, db.collection(BACKUP_COLLECTION), { inferGender: false });
     assert.equal(res.updated, 3);
     assert.equal(db.data.synagogues[0].people[0].name, 'edited');
   });
