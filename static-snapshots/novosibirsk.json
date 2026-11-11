@@ -3439,8 +3439,8 @@
     "prayers": "",
     "zmanim": ""
   },
-  "contentVersion": 1794371472084,
-  "exportedAt": "2026-11-11T04:31:12.084Z",
+  "contentVersion": 1794372531643,
+  "exportedAt": "2026-11-11T04:48:51.643Z",
   "jewishContent": {
     "date": "2026-11-11",
     "timezone": "Asia/Novosibirsk",
@@ -3692,6 +3692,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-11-11T04:31:12.084Z"
+    "updatedAt": "2026-11-11T04:48:51.643Z"
   }
 }
