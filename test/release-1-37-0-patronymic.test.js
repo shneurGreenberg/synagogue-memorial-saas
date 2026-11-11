@@ -99,3 +99,24 @@ describe('1.37.0 I65: patronymic rule in dry-run/apply/restore', () => {
     await assert.rejects(() => runNameNormalization(fakeDb(SEED), { mode: 'dry-run', rule: 'x' }));
   });
 });
+
+describe('1.36.4: approved gender correction in the patronymic rule', () => {
+  it('fixes a wrong stored gender by id, converts the name, and restore brings both back', async () => {
+    const db = fakeDb([{ slug: 'kazan', people: [{ id: 21, name: 'Рабинович Рахиль Лазаревна', gender: 'male' }] }]);
+    const dry = await runNameNormalization(db, { mode: 'dry-run', rule: 'patronymic' });
+    assert.equal(dry.summary.skippedUncertain, 1);
+    const genderFix = { 'kazan:21': 'female' };
+    const dry2 = await runNameNormalization(db, { mode: 'dry-run', rule: 'patronymic', genderFix });
+    assert.equal(dry2.summary.nameChanges, 1);
+    assert.equal(dry2.summary.genderFixed, 1);
+    const res = await runNameNormalization(db, { mode: 'apply', rule: 'patronymic', genderFix });
+    const p = db.data.synagogues[0].people[0];
+    assert.equal(p.name, 'Рабинович Рахиль бат Лазарь');
+    assert.equal(p.gender, 'female');
+    const b = db.data[BACKUP_COLLECTION][0];
+    assert.equal(b.oldGender, 'male');
+    await restoreNormalization(db.collection('synagogues'), db.collection(BACKUP_COLLECTION), res.runId);
+    assert.equal(p.name, 'Рабинович Рахиль Лазаревна');
+    assert.equal(p.gender, 'male');
+  });
+});

@@ -5,7 +5,7 @@
  * master admin at POST /master/api/name-normalization).
  *
  *   MONGODB_URI=... node scripts/run-name-normalization.js --mode=dry-run|apply|restore [--run-id=…] [--slug=…]
- *     [--rule=ben-bat|patronymic] [--encrypt-to=out.enc.json]
+ *     [--rule=ben-bat|patronymic] [--encrypt-to=out.enc.json] [--gender-fix=slug:id=female,…]
  *
  * 1.37.0 I65: --rule=patronymic converts Russian patronymics (…Ефимовна → бат Ефим). With --encrypt-to and
  * RESULT_PUBKEY (base64 of an RSA public key PEM) the rows go only into a CSV encrypted for that key
@@ -25,6 +25,13 @@ const arg = (name) => { const a = args.find((x) => x.startsWith(`--${name}=`)); 
 const mode = arg('mode') || 'dry-run';
 const rule = arg('rule') || 'ben-bat';
 const encryptTo = arg('encrypt-to');
+// 1.36.4: approved gender corrections by record id only (no names on the command line / in logs).
+const genderFix = {};
+arg('gender-fix').split(',').map((x) => x.trim()).filter(Boolean).forEach((x) => {
+  const m = /^([a-z0-9-]+):([^=]+)=(male|female)$/.exec(x);
+  if (!m) throw new Error(`bad --gender-fix entry: ${x}`);
+  genderFix[`${m[1]}:${m[2]}`] = m[3];
+});
 
 const csvCell = (v) => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;
 function rowsToCsv(rows) {
@@ -50,7 +57,7 @@ const redact = (msg) => String(msg || '').replace(/mongodb(\+srv)?:\/\/\S+/g, '[
 (async () => {
   if (!process.env.MONGODB_URI) throw new Error('MONGODB_URI is not set');
   await mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 20000 });
-  const result = await runNameNormalization(mongoose.connection.db, { mode, rule, runId: arg('run-id'), slug: arg('slug') });
+  const result = await runNameNormalization(mongoose.connection.db, { mode, rule, genderFix, runId: arg('run-id'), slug: arg('slug') });
   const { rows, ...rest } = result;
   console.log(`MODE ${mode} RULE ${rule}`);
   console.log(JSON.stringify(rest, null, 2));
