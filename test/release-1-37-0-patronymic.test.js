@@ -26,6 +26,7 @@ describe('1.37.0 I65: Russian patronymic → бен/бат + father', () => {
     assert.equal(conv('Кот Мария Ильинична'), 'Кот Мария бат Илья');
     assert.equal(conv('Ханина Фаина Семёновна'), 'Ханина Фаина бат Семён');
     assert.equal(conv('Дунаевский Хаим Аврам-Иосифович'), 'Дунаевский Хаим бен Аврам-Иосиф');
+    assert.equal(conv('Вельдер Моисей Нухимович'), 'Вельдер Моисей бен Нухим');
   });
   it('keeps parentheses, nicknames and surrounding text in place', () => {
     assert.equal(conv('Кац (Муся) Мария Абрамовна'), 'Кац (Муся) Мария бат Абрам');
