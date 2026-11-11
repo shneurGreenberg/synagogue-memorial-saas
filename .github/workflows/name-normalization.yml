@@ -10,6 +10,16 @@ on:
         default: dry-run
         type: choice
         options: [dry-run, apply, restore]
+      rule:
+        description: 'ben-bat (сын/дочь → бен/бат) | patronymic (…овна → бат …)'
+        required: false
+        default: ben-bat
+        type: choice
+        options: [ben-bat, patronymic]
+      result_pubkey:
+        description: 'optional: base64 RSA public key PEM — rows go to an encrypted artifact, log shows counts only'
+        required: false
+        default: ''
       run_id:
         description: 'runId to restore (restore mode only)'
         required: false
@@ -41,8 +51,19 @@ jobs:
           MODE: ${{ inputs.mode }}
           RUN_ID: ${{ inputs.run_id }}
           CONFIRM: ${{ inputs.confirm }}
+          RULE: ${{ inputs.rule || 'ben-bat' }}
+          RESULT_PUBKEY: ${{ inputs.result_pubkey }}
         run: |
           if [ "$MODE" != "dry-run" ] && [ "$CONFIRM" != "APPLY" ]; then
             echo "Refusing $MODE without confirm=APPLY"; exit 1
           fi
-          node scripts/run-name-normalization.js --mode="$MODE" --run-id="$RUN_ID"
+          ENC=""
+          if [ -n "$RESULT_PUBKEY" ]; then ENC="--encrypt-to=normalization-result.enc.json"; fi
+          node scripts/run-name-normalization.js --mode="$MODE" --rule="$RULE" --run-id="$RUN_ID" $ENC
+      - name: Upload encrypted result
+        if: ${{ inputs.result_pubkey != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: normalization-result-encrypted
+          path: normalization-result.enc.json
+          retention-days: 1
