@@ -5,7 +5,7 @@
  * master admin at POST /master/api/name-normalization).
  *
  *   MONGODB_URI=... node scripts/run-name-normalization.js --mode=dry-run|apply|restore [--run-id=…] [--slug=…]
- *     [--rule=ben-bat|patronymic] [--encrypt-to=out.enc.json] [--gender-fix=slug:id=female,…]
+ *     [--rule=ben-bat|patronymic|drop-patronymic-dup] [--encrypt-to=out.enc.json] [--gender-fix=slug:id=female,…]
  *
  * 1.37.0 I65: --rule=patronymic converts Russian patronymics (…Ефимовна → бат Ефим). With --encrypt-to and
  * RESULT_PUBKEY (base64 of an RSA public key PEM) the rows go only into a CSV encrypted for that key

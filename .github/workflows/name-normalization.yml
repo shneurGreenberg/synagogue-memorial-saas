@@ -11,11 +11,11 @@ on:
         type: choice
         options: [dry-run, apply, restore]
       rule:
-        description: 'ben-bat (сын/дочь → бен/бат) | patronymic (…овна → бат …)'
+        description: 'ben-bat (сын/дочь → бен/бат) | patronymic (…овна → бат …) | drop-patronymic-dup (…ович бен … → бен …)'
         required: false
         default: ben-bat
         type: choice
-        options: [ben-bat, patronymic]
+        options: [ben-bat, patronymic, drop-patronymic-dup]
       result_pubkey:
         description: 'optional: base64 RSA public key PEM — rows go to an encrypted artifact, log shows counts only'
         required: false
