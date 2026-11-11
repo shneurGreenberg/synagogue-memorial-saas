@@ -1,0 +1,47 @@
+# 1.36.1 I64: manual, one-off сын/дочь → бен/бат normalisation of existing deceased names.
+# Runs only from main, only when dispatched by someone with write access. Apply requires typing APPLY.
+name: Name normalization (manual)
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'dry-run | apply | restore'
+        required: true
+        default: dry-run
+        type: choice
+        options: [dry-run, apply, restore]
+      run_id:
+        description: 'runId to restore (restore mode only)'
+        required: false
+        default: ''
+      confirm:
+        description: 'Type APPLY to allow apply/restore'
+        required: false
+        default: ''
+permissions:
+  contents: read
+concurrency:
+  group: name-normalization
+  cancel-in-progress: false
+jobs:
+  run:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.1'
+          cache: 'npm'
+      - run: npm ci
+      - name: Normalize
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          MODE: ${{ inputs.mode }}
+          RUN_ID: ${{ inputs.run_id }}
+          CONFIRM: ${{ inputs.confirm }}
+        run: |
+          if [ "$MODE" != "dry-run" ] && [ "$CONFIRM" != "APPLY" ]; then
+            echo "Refusing $MODE without confirm=APPLY"; exit 1
+          fi
+          node scripts/run-name-normalization.js --mode="$MODE" --run-id="$RUN_ID"
