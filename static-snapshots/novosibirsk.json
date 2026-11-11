@@ -3399,6 +3399,21 @@
       "kind": "prayer"
     },
     {
+      "label": "Воскресенье",
+      "time": "",
+      "kind": "heading"
+    },
+    {
+      "label": "«Яхад» для молодежи",
+      "time": "13:00",
+      "kind": "class"
+    },
+    {
+      "label": "Понедельник и четверг",
+      "time": "",
+      "kind": "heading"
+    },
+    {
       "label": "Колэл Тора",
       "time": "09:50",
       "kind": "class"
@@ -3407,11 +3422,6 @@
       "label": "История на иврите",
       "time": "10:35",
       "kind": "class"
-    },
-    {
-      "label": "Мероприятие «Яхад» для молодежи",
-      "time": "13:00",
-      "kind": "class"
     }
   ],
   "boardSectionTitles": {
@@ -3419,8 +3429,8 @@
     "prayers": "",
     "zmanim": ""
   },
-  "contentVersion": 1794369629799,
-  "exportedAt": "2026-11-11T04:00:29.799Z",
+  "contentVersion": 1794370269748,
+  "exportedAt": "2026-11-11T04:11:09.748Z",
   "jewishContent": {
     "date": "2026-11-11",
     "timezone": "Asia/Novosibirsk",
@@ -3672,6 +3682,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-11-11T04:00:29.799Z"
+    "updatedAt": "2026-11-11T04:11:09.748Z"
   }
 }
