@@ -36,7 +36,8 @@ function fakeDb(synagogues) {
     updateOne: async (f, update, opts) => {
       const doc = data[name].find((d) => matches(d, f));
       const af = opts.arrayFilters[0];
-      const person = doc && doc.people.find((p) => Object.entries(af).every(([k, v]) => (p[k.slice(2)] || '') === v));
+      const ok = (val, cond) => (cond && cond.$in ? cond.$in.includes(val === undefined ? null : val) : val === cond);
+      const person = doc && doc.people.find((p) => Object.entries(af).every(([k, v]) => ok(p[k.slice(2)], v)));
       if (!person) return { modifiedCount: 0 };
       Object.entries(update.$set).forEach(([k, v]) => { person[k.replace('people.$[p].', '')] = v; });
       return { modifiedCount: 1 };
@@ -75,5 +76,18 @@ describe('1.36.2 I64b: gender-only rows in apply/restore', () => {
     assert.equal(back.restored, 2);
     assert.equal(p[0].gender, '');
     assert.equal(p[3].name, 'Кац Хаим сын Мордехая');
+  });
+});
+
+describe('1.36.3: gender-only update matches records with no gender field at all', () => {
+  it('missing and empty gender are both filled', async () => {
+    const db = fakeDb([{ slug: 'tomsk', people: [
+      { id: 1, name: 'Кофман Евгений Аронович' },
+      { id: 2, name: 'Котес Бейла Симховна', gender: '' },
+    ] }]);
+    const res = await runNameNormalization(db, { mode: 'apply' });
+    assert.equal(res.updated, 2);
+    assert.equal(db.data.synagogues[0].people[0].gender, 'male');
+    assert.equal(db.data.synagogues[0].people[1].gender, 'female');
   });
 });
