@@ -599,4 +599,34 @@ router.post('/onboarding/reject', requireMaster, async (req, res) => {
     }
 });
 
+// 1.36.1 I64: one-off сын/дочь → бен/бат normalisation of existing names (master admin only).
+// body: { mode: 'dry-run' | 'apply' | 'restore', runId?, slug? }. Apply backs up every change to
+// the name_normalization_backups collection first; restore undoes one run by its runId.
+router.post('/api/name-normalization', requireMasterApi, async (req, res) => {
+    try {
+        const { runNameNormalization } = require('../lib/name-normalization-run');
+        const mode = String((req.body && req.body.mode) || 'dry-run');
+        if (!['dry-run', 'apply', 'restore'].includes(mode)) {
+            return res.status(400).json({ error: 'mode must be dry-run, apply or restore' });
+        }
+        const result = await runNameNormalization(Synagogue.db.db, {
+            mode,
+            runId: String((req.body && req.body.runId) || ''),
+            slug: String((req.body && req.body.slug) || ''),
+        });
+        (result.communities || []).forEach((s) => {
+            invalidateAdminSynagogueCache(s);
+            invalidateBoardCache(s);
+        });
+        if (mode !== 'dry-run') {
+            console.info(`[name-normalization] ${new Date().toISOString()} mode=${mode} runId=${result.runId} `
+                + `updated=${result.updated != null ? result.updated : result.restored}`);
+        }
+        return res.json(result);
+    } catch (err) {
+        console.error('Name normalization error:', err && err.message);
+        return res.status(500).json({ error: publicErrorMessage(err) });
+    }
+});
+
 module.exports = router;
