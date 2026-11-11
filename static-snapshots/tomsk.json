@@ -6326,8 +6326,8 @@
   "combinedZmanimScale": 100,
   "combinedPrayersScale": 100,
   "combinedAnnouncementScale": 100,
-  "contentVersion": 1794370273521,
-  "exportedAt": "2026-11-11T04:11:13.521Z",
+  "contentVersion": 1794370709788,
+  "exportedAt": "2026-11-11T04:18:29.788Z",
   "jewishContent": {
     "date": "2026-11-11",
     "timezone": "Asia/Tomsk",
@@ -6541,6 +6541,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-11-11T04:11:13.521Z"
+    "updatedAt": "2026-11-11T04:18:29.788Z"
   }
 }
