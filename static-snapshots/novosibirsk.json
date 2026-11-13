@@ -36,7 +36,7 @@
       "dailyStudy": 100,
       "hayomYom": 100,
       "prayerOverlay": 100,
-      "torahNames": 100,
+      "torahNames": 80,
       "weather": 100,
       "shabbat": 100,
       "candle": 100
@@ -72,12 +72,16 @@
     "panelBorderWidth": 7,
     "tileBorderRadius": 13,
     "tileBorderWidth": 1,
-    "boardSubtitleColor": "#fad5a2",
+    "boardSubtitleColor": "#fcd8a4",
     "boardSubtitleFont": "",
     "boardSubtitleWeight": "400",
-    "clockColor": "#ffffff",
+    "clockColor": "#f2cf9d",
     "shabbatColor": "#ffd54f",
-    "middleBackground": "1794539422993-9a9cd670-opt.jpg"
+    "middleBackground": "1794539422993-9a9cd670-opt.jpg",
+    "goldClock": false,
+    "goldPrimary": false,
+    "goldText": false,
+    "unifiedColors": true
   },
   "people": [
     {
@@ -3494,8 +3498,8 @@
     "prayers": "",
     "zmanim": ""
   },
-  "contentVersion": 1794545061421,
-  "exportedAt": "2026-11-13T04:44:21.421Z",
+  "contentVersion": 1794547106424,
+  "exportedAt": "2026-11-13T05:18:26.424Z",
   "jewishContent": {
     "date": "2026-11-13",
     "timezone": "Asia/Novosibirsk",
@@ -3608,7 +3612,7 @@
   },
   "sidebarApp": {
     "slug": "novosibirsk",
-    "publishedVersion": 7,
+    "publishedVersion": 8,
     "title": "Проект памяти наших родных \"Кадиш\"",
     "boardTitleText": "Проект памяти наших родных \"Кадиш\"",
     "language": "ru",
@@ -3773,6 +3777,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-11-13T04:44:21.421Z"
+    "updatedAt": "2026-11-13T05:18:26.424Z"
   }
 }
