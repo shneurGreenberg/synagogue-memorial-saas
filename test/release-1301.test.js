@@ -19,7 +19,8 @@ describe('1.30.1 I18: zmanim + prayers side by side', () => {
   it('uses a side-by-side row with one loop per column', () => {
     const jsx = read('client/src/components/SynagogueInfoPanel.jsx');
     assert.match(jsx, /synagogue-info-col--side-by-side/);
-    assert.equal((jsx.match(/useLoopScroll\(/g) || []).length, 3);
+    // 1.37.0 I77: definition + zmanim + prayers + lessons (separate loops)
+    assert.equal((jsx.match(/useLoopScroll\(/g) || []).length, 4);
     assert.match(read('styles/home.scss'), /synagogue-info-col--side-by-side \{\s*flex-direction: row/);
   });
 });

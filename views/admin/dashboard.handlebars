@@ -215,12 +215,23 @@
                 {{/if}}
                 <div class="settings-block">
                     <h3 class="settings-block-title">{{t 'colors_section'}}</h3>
-                    <div class="settings-color-grid">
-                        {{> admin-settings-color-swatch id="primaryColor" name="primaryColor" labelKey="primary_color" value=synagogue.theme.primaryColor}}
-                        {{> admin-settings-color-swatch id="accentColor" name="accentColor" labelKey="accent_color" value=synagogue.theme.accentColor}}
-                        {{> admin-settings-color-swatch id="textColor" name="textColor" labelKey="text_color" value=synagogue.theme.textColor}}
-                        {{> admin-settings-color-swatch id="clockColor" name="clockColor" labelKey="clock_color" value=(firstOf synagogue.theme.clockColor '#ffffff')}}
-                        {{> admin-settings-color-swatch id="shabbatColor" name="shabbatColor" labelKey="shabbat_color" value=(firstOf synagogue.theme.shabbatColor synagogue.theme.accentColor '#ffd54f')}}
+                    {{!-- 1.37.0 I74: «שמור על צבעים אחידים» — two main colors drive the whole board --}}
+                    <div class="settings-unified-colors">
+                        <label class="toggle-switch settings-unified-colors-toggle">
+                            <input type="hidden" name="unifiedColors" value="0">
+                            <input type="checkbox" name="unifiedColors" value="1" id="unifiedColorsToggle"
+                                {{#if synagogue.theme.unifiedColors}}checked{{/if}}>
+                            <span class="toggle-slider" aria-hidden="true"></span>
+                            <span class="toggle-label">🎨 {{t 'unified_colors'}}</span>
+                        </label>
+                        <span class="field-hint">{{t 'unified_colors_help'}}</span>
+                    </div>
+                    <div class="settings-color-grid" id="settingsColorGrid">
+                        {{> admin-settings-color-swatch id="primaryColor" name="primaryColor" labelKey="primary_color" value=synagogue.theme.primaryColor role="primary" unifiedHintKey="unified_primary_hint" goldName="goldPrimary" goldValue=synagogue.theme.goldPrimary}}
+                        {{> admin-settings-color-swatch id="textColor" name="textColor" labelKey="text_color" value=synagogue.theme.textColor role="text" unifiedHintKey="unified_text_hint" goldName="goldText" goldValue=synagogue.theme.goldText}}
+                        {{> admin-settings-color-swatch id="accentColor" name="accentColor" labelKey="accent_color" value=synagogue.theme.accentColor role="overridable" overriddenNote=true}}
+                        {{> admin-settings-color-swatch id="clockColor" name="clockColor" labelKey="clock_color" value=(firstOf synagogue.theme.clockColor '#ffffff') role="overridable" overriddenNote=true goldName="goldClock" goldValue=synagogue.theme.goldClock}}
+                        {{> admin-settings-color-swatch id="shabbatColor" name="shabbatColor" labelKey="shabbat_color" value=(firstOf synagogue.theme.shabbatColor synagogue.theme.accentColor '#ffd54f') role="overridable" overriddenNote=true}}
                         <div class="settings-color-tile settings-color-tile--with-slider color-field-modern">
                             <label class="settings-color-label" for="tileColor">{{t 'tile_color'}}</label>
                             <input type="color" name="tileColor" id="tileColor" class="color-swatch-input settings-color-swatch"
@@ -723,6 +734,11 @@
             };
         }
 
+        function checkedFlag(id) {
+            var el = document.getElementById(id);
+            return el && el.checked ? '1' : '0';
+        }
+
         function readPreviewPatch() {
             var primary = document.getElementById('primaryColor');
             var text = document.getElementById('textColor');
@@ -751,6 +767,10 @@
                 accentColor: accent ? accent.value : '',
                 clockColor: clockColorEl ? clockColorEl.value : '',
                 shabbatColor: shabbatColorEl ? shabbatColorEl.value : '',
+                unifiedColors: checkedFlag('unifiedColorsToggle'),
+                goldPrimary: checkedFlag('goldPrimaryToggle'),
+                goldText: checkedFlag('goldTextToggle'),
+                goldClock: checkedFlag('goldClockToggle'),
                 tileColor: tile ? tile.value : '',
                 tileOpacity: tileOpacity ? tileOpacity.value : '100',
                 panelBorderColor: panelBorderColor ? panelBorderColor.value : '',
@@ -902,6 +922,33 @@
             candlePaletteSelect.addEventListener('change', schedulePreview);
         }
 
+        // 1.37.0 I74: unified colors — accent / clock / Shabbat are driven by the two main colors
+        // while the toggle is on (shown locked with a 🔒 note, not only dimmed, and not submitted so
+        // their own values are kept for when the toggle is turned off again).
+        var unifiedColorsToggle = document.getElementById('unifiedColorsToggle');
+        function syncUnifiedColors() {
+            var on = !!(unifiedColorsToggle && unifiedColorsToggle.checked);
+            var grid = document.getElementById('settingsColorGrid');
+            if (grid) grid.classList.toggle('is-unified', on);
+            document.querySelectorAll('[data-color-role="overridable"]').forEach(function (tile) {
+                tile.classList.toggle('is-overridden', on);
+                tile.querySelectorAll('input').forEach(function (input) { input.disabled = on; });
+            });
+            document.querySelectorAll('[data-unified-only], [data-unified-overridden-note]').forEach(function (el) {
+                el.hidden = !on;
+            });
+        }
+        if (unifiedColorsToggle) {
+            syncUnifiedColors();
+            unifiedColorsToggle.addEventListener('change', function () {
+                syncUnifiedColors();
+                schedulePreview();
+            });
+        }
+        document.querySelectorAll('.settings-gold-checkbox').forEach(function (box) {
+            box.addEventListener('change', schedulePreview);
+        });
+
         var logoCircleToggle = document.getElementById('logoCircleToggle');
         function syncLogoCirclePreview() {
             var previewImg = document.getElementById('communityLogoPreviewImg');
@@ -1016,6 +1063,9 @@
             params.set('accentColor', patch.accentColor || '');
             if (patch.clockColor) params.set('clockColor', patch.clockColor);
             if (patch.shabbatColor) params.set('shabbatColor', patch.shabbatColor);
+            ['unifiedColors', 'goldPrimary', 'goldText', 'goldClock'].forEach(function (key) {
+                if (patch[key] !== undefined) params.set(key, patch[key]);
+            });
             params.set('tileColor', patch.tileColor || '');
             params.set('tileOpacity', patch.tileOpacity || '100');
             params.set('panelBorderColor', patch.panelBorderColor || '');

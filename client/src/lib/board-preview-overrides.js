@@ -6,6 +6,7 @@ import { normalizeBoardFont } from './board-fonts';
 import { normalizeCandlePalette } from './candle-palette';
 import { normalizeThemeBorders } from './theme-borders';
 import { parseBoardSubtitleFromBody } from '../../../lib/board-subtitle';
+import { applyColorFlagsPatch, COLOR_FLAG_KEYS } from '../../../lib/board-color-unify';
 
 const PREVIEW_LANGS = ['ru', 'en', 'he'];
 
@@ -62,6 +63,8 @@ export function mergePreviewPatch(data, patch) {
   if (patch.shabbatColor) {
     next.theme.shabbatColor = patch.shabbatColor;
   }
+  // 1.37.0 I74
+  next.theme = applyColorFlagsPatch(next.theme, patch);
   if (patch.tileColor) {
     next.theme.tileColor = patch.tileColor;
   }
@@ -162,6 +165,7 @@ export function previewPatchFromSearchParams(params) {
     || params.has('accentColor')
     || params.has('clockColor')
     || params.has('shabbatColor')
+    || COLOR_FLAG_KEYS.some((key) => params.has(key))
     || params.has('tileColor')
     || params.has('tileOpacity')
     || params.has('panelBorderColor')
@@ -205,6 +209,7 @@ export function previewPatchFromSearchParams(params) {
   if (params.has('accentColor')) patch.accentColor = params.get('accentColor');
   if (params.has('clockColor')) patch.clockColor = params.get('clockColor');
   if (params.has('shabbatColor')) patch.shabbatColor = params.get('shabbatColor');
+  COLOR_FLAG_KEYS.forEach((key) => { if (params.has(key)) patch[key] = params.get(key); });
   if (params.has('tileColor')) patch.tileColor = params.get('tileColor');
   if (params.has('tileOpacity')) patch.tileOpacity = params.get('tileOpacity');
   if (params.has('panelBorderColor')) patch.panelBorderColor = params.get('panelBorderColor');

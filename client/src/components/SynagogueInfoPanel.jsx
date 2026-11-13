@@ -5,8 +5,10 @@ import { getBoardLocation, formatShabbatClockTime } from '../lib/shabbat-times';
 import { getGregorianDateInTimezone } from '../lib/board-calendar';
 import { computeZmanim } from '../lib/zmanim';
 import { sanitizeRichText } from '../lib/html-sanitize';
+import { splitSectionHeights } from '../../../lib/split-section-heights';
 
 const ANNOUNCEMENT_ROTATE_MS = 8000;
+const LEGACY_RU_ZMANIM_TITLES = ['зманим на сегодня', 'зманим', 'зманим сегодня'];
 
 function useMinuteTick() {
   const [tick, setTick] = useState(0);
@@ -79,6 +81,53 @@ export function useLoopScroll(ref, deps) {
   return looping;
 }
 
+// 1.37.0 I77: inside the prayers box, prayers and lessons are two parts that each scroll on their
+// own. A part that fits keeps its natural height (no scrolling); an overflowing part gets the rest
+// of the box and loops by itself. Part headings sit outside the scrolling area, so they never move.
+function naturalPartHeight(part) {
+  if (!part) return 0;
+  let height = 0;
+  Array.prototype.forEach.call(part.children, (child) => {
+    if (child.classList && child.classList.contains('synagogue-info-box-scroll')) {
+      const copy = child.firstElementChild;
+      height += copy ? copy.getBoundingClientRect().height : 0;
+    } else {
+      height += child.getBoundingClientRect().height;
+      const cs = window.getComputedStyle ? getComputedStyle(child) : null;
+      if (cs) height += (parseFloat(cs.marginTop) || 0) + (parseFloat(cs.marginBottom) || 0);
+    }
+  });
+  return Math.ceil(height);
+}
+
+function useSplitHeights(containerRef, partARef, partBRef, deps) {
+  const [heights, setHeights] = useState({ a: null, b: null });
+  useEffect(() => {
+    const measure = () => {
+      const container = containerRef.current;
+      if (!container) return;
+      const next = splitSectionHeights(
+        container.clientHeight,
+        naturalPartHeight(partARef.current),
+        naturalPartHeight(partBRef.current),
+      );
+      setHeights((prev) => (
+        prev.a !== null && Math.abs((prev.a || 0) - (next.a || 0)) < 1 && Math.abs((prev.b || 0) - (next.b || 0)) < 1
+          ? prev
+          : next
+      ));
+    };
+    measure();
+    const id = window.setInterval(measure, 1000);
+    window.addEventListener('resize', measure);
+    return () => {
+      window.clearInterval(id);
+      window.removeEventListener('resize', measure);
+    };
+  }, deps); // eslint-disable-line react-hooks/exhaustive-deps
+  return heights;
+}
+
 function clampScale(value) {
   const n = Number(value);
   if (!Number.isFinite(n) || n <= 0) return 1;
@@ -106,7 +155,13 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
   const classRows = allRows.filter((row) => row.kind === 'class' || row.kind === 'heading');
   const prayers = prayerRows.concat(classRows);
   const titles = data.boardSectionTitles || {};
-  const heading = (key, fallbackKey) => (String(titles[key] || '').trim() || t(fallbackKey));
+  // 1.37.0 I78: an old saved Russian default («Зманим на сегодня» / bare «Зманим») meant nothing to
+  // people — show the explained label instead.
+  const heading = (key, fallbackKey) => {
+    const custom = String(titles[key] || '').trim();
+    if (key === 'zmanim' && LEGACY_RU_ZMANIM_TITLES.includes(custom.toLowerCase())) return t(fallbackKey);
+    return custom || t(fallbackKey);
+  };
   // 1.34.0 I51: community messages have no heading at all any more.
   const announcements = communityEvents || [];
   const [slide, setSlide] = useState(0);
@@ -118,11 +173,18 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
   // 1.29.6: each box scrolls its own content (title + frame stay fixed).
   const zmanimRef = useRef(null);
   const prayersRef = useRef(null);
+  const classesRef = useRef(null);
+  const splitRef = useRef(null);
+  const prayersPartRef = useRef(null);
+  const classesPartRef = useRef(null);
   const announcementRef = useRef(null);
   const zmanimScale = data.combinedZmanimScale ?? data.combinedInfoScale;
   const prayersScale = data.combinedPrayersScale ?? data.combinedInfoScale;
   const zmanimLoop = useLoopScroll(zmanimRef, [zmanim.length, prayers.length, prayerRows.length, classRows.length, zmanimScale]);
   const prayersLoop = useLoopScroll(prayersRef, [prayers.length, prayerRows.length, classRows.length, prayersScale]);
+  const classesLoop = useLoopScroll(classesRef, [prayers.length, prayerRows.length, classRows.length, prayersScale]);
+  const split = useSplitHeights(splitRef, prayersPartRef, classesPartRef, [prayerRows.length, classRows.length, prayersScale]);
+  const partStyle = (h) => (h === null || h === undefined ? undefined : { flex: `0 0 ${Math.max(0, Math.floor(h))}px`, height: `${Math.max(0, Math.floor(h))}px` });
   useAutoScroll(announcementRef, [slide, announcements.length, data.combinedAnnouncementScale]);
   const current = announcements.length ? announcements[slide % announcements.length] : null;
 
@@ -161,32 +223,44 @@ function SynagogueInfoPanelInner({ t, communityEvents }) {
           style={{ '--combined-info-scale': clampScale(prayersScale) }}
         >
           <h2 className="synagogue-info-title" dir="auto">{heading('prayers', 'prayer_times_title')}</h2>
-          <div className="synagogue-info-box-scroll synagogue-info-loop" ref={prayersRef}>
-            {(prayersLoop ? ['a', 'b'] : ['a']).map((copy) => (
-              <dl className="synagogue-info-list synagogue-info-loop-copy" key={copy} aria-hidden={copy === 'b' ? 'true' : undefined}>
-                {prayerRows.map((row, index) => (
-                  <div className="synagogue-info-row synagogue-info-row--prayer" key={`prayer-${row.label}-${index}`}>
-                    <dt dir="auto">{row.label}</dt>
-                    <dd>{row.time}</dd>
-                  </div>
-                ))}
-                {classRows.length > 0 && (
-                  <React.Fragment>
-                    <div className="synagogue-info-group-title" dir="auto">{heading('classes', 'classes_title')}</div>
-                    {classRows.map((row, index) => (row.kind === 'heading' ? (
-                      <div className="synagogue-info-subheading" dir="auto" key={`heading-${row.label}-${index}`}>
-                        {row.label}
-                      </div>
-                    ) : (
-                      <div className="synagogue-info-row synagogue-info-row--class" key={`class-${row.label}-${index}`}>
-                        <dt dir="auto">{row.label}</dt>
-                        <dd>{row.time}</dd>
-                      </div>
-                    )))}
-                  </React.Fragment>
-                )}
-              </dl>
-            ))}
+          <div className="synagogue-info-split" ref={splitRef}>
+            {prayerRows.length > 0 && (
+              <div className="synagogue-info-part synagogue-info-part--prayers" ref={prayersPartRef} style={partStyle(split.a)}>
+                <div className="synagogue-info-box-scroll synagogue-info-loop" ref={prayersRef}>
+                  {(prayersLoop ? ['a', 'b'] : ['a']).map((copy) => (
+                    <dl className="synagogue-info-list synagogue-info-loop-copy" key={copy} aria-hidden={copy === 'b' ? 'true' : undefined}>
+                      {prayerRows.map((row, index) => (
+                        <div className="synagogue-info-row synagogue-info-row--prayer" key={`prayer-${row.label}-${index}`}>
+                          <dt dir="auto">{row.label}</dt>
+                          <dd>{row.time}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  ))}
+                </div>
+              </div>
+            )}
+            {classRows.length > 0 && (
+              <div className="synagogue-info-part synagogue-info-part--classes" ref={classesPartRef} style={partStyle(split.b)}>
+                <div className="synagogue-info-group-title" dir="auto">{heading('classes', 'classes_title')}</div>
+                <div className="synagogue-info-box-scroll synagogue-info-loop" ref={classesRef}>
+                  {(classesLoop ? ['a', 'b'] : ['a']).map((copy) => (
+                    <dl className="synagogue-info-list synagogue-info-loop-copy" key={copy} aria-hidden={copy === 'b' ? 'true' : undefined}>
+                      {classRows.map((row, index) => (row.kind === 'heading' ? (
+                        <div className="synagogue-info-subheading" dir="auto" key={`heading-${row.label}-${index}`}>
+                          {row.label}
+                        </div>
+                      ) : (
+                        <div className="synagogue-info-row synagogue-info-row--class" key={`class-${row.label}-${index}`}>
+                          <dt dir="auto">{row.label}</dt>
+                          <dd>{row.time}</dd>
+                        </div>
+                      )))}
+                    </dl>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </section>
       )}

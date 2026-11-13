@@ -1,46 +1,28 @@
 import React, { useCallback, useState } from 'react';
 import { assetUrl } from '../lib/asset-url';
 
+// 1.37.0 I75: the logo is display-only — clicking/tapping it no longer navigates to the admin.
 export function CommunityLogo({ src, alt }) {
-  const [flipping, setFlipping] = useState(false);
   const [imgSrc, setImgSrc] = useState(src);
 
   const handleImageError = useCallback(() => {
     setImgSrc(assetUrl('images/kaddish-official-logo.svg'));
   }, []);
 
-  const goToAdmin = useCallback(() => {
-    if (flipping) {
-      return;
-    }
-
-    const data = window.data || {};
-    const slug = data.slug;
-    const target = slug ? `/admin/${slug}/dashboard` : '/admin/login';
-
-    setFlipping(true);
-
-    window.setTimeout(() => {
-      window.location.href = target;
-    }, 560);
-  }, [flipping]);
-
   return (
-    <button
-      type="button"
-      className={`community-logo-btn${flipping ? ' is-flipping' : ''}`}
-      onClick={goToAdmin}
+    <div
+      className="community-logo-btn community-logo-static"
+      role="img"
       aria-label={alt || 'Community logo'}
-      title="Admin"
     >
       <span className="community-logo-flip">
-        <img 
-          className="banner community-logo-img" 
-          src={imgSrc} 
-          alt="" 
+        <img
+          className="banner community-logo-img"
+          src={imgSrc}
+          alt=""
           onError={handleImageError}
         />
       </span>
-    </button>
+    </div>
   );
 }
