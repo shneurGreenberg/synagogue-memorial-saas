@@ -21,25 +21,33 @@
   var MIDDLE_PARTS = ['boardHideSearchAndPager'];
   var SIDE_FIELDS = LEFT_PARTS.concat(RIGHT_PARTS, SIDE_STYLE_FIELDS);
   var BG_TILES = ['.settings-media-tile--bg-page', '.settings-media-tile--bg-tiles', '.settings-media-tile--bg-middle'];
+  // 1.37.1: «שמור על צבעים אחידים» and the «✨ זהב מטאלי» options are offered wherever a colour
+  // is edited from the preview (1.37.0 only had them in the «מראה» section, which the preview
+  // editor hides, so they could not be found).
+  var UNIFIED = 'unifiedColorsToggle';
+  var GOLD_PRIMARY = 'goldPrimaryToggle';
+  var GOLD_TEXT = 'goldTextToggle';
+  var GOLD_CLOCK = 'goldClockToggle';
+  var MAIN_COLORS = [UNIFIED, 'primaryColor', GOLD_PRIMARY, 'textColor', GOLD_TEXT];
 
   // Most specific first: the first matching region wins.
   var REGIONS = [
-    { key: 'clock', selector: '.board-clock-block', fields: ['clockColor', 'fontScale_clock'] },
-    { key: 'shabbat', selector: '.board-shabbat-block', fields: ['shabbatTimesEnabled', 'shabbatColor', 'fontScale_shabbat'] },
+    { key: 'clock', selector: '.board-clock-block', fields: ['clockColor', GOLD_CLOCK].concat(MAIN_COLORS, ['fontScale_clock']) },
+    { key: 'shabbat', selector: '.board-shabbat-block', fields: ['shabbatTimesEnabled', 'shabbatColor'].concat(MAIN_COLORS, ['fontScale_shabbat']) },
     // 1.31.2 I27: logo and candle settings are whole tiles of the form; they are moved into the panel
     // while it is open ("move") and put back when it closes, so saving is unchanged.
     { key: 'logo', selector: '.community-logo-img, .community-logo-flip', fields: [], move: ['.settings-media-tile--logo'] },
-    { key: 'header', selector: '.board-header', fields: ['boardTitleText', 'primaryColor', 'fontScale_boardHeader',
-      'boardSubtitleEnabled', 'boardSubtitleText', 'boardSubtitleColor', 'boardSubtitleWeight', 'fontScale_boardSubtitle'] },
-    { key: 'bottom', selector: '.synagogue-info-panel', fields: ['boardMode', 'sectionTitle_zmanim', 'sectionTitle_prayers', 'sectionTitle_classes', 'combinedZmanimScale', 'combinedPrayersScale', 'combinedAnnouncementScale', 'accentColor'] },
+    { key: 'header', selector: '.board-header', fields: ['boardTitleText'].concat(MAIN_COLORS, ['fontScale_boardHeader',
+      'boardSubtitleEnabled', 'boardSubtitleText', 'boardSubtitleColor', 'boardSubtitleWeight', 'fontScale_boardSubtitle']) },
+    { key: 'bottom', selector: '.synagogue-info-panel', fields: ['boardMode', 'sectionTitle_zmanim', 'sectionTitle_prayers', 'sectionTitle_classes', 'combinedZmanimScale', 'combinedPrayersScale', 'combinedAnnouncementScale', 'accentColor'].concat(MAIN_COLORS) },
     { key: 'candle', selector: '.css-candle, .prayer-reading-candle', fields: [], move: ['.settings-candle-preview-tile'] },
-    { key: 'tiles', selector: '.cards-grid .card, .cards-grid-kadish .card', fields: ['primaryColor', 'textColor', 'tileColor',
+    { key: 'tiles', selector: '.cards-grid .card, .cards-grid-kadish .card', fields: MAIN_COLORS.concat(['tileColor',
       'tileOpacity', 'tileBorderColor', 'tileBorderWidth', 'tileBorderRadius', 'fontScale_tileTitle', 'fontScale_tileDate', 'fontScale_torahNames',
-      'boardCalendar', 'dateDisplay'] },
-    { key: 'hayomYom', selector: '.hayom-yom-panel', fields: ['feature_hayomYom', 'fontScale_hayomYom', 'accentColor'] },
+      'boardCalendar', 'dateDisplay']) },
+    { key: 'hayomYom', selector: '.hayom-yom-panel', fields: ['feature_hayomYom', 'fontScale_hayomYom', 'accentColor'].concat(MAIN_COLORS) },
     { key: 'dailyStudy', selector: '.daily-gates-panel', fields: ['feature_dailyChumash', 'feature_dailyTehillim',
-      'feature_dailyRambam', 'feature_dailyTanya', 'fontScale_dailyStudy', 'accentColor'] },
-    { key: 'weather', selector: '.weather-panel', fields: ['feature_weather', 'fontScale_weather'] },
+      'feature_dailyRambam', 'feature_dailyTanya', 'fontScale_dailyStudy', 'accentColor'].concat(MAIN_COLORS) },
+    { key: 'weather', selector: '.weather-panel', fields: ['feature_weather', 'fontScale_weather', UNIFIED, 'textColor', GOLD_TEXT] },
     { key: 'prayers', selector: '.memorial-prayers', fields: ['feature_kelMaleRachamim', 'feature_izkor', 'fontScale_prayers', 'fontScale_prayerOverlay'] },
     { key: 'donationQr', selector: '.donation-qr-panel', fields: ['publicSubmissionShowDonationQr', 'donationQrTitle',
       'publicSubmissionDonationUrl', 'memorialQrTitleScale', 'memorialQrQrScale'], move: ['input[name="donationQrImage"]'] },
@@ -81,6 +89,8 @@
   }
 
   function fieldLabel(real) {
+    var explicit = real.getAttribute && real.getAttribute('data-preview-label');
+    if (explicit) return String(explicit).trim();
     var id = real.id;
     var lbl = id ? document.querySelector('label[for="' + id + '"]') : null;
     var text = lbl && !lbl.classList.contains('toggle-switch') ? lbl.textContent : '';
@@ -100,9 +110,13 @@
     return String(text || '').trim();
   }
 
+  var panelSyncs = [];
+  function syncPanel() { panelSyncs.forEach(function (fn) { fn(); }); }
   function fire(real) {
     real.dispatchEvent(new Event('input', { bubbles: true }));
     real.dispatchEvent(new Event('change', { bubbles: true }));
+    // 1.37.1: e.g. «שמור על צבעים אחידים» locks / unlocks the accent, clock and Shabbat colours.
+    syncPanel();
   }
 
   function buildControl(real) {
@@ -188,6 +202,7 @@
     movedBack = [];
     if (panel && panel.parentNode) panel.parentNode.removeChild(panel);
     panel = null;
+    panelSyncs = [];
   }
 
   function openPanel(region, x, y, sideLabel, hitEl) {
@@ -225,8 +240,18 @@
       var span = document.createElement('span');
       span.textContent = fieldLabel(real);
       row.appendChild(span);
-      row.appendChild(buildControl(real));
+      var control = buildControl(real);
+      row.appendChild(control);
       body.appendChild(row);
+      var syncRow = function () {
+        var locked = !!real.disabled;
+        row.classList.toggle('is-locked', locked);
+        if ('disabled' in control) control.disabled = locked;
+        if (control.type === 'checkbox') control.checked = real.checked;
+        else if (control.type === 'color' && control.value !== real.value) control.value = real.value;
+      };
+      syncRow();
+      panelSyncs.push(syncRow);
     });
     (region.moveNodes || []).forEach(function (node) {
       var ph = document.createComment('preview-moved');
@@ -338,7 +363,7 @@
    * (they stay in the form, so saving is unchanged). Toggles stay visible because their board part
    * can disappear when switched off; boardMode stays because it changes which parts exist.
    * Turning the preview-edit toggle off shows everything again. */
-  var KEEP_IN_FORM = { boardMode: true };
+  var KEEP_IN_FORM = { boardMode: true, unifiedColorsToggle: true, goldPrimaryToggle: true, goldTextToggle: true, goldClockToggle: true };
   function coveredIds() {
     var out = {};
     REGIONS.forEach(function (r) {
@@ -410,6 +435,8 @@
   if (editToggle) editToggle.addEventListener('change', function () { applyCovered(); renderHiddenParts(); });
   applyCovered();
   renderHiddenParts();
+  // 1.37.1: the dashboard keeps the regular sections hidden until this first pass (no flash).
+  document.documentElement.classList.remove('preview-edit-pending');
 
   window.__adminPreviewEditor = { REGIONS: REGIONS, findRegion: findRegion, coveredIds: coveredIds, renderHiddenParts: renderHiddenParts, applyCovered: applyCovered };
 })();

@@ -10,7 +10,7 @@ describe('1.30.1 I17: preview-panel settings are hidden from the regular section
   const js = read('public/js/admin-preview-editor.js');
   it('hides covered fields but keeps toggles and board mode', () => {
     assert.match(js, /preview-covered/);
-    assert.match(js, /KEEP_IN_FORM = \{ boardMode: true \}/);
+    assert.match(js, /KEEP_IN_FORM = \{ boardMode: true[,} ]/); // 1.37.1: + unified/gold toggles
     assert.match(js, /previewEditToggle/);
   });
 });

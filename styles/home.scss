@@ -2805,21 +2805,36 @@ body.board-lang-he {
 .synagogue-info-panel--two-col .synagogue-info-announcements--untitled { justify-content: center; padding-top: clamp(8px, 1vw, 18px); }
 
 /* 1.32.0 I41: old TVs (Xiaomi streamer / old Android WebView) drew a black square around the QR codes.
-   Keep the QR rendering dead simple: solid white frame + white image background, no shadows, no
-   rounded image corners, no transforms/filters/blend modes on or around the QR. */
+   Keep the QR rendering simple: no shadows, no transforms/filters/blend modes, no clip-path and no
+   overflow clipping on or around the QR.
+   1.37.1 I83: rounded corners and NO white square on every browser, old TVs included. The 1.37.0
+   version only did that behind @supports (aspect-ratio) and old TV WebViews kept the white square.
+   Now the board JS (QrImage) sizes the <img> to the visible picture in plain px (keeping its own
+   aspect ratio, so the QR is never distorted) and sets a px border-radius on the image itself —
+   border-radius on an <img> clips its corners in every engine, without overflow/clip-path. */
 .memorial-submission-qr-frame,
 .main-container .memorial-submission-qr-frame {
-  background-color: #ffffff;
+  background-color: transparent;
   border-radius: 0;
   box-shadow: none;
   overflow: visible;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
 }
 .memorial-submission-qr,
 .main-container .memorial-submission-qr,
 .main-container .left .memorial-submission-qr,
 .main-container .right .memorial-submission-qr {
-  background-color: #ffffff !important;
-  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  padding: 0 !important;
   box-shadow: none !important;
   filter: none !important;
   -webkit-filter: none !important;
@@ -2827,45 +2842,21 @@ body.board-lang-he {
   transform: none !important;
   -webkit-backface-visibility: visible;
   opacity: 1 !important;
+  -webkit-clip-path: none;
+  clip-path: none;
+  overflow: visible;
+}
+/* Fitted by QrImage: the inline px width / height / border-radius win (no !important here). */
+.memorial-submission-qr.is-fitted,
+.main-container .memorial-submission-qr.is-fitted {
+  max-width: none;
+  max-height: none;
+  -o-object-fit: fill;
+  object-fit: fill;
+  flex: 0 0 auto;
 }
 .memorial-submission-qr-link,
 .memorial-submission-qr-link:hover { transform: none !important; transition: none !important; }
-
-
-/* 1.36.0 I65: gentle automatic rounded corners on the barcode / QR images. Only for browsers new
-   enough to support aspect-ratio (Chromium 88+) — the old TV WebViews from 1.32.0 I41 keep the
-   plain square QR that renders reliably there. Rounding is on the image + its white frame
-   themselves (no overflow clipping, no shadows/filters), so scanners still read it. */
-@supports (aspect-ratio: 1 / 1) {
-  /* 1.37.0 I71: round the barcode image ITSELF — no white square / padding around it. The frame is
-     transparent and just centres the picture; the <img> keeps its own aspect ratio (so the rounded
-     corners sit on the visible picture, not on an invisible letterbox) and clips its corners. */
-  .memorial-submission-qr-frame,
-  .main-container .memorial-submission-qr-frame {
-    border-radius: 0;
-    background-color: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: visible;
-  }
-  .memorial-submission-qr,
-  .main-container .memorial-submission-qr,
-  .main-container .left .memorial-submission-qr,
-  .main-container .right .memorial-submission-qr {
-    width: auto !important;
-    height: auto !important;
-    max-width: 100%;
-    max-height: 100%;
-    padding: 0 !important;
-    background-color: transparent !important;
-    background: transparent !important;
-    border-radius: 7% !important;
-    overflow: hidden;
-    -webkit-clip-path: inset(0 round 7%);
-    clip-path: inset(0 round 7%);
-  }
-}
 
 /* 1.36.0 I69: the prayer-times box and the «זמני היום» box touched each other. The flex `gap`
    with clamp() is dropped by older board browsers (clamp < Chromium 79, flex gap < Chromium 84),

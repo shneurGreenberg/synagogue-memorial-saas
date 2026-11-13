@@ -103,11 +103,11 @@ describe('1.36.0 I62/I63: reorderable prayers and lessons with sub-headings', ()
 });
 
 describe('1.36.0 I65: rounded barcode corners only where safe', () => {
-  it('rounding sits behind @supports so old TV WebViews keep the square QR', () => {
+  // 1.37.1 I83 superseded the @supports gate: rounding now works on old TV WebViews too
+  // (px border-radius set by QrImage on the image itself; see release-1-37-1.test.js).
+  it('rounding no longer depends on @supports (aspect-ratio)', () => {
     const scss = read('styles/home.scss');
-    const i = scss.indexOf('@supports (aspect-ratio: 1 / 1)');
-    assert.ok(i > 0);
-    assert.match(scss.slice(i, i + 2000), /memorial-submission-qr[\s\S]*border-radius: 7% !important/);
+    assert.equal(scss.indexOf('@supports (aspect-ratio: 1 / 1)'), -1);
   });
 });
 

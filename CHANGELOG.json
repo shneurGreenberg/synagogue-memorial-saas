@@ -1,5 +1,35 @@
 [
   {
+    "version": "1.37.1",
+    "date": "2026-11-13",
+    "items": [
+      {
+        "type": "fixed",
+        "text": "«שמור על צבעים אחידים» ו«✨ אפקט זהב מטאלי» לא נמצאו: עורך התצוגה המקדימה הסתיר אותם. עכשיו הם מופיעים בלחיצה על כותרת הלוח, אריח, השעון, זמני השבת, מזג האוויר ועוד בתצוגה המקדימה, וגם בלשונית «מראה» תחת «צבעים ושקיפות אריחים»",
+        "text_ru": "«Единые цвета» и «✨ Эффект металлического золота» нельзя было найти: их скрывал редактор предпросмотра. Теперь они есть при нажатии на заголовок доски, плитку, часы, время Шабата, погоду и др. в предпросмотре, а также во вкладке «Внешний вид» → «Цвета и прозрачность плиток»",
+        "text_en": "«Unified colors» and «✨ Metallic gold effect» could not be found: the preview editor hid them. They now appear when clicking the board title, a tile, the clock, Shabbat times, weather etc. in the preview, and under Appearance → Colors & tile transparency"
+      },
+      {
+        "type": "fixed",
+        "text": "בעמוד «עיצוב לוח» לא מהבהבות יותר לשנייה כל הכותרות הישנות של הטופס בכל רענון",
+        "text_ru": "На странице «Оформление доски» при обновлении больше не мелькают на секунду все старые заголовки формы",
+        "text_en": "The «Board design» page no longer flashes all the old form section titles for a second on every refresh"
+      },
+      {
+        "type": "changed",
+        "text": "בצבעים אחידים: תת־כותרת הלוח בצבע הטקסט; שם הפרשה וכותרות כניסת ויציאת השבת בצבע הכותרות; הכותרות ברשימת התאריכים הנגללת בצבע הכותרות (גם אפקט הזהב בהתאם)",
+        "text_ru": "В режиме единых цветов: подзаголовок доски — цвет текста; название главы и заголовки входа/выхода Шабата — цвет заголовков; заголовки в прокручиваемом списке дат — цвет заголовков (золото тоже)",
+        "text_en": "Unified colors: the board subtitle uses the text color; the parasha name and Shabbat entry/exit headings use the heading color; headings in the scrolling dates list use the heading color (gold follows)"
+      },
+      {
+        "type": "fixed",
+        "text": "ברקוד עם פינות מעוגלות ובלי ריבוע לבן גם בטלוויזיות עם דפדפן ישן, בלי לעוות את הברקוד",
+        "text_ru": "Штрихкод со скруглёнными углами и без белого квадрата теперь и на телевизорах со старым браузером, без искажения",
+        "text_en": "Rounded barcode corners with no white square on old TV browsers too, without distorting the code"
+      }
+    ]
+  },
+  {
     "version": "1.37.0",
     "date": "2026-11-13",
     "items": [
