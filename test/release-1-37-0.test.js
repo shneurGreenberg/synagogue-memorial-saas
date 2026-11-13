@@ -10,14 +10,13 @@ const read = (rel) => fs.readFileSync(path.join(root, rel), 'utf8');
 describe('1.37.0 I71: barcode corners rounded on the image itself', () => {
   it('no white frame / padding around the rounded image (modern browsers)', () => {
     const scss = read('styles/home.scss');
-    const i = scss.indexOf('1.37.0 I71');
+    // 1.37.1 I83: same goal for every browser; corners are a px radius set by QrImage.
+    const i = scss.indexOf('1.37.1 I83');
     assert.ok(i > 0);
-    const block = scss.slice(i, i + 1800);
+    const block = scss.slice(i, i + 2400);
     assert.match(block, /background-color: transparent;/);
     assert.match(block, /padding: 0 !important/);
     assert.match(block, /background: transparent !important/);
-    assert.match(block, /border-radius: 7% !important/);
-    assert.match(block, /clip-path: inset\(0 round 7%\)/);
   });
 });
 
@@ -88,8 +87,8 @@ describe('1.37.0 I74: unified colors + metallic gold', () => {
     assert.equal(u['theme.goldText'], false);
     const view = read('views/admin/dashboard.handlebars');
     assert.match(view, /id="unifiedColorsToggle"/);
-    assert.match(view, /goldName="goldPrimary"/);
-    assert.match(view, /goldName="goldText"/);
+    assert.match(view, /id="goldPrimaryToggle"/);
+    assert.match(view, /id="goldTextToggle"/);
     const tr = read('lib/admin-translations.js');
     assert.match(tr, /unified_colors: 'שמור על צבעים אחידים'/);
     assert.match(tr, /unified_colors: 'Единые цвета'/);

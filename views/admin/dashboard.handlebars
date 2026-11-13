@@ -1,3 +1,19 @@
+{{#if adminPermissions.settingsPreview}}
+{{!-- 1.37.1: the preview editor hides every setting it offers in its click-panels. That used to
+     happen only after all page scripts loaded, so on each refresh the full classic form (all its
+     section and sub-section titles) flashed for a moment and then vanished. Hide the regular
+     sections from the first paint until the editor has decided what stays (safety net: 4 s). --}}
+<style>
+html.preview-edit-pending #settingsForm > .admin-panel:not(.settings-preview-panel):not(.board-calendar-visible-panel) { display: none !important; }
+</style>
+<script>
+(function () {
+  var root = document.documentElement;
+  root.classList.add('preview-edit-pending');
+  window.setTimeout(function () { root.classList.remove('preview-edit-pending'); }, 4000);
+})();
+</script>
+{{/if}}
 <div class="admin-page settings-page">
     <header class="admin-page-header">
         <div>
@@ -216,21 +232,47 @@
                 <div class="settings-block">
                     <h3 class="settings-block-title">{{t 'colors_section'}}</h3>
                     {{!-- 1.37.0 I74: «שמור על צבעים אחידים» — two main colors drive the whole board --}}
-                    <div class="settings-unified-colors">
+                    {{!-- 1.37.1: toggle + gold row are outside the colour tiles, so they stay visible even
+                         while the preview editor hides the colour tiles it offers in its own panels. --}}
+                    <div class="settings-unified-colors" id="settingsUnifiedColors">
                         <label class="toggle-switch settings-unified-colors-toggle">
                             <input type="hidden" name="unifiedColors" value="0">
                             <input type="checkbox" name="unifiedColors" value="1" id="unifiedColorsToggle"
+                                data-preview-label="🎨 {{t 'unified_colors'}}"
                                 {{#if synagogue.theme.unifiedColors}}checked{{/if}}>
                             <span class="toggle-slider" aria-hidden="true"></span>
                             <span class="toggle-label">🎨 {{t 'unified_colors'}}</span>
                         </label>
                         <span class="field-hint">{{t 'unified_colors_help'}}</span>
+                        <div class="settings-gold-row" role="group" aria-label="{{t 'gold_effect'}}">
+                            <span class="settings-gold-row-title">{{t 'gold_effect_row'}}</span>
+                            <label class="settings-gold-toggle">
+                                <input type="hidden" name="goldPrimary" value="0">
+                                <input type="checkbox" name="goldPrimary" value="1" id="goldPrimaryToggle" class="settings-gold-checkbox"
+                                    data-preview-label="{{t 'gold_primary_label'}}" {{#if synagogue.theme.goldPrimary}}checked{{/if}}>
+                                <span class="settings-gold-toggle-text">{{t 'gold_on_primary'}}</span>
+                            </label>
+                            <label class="settings-gold-toggle">
+                                <input type="hidden" name="goldText" value="0">
+                                <input type="checkbox" name="goldText" value="1" id="goldTextToggle" class="settings-gold-checkbox"
+                                    data-preview-label="{{t 'gold_text_label'}}" {{#if synagogue.theme.goldText}}checked{{/if}}>
+                                <span class="settings-gold-toggle-text">{{t 'gold_on_text'}}</span>
+                            </label>
+                            <label class="settings-gold-toggle">
+                                <input type="hidden" name="goldClock" value="0">
+                                <input type="checkbox" name="goldClock" value="1" id="goldClockToggle" class="settings-gold-checkbox"
+                                    data-preview-label="{{t 'gold_clock_label'}}" {{#if synagogue.theme.goldClock}}checked{{/if}}>
+                                <span class="settings-gold-toggle-text">{{t 'gold_on_clock'}}</span>
+                            </label>
+                            <span class="settings-gold-sample" aria-hidden="true">Aa אב</span>
+                        </div>
+                        {{#if adminPermissions.settingsPreview}}<span class="field-hint settings-unified-where">{{t 'unified_colors_where'}}</span>{{/if}}
                     </div>
                     <div class="settings-color-grid" id="settingsColorGrid">
-                        {{> admin-settings-color-swatch id="primaryColor" name="primaryColor" labelKey="primary_color" value=synagogue.theme.primaryColor role="primary" unifiedHintKey="unified_primary_hint" goldName="goldPrimary" goldValue=synagogue.theme.goldPrimary}}
-                        {{> admin-settings-color-swatch id="textColor" name="textColor" labelKey="text_color" value=synagogue.theme.textColor role="text" unifiedHintKey="unified_text_hint" goldName="goldText" goldValue=synagogue.theme.goldText}}
+                        {{> admin-settings-color-swatch id="primaryColor" name="primaryColor" labelKey="primary_color" value=synagogue.theme.primaryColor role="primary" unifiedHintKey="unified_primary_hint"}}
+                        {{> admin-settings-color-swatch id="textColor" name="textColor" labelKey="text_color" value=synagogue.theme.textColor role="text" unifiedHintKey="unified_text_hint"}}
                         {{> admin-settings-color-swatch id="accentColor" name="accentColor" labelKey="accent_color" value=synagogue.theme.accentColor role="overridable" overriddenNote=true}}
-                        {{> admin-settings-color-swatch id="clockColor" name="clockColor" labelKey="clock_color" value=(firstOf synagogue.theme.clockColor '#ffffff') role="overridable" overriddenNote=true goldName="goldClock" goldValue=synagogue.theme.goldClock}}
+                        {{> admin-settings-color-swatch id="clockColor" name="clockColor" labelKey="clock_color" value=(firstOf synagogue.theme.clockColor '#ffffff') role="overridable" overriddenNote=true}}
                         {{> admin-settings-color-swatch id="shabbatColor" name="shabbatColor" labelKey="shabbat_color" value=(firstOf synagogue.theme.shabbatColor synagogue.theme.accentColor '#ffd54f') role="overridable" overriddenNote=true}}
                         <div class="settings-color-tile settings-color-tile--with-slider color-field-modern">
                             <label class="settings-color-label" for="tileColor">{{t 'tile_color'}}</label>

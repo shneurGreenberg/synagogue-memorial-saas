@@ -1,5 +1,6 @@
 import React from 'react';
 import { withTranslation } from 'react-i18next';
+import { QrImage } from './QrImage';
 import { useBoardData } from '../context/BoardDataContext';
 import { assetUrl } from '../lib/asset-url';
 import { effectiveMemorialQrScale } from '../lib/typography-baseline';
@@ -32,12 +33,7 @@ function MemorialSubmissionPanelBase({ t }) {
   const qrSrc = resolveQrSrc(publicSubmission.registrationQrImage, 'images/memorial-submission-qr.svg');
 
   const qrImage = (
-    <img
-      className="memorial-submission-qr"
-      src={qrSrc}
-      alt={t('memorial_submission_qr_alt')}
-      decoding="async"
-    />
+    <QrImage src={qrSrc} alt={t('memorial_submission_qr_alt')} />
   );
 
   return (

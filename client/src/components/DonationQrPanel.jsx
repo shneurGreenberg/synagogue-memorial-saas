@@ -1,5 +1,6 @@
 import React from 'react';
 import { withTranslation } from 'react-i18next';
+import { QrImage } from './QrImage';
 import { useBoardData } from '../context/BoardDataContext';
 import { assetUrl } from '../lib/asset-url';
 import { effectiveMemorialQrScale } from '../lib/typography-baseline';
@@ -41,12 +42,7 @@ function DonationQrPanelBase({ t }) {
   const qrSrc = resolveQrSrc(publicSubmission.donationQrImage, 'images/donation-qr.svg');
 
   const qrImage = (
-    <img
-      className="memorial-submission-qr"
-      src={qrSrc}
-      alt={t('donation_qr_alt')}
-      decoding="async"
-    />
+    <QrImage src={qrSrc} alt={t('donation_qr_alt')} />
   );
 
   return (

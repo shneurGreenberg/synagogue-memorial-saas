@@ -5057,6 +5057,19 @@ body.admin-theme-light {
   cursor: pointer;
   input[type='checkbox'] { width: 16px; height: 16px; margin: 0; }
 }
+.settings-gold-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  margin-top: 6px;
+  .settings-gold-toggle { margin-top: 0; }
+}
+.settings-gold-row-title { font-weight: 600; font-size: 0.85rem; }
+.settings-unified-where { font-size: 0.78rem; }
+/* 1.37.1: proxies in the preview-editor panels that unified colors currently override */
+.preview-editor-row.is-locked { opacity: 0.55; }
+.preview-editor-row.is-locked > span::after { content: ' 🔒'; }
 .settings-gold-sample {
   font-weight: 800;
   color: #d9b04a;
