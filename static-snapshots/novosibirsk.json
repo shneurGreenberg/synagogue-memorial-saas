@@ -38,11 +38,11 @@
       "prayerOverlay": 100,
       "torahNames": 80,
       "weather": 100,
-      "shabbat": 100,
+      "shabbat": 110,
       "candle": 100
     },
     "tileOpacity": 80,
-    "candlePalette": "warm",
+    "candlePalette": "amber",
     "fontScaleBaselines": {
       "tileTitle": 165,
       "tileDate": 131,
@@ -59,8 +59,8 @@
       "shabbat": 149,
       "candle": 143
     },
-    "backgroundImage": "1794538918096-c6accab0-opt.jpg",
-    "tilesBackground": "1794539544600-c1083acf-opt.jpg",
+    "backgroundImage": "1794549875678-eb2aaf30-opt.jpg",
+    "tilesBackground": "1794552158619-e86ba727-opt.jpg",
     "logoBorderRadius": 0,
     "boardFont": "georgia",
     "logoBackground": "",
@@ -77,9 +77,9 @@
     "boardSubtitleWeight": "400",
     "clockColor": "#f2cf9d",
     "shabbatColor": "#ffd54f",
-    "middleBackground": "1794539422993-9a9cd670-opt.jpg",
+    "middleBackground": "1794552185122-61c6488e-opt.jpg",
     "goldClock": false,
-    "goldPrimary": false,
+    "goldPrimary": true,
     "goldText": false,
     "unifiedColors": true
   },
@@ -3375,7 +3375,7 @@
     },
     "titleText": "Добавить имя близкого",
     "textText": "Сканируйте QR-код для регистрации близких",
-    "donationTitleText": "Цдака — пожертвование",
+    "donationTitleText": "Цдака - пожертвование",
     "donationTextText": "Отсканируйте QR-код, чтобы сделать пожертвование в память о близких",
     "titleScale": 110,
     "textScale": 50,
@@ -3496,10 +3496,10 @@
   "boardSectionTitles": {
     "classes": "Уроки и мероприятия",
     "prayers": "",
-    "zmanim": ""
+    "zmanim": "Времена"
   },
-  "contentVersion": 1794547106424,
-  "exportedAt": "2026-11-13T05:18:26.424Z",
+  "contentVersion": 1794561913636,
+  "exportedAt": "2026-11-13T09:25:13.636Z",
   "jewishContent": {
     "date": "2026-11-13",
     "timezone": "Asia/Novosibirsk",
@@ -3777,6 +3777,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-11-13T05:18:26.424Z"
+    "updatedAt": "2026-11-13T09:25:13.636Z"
   }
 }
