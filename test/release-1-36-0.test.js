@@ -107,7 +107,7 @@ describe('1.36.0 I65: rounded barcode corners only where safe', () => {
     const scss = read('styles/home.scss');
     const i = scss.indexOf('@supports (aspect-ratio: 1 / 1)');
     assert.ok(i > 0);
-    assert.match(scss.slice(i, i + 600), /memorial-submission-qr[\s\S]*border-radius: 7% !important/);
+    assert.match(scss.slice(i, i + 2000), /memorial-submission-qr[\s\S]*border-radius: 7% !important/);
   });
 });
 

@@ -6,7 +6,8 @@ const path = require('path');
 test('1.29.6: each combined-board box scrolls its own content', () => {
   const src = fs.readFileSync(path.join(__dirname, '../client/src/components/SynagogueInfoPanel.jsx'), 'utf8');
   assert.ok(!src.includes('synagogue-info-col--scroll'));
-  assert.strictEqual((src.match(/synagogue-info-box-scroll/g) || []).length, 3);
+  // 1.37.0 I77: zmanim, prayers, lessons and announcements each have their own scroll area
+  assert.strictEqual((src.match(/className="[^"]*synagogue-info-box-scroll/g) || []).length, 4);
   assert.match(src, /useLoopScroll\(zmanimRef/);
   assert.match(src, /useLoopScroll\(prayersRef/);
   assert.match(src, /useAutoScroll\(announcementRef/);

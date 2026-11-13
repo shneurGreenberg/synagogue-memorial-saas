@@ -156,6 +156,10 @@ const SavedViewSchema = new mongoose.Schema({
       accentColor: String,
       clockColor: String,
       shabbatColor: String,
+      unifiedColors: Boolean,
+      goldPrimary: Boolean,
+      goldText: Boolean,
+      goldClock: Boolean,
       tileColor: String,
       tileOpacity: Number,
       panelBorderColor: String,
@@ -364,6 +368,11 @@ const SynagogueSchema = new mongoose.Schema({
     // 1.30.0 I12/I15: own colors for the clock+date and the Shabbat times ('' = legacy look)
     clockColor: { type: String, default: '' },
     shabbatColor: { type: String, default: '' },
+    // 1.37.0 I74: «שמור על צבעים אחידים» + metallic gold per main color (all off = previous look)
+    unifiedColors: { type: Boolean, default: false },
+    goldPrimary: { type: Boolean, default: false },
+    goldText: { type: Boolean, default: false },
+    goldClock: { type: Boolean, default: false },
     tileColor: { type: String, default: '#b89a22' },
     tileOpacity: { type: Number, default: 100, min: 0, max: 100 },
     panelBorderColor: { type: String, default: '#604f2f' },

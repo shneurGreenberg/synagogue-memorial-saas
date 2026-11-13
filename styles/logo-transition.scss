@@ -4,13 +4,11 @@
   margin: 0;
   border: none;
   background: transparent;
-  cursor: pointer;
+  cursor: default;
   perspective: 600px;
   transition: transform 0.2s ease;
 
-  &:hover:not(.is-flipping) {
-    transform: scale(1.04);
-  }
+  /* 1.37.0 I75: the logo is no longer a link to the admin — no hover zoom either. */
 
   &:focus,
   &:focus-visible {

@@ -68,7 +68,7 @@ export default {
   pause_prayer: 'Пауза',
   baruch_hashem: 'Барух Ашем',
   close: 'Закрыть',
-  zmanim_title: 'Зманим на сегодня',
+  zmanim_title: 'Зманим — галахическое время дня',
   zman_alot: 'Рассвет (алот)',
   zman_netz: 'Восход солнца',
   zman_sof_shma: 'Последнее время Шма',

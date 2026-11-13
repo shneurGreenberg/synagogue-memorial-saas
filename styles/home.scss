@@ -2837,15 +2837,33 @@ body.board-lang-he {
    plain square QR that renders reliably there. Rounding is on the image + its white frame
    themselves (no overflow clipping, no shadows/filters), so scanners still read it. */
 @supports (aspect-ratio: 1 / 1) {
+  /* 1.37.0 I71: round the barcode image ITSELF — no white square / padding around it. The frame is
+     transparent and just centres the picture; the <img> keeps its own aspect ratio (so the rounded
+     corners sit on the visible picture, not on an invisible letterbox) and clips its corners. */
   .memorial-submission-qr-frame,
   .main-container .memorial-submission-qr-frame {
-    border-radius: 7%;
+    border-radius: 0;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
   }
   .memorial-submission-qr,
   .main-container .memorial-submission-qr,
   .main-container .left .memorial-submission-qr,
   .main-container .right .memorial-submission-qr {
+    width: auto !important;
+    height: auto !important;
+    max-width: 100%;
+    max-height: 100%;
+    padding: 0 !important;
+    background-color: transparent !important;
+    background: transparent !important;
     border-radius: 7% !important;
+    overflow: hidden;
+    -webkit-clip-path: inset(0 round 7%);
+    clip-path: inset(0 round 7%);
   }
 }
 
@@ -2885,3 +2903,27 @@ body.board-lang-he {
     .kc-r2c4 { grid-column: 2; grid-row: 3; }
   }
 }
+
+/* 1.37.0 I77: combined board — inside the prayers box, prayers and lessons are two parts that scroll
+   independently. The JS gives each part its height (natural if it fits); headings stay outside the
+   scrolling area. Without JS measurements both parts simply share the box. */
+.synagogue-info-panel--two-col .synagogue-info-prayers .synagogue-info-split {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.synagogue-info-panel--two-col .synagogue-info-prayers .synagogue-info-part {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.synagogue-info-panel--two-col .synagogue-info-prayers .synagogue-info-part > .synagogue-info-group-title {
+  flex: 0 0 auto;
+}
+.main-container .synagogue-info-prayers .synagogue-info-part--classes > .synagogue-info-group-title { margin-top: 0.35em; }
+.main-container .synagogue-info-prayers .synagogue-info-part--classes:first-child > .synagogue-info-group-title { margin-top: 0; }
+.main-container .synagogue-info-prayers .synagogue-info-part--classes .synagogue-info-list > .synagogue-info-subheading:first-child { margin-top: 0.15em; }

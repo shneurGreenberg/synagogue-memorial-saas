@@ -1,7 +1,21 @@
-<div class="settings-color-tile color-field-modern">
+<div class="settings-color-tile color-field-modern{{#if goldName}} settings-color-tile--gold{{/if}}"{{#if role}} data-color-role="{{role}}"{{/if}}>
     <label class="settings-color-label" for="{{id}}">{{t labelKey}}</label>
     <input type="color" name="{{name}}" id="{{id}}" class="color-swatch-input settings-color-swatch"
         value="{{value}}">
     <input type="text" dir="auto" class="color-hex-display settings-color-hex" id="{{id}}Hex" readonly
         value="{{value}}" aria-hidden="true" tabindex="-1">
+    {{#if unifiedHintKey}}
+    <span class="settings-color-unified-hint field-hint" data-unified-only hidden>{{t unifiedHintKey}}</span>
+    {{/if}}
+    {{#if overriddenNote}}
+    <span class="settings-color-overridden-note field-hint" data-unified-overridden-note hidden>🔒 {{t 'unified_colors_overridden'}}</span>
+    {{/if}}
+    {{#if goldName}}
+    <label class="settings-gold-toggle">
+        <input type="hidden" name="{{goldName}}" value="0">
+        <input type="checkbox" name="{{goldName}}" value="1" id="{{goldName}}Toggle" class="settings-gold-checkbox" {{#if goldValue}}checked{{/if}}>
+        <span class="settings-gold-toggle-text">✨ {{t 'gold_effect'}}</span>
+        <span class="settings-gold-sample" aria-hidden="true">Aa אב</span>
+    </label>
+    {{/if}}
 </div>

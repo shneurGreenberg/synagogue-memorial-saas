@@ -13,6 +13,7 @@ import { normalizeBoardFont, resolveBoardFontFamily } from '../lib/board-fonts';
 import { normalizeThemeBorders, resolvePanelBorderCss, resolveTileBorderCss } from '../lib/theme-borders';
 import { shouldReduceBoardCompositorLoad } from '../lib/legacy-browser';
 import { normalizeBoardSubtitleTheme } from '../../../lib/board-subtitle';
+import { buildUnifiedColorCss, normalizeColorFlags } from '../../../lib/board-color-unify';
 
 function tileGlassNoise(transparency) {
   if (transparency <= 0.01) {
@@ -84,6 +85,9 @@ export function ThemeStyles() {
   const panelBorderCss = resolvePanelBorderCss(theme);
   const tileBorderCss = resolveTileBorderCss(theme, tileVars.tileGlassBorder);
   const logoRadius = Number(theme.logoBorderRadius) >= 50 ? '50%' : '0';
+  // 1.37.0 I74: unified colors (two main colors) + metallic gold — appended last so it wins.
+  const colorFlags = normalizeColorFlags(theme);
+  const unifiedCss = buildUnifiedColorCss({ theme, primary, text, reduceEffects: reduceCompositorLoad });
   const headingFontRule = `
     .main-container .board-header h1,
     .main-container .board-header-button,
@@ -394,11 +398,12 @@ export function ThemeStyles() {
         backdrop-filter: blur(8px);
       }
     }` : ''}
+    ${unifiedCss}
   `;
 
   return (
     <style
-      key={`theme-${primary}-${text}-${accent}-${clockColor}-${shabbatColor}-${tileVars.tileColor}-${tileTransparency}-${candlePalette}-${theme.boardFont}-${panelBorderCss}-${tileBorderCss}-${themeBorders.panelBorderWidth}-${themeBorders.panelBorderRadius}-${themeBorders.tileBorderWidth}-${themeBorders.tileBorderRadius}`}
+      key={`theme-${primary}-${text}-${accent}-${clockColor}-${colorFlags.unifiedColors ? 'u' : ''}${colorFlags.goldPrimary ? 'gp' : ''}${colorFlags.goldText ? 'gt' : ''}${colorFlags.goldClock ? 'gc' : ''}-${shabbatColor}-${tileVars.tileColor}-${tileTransparency}-${candlePalette}-${theme.boardFont}-${panelBorderCss}-${tileBorderCss}-${themeBorders.panelBorderWidth}-${themeBorders.panelBorderRadius}-${themeBorders.tileBorderWidth}-${themeBorders.tileBorderRadius}`}
       dangerouslySetInnerHTML={{ __html: css }}
     />
   );

@@ -152,9 +152,25 @@
   }
 }
 
+/* 1.37.0 I76: with "reduce motion" on (Windows "animation effects" off, many TVs) the flame used to
+   freeze completely. Keep a gentle flicker there — opacity + a tiny scale, no sway. */
+@keyframes css-candle-flame-flicker {
+  0%,
+  100% {
+    transform: scaleY(0.96);
+    opacity: 0.9;
+  }
+
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .css-candle-flame {
-    animation: none !important;
+  .css-candle-flame,
+  .css-candle-lite .css-candle-flame {
+    animation: css-candle-flame-flicker 2.8s ease-in-out infinite;
   }
 }
 

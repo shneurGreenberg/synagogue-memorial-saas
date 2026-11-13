@@ -15,6 +15,8 @@ function loadLegacyBrowser(userAgent, hardwareConcurrency = 8) {
       },
     },
     requestAnimationFrame() {},
+    location: { search: '' },
+    URLSearchParams,
   };
   sandbox.window = sandbox;
   const file = fs.readFileSync(
@@ -51,11 +53,11 @@ function simulateOverlayHiddenDeferral({ hiddenAtStart, becomeVisibleBeforeShow 
 }
 
 describe('blackbox right-header RCA', () => {
-  it('classifies Smart TV UA as low-power and uses static candles (GPU mitigation)', () => {
+  it('classifies Smart TV UA as low-power and uses lite (still flickering) candles (GPU mitigation, 1.37.0 I76)', () => {
     const tv = loadLegacyBrowser('Mozilla/5.0 (Linux; Android 9; BRAVIA 4K) AppleWebKit Chrome/74', 4);
     assert.equal(tv.isLowPowerBoardBrowser(), true);
     assert.equal(tv.shouldReduceBoardCompositorLoad(), true);
-    assert.equal(tv.resolveBoardCandleMode(), 'static');
+    assert.equal(tv.resolveBoardCandleMode(), 'lite');
   });
 
   it('uses full candles on desktop-class browsers', () => {

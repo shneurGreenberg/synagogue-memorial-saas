@@ -35,9 +35,12 @@ export function isLegacyBoardBrowser() {
   return false;
 }
 
-/** Old / TV displays: static candle only (no CSS flame animation). */
+/** Very old engines only (no requestAnimationFrame): static candle, no CSS flame animation. */
 export function shouldUseStaticCandleOnly() {
-  return isLegacyBoardBrowser() || isLowPowerBoardBrowser();
+  if (typeof window === 'undefined') {
+    return false;
+  }
+  return typeof requestAnimationFrame !== 'function';
 }
 
 /** TV / weak Chromium: avoid backdrop-filter stacks and fixed-bg compositor bugs. */
@@ -45,9 +48,32 @@ export function shouldReduceBoardCompositorLoad() {
   return isLowPowerBoardBrowser();
 }
 
+function candleModeOverride() {
+  try {
+    const params = new URLSearchParams(window.location.search || '');
+    const value = String(params.get('candle') || '').toLowerCase();
+    return ['static', 'lite', 'full'].includes(value) ? value : '';
+  } catch (_) {
+    return '';
+  }
+}
+
+/**
+ * 1.37.0 I76: the candle flames stopped moving on TVs / low-power screens because those were
+ * forced to a fully static candle. They now get the "lite" candle — the flame still flickers
+ * (cheap transform/opacity animation only), but without the blurred glow layer that was heavy
+ * on the TV GPU. Fully static only for engines without requestAnimationFrame, or `?candle=static`.
+ */
 export function resolveBoardCandleMode() {
+  const override = typeof window !== 'undefined' ? candleModeOverride() : '';
+  if (override) {
+    return override;
+  }
   if (shouldUseStaticCandleOnly()) {
     return 'static';
+  }
+  if (isLowPowerBoardBrowser() || isLegacyBoardBrowser()) {
+    return 'lite';
   }
   return 'full';
 }

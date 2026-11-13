@@ -1,5 +1,65 @@
 [
   {
+    "version": "1.37.0",
+    "date": "2026-11-13",
+    "items": [
+      {
+        "type": "fixed",
+        "text": "ברקוד עם פינות מעוגלות: הפינות מעוגלות על התמונה עצמה, בלי ריבוע לבן או ריפוד מסביב",
+        "text_ru": "Штрихкод со скруглёнными углами: скругляется сама картинка, без белого квадрата и отступа вокруг",
+        "text_en": "Rounded barcode corners are applied to the image itself — no white square or padding around it"
+      },
+      {
+        "type": "fixed",
+        "text": "צבע השעון לא חוזר יותר ללבן: ההגדרות הציגו (ושמרו מחדש) לבן במקום הצבע שנבחר. גם צבע זמני השבת נשמר נכון, והשניים נשמרים גם בעיצובים שמורים",
+        "text_ru": "Цвет часов больше не сбрасывается на белый: настройки показывали (и пересохраняли) белый вместо выбранного цвета. Цвет времени Шабата тоже сохраняется правильно, оба цвета сохраняются в сохранённых видах",
+        "text_en": "The clock color no longer reverts to white: settings showed (and re-saved) white instead of the chosen color. The Shabbat-times color is kept too, and both travel with saved designs"
+      },
+      {
+        "type": "fixed",
+        "text": "גודל השמות בקריאת התורה: אפשר עכשיו להקטין מתחת ל־100% (עד 30%) — קודם הכפתור לא הקטין כלום",
+        "text_ru": "Размер имён при чтении Торы: теперь можно уменьшать ниже 100% (до 30%) — раньше кнопка ничего не уменьшала",
+        "text_en": "Torah-reading names size can now go below 100% (down to 30%) — the minus button used to do nothing"
+      },
+      {
+        "type": "added",
+        "text": "בעיצוב: מתג «שמור על צבעים אחידים» — צבע ראשי אחד לכותרת, לשמות ולכל הכותרות, וצבע טקסט אחד לכל הטקסטים (תאריכים, שעון, תפילות, שיעורים, זמנים, מזג אוויר כולל האייקונים). כשהמתג כבוי — כל צבע נפרד כמו קודם. ליד הצבע הראשי, צבע הטקסט וצבע השעון אפשר להפעיל «אפקט זהב מטאלי»",
+        "text_ru": "В оформлении: переключатель «Единые цвета» — один основной цвет для заголовка, имён и всех заголовков и один цвет текста для всех текстов (даты, часы, молитвы, уроки, зманим, погода вместе со значками). Выключен — каждый цвет отдельно, как раньше. Рядом с основным цветом, цветом текста и цветом часов можно включить «Эффект металлического золота»",
+        "text_en": "Design: a «Unified colors» toggle — one primary color for the title, names and every heading, one text color for all texts (dates, clock, prayers, lessons, zmanim, weather incl. icons). Off = separate colors as before. A «Metallic gold effect» option next to the primary, text and clock colors"
+      },
+      {
+        "type": "changed",
+        "text": "לחיצה על הלוגו בלוח כבר לא מעבירה לניהול",
+        "text_ru": "Нажатие на логотип на доске больше не открывает администрирование",
+        "text_en": "Clicking the logo on the board no longer opens the admin"
+      },
+      {
+        "type": "fixed",
+        "text": "הלהבות של הנרות זזות שוב: במסכי טלוויזיה ובמחשבים עם «הפחתת תנועה» הנר היה קפוא לגמרי; עכשיו הלהבה מהבהבת (בגרסה קלה בטלוויזיות)",
+        "text_ru": "Пламя свечей снова движется: на телевизорах и компьютерах с «уменьшением движения» свеча была полностью неподвижной; теперь пламя мерцает (облегчённо на телевизорах)",
+        "text_en": "Candle flames move again: TVs and computers with “reduce motion” showed a frozen candle; the flame now flickers (a light version on TVs)"
+      },
+      {
+        "type": "changed",
+        "text": "בלוח המשולב: בקובייה של התפילות והשיעורים כל חלק נגלל לבד. חלק קצר תופס רק את המקום שלו ולא נגלל, והכותרות קבועות ולא נגללות",
+        "text_ru": "Совмещённая доска: в блоке молитв и уроков каждая часть прокручивается отдельно. Короткая часть занимает только своё место и не прокручивается, заголовки неподвижны",
+        "text_en": "Combined board: in the prayers/lessons box each part scrolls on its own. A short part keeps its natural height without scrolling; headings stay fixed"
+      },
+      {
+        "type": "changed",
+        "text": "ברוסית: הכותרת «זמני היום» היא עכשיו «Зманим — галахическое время дня» (גם בהגדרות), במקום «Зманим на сегодня» שלא היה מובן",
+        "text_ru": "По-русски заголовок теперь «Зманим — галахическое время дня» (и в настройках) вместо непонятного «Зманим на сегодня»",
+        "text_en": "Russian zmanim heading is now «Зманим — галахическое время дня» (also in settings) instead of the unclear «Зманим на сегодня»"
+      },
+      {
+        "type": "changed",
+        "text": "«היום יום» ברוסית נלקח עכשיו מהתרגום הרשמי של ru.chabad.org; התרגום האוטומטי נשאר רק כגיבוי כשהאתר לא זמין. באדר של שנה פשוטה נלקח הקטע של אדר ב'",
+        "text_ru": "«Айом Йом» по-русски теперь берётся из официального перевода ru.chabad.org; машинный перевод остаётся только запасным вариантом. В Адаре обычного года берётся текст Адара II",
+        "text_en": "Russian Hayom Yom now comes from the official ru.chabad.org translation; machine translation is only a fallback. In a regular year's Adar the Adar II entry is used"
+      }
+    ]
+  },
+  {
     "version": "1.36.5",
     "date": "2026-11-11",
     "items": [
