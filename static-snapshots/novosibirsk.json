@@ -20,63 +20,64 @@
     "timezone": "Asia/Novosibirsk"
   },
   "theme": {
-    "primaryColor": "#cfaf1f",
-    "textColor": "#ffffff",
+    "primaryColor": "#ffd342",
+    "textColor": "#f2cf9d",
     "accentColor": "#ffd54f",
-    "logo": "1791774465289-opt.webp",
-    "tileColor": "#330a0a",
+    "logo": "1794542958038-fa75ba1c-opt.png",
+    "tileColor": "#47271a",
     "fontScales": {
       "tileTitle": 100,
-      "tileDate": 100,
+      "tileDate": 95,
       "clock": 100,
       "boardHeader": 100,
-      "boardSubtitle": 150,
-      "sidebar": 125,
+      "boardSubtitle": 100,
+      "sidebar": 100,
       "prayers": 100,
-      "dailyStudy": 145,
-      "hayomYom": 155,
+      "dailyStudy": 100,
+      "hayomYom": 100,
       "prayerOverlay": 100,
       "torahNames": 100,
       "weather": 100,
       "shabbat": 100,
       "candle": 100
     },
-    "tileOpacity": 34,
-    "candlePalette": "amber",
+    "tileOpacity": 80,
+    "candlePalette": "warm",
     "fontScaleBaselines": {
       "tileTitle": 165,
       "tileDate": 131,
       "clock": 135,
-      "boardHeader": 80,
-      "boardSubtitle": 100,
-      "sidebar": 90,
+      "boardHeader": 84,
+      "boardSubtitle": 150,
+      "sidebar": 113,
       "prayers": 124,
-      "dailyStudy": 90,
-      "hayomYom": 100,
+      "dailyStudy": 131,
+      "hayomYom": 155,
       "prayerOverlay": 135,
       "torahNames": 270,
-      "weather": 150,
+      "weather": 165,
       "shabbat": 149,
       "candle": 143
     },
-    "backgroundImage": "1781871495467.jpg",
-    "tilesBackground": "1781877654975.jpg",
+    "backgroundImage": "1794538918096-c6accab0-opt.jpg",
+    "tilesBackground": "1794539544600-c1083acf-opt.jpg",
     "logoBorderRadius": 0,
     "boardFont": "georgia",
     "logoBackground": "",
     "panelBorderColor": "#604f2f",
     "panelBorderOpacity": 100,
-    "tileBorderColor": "#60500e",
+    "tileBorderColor": "#a38b6a",
     "tileBorderOpacity": 100,
     "panelBorderRadius": 0,
     "panelBorderWidth": 7,
-    "tileBorderRadius": 12,
+    "tileBorderRadius": 13,
     "tileBorderWidth": 1,
-    "boardSubtitleColor": "#f0f0f0",
+    "boardSubtitleColor": "#fad5a2",
     "boardSubtitleFont": "",
     "boardSubtitleWeight": "400",
     "clockColor": "#ffffff",
-    "shabbatColor": "#ffd54f"
+    "shabbatColor": "#ffd54f",
+    "middleBackground": "1794539422993-9a9cd670-opt.jpg"
   },
   "people": [
     {
@@ -3249,7 +3250,6 @@
         "zoom": 1
       },
       "title": "",
-      "permanent": true,
       "text": ""
     }
   ],
@@ -3343,8 +3343,8 @@
   "publicSubmission": {
     "enabled": true,
     "donationUrl": "https://gotov.org/neokc-beyt-menahem",
-    "donationQrImage": "community-qr/novosibirsk-donation.png",
-    "registrationQrImage": "",
+    "donationQrImage": "1794541107928-c02f259b-opt.png",
+    "registrationQrImage": "1794541748076-fbac9552-opt.png",
     "showDonationQr": true,
     "showRegistrationQr": true
   },
@@ -3374,11 +3374,11 @@
     "donationTitleText": "Цдака — пожертвование",
     "donationTextText": "Отсканируйте QR-код, чтобы сделать пожертвование в память о близких",
     "titleScale": 110,
-    "textScale": 100,
+    "textScale": 50,
     "qrScale": 80,
-    "titleScaleBaseline": 100,
-    "textScaleBaseline": 100,
-    "qrScaleBaseline": 164
+    "titleScaleBaseline": 110,
+    "textScaleBaseline": 50,
+    "qrScaleBaseline": 131
   },
   "weeklyChapterEnabled": false,
   "shabbatTimesEnabled": true,
@@ -3494,43 +3494,44 @@
     "prayers": "",
     "zmanim": ""
   },
-  "contentVersion": 1794476443440,
-  "exportedAt": "2026-11-12T09:40:43.440Z",
+  "contentVersion": 1794545061421,
+  "exportedAt": "2026-11-13T04:44:21.421Z",
   "jewishContent": {
-    "date": "2026-11-12",
+    "date": "2026-11-13",
     "timezone": "Asia/Novosibirsk",
     "dailyLearning": {
-      "date": "2026-11-12",
+      "date": "2026-11-13",
       "timezone": "Asia/Novosibirsk",
       "chumash": {
-        "label": "Толдот, 5-я часть"
+        "label": "Толдот, 6-я часть"
       },
       "tehillim": {
-        "label": "Псалмы 10-17"
+        "label": "Псалмы 18-22"
       },
       "tanya": {
         "label": "Кунтрес Ахарон, гл. 4"
       },
       "rambam": {
-        "label": "Запрещённая пища 2"
+        "label": "Запрещённая пища 3"
       },
       "rambam3": {
-        "label": "Шлухин ве-шутафин 5-7"
+        "label": "Шлухин ве-шутафин 8-10"
       },
       "hayomYom": {
         "available": true,
-        "text": "Мой дедушка однажды объяснил в маамаре высказывание о том, что рабби Элазар сначала давал монету бедняку, а затем молился: «Молитва должна быть исполнена жизни. Давая перед молитвой цдаку бедняку — тем самым даруя ему жизнь, — человек наполняет свою молитву великим прибавлением „жизненности“». Сказав это, он сделал жест рукой вверх, показывая, что это прибавление превосходит любое воображение. И действительно, мой отец перед молитвой часто специально искал бедняка, чтобы накормить его. Примечания: * Этот день стал венцом победы «Дидан нацах», ознаменовав фактическое возвращение в 5748 (1987) году книг («сфарим») и рукописей («ктавим») Ребеим на их законное место в библиотеку «Агудас Хасидей Хабад». Это был «пидьон швуим» («выкуп пленных») книг, которые фактически вернулись на свои места в понедельник недели чтения раздела Торы «И вернусь я с миром в дом отца моего», второго Кислева». (Сиха, 5 Тевета 5748 года). Это событие совпало по времени и месту с Первым международным съездом шлухим — посланников Ребе, שליט\"א (да продлятся дни его в добре и благополучии).",
+        "text": "Одно из различий между путями Бааль-Шем-Това и Магида заключалось в том, что Бааль-Шем-Тов совершал всевозможные поездки, в то время как Магид оставался дома. Кроме того, когда Магид был Ребе, хасидизм был уже широко известен даже в отдаленных местах благодаря многочисленным поездкам «Святого братства». Таким образом, многие простые люди всем сердцем привязались к хасидизму и стали совершать поездки в Межирич.",
+        "source": "translation",
         "hebrewMonth": 9,
-        "hebrewDay": 2,
+        "hebrewDay": 3,
         "lessons5703": {
           "chumash": {
-            "label": "Vayeitsei, Sheini with Rashi."
+            "label": "Vayeitsei, Shlishi with Rashi."
           },
           "tehillim": {
-            "label": "10-17."
+            "label": "18-22."
           },
           "tanya": {
-            "label": "Now, in one (p. 603).Yetzirah and Asiyah. (p. 603)."
+            "label": "To perform a (p. 603).see my hinderpart.\" (p. 605)."
           }
         }
       }
@@ -3607,7 +3608,7 @@
   },
   "sidebarApp": {
     "slug": "novosibirsk",
-    "publishedVersion": 5,
+    "publishedVersion": 7,
     "title": "Проект памяти наших родных \"Кадиш\"",
     "boardTitleText": "Проект памяти наших родных \"Кадиш\"",
     "language": "ru",
@@ -3626,8 +3627,8 @@
       "weather": true
     },
     "theme": {
-      "primaryColor": "#cfaf1f",
-      "textColor": "#ffffff",
+      "primaryColor": "#ffd342",
+      "textColor": "#f2cf9d",
       "accentColor": "#ffd54f"
     },
     "dailyCites": [
@@ -3772,6 +3773,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-11-12T09:40:43.440Z"
+    "updatedAt": "2026-11-13T04:44:21.421Z"
   }
 }
