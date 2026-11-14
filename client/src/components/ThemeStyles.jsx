@@ -397,13 +397,18 @@ export function ThemeStyles() {
         -webkit-backdrop-filter: blur(8px);
         backdrop-filter: blur(8px);
       }
-    }` : ''}
+    }` : `${GLASS_SELECTORS} {
+      /* 1.38.0 I85: the base stylesheet still blurred every tile; when blur is off (TV / weak
+         device, or opaque tiles) really turn it off — it costs GPU memory and shows nothing. */
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+    }`}
     ${unifiedCss}
   `;
 
   return (
     <style
-      key={`theme-${primary}-${text}-${accent}-${clockColor}-${colorFlags.unifiedColors ? 'u' : ''}${colorFlags.goldPrimary ? 'gp' : ''}${colorFlags.goldText ? 'gt' : ''}${colorFlags.goldClock ? 'gc' : ''}-${shabbatColor}-${tileVars.tileColor}-${tileTransparency}-${candlePalette}-${theme.boardFont}-${panelBorderCss}-${tileBorderCss}-${themeBorders.panelBorderWidth}-${themeBorders.panelBorderRadius}-${themeBorders.tileBorderWidth}-${themeBorders.tileBorderRadius}`}
+      key={`theme-${primary}-${text}-${accent}-${clockColor}-${colorFlags.unifiedColors ? 'u' : ''}${colorFlags.goldPrimary ? 'gp' : ''}${colorFlags.goldText ? 'gt' : ''}${colorFlags.goldClock ? 'gc' : ''}-${colorFlags.goldStyle}-${shabbatColor}-${tileVars.tileColor}-${tileTransparency}-${candlePalette}-${theme.boardFont}-${panelBorderCss}-${tileBorderCss}-${themeBorders.panelBorderWidth}-${themeBorders.panelBorderRadius}-${themeBorders.tileBorderWidth}-${themeBorders.tileBorderRadius}`}
       dangerouslySetInnerHTML={{ __html: css }}
     />
   );

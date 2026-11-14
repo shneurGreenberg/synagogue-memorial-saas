@@ -1,5 +1,35 @@
 [
   {
+    "version": "1.38.0",
+    "date": "2026-11-14",
+    "items": [
+      {
+        "type": "fixed",
+        "text": "לוח שרץ שעות רבות בטלוויזיה כבר לא נתקע ולא מופיע חלק מהרקע מעל השעה ופרשת השבוע: הנרות ממשיכים לזוז, אבל בדרך חסכונית אחת לכל הנרות (בלי שכבה גרפית לכל נר), הגלילה של התפילות/שיעורים/זמנים מודדת פעם בשנייה במקום 40 פעם, הטשטוש של האריחים כבוי באמת בטלוויזיות, וכותרת העמודה הימנית מוגנת מכיסוי",
+        "text_ru": "Доска, работающая много часов на телевизоре, больше не зависает, и фон не закрывает часы и недельную главу: свечи по-прежнему мерцают, но одним экономным механизмом для всех свечей (без отдельного графического слоя на каждую), прокрутка молитв/уроков/зманим измеряет размеры раз в секунду вместо 40 раз, размытие плиток на телевизорах действительно выключено, а верх правой колонки защищён от перекрытия",
+        "text_en": "A board running for many hours on a TV no longer freezes or shows a piece of the background over the clock and weekly parasha: candles still flicker, but through one cheap shared driver (no GPU layer per candle), the prayers/lessons/zmanim scrolling measures once a second instead of 40 times, tile blur is really off on TVs, and the top of the right column is protected from being covered"
+      },
+      {
+        "type": "added",
+        "text": "רשת ביטחון: לוח שפועל זמן רב מתרענן לבד ובשקט (בלילה בין 02:00 ל-05:00, או אחרי 6 שעות רצופות), רק כשאין חלון פתוח, אף אחד לא נגע בלוח בשתי הדקות האחרונות והשרת עונה — הלוח נשאר באותו עמוד",
+        "text_ru": "Страховка: доска, работающая долго, сама тихо перезагружается (ночью с 02:00 до 05:00 или после 6 часов подряд) — только когда не открыто окно, никто не трогал доску последние 2 минуты и сервер отвечает; доска остаётся на той же странице",
+        "text_en": "Safety net: a long-running board quietly reloads itself (at night 02:00–05:00, or after 6 hours in a row) — only when no window is open, nobody touched the board in the last 2 minutes and the server answers; the board stays on the same page"
+      },
+      {
+        "type": "changed",
+        "text": "הזהב המטאלי אחיד בכל שורה: הגרדיאנט נמתח עכשיו על גובה שורה אחת וחוזר בכל שורה, כך שטקסט של כמה שורות לא יוצא בגוונים שונים (בטלוויזיות ישנות — ברק אופקי אחיד, ובדפדפנים ישנים מאוד — זהב אחיד)",
+        "text_ru": "Металлическое золото одинаково в каждой строке: градиент теперь высотой в одну строку и повторяется на каждой, поэтому многострочный текст не получается разных оттенков (на старых телевизорах — ровный горизонтальный блеск, в очень старых браузерах — ровное золото)",
+        "text_en": "Metallic gold is even on every line: the gradient is now one line tall and repeats per line, so multi-line text no longer comes out in different shades (older TVs get an even horizontal sheen, very old browsers solid gold)"
+      },
+      {
+        "type": "added",
+        "text": "«סגנון הזהב» עם 4 אפשרויות: גרדיאנט עדין (ברירת מחדל), מטאלי מבריק, מט (פחות מבריק) וזהב אחיד. נמצא ב«מראה» ליד «✨ אפקט זהב מטאלי», וגם בלחיצה על השעון, הכותרת, אריח, זמני השבת או מזג האוויר בתצוגה המקדימה",
+        "text_ru": "«Стиль золота» с 4 вариантами: мягкий градиент (по умолчанию), блестящий металл, матовое (меньше блеска) и ровное золото. Находится во «Внешнем виде» рядом с «✨ Эффект металлического золота», а также при нажатии на часы, заголовок, плитку, время Шабата или погоду в предпросмотре",
+        "text_en": "«Gold style» with 4 options: soft gradient (default), shiny metallic, matte (less shine) and solid gold. Found under «Appearance» next to «✨ Metallic gold effect», and when clicking the clock, title, a tile, Shabbat times or weather in the preview"
+      }
+    ]
+  },
+  {
     "version": "1.37.1",
     "date": "2026-11-13",
     "items": [

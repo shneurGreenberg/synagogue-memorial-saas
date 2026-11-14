@@ -1195,6 +1195,7 @@ router.post('/:slug/settings/reset-theme', requireAdmin, requirePermission('sett
                 'theme.goldPrimary': false,
                 'theme.goldText': false,
                 'theme.goldClock': false,
+                'theme.goldStyle': 'subtle',
                 'theme.fontScales.tileTitle': 100,
                 'theme.fontScales.tileDate': 100,
                 'theme.fontScales.clock': 100,

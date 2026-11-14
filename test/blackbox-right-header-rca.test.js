@@ -86,7 +86,8 @@ describe('blackbox right-header RCA', () => {
       'utf8',
     );
 
-    assert.match(candleScss, /will-change:\s*transform,\s*opacity/);
+    // 1.38.0 I85: the per-candle will-change layers (the main suspect) are gone.
+    assert.doesNotMatch(candleScss, /will-change:\s*transform/);
     assert.match(commonScss, /backdrop-filter:\s*blur\(8px\)/);
     assert.match(themeJsx, /bodyBackgroundAttachment/);
     assert.match(themeJsx, /shouldReduceBoardCompositorLoad/);

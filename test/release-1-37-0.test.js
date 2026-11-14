@@ -51,7 +51,7 @@ describe('1.37.0 I74: unified colors + metallic gold', () => {
   const unify = require('../lib/board-color-unify');
   it('flags default off and parse form values', () => {
     assert.deepEqual(unify.normalizeColorFlags({}), {
-      unifiedColors: false, goldPrimary: false, goldText: false, goldClock: false,
+      unifiedColors: false, goldPrimary: false, goldText: false, goldClock: false, goldStyle: 'subtle',
     });
     assert.deepEqual(unify.colorFlagsToUpdate({ unifiedColors: ['0', '1'], goldText: '0' }), {
       'theme.unifiedColors': true, 'theme.goldText': false,
@@ -135,7 +135,8 @@ describe('1.37.0 I76: candle flames move again', () => {
   it('reduced-motion keeps a gentle flicker', () => {
     const scss = read('styles/_css-candle.scss');
     assert.match(scss, /@keyframes css-candle-flame-flicker/);
-    assert.match(scss, /prefers-reduced-motion: reduce\) \{\s*\.css-candle-flame,[\s\S]*?animation: css-candle-flame-flicker/);
+    // 1.38.0 I85: the CSS animation is only used with ?candle=css; the JS driver handles reduce-motion.
+    assert.match(scss, /prefers-reduced-motion: reduce\) \{\s*\.css-candle-css \.css-candle-flame[\s\S]*?animation: css-candle-flame-flicker/);
   });
 });
 

@@ -160,6 +160,7 @@ const SavedViewSchema = new mongoose.Schema({
       goldPrimary: Boolean,
       goldText: Boolean,
       goldClock: Boolean,
+      goldStyle: String,
       tileColor: String,
       tileOpacity: Number,
       panelBorderColor: String,
@@ -373,6 +374,8 @@ const SynagogueSchema = new mongoose.Schema({
     goldPrimary: { type: Boolean, default: false },
     goldText: { type: Boolean, default: false },
     goldClock: { type: Boolean, default: false },
+    // 1.38.0 I84: subtle | shiny | matte | solid
+    goldStyle: { type: String, default: 'subtle', enum: ['subtle', 'shiny', 'matte', 'solid'] },
     tileColor: { type: String, default: '#b89a22' },
     tileOpacity: { type: Number, default: 100, min: 0, max: 100 },
     panelBorderColor: { type: String, default: '#604f2f' },

@@ -2918,3 +2918,12 @@ body.board-lang-he {
 .main-container .synagogue-info-prayers .synagogue-info-part--classes > .synagogue-info-group-title { margin-top: 0.35em; }
 .main-container .synagogue-info-prayers .synagogue-info-part--classes:first-child > .synagogue-info-group-title { margin-top: 0; }
 .main-container .synagogue-info-prayers .synagogue-info-part--classes .synagogue-info-list > .synagogue-info-subheading:first-child { margin-top: 0.15em; }
+
+/* 1.38.0 I85: the top of the right column (clock, dates, weekly parasha) is its own stacking
+   context above the rest of the column, so a neighbouring layer (tiles, candles, scrolling lists)
+   can never be painted over it. No forced GPU layer (no will-change / translateZ). */
+.main-container .right .board-right-header {
+  position: relative;
+  z-index: 3;
+  isolation: isolate;
+}

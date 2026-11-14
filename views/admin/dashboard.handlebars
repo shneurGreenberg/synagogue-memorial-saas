@@ -264,7 +264,17 @@ html.preview-edit-pending #settingsForm > .admin-panel:not(.settings-preview-pan
                                     data-preview-label="{{t 'gold_clock_label'}}" {{#if synagogue.theme.goldClock}}checked{{/if}}>
                                 <span class="settings-gold-toggle-text">{{t 'gold_on_clock'}}</span>
                             </label>
-                            <span class="settings-gold-sample" aria-hidden="true">Aa אב</span>
+                            <label class="settings-gold-style" for="goldStyle">
+                                <span class="settings-gold-style-text">{{t 'gold_style'}}</span>
+                                <select name="goldStyle" id="goldStyle" class="form-control admin-select-modern settings-gold-style-select"
+                                    data-preview-label="{{t 'gold_style_label'}}">
+                                    <option value="subtle" {{#if (eq synagogue.theme.goldStyle 'subtle')}}selected{{/if}}>{{t 'gold_style_subtle'}}</option>
+                                    <option value="shiny" {{#if (eq synagogue.theme.goldStyle 'shiny')}}selected{{/if}}>{{t 'gold_style_shiny'}}</option>
+                                    <option value="matte" {{#if (eq synagogue.theme.goldStyle 'matte')}}selected{{/if}}>{{t 'gold_style_matte'}}</option>
+                                    <option value="solid" {{#if (eq synagogue.theme.goldStyle 'solid')}}selected{{/if}}>{{t 'gold_style_solid'}}</option>
+                                </select>
+                            </label>
+                            <span class="settings-gold-sample" id="goldStyleSample" data-gold-style="{{synagogue.theme.goldStyle}}" aria-hidden="true">Aa אב</span>
                         </div>
                         {{#if adminPermissions.settingsPreview}}<span class="field-hint settings-unified-where">{{t 'unified_colors_where'}}</span>{{/if}}
                     </div>
@@ -813,6 +823,10 @@ html.preview-edit-pending #settingsForm > .admin-panel:not(.settings-preview-pan
                 goldPrimary: checkedFlag('goldPrimaryToggle'),
                 goldText: checkedFlag('goldTextToggle'),
                 goldClock: checkedFlag('goldClockToggle'),
+                goldStyle: (function () {
+                    var el = document.getElementById('goldStyle');
+                    return el ? el.value : 'subtle';
+                })(),
                 tileColor: tile ? tile.value : '',
                 tileOpacity: tileOpacity ? tileOpacity.value : '100',
                 panelBorderColor: panelBorderColor ? panelBorderColor.value : '',
@@ -990,6 +1004,15 @@ html.preview-edit-pending #settingsForm > .admin-panel:not(.settings-preview-pan
         document.querySelectorAll('.settings-gold-checkbox').forEach(function (box) {
             box.addEventListener('change', schedulePreview);
         });
+        // 1.38.0 I84: gold style select
+        var goldStyleSelect = document.getElementById('goldStyle');
+        if (goldStyleSelect) {
+            goldStyleSelect.addEventListener('change', function () {
+                var sample = document.getElementById('goldStyleSample');
+                if (sample) sample.setAttribute('data-gold-style', goldStyleSelect.value);
+                schedulePreview();
+            });
+        }
 
         var logoCircleToggle = document.getElementById('logoCircleToggle');
         function syncLogoCirclePreview() {
@@ -1105,7 +1128,7 @@ html.preview-edit-pending #settingsForm > .admin-panel:not(.settings-preview-pan
             params.set('accentColor', patch.accentColor || '');
             if (patch.clockColor) params.set('clockColor', patch.clockColor);
             if (patch.shabbatColor) params.set('shabbatColor', patch.shabbatColor);
-            ['unifiedColors', 'goldPrimary', 'goldText', 'goldClock'].forEach(function (key) {
+            ['unifiedColors', 'goldPrimary', 'goldText', 'goldClock', 'goldStyle'].forEach(function (key) {
                 if (patch[key] !== undefined) params.set(key, patch[key]);
             });
             params.set('tileColor', patch.tileColor || '');
