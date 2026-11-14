@@ -52,7 +52,7 @@ function candleModeOverride() {
   try {
     const params = new URLSearchParams(window.location.search || '');
     const value = String(params.get('candle') || '').toLowerCase();
-    return ['static', 'lite', 'full'].includes(value) ? value : '';
+    return ['static', 'lite', 'full', 'css'].includes(value) ? value : '';
   } catch (_) {
     return '';
   }
@@ -63,6 +63,8 @@ function candleModeOverride() {
  * forced to a fully static candle. They now get the "lite" candle — the flame still flickers
  * (cheap transform/opacity animation only), but without the blurred glow layer that was heavy
  * on the TV GPU. Fully static only for engines without requestAnimationFrame, or `?candle=static`.
+ * 1.38.0 I85: 'full' / 'lite' flames are moved by one shared JS driver (lib/candle-flicker.js)
+ * instead of a CSS animation per candle; `?candle=css` brings back the old CSS animation.
  */
 export function resolveBoardCandleMode() {
   const override = typeof window !== 'undefined' ? candleModeOverride() : '';

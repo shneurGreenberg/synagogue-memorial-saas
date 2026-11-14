@@ -28,7 +28,9 @@
   var GOLD_PRIMARY = 'goldPrimaryToggle';
   var GOLD_TEXT = 'goldTextToggle';
   var GOLD_CLOCK = 'goldClockToggle';
-  var MAIN_COLORS = [UNIFIED, 'primaryColor', GOLD_PRIMARY, 'textColor', GOLD_TEXT];
+  // 1.38.0 I84: «סגנון הזהב» (subtle / shiny / matte / solid) sits right after the gold switches.
+  var GOLD_STYLE = 'goldStyle';
+  var MAIN_COLORS = [UNIFIED, 'primaryColor', GOLD_PRIMARY, 'textColor', GOLD_TEXT, GOLD_STYLE];
 
   // Most specific first: the first matching region wins.
   var REGIONS = [
@@ -47,7 +49,7 @@
     { key: 'hayomYom', selector: '.hayom-yom-panel', fields: ['feature_hayomYom', 'fontScale_hayomYom', 'accentColor'].concat(MAIN_COLORS) },
     { key: 'dailyStudy', selector: '.daily-gates-panel', fields: ['feature_dailyChumash', 'feature_dailyTehillim',
       'feature_dailyRambam', 'feature_dailyTanya', 'fontScale_dailyStudy', 'accentColor'].concat(MAIN_COLORS) },
-    { key: 'weather', selector: '.weather-panel', fields: ['feature_weather', 'fontScale_weather', UNIFIED, 'textColor', GOLD_TEXT] },
+    { key: 'weather', selector: '.weather-panel', fields: ['feature_weather', 'fontScale_weather', UNIFIED, 'textColor', GOLD_TEXT, GOLD_STYLE] },
     { key: 'prayers', selector: '.memorial-prayers', fields: ['feature_kelMaleRachamim', 'feature_izkor', 'fontScale_prayers', 'fontScale_prayerOverlay'] },
     { key: 'donationQr', selector: '.donation-qr-panel', fields: ['publicSubmissionShowDonationQr', 'donationQrTitle',
       'publicSubmissionDonationUrl', 'memorialQrTitleScale', 'memorialQrQrScale'], move: ['input[name="donationQrImage"]'] },
@@ -363,7 +365,7 @@
    * (they stay in the form, so saving is unchanged). Toggles stay visible because their board part
    * can disappear when switched off; boardMode stays because it changes which parts exist.
    * Turning the preview-edit toggle off shows everything again. */
-  var KEEP_IN_FORM = { boardMode: true, unifiedColorsToggle: true, goldPrimaryToggle: true, goldTextToggle: true, goldClockToggle: true };
+  var KEEP_IN_FORM = { boardMode: true, unifiedColorsToggle: true, goldPrimaryToggle: true, goldTextToggle: true, goldClockToggle: true, goldStyle: true };
   function coveredIds() {
     var out = {};
     REGIONS.forEach(function (r) {

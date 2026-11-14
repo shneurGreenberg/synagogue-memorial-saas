@@ -28,6 +28,7 @@ function useAutoScroll(ref, deps) {
     let pauseUntil = Date.now() + 3000;
     el.scrollTop = 0;
     const id = window.setInterval(() => {
+      if (document.hidden) return;
       const max = el.scrollHeight - el.clientHeight;
       if (max <= 2) {
         if (el.scrollTop) el.scrollTop = 0;
@@ -47,6 +48,12 @@ function useAutoScroll(ref, deps) {
 // When the list overflows its box, a second copy is rendered right after the first one and the
 // box scrolls down forever; once the first copy has fully passed we jump back by its height,
 // which looks identical, so the motion never reverses.
+// 1.38.0 I85: the copy height / gap used to be measured (getBoundingClientRect + getComputedStyle,
+// i.e. a forced layout) on EVERY 25 ms step — with three loops since 1.37.0 that is ~120 forced
+// layouts a second, which starves weak TV browsers over hours. Now they are measured once a
+// second and the loop does nothing while the page is hidden.
+export const LOOP_SCROLL_STEP_MS = 25;
+export const LOOP_SCROLL_MEASURE_EVERY = 40;
 export function useLoopScroll(ref, deps) {
   const [looping, setLooping] = useState(false);
   useEffect(() => {
@@ -54,12 +61,27 @@ export function useLoopScroll(ref, deps) {
     if (!el) return undefined;
     let pos = 0;
     let pauseUntil = Date.now() + 3000;
+    let ticks = 0;
+    let copyHeight = 0;
+    let gap = 0;
+    let boxHeight = 0;
     el.scrollTop = 0;
-    const id = window.setInterval(() => {
+    const measure = () => {
       const first = el.firstElementChild;
-      if (!first) return;
-      const copyHeight = first.getBoundingClientRect().height;
-      const overflow = copyHeight > el.clientHeight + 2;
+      if (!first) return false;
+      copyHeight = first.getBoundingClientRect().height;
+      gap = parseFloat(getComputedStyle(first).marginBottom) || 0;
+      boxHeight = el.clientHeight;
+      return true;
+    };
+    const id = window.setInterval(() => {
+      if (document.hidden) return;
+      if (ticks % LOOP_SCROLL_MEASURE_EVERY === 0 && !measure()) {
+        ticks += 1;
+        return;
+      }
+      ticks += 1;
+      const overflow = copyHeight > boxHeight + 2;
       if (overflow !== looping) {
         setLooping(overflow);
         return;
@@ -71,11 +93,10 @@ export function useLoopScroll(ref, deps) {
       }
       if (Date.now() < pauseUntil) return;
       pos += 0.5;
-      const gap = parseFloat(getComputedStyle(first).marginBottom) || 0;
       const period = copyHeight + gap;
       if (period > 0 && pos >= period) pos -= period;
       el.scrollTop = pos;
-    }, 25);
+    }, LOOP_SCROLL_STEP_MS);
     return () => window.clearInterval(id);
   }, [...deps, looping]); // eslint-disable-line react-hooks/exhaustive-deps
   return looping;
@@ -105,7 +126,7 @@ function useSplitHeights(containerRef, partARef, partBRef, deps) {
   useEffect(() => {
     const measure = () => {
       const container = containerRef.current;
-      if (!container) return;
+      if (!container || document.hidden) return;
       const next = splitSectionHeights(
         container.clientHeight,
         naturalPartHeight(partARef.current),

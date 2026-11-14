@@ -57,7 +57,13 @@
   border-radius: 50% 50% 20% 20%;
   box-shadow: 0 calc(-5 * var(--css-candle-unit)) calc(7 * var(--css-candle-unit)) 0 var(--candle-flame-shadow);
   background: linear-gradient(var(--candle-flame-core) 70%, transparent);
-  will-change: transform, opacity;
+  /* 1.38.0 I85: no will-change and no per-candle CSS animation — the flame is nudged by one shared
+     JS driver (client/src/lib/candle-flicker.js), so no candle gets a permanent GPU layer. */
+  transform: rotate(0deg) scaleY(0.97);
+}
+
+/* `?candle=css`: the pre-1.38 CSS keyframe animation (no will-change). */
+.css-candle-css .css-candle-flame {
   animation: css-candle-flame-sway 3.2s ease-in-out infinite;
 }
 
@@ -168,8 +174,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .css-candle-flame,
-  .css-candle-lite .css-candle-flame {
+  .css-candle-css .css-candle-flame {
     animation: css-candle-flame-flicker 2.8s ease-in-out infinite;
   }
 }
@@ -178,6 +183,8 @@
   .css-candle-glow,
   .css-candle-flame {
     animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
   }
 }
 
@@ -188,7 +195,5 @@
 
   .css-candle-flame {
     box-shadow: none;
-    animation: css-candle-flame-sway 3.6s ease-in-out infinite;
-    will-change: transform, opacity;
   }
 }

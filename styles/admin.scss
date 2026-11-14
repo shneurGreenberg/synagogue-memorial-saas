@@ -1966,6 +1966,11 @@ body.admin-is-busy {
       --css-candle-unit: 0.38px;
       margin: 0 auto;
 
+      /* 1.38.0 I85: the board drives flames from JS now; the single admin sample keeps CSS motion. */
+      .css-candle-flame {
+        animation: css-candle-flame-sway 3.2s ease-in-out infinite;
+      }
+
       .css-candle-bottom {
         display: none;
       }
@@ -5066,6 +5071,14 @@ body.admin-theme-light {
   .settings-gold-toggle { margin-top: 0; }
 }
 .settings-gold-row-title { font-weight: 600; font-size: 0.85rem; }
+/* 1.38.0 I84: gold style picker (subtle / shiny / matte / solid) next to the gold switches */
+.settings-gold-style {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  .settings-gold-style-select { width: auto; min-width: 150px; padding: 2px 8px; height: auto; font-size: 0.82rem; }
+}
 .settings-unified-where { font-size: 0.78rem; }
 /* 1.37.1: proxies in the preview-editor panels that unified colors currently override */
 .preview-editor-row.is-locked { opacity: 0.55; }
@@ -5078,3 +5091,6 @@ body.admin-theme-light {
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+.settings-gold-sample[data-gold-style='subtle'] { background-image: linear-gradient(180deg, #f3dc8e 0%, #e6c463 38%, #d2a843 70%, #e9cd78 100%); }
+.settings-gold-sample[data-gold-style='matte'] { background-image: linear-gradient(180deg, #d2b067 0%, #c4a052 50%, #b48f45 100%); }
+.settings-gold-sample[data-gold-style='solid'] { background-image: none; -webkit-text-fill-color: #d9b04a; }

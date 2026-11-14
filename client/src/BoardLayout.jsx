@@ -4,6 +4,7 @@ import { BoardNavigationProvider } from './context/BoardNavigationContext';
 import { BoardDataProvider } from './context/BoardDataContext';
 import { ThemeStyles } from './components/ThemeStyles';
 import { IdleReload } from './components/IdleReload';
+import { BoardSoftReload } from './components/BoardSoftReload';
 import { BoardVersionBadge } from './components/BoardVersionBadge';
 import { BoardFontLoader } from './components/BoardFontLoader';
 import { StaticSiteBanner } from './components/StaticSiteBanner';
@@ -46,6 +47,7 @@ function BoardLayoutInner() {
       <ThemeStyles />
       <BoardFontLoader />
       <IdleReload />
+      <BoardSoftReload />
       <BoardVersionBadge />
       <StaticSiteBanner />
       <div id="main-entry">

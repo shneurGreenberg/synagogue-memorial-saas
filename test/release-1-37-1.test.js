@@ -8,14 +8,14 @@ const read = (rel) => fs.readFileSync(path.join(__dirname, '..', rel), 'utf8');
 describe('1.37.1 A: unified colors + gold are reachable from the preview editor', () => {
   const js = read('public/js/admin-preview-editor.js');
   it('every colour panel offers the toggle and gold options', () => {
-    assert.match(js, /var MAIN_COLORS = \[UNIFIED, 'primaryColor', GOLD_PRIMARY, 'textColor', GOLD_TEXT\]/);
+    assert.match(js, /var MAIN_COLORS = \[UNIFIED, 'primaryColor', GOLD_PRIMARY, 'textColor', GOLD_TEXT, GOLD_STYLE\]/);
     assert.match(js, /fields: \['clockColor', GOLD_CLOCK\]\.concat\(MAIN_COLORS/);
     assert.match(js, /fields: \['boardTitleText'\]\.concat\(MAIN_COLORS/);
     assert.match(js, /fields: MAIN_COLORS\.concat\(\['tileColor'/);
     assert.match(js, /data-preview-label/);
   });
   it('the toggle and gold checkboxes are never hidden by the preview editor', () => {
-    assert.match(js, /KEEP_IN_FORM = \{ boardMode: true, unifiedColorsToggle: true, goldPrimaryToggle: true, goldTextToggle: true, goldClockToggle: true \}/);
+    assert.match(js, /KEEP_IN_FORM = \{ boardMode: true, unifiedColorsToggle: true, goldPrimaryToggle: true, goldTextToggle: true, goldClockToggle: true, goldStyle: true \}/);
     const view = read('views/admin/dashboard.handlebars');
     const block = view.slice(view.indexOf('id="settingsUnifiedColors"'), view.indexOf('id="settingsColorGrid"'));
     ['unifiedColorsToggle', 'goldPrimaryToggle', 'goldTextToggle', 'goldClockToggle'].forEach((id) => {
