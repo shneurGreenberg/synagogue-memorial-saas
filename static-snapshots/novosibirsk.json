@@ -3498,8 +3498,8 @@
     "prayers": "",
     "zmanim": "Времена"
   },
-  "contentVersion": 1794646336814,
-  "exportedAt": "2026-11-14T08:52:16.814Z",
+  "contentVersion": 1794658538402,
+  "exportedAt": "2026-11-14T12:15:38.402Z",
   "jewishContent": {
     "date": "2026-11-14",
     "timezone": "Asia/Novosibirsk",
@@ -3777,6 +3777,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-11-14T08:52:16.814Z"
+    "updatedAt": "2026-11-14T12:15:38.402Z"
   }
 }
