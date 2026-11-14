@@ -6326,44 +6326,44 @@
   "combinedZmanimScale": 100,
   "combinedPrayersScale": 100,
   "combinedAnnouncementScale": 100,
-  "contentVersion": 1794561921000,
-  "exportedAt": "2026-11-13T09:25:21.000Z",
+  "contentVersion": 1794646337874,
+  "exportedAt": "2026-11-14T08:52:17.874Z",
   "jewishContent": {
-    "date": "2026-11-13",
+    "date": "2026-11-14",
     "timezone": "Asia/Tomsk",
     "dailyLearning": {
-      "date": "2026-11-13",
+      "date": "2026-11-14",
       "timezone": "Asia/Tomsk",
       "chumash": {
-        "label": "Толдот, 6-я часть"
+        "label": "Толдот, 7-я часть"
       },
       "tehillim": {
-        "label": "Псалмы 18-22"
+        "label": "Псалмы 23-28"
       },
       "tanya": {
         "label": "Кунтрес Ахарон, гл. 4"
       },
       "rambam": {
-        "label": "Запрещённая пища 3"
+        "label": "Запрещённая пища 4"
       },
       "rambam3": {
-        "label": "Шлухин ве-шутафин 8-10"
+        "label": "Авадим 1-3"
       },
       "hayomYom": {
         "available": true,
-        "text": "Одно из различий между путями Бааль-Шем-Това и Магида заключалось в том, что Бааль-Шем-Тов совершал всевозможные поездки, в то время как Магид оставался дома. Кроме того, когда Магид был Ребе, хасидизм был уже широко известен даже в отдаленных местах благодаря многочисленным поездкам «Святого братства». Таким образом, многие простые люди всем сердцем привязались к хасидизму и стали совершать поездки в Межирич.",
+        "text": "При омовении «маим ахроним» омывают кончики пальцев и, пока они ещё влажные, проводят ими по губам.",
         "source": "translation",
         "hebrewMonth": 9,
-        "hebrewDay": 3,
+        "hebrewDay": 4,
         "lessons5703": {
           "chumash": {
-            "label": "Vayeitsei, Shlishi with Rashi."
+            "label": "Vayeitsei, Revi'i with Rashi."
           },
           "tehillim": {
-            "label": "18-22."
+            "label": "23-28."
           },
           "tanya": {
-            "label": "To perform a (p. 603).see my hinderpart.\" (p. 605)."
+            "label": "But the performance (p. 605).of the law. (p. 607)."
           }
         }
       }
@@ -6542,6 +6542,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-11-13T09:25:21.000Z"
+    "updatedAt": "2026-11-14T08:52:17.874Z"
   }
 }
