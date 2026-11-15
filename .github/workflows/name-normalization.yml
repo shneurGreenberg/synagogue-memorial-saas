@@ -11,17 +11,21 @@ on:
         type: choice
         options: [dry-run, apply, restore]
       rule:
-        description: 'ben-bat (сын/дочь → бен/бат) | patronymic (…овна → бат …) | drop-patronymic-dup (…ович бен … → бен …)'
+        description: 'ben-bat (сын/дочь → бен/бат) | patronymic (…овна → бат …) | drop-patronymic-dup (…ович бен … → бен …) | nominative-parents (бен Александра → бен Александр)'
         required: false
         default: ben-bat
         type: choice
-        options: [ben-bat, patronymic, drop-patronymic-dup]
+        options: [ben-bat, patronymic, drop-patronymic-dup, nominative-parents]
       result_pubkey:
         description: 'optional: base64 RSA public key PEM — rows go to an encrypted artifact, log shows counts only'
         required: false
         default: ''
       gender_fix:
         description: 'patronymic only: approved gender corrections by id, e.g. novosibirsk:202=female,kazan:21=female'
+        required: false
+        default: ''
+      approve:
+        description: 'nominative-parents only: approved uncertain rows by id, applied as their suggestion, e.g. novosibirsk:32,novosibirsk:36'
         required: false
         default: ''
       run_id:
@@ -58,13 +62,14 @@ jobs:
           RULE: ${{ inputs.rule || 'ben-bat' }}
           RESULT_PUBKEY: ${{ inputs.result_pubkey }}
           GENDER_FIX: ${{ inputs.gender_fix }}
+          APPROVE: ${{ inputs.approve }}
         run: |
           if [ "$MODE" != "dry-run" ] && [ "$CONFIRM" != "APPLY" ]; then
             echo "Refusing $MODE without confirm=APPLY"; exit 1
           fi
           ENC=""
           if [ -n "$RESULT_PUBKEY" ]; then ENC="--encrypt-to=normalization-result.enc.json"; fi
-          node scripts/run-name-normalization.js --mode="$MODE" --rule="$RULE" --run-id="$RUN_ID" --gender-fix="$GENDER_FIX" $ENC
+          node scripts/run-name-normalization.js --mode="$MODE" --rule="$RULE" --run-id="$RUN_ID" --gender-fix="$GENDER_FIX" --approve="$APPROVE" $ENC
       - name: Upload encrypted result
         if: ${{ inputs.result_pubkey != '' }}
         uses: actions/upload-artifact@v4

@@ -141,7 +141,7 @@ describe('1.36.0 I67: admin add-deceased builds the name like the public form', 
     assert.deepEqual(buildDeceasedBoardNameFromAdminForm({ name: 'Иван Петрович', gender: 'male' }, 'ru'), { name: 'Иван Петрович', gender: '' });
   });
   it('no gender chosen → inferred from the name, default male; a typed prefix is not doubled', () => {
-    assert.equal(buildDeceasedBoardNameFromAdminForm({ name: 'Софья', fatherName: 'Рувима', gender: 'unknown' }, 'ru').name, 'Софья бат Рувима');
+    assert.equal(buildDeceasedBoardNameFromAdminForm({ name: 'Софья', fatherName: 'Рувима', gender: 'unknown' }, 'ru').name, 'Софья бат Рувим'); // I87
     assert.equal(buildDeceasedBoardNameFromAdminForm({ name: 'בן כהן', fatherName: 'דוד', gender: '' }, 'he').gender, 'male');
   });
   it('admin form has separate father field + live preview script', () => {
