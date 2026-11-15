@@ -24,6 +24,10 @@ on:
         description: 'patronymic only: approved gender corrections by id, e.g. novosibirsk:202=female,kazan:21=female'
         required: false
         default: ''
+      approve:
+        description: 'nominative-parents only: approved uncertain rows by id, applied as their suggestion, e.g. novosibirsk:32,novosibirsk:36'
+        required: false
+        default: ''
       run_id:
         description: 'runId to restore (restore mode only)'
         required: false
@@ -58,13 +62,14 @@ jobs:
           RULE: ${{ inputs.rule || 'ben-bat' }}
           RESULT_PUBKEY: ${{ inputs.result_pubkey }}
           GENDER_FIX: ${{ inputs.gender_fix }}
+          APPROVE: ${{ inputs.approve }}
         run: |
           if [ "$MODE" != "dry-run" ] && [ "$CONFIRM" != "APPLY" ]; then
             echo "Refusing $MODE without confirm=APPLY"; exit 1
           fi
           ENC=""
           if [ -n "$RESULT_PUBKEY" ]; then ENC="--encrypt-to=normalization-result.enc.json"; fi
-          node scripts/run-name-normalization.js --mode="$MODE" --rule="$RULE" --run-id="$RUN_ID" --gender-fix="$GENDER_FIX" $ENC
+          node scripts/run-name-normalization.js --mode="$MODE" --rule="$RULE" --run-id="$RUN_ID" --gender-fix="$GENDER_FIX" --approve="$APPROVE" $ENC
       - name: Upload encrypted result
         if: ${{ inputs.result_pubkey != '' }}
         uses: actions/upload-artifact@v4

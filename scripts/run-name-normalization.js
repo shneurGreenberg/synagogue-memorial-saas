@@ -5,7 +5,7 @@
  * master admin at POST /master/api/name-normalization).
  *
  *   MONGODB_URI=... node scripts/run-name-normalization.js --mode=dry-run|apply|restore [--run-id=…] [--slug=…]
- *     [--rule=ben-bat|patronymic|drop-patronymic-dup|nominative-parents] [--encrypt-to=out.enc.json] [--gender-fix=slug:id=female,…]
+ *     [--rule=ben-bat|patronymic|drop-patronymic-dup|nominative-parents] [--encrypt-to=out.enc.json] [--gender-fix=slug:id=female,…] [--approve=slug:id,…]
  *
  * 1.37.0 I65: --rule=patronymic converts Russian patronymics (…Ефимовна → бат Ефим). With --encrypt-to and
  * RESULT_PUBKEY (base64 of an RSA public key PEM) the rows go only into a CSV encrypted for that key
@@ -33,6 +33,10 @@ arg('gender-fix').split(',').map((x) => x.trim()).filter(Boolean).forEach((x) =>
   genderFix[`${m[1]}:${m[2]}`] = m[3];
 });
 
+// I87: approved uncertain rows by record id only (slug:id,…), applied as their suggestion.
+const approve = arg('approve').split(',').map((x) => x.trim()).filter(Boolean);
+approve.forEach((x) => { if (!/^[a-z0-9-]+:[^,=\s]+$/.test(x)) throw new Error(`bad --approve entry: ${x}`); });
+
 const csvCell = (v) => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;
 function rowsToCsv(rows) {
   const head = ['community', 'id', 'old_name', 'new_name', 'father_derived', 'patronymic', 'gender_old', 'gender_new',
@@ -57,7 +61,7 @@ const redact = (msg) => String(msg || '').replace(/mongodb(\+srv)?:\/\/\S+/g, '[
 (async () => {
   if (!process.env.MONGODB_URI) throw new Error('MONGODB_URI is not set');
   await mongoose.connect(process.env.MONGODB_URI, { serverSelectionTimeoutMS: 20000 });
-  const result = await runNameNormalization(mongoose.connection.db, { mode, rule, genderFix, runId: arg('run-id'), slug: arg('slug') });
+  const result = await runNameNormalization(mongoose.connection.db, { mode, rule, genderFix, approve, runId: arg('run-id'), slug: arg('slug') });
   const { rows, ...rest } = result;
   console.log(`MODE ${mode} RULE ${rule}`);
   console.log(JSON.stringify(rest, null, 2));

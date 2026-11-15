@@ -56,3 +56,16 @@ describe('I87: parent names after бен/бат in the nominative', () => {
     assert.equal(rows.find((r) => r.id === 1).newName, 'Иванов Виктор бен Александр');
   });
 });
+
+describe('1.39.0 I87: approved uncertain rows by id', () => {
+  it('applies the suggestion only for approved ids', async () => {
+    const synagogues = { find: () => ({ toArray: async () => [{ slug: 'x', people: [
+      { id: 1, name: 'Иванов Герш бен Лейба' }, { id: 2, name: 'Иванов Шмуль бен Эли' }, { id: 3, name: 'Иванов Копель бен Лейба' },
+    ] }] }) };
+    const { summary, rows } = await planNormalization(synagogues, { rule: 'nominative-parents', approve: ['x:1', 'x:2'] });
+    assert.equal(rows.find((r) => r.id === 1).newName, 'Иванов Герш бен Лейб');
+    assert.equal(rows.find((r) => r.id === 2).uncertain, true); // suggestion = same name, nothing to apply
+    assert.equal(rows.find((r) => r.id === 3).uncertain, true);
+    assert.equal(summary.nameChanges, 1);
+  });
+});
