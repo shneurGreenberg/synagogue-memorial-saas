@@ -29,7 +29,7 @@ describe('deceased board name', () => {
         gender: 'male',
         lang: 'ru',
       }),
-      'Виктор бен Александра',
+      'Виктор бен Александр' // I87: nominative,
     );
     assert.equal(
       buildDeceasedBoardName({
@@ -51,7 +51,7 @@ describe('deceased board name', () => {
     assert.equal(genderPrefix('female', 'ru'), 'бат');
     assert.equal(genderPrefix('male', 'he'), 'בן');
     assert.equal(buildDeceasedBoardName({ deceasedName: 'שרה', fatherName: 'אברהם', gender: 'female', lang: 'ru' }), 'שרה בת אברהם');
-    assert.equal(buildDeceasedBoardName({ deceasedName: 'Софья', fatherName: 'Рувима', gender: 'female', lang: 'he' }), 'Софья бат Рувима');
+    assert.equal(buildDeceasedBoardName({ deceasedName: 'Софья', fatherName: 'Рувима', gender: 'female', lang: 'he' }), 'Софья бат Рувим'); // I87
     assert.equal(buildDeceasedBoardName({ deceasedName: 'Иван', fatherName: '', gender: 'male', lang: 'ru' }), 'Иван');
   });
 });
