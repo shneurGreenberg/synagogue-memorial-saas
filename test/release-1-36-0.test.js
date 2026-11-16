@@ -134,21 +134,28 @@ describe('1.36.0 I66: combined board large tile for a single yahrzeit', () => {
 describe('1.36.0 I67: admin add-deceased builds the name like the public form', () => {
   const { buildDeceasedBoardNameFromAdminForm } = require('../lib/admin-deceased-name');
   it('adds בן/בת or бен/бат from the gender choice', () => {
-    assert.deepEqual(buildDeceasedBoardNameFromAdminForm({ name: 'משה כהן', fatherName: 'אברהם', gender: 'male' }, 'he'), { name: 'משה כהן בן אברהם', gender: 'male' });
-    assert.deepEqual(buildDeceasedBoardNameFromAdminForm({ name: 'Коган Сара', fatherName: 'Моше', gender: 'female' }, 'ru'), { name: 'Коган Сара бат Моше', gender: 'female' });
+    assert.equal(buildDeceasedBoardNameFromAdminForm({ name: 'משה כהן', fatherName: 'אברהם', gender: 'male' }, 'he').name, 'משה כהן בן אברהם');
+    assert.equal(buildDeceasedBoardNameFromAdminForm({ name: 'Коган Сара', fatherName: 'Моше', gender: 'female' }, 'ru').name, 'Коган Сара бат Моше');
   });
   it('without a father name the name is kept as typed', () => {
-    assert.deepEqual(buildDeceasedBoardNameFromAdminForm({ name: 'Иван Петрович', gender: 'male' }, 'ru'), { name: 'Иван Петрович', gender: '' });
+    // 1.41.0: the legacy single `name` field still works (it becomes the given-name part).
+    const built = buildDeceasedBoardNameFromAdminForm({ name: 'Иван Петрович', gender: 'male' }, 'ru');
+    assert.equal(built.name, 'Иван Петрович');
+    assert.equal(built.givenName, 'Иван Петрович');
+    assert.equal(built.gender, '');
+    assert.equal(built.parentName, '');
   });
   it('no gender chosen → inferred from the name, default male; a typed prefix is not doubled', () => {
     assert.equal(buildDeceasedBoardNameFromAdminForm({ name: 'Софья', fatherName: 'Рувима', gender: 'unknown' }, 'ru').name, 'Софья бат Рувим'); // I87
     assert.equal(buildDeceasedBoardNameFromAdminForm({ name: 'בן כהן', fatherName: 'דוד', gender: '' }, 'he').gender, 'male');
   });
-  it('admin form has separate father field + live preview script', () => {
+  it('admin form has separate parent + given-name fields and a live preview script', () => {
     const view = read('views/admin/people.handlebars');
-    assert.match(view, /name="fatherName" id="addFatherName"/);
+    // 1.41.0: three normalized parts — Surname / Given name / Parent name.
+    assert.match(view, /name="parentName" id="addParentName"/);
+    assert.match(view, /name="givenName" id="addGivenName"/);
     assert.match(view, /data-deceased-name-preview/);
-    assert.match(read('routes/admin.js'), /buildDeceasedBoardNameFromAdminForm\(req\.body/);
+    assert.match(read('routes/admin.js'), /buildDeceasedBoardNameFromAdminForm\(/);
     assert.match(read('routes/admin.js'), /'admin-deceased-name\.js'/);
   });
 });

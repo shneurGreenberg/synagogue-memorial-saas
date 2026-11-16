@@ -290,10 +290,11 @@
       var g = p.gregorianDateOfDeath;
       var hasG = g && g.year && g.month && g.date;
       var gender = p.gender === 'male' || p.gender === 'female' ? p.gender : 'unknown';
-      // 1.40.0 I88: surname / given name are shown when the person was saved split.
+      // 1.41.0: the three normalized name parts are shown when the person was saved split.
       if (String(p.surname || '').trim() || String(p.givenName || '').trim()) {
         row(L('surname'), String(p.surname || '').trim());
         row(L('given-name'), String(p.givenName || '').trim());
+        row(L('parent-name'), String(p.parentName || '').trim());
       }
       row(L('gender'), L(gender));
       row(L('gregorian'), hasG ? (String(g.date).padStart(2, '0') + '.' + String(g.month).padStart(2, '0') + '.' + g.year) : '');

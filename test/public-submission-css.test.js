@@ -68,9 +68,9 @@ describe('public-submission CSS (RTL-safe layout)', () => {
 
   it('Z17 deceased block order: first name row, gender pills, father name, then death date', () => {
     const html = fs.readFileSync(DECEASED_BLOCK_PARTIAL, 'utf8');
-    const firstNameIdx = html.indexOf('[firstName]');
+    const firstNameIdx = html.indexOf('[givenName]');
     const genderIdx = html.indexOf('[deceasedGender]');
-    const fatherIdx = html.indexOf('[fatherName]');
+    const fatherIdx = html.indexOf('[parentName]');
     const deathIdx = html.indexOf('[deathDate]');
     assert.ok(firstNameIdx >= 0 && genderIdx >= 0 && fatherIdx >= 0 && deathIdx >= 0);
     assert.ok(firstNameIdx < genderIdx, 'gender must follow first name');

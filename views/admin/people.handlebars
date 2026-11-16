@@ -125,7 +125,8 @@
   {
     "name": "Example Name",
     "surname": "Example",
-    "firstName": "Name",
+    "givenName": "Name",
+    "parentName": "Father",
     "gregorianDateOfDeath": { "month": 3, "date": 15, "year": 2020 },
     "photo": "",
     "title": "",
@@ -181,21 +182,23 @@
                             <span class="seed-notice">{{t 'photo_hint'}}</span>
                         </div>
                         <div class="person-form-fields">
-                            {{!-- 1.36.0 I67: same as the public add-name form — the deceased's name and the
-                                 father's name are separate; בן/בת (бен/бат) is added from the gender choice.
-                                 1.40.0 I88: the surname is its own field too. --}}
+                            {{!-- 1.36.0 I67: same as the public add-name form — the given name and the
+                                 parent's name are separate; בן/בת (бен/бат) is added from the gender choice.
+                                 1.40.0 I88: the surname is its own field too.
+                                 1.41.0: three normalized parts (Surname / Given name / Parent name);
+                                 the full name is only the read-only preview below. --}}
                             <div class="form-field">
                                 <label for="addSurname">{{t 'person_surname_label'}}</label>
                                 <input type="text" dir="auto" name="surname" id="addSurname" class="form-control" maxlength="120" placeholder="{{t 'person_surname_placeholder'}}" data-deceased-name-part="surname">
                             </div>
                             <div class="form-field">
-                                <label for="addName">{{t 'deceased_name_label'}}</label>
-                                <input type="text" dir="auto" name="name" id="addName" class="form-control" required placeholder="{{t 'deceased_name_placeholder'}}" data-deceased-name-part="name">
+                                <label for="addGivenName">{{t 'person_given_name_label'}}</label>
+                                <input type="text" dir="auto" name="givenName" id="addGivenName" class="form-control" required placeholder="{{t 'person_given_name_placeholder'}}" data-deceased-name-part="givenName">
                                 <span class="field-hint">{{t 'person_given_name_hint'}}</span>
                             </div>
                             <div class="form-field">
-                                <label for="addFatherName">{{t 'person_add_request_father'}}</label>
-                                <input type="text" dir="auto" name="fatherName" id="addFatherName" class="form-control" maxlength="120" placeholder="{{t 'father_name_placeholder'}}" data-deceased-name-part="father">
+                                <label for="addParentName">{{t 'person_parent_name_label'}}</label>
+                                <input type="text" dir="auto" name="parentName" id="addParentName" class="form-control" maxlength="120" placeholder="{{t 'person_parent_name_placeholder'}}" data-deceased-name-part="parent">
                             </div>
                             <div class="form-field admin-gender-field">
                                 <label>{{t 'gender_label'}}</label>
@@ -279,15 +282,21 @@
                             </button>
                         </div>
                         <div class="person-form-fields">
-                            {{!-- 1.40.0 I88: the edit form also keeps the surname apart; the typed
-                                 name stays the full display name. --}}
+                            {{!-- 1.41.0: three normalized parts — Surname / Given name / Parent name.
+                                 The full name is only the read-only preview below; the server keeps a
+                                 legacy unsplit person's stored name when the parts were not touched. --}}
                             <div class="form-field">
                                 <label for="editSurname">{{t 'person_surname_label'}}</label>
-                                <input type="text" dir="auto" name="surname" id="editSurname" class="form-control" maxlength="120" placeholder="{{t 'person_surname_placeholder'}}">
+                                <input type="text" dir="auto" name="surname" id="editSurname" class="form-control" maxlength="120" placeholder="{{t 'person_surname_placeholder'}}" data-deceased-name-part="surname">
                             </div>
                             <div class="form-field">
-                                <label for="editName">{{t 'name'}}</label>
-                                <input type="text" dir="auto" name="name" id="editName" class="form-control" required placeholder="{{t 'name_placeholder'}}">
+                                <label for="editGivenName">{{t 'person_given_name_label'}}</label>
+                                <input type="text" dir="auto" name="givenName" id="editGivenName" class="form-control" required placeholder="{{t 'person_given_name_placeholder'}}" data-deceased-name-part="givenName">
+                                <span class="field-hint">{{t 'person_given_name_hint'}}</span>
+                            </div>
+                            <div class="form-field">
+                                <label for="editParentName">{{t 'person_parent_name_label'}}</label>
+                                <input type="text" dir="auto" name="parentName" id="editParentName" class="form-control" maxlength="120" placeholder="{{t 'person_parent_name_placeholder'}}" data-deceased-name-part="parent">
                             </div>
                             <div class="form-field admin-gender-field">
                                 <label>{{t 'gender_label'}}</label>
@@ -297,6 +306,8 @@
                                     <label class="admin-seg-option"><input type="radio" name="gender" value="female" id="editGenderFemale"><span>{{t 'gender_female'}}</span></label>
                                 </div>
                             </div>
+                            <p class="field-hint admin-board-name-preview" id="editBoardNamePreview" data-deceased-name-preview
+                                data-label="{{t 'board_name_preview'}}" data-lang="{{synagogue.language}}" data-name-order="{{#if nameOrderOptions.selected}}{{nameOrderOptions.selected}}{{else}}surname-first{{/if}}" hidden></p>
                             {{> admin-death-date-fields prefix="edit"}}
                             <div class="form-field admin-permanent-field">
                                 <input type="hidden" name="permanent" value="0">

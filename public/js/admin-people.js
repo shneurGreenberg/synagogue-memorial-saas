@@ -957,31 +957,32 @@
     return modal.querySelector('input[name="surname"]');
   }
 
-  /** 1.40.0 I88: the surname field wins over guessing from the full name. */
+  /** 1.41.0: the Given name input of the modal ('' for legacy modal markup). */
+  function getDeceasedGivenNameInput(modal) {
+    if (!modal) {
+      return null;
+    }
+
+    if (modal.id === 'editPersonModal') {
+      return document.getElementById('editGivenName');
+    }
+
+    if (modal.id === 'addPersonModal') {
+      return document.getElementById('addGivenName');
+    }
+
+    return modal.querySelector('input[name="givenName"]');
+  }
+
+  /** 1.40.0 I88: the surname field wins over guessing from the given name. */
   function resolveFamilyName(modal) {
     const surnameInput = getDeceasedSurnameInput(modal);
     const typed = surnameInput ? String(surnameInput.value || '').trim() : '';
     if (typed) {
       return typed;
     }
-    const deceasedInput = getDeceasedNameInput(modal);
+    const deceasedInput = getDeceasedGivenNameInput(modal);
     return deceasedInput ? extractFamilyName(deceasedInput.value) : '';
-  }
-
-  function getDeceasedNameInput(modal) {
-    if (!modal) {
-      return null;
-    }
-
-    if (modal.id === 'editPersonModal') {
-      return document.getElementById('editName');
-    }
-
-    if (modal.id === 'addPersonModal') {
-      return document.getElementById('addName');
-    }
-
-    return null;
   }
 
   function syncFamilyNameChip(row) {
@@ -990,7 +991,6 @@
     const wrap = row.querySelector('[data-family-name-chip-wrap]');
     const chip = row.querySelector('[data-family-name-chip]');
     const label = row.querySelector('[data-family-name-chip-label]');
-    const deceasedInput = getDeceasedNameInput(modal);
 
     if (!wrap || !chip || !label || !nameInput) {
       return;
@@ -1040,15 +1040,13 @@
       return;
     }
 
-    const deceasedInput = getDeceasedNameInput(modal);
-    if (!deceasedInput || deceasedInput.dataset.familyChipBound === '1') {
-      return;
+    const deceasedInput = getDeceasedGivenNameInput(modal);
+    if (deceasedInput && deceasedInput.dataset.familyChipBound !== '1') {
+      deceasedInput.dataset.familyChipBound = '1';
+      deceasedInput.addEventListener('input', function () {
+        modal.querySelectorAll('.admin-contact-row').forEach(syncFamilyNameChip);
+      });
     }
-
-    deceasedInput.dataset.familyChipBound = '1';
-    deceasedInput.addEventListener('input', function () {
-      modal.querySelectorAll('.admin-contact-row').forEach(syncFamilyNameChip);
-    });
 
     // 1.40.0 I88: typing the surname itself also refreshes the suggestion chips.
     const surnameInput = getDeceasedSurnameInput(modal);
@@ -1213,11 +1211,20 @@
     };
 
     document.getElementById('editId').value = person.id;
-    document.getElementById('editName').value = person.name || '';
-    // 1.40.0 I88: the surname is a field of its own ('' for people that were never split).
+    // 1.41.0: three normalized inputs — Surname / Given name / Parent name.
+    // A legacy unsplit person has no givenName, so the stored full name goes into Given name;
+    // saving it untouched keeps the stored name unchanged (lib/admin-deceased-name.js).
     var editSurnameInput = document.getElementById('editSurname');
     if (editSurnameInput) {
       editSurnameInput.value = person.surname || '';
+    }
+    var editGivenNameInput = document.getElementById('editGivenName');
+    if (editGivenNameInput) {
+      editGivenNameInput.value = person.givenName || person.name || '';
+    }
+    var editParentNameInput = document.getElementById('editParentName');
+    if (editParentNameInput) {
+      editParentNameInput.value = person.parentName || '';
     }
     const death = hasDeathDate(person) ? person.gregorianDateOfDeath : {};
     document.getElementById('editDate').value = death.date || '';
@@ -1258,6 +1265,10 @@
 
     populateContactsSection(document.getElementById('editPersonModal'), person);
     refreshFamilyNameChips(document.getElementById('editPersonModal'));
+    // 1.41.0: the preview is filled from the inputs, so refresh it after prefilling them.
+    if (window.AdminDeceasedNamePreview && typeof window.AdminDeceasedNamePreview.refresh === 'function') {
+      window.AdminDeceasedNamePreview.refresh();
+    }
 
     if (person.photo) {
       cropEditors.edit.setCrop(
