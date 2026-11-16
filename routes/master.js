@@ -604,13 +604,13 @@ router.post('/onboarding/reject', requireMaster, async (req, res) => {
 // the name_normalization_backups collection first; restore undoes one run by its runId.
 router.post('/api/name-normalization', requireMasterApi, async (req, res) => {
     try {
-        const { runNameNormalization } = require('../lib/name-normalization-run');
+        const { runNameNormalization, RULES } = require('../lib/name-normalization-run');
         const mode = String((req.body && req.body.mode) || 'dry-run');
         if (!['dry-run', 'apply', 'restore'].includes(mode)) {
             return res.status(400).json({ error: 'mode must be dry-run, apply or restore' });
         }
-        if (req.body && req.body.rule && !['ben-bat', 'patronymic', 'drop-patronymic-dup', 'nominative-parents', 'split-surname'].includes(String(req.body.rule))) {
-            return res.status(400).json({ error: 'rule must be ben-bat, patronymic, drop-patronymic-dup, nominative-parents or split-surname' });
+        if (req.body && req.body.rule && !RULES.includes(String(req.body.rule))) {
+            return res.status(400).json({ error: `rule must be ${RULES.join(', ')}` });
         }
         const result = await runNameNormalization(Synagogue.db.db, {
             mode,

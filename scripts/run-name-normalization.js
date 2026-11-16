@@ -5,7 +5,7 @@
  * master admin at POST /master/api/name-normalization).
  *
  *   MONGODB_URI=... node scripts/run-name-normalization.js --mode=dry-run|apply|restore [--run-id=…] [--slug=…]
- *     [--rule=ben-bat|patronymic|drop-patronymic-dup|nominative-parents|split-surname] [--encrypt-to=out.enc.json] [--gender-fix=slug:id=female,…] [--approve=slug:id,…]
+ *     [--rule=ben-bat|patronymic|drop-patronymic-dup|nominative-parents|split-surname|split-parts] [--encrypt-to=out.enc.json] [--gender-fix=slug:id=female,…] [--approve=slug:id,…]
  *
  * 1.37.0 I65: --rule=patronymic converts Russian patronymics (…Ефимовна → бат Ефим). With --encrypt-to and
  * RESULT_PUBKEY (base64 of an RSA public key PEM) the rows go only into a CSV encrypted for that key
@@ -40,10 +40,13 @@ approve.forEach((x) => { if (!/^[a-z0-9-]+:[^,=\s]+$/.test(x)) throw new Error(`
 const csvCell = (v) => `"${String(v == null ? '' : v).replace(/"/g, '""')}"`;
 function rowsToCsv(rows) {
   const head = ['community', 'id', 'old_name', 'new_name', 'father_derived', 'patronymic', 'gender_old', 'gender_new',
-    'confidence', 'status', 'note', 'proposed_name_if_approved', 'rule', 'kind', 'surname', 'given_name'];
+    'confidence', 'status', 'note', 'proposed_name_if_approved', 'rule', 'kind', 'surname', 'given_name',
+    'parent_name', 'parent_relation', 'old_surname', 'old_given_name', 'old_parent_name', 'old_parent_relation'];
   const lines = rows.map((r) => [r.community, r.id, r.oldName, r.newName, r.father || '', r.patronymic || '',
     r.oldGender || '', r.newGender || '', r.confidence || '', (r.uncertain || r.ambiguous) ? 'skipped' : 'convert',
-    r.note || '', r.proposedName || '', r.rule, r.kind, r.surname || '', r.givenName || ''].map(csvCell).join(','));
+    r.note || '', r.proposedName || '', r.rule, r.kind, r.surname || '', r.givenName || '',
+    r.parentName || '', r.parentRelation || '', r.oldSurname || '', r.oldGivenName || '',
+    r.oldParentName || '', r.oldParentRelation || ''].map(csvCell).join(','));
   return `\ufeff${head.join(',')}\n${lines.join('\n')}\n`;
 }
 function encryptFor(pubB64, text) {
@@ -75,9 +78,12 @@ const redact = (msg) => String(msg || '').replace(/mongodb(\+srv)?:\/\/\S+/g, '[
   (rows || []).forEach((r) => {
     const status = r.ambiguous ? `SKIP(${r.note})` : (r.uncertain ? `UNCERTAIN(${r.note})` : (r.kind === 'gender' ? `ok(${r.note})` : 'ok'));
     // 1.40.0 I88: a split row keeps `name` as-is, so print the split fields instead of the pair.
+    // 1.41.0 I89: the parts rule does the same (a partial row has no surname yet).
     const detail = r.kind === 'split-surname'
       ? (r.surname ? 'split into surname + given name (see the encrypted CSV)' : 'not split (see the encrypted CSV)')
-      : `${r.oldName} => ${r.newName}`;
+      : r.kind === 'split-parts'
+        ? (r.surname ? 'split into parts (see the encrypted CSV)' : 'partial split, surname left empty (see the encrypted CSV)')
+        : `${r.oldName} => ${r.newName}`;
     console.log([r.kind === 'gender' ? 'GENDER' : 'ROW', r.community, r.id, r.rule, status,
       `gender ${r.oldGender || '-'}→${r.newGender || '-'}`, detail].join(' | '));
   });
