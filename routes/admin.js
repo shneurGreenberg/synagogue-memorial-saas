@@ -1367,10 +1367,23 @@ router.get('/:slug/preview-board', requireAdmin, requirePermission('settings'), 
     return res.redirect(target);
 });
 
-function normalizeImportedPerson(raw, fallbackId) {
+function normalizeImportedPerson(raw, fallbackId, nameOrder = '') {
+    // 1.40.0 I88: the import can carry an optional separate surname (+ first name).
+    const surname = String(raw.surname || raw.familyName || '').trim().slice(0, 120);
+    const importedGiven = String(raw.firstName || raw.givenName || '').trim().slice(0, 200);
+    const importedFull = String(raw.name || '').trim();
+    const { composePersonName } = require('../lib/person-name');
+    const { stripSurname } = require('../lib/admin-deceased-name');
+    const givenName = surname
+        ? (importedGiven || stripSurname(importedFull, surname))
+        : '';
     const person = {
         id: fallbackId,
-        name: String(raw.name || '').trim(),
+        name: surname && givenName
+            ? composePersonName({ surname, givenName, name: importedFull }, nameOrder || 'surname-first')
+            : importedFull,
+        surname,
+        givenName,
         text: sanitizeRichText(raw.text || ''),
         title: raw.title ? String(raw.title) : '',
         photo: raw.photo ? String(raw.photo) : '',
@@ -1403,6 +1416,24 @@ function normalizeImportedPerson(raw, fallbackId) {
 }
 
 // People Management
+/**
+ * 1.40.0 I88: the Name order selector on the people page. With no saved setting the detected
+ * order is shown as preselected ('' when it cannot be told — then nothing is preselected).
+ */
+function buildNameOrderOptions(synagogue) {
+    const { normalizeNameOrder, detectNameOrder } = require('../lib/person-name');
+    const saved = normalizeNameOrder(synagogue && synagogue.nameOrder);
+    const people = (synagogue && synagogue.people) || [];
+    const detected = detectNameOrder(people.map((person) => (person && person.name) || ''));
+    const selected = saved || detected;
+    return {
+        selected,
+        saved,
+        detected,
+        isDetected: !saved && !!detected,
+    };
+}
+
 router.post('/:slug/yahrzeit/settings', requireAdmin, requirePermission('people'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
@@ -1811,9 +1842,11 @@ router.get('/:slug/people', requireAdmin, requirePermission('people'), async (re
             synagogue: enriched,
             adminUser: req.adminUser,
             adminPermissions: req.adminPermissions,
+            nameOrderOptions: buildNameOrderOptions(enriched),
             imported: req.query.imported === '1',
             importError: req.query.importError === '1',
             dateError: req.query.dateError === '1',
+            saved: req.query.saved === '1',
             undatedOnly: req.query.undated === '1',
             peopleSearchQuery: parsePeopleListSearchParam(req.query.q),
             pendingPersonAddRequests,
@@ -1870,7 +1903,13 @@ router.post('/:slug/person-add-requests/:requestId/approve', requireAdmin, requi
         const rawRequest = requests[index];
         const request = normalizePersonAddRequest(rawRequest, { index });
         const lang = synagogue.language || 'ru';
-        const personPayload = buildPersonFromAddRequest(request, lang);
+        // 1.40.0 I88: the approved person keeps the submitted surname + given name split.
+        const { resolveCommunityNameOrder } = require('../lib/person-name');
+        const personPayload = buildPersonFromAddRequest(
+            request,
+            lang,
+            resolveCommunityNameOrder(synagogue),
+        );
         const maxId = (synagogue.people || []).reduce((max, person) => (
             person.id > max ? person.id : max
         ), 0);
@@ -2103,9 +2142,11 @@ router.post('/:slug/people/import', requireAdmin, requirePermission('people'), r
         const synagogue = await Synagogue.findOne({ slug: req.params.slug });
         const usedIds = new Set(synagogue.people.map((person) => person.id));
         let maxId = synagogue.people.reduce((max, person) => (person.id > max ? person.id : max), 0);
+        const { resolveCommunityNameOrder } = require('../lib/person-name');
+        const importNameOrder = resolveCommunityNameOrder(synagogue);
 
         const newPeople = payload
-            .filter((raw) => raw && String(raw.name || '').trim())
+            .filter((raw) => raw && String(raw.name || raw.surname || '').trim())
             .map((raw) => {
                 let id = parseInt(raw.id, 10);
                 if (!Number.isFinite(id) || usedIds.has(id)) {
@@ -2115,7 +2156,7 @@ router.post('/:slug/people/import', requireAdmin, requirePermission('people'), r
                     maxId = Math.max(maxId, id);
                 }
                 usedIds.add(id);
-                return normalizeImportedPerson(raw, id);
+                return normalizeImportedPerson(raw, id, importNameOrder);
             });
 
         if (newPeople.length > 0) {
@@ -2205,6 +2246,51 @@ async function syncContactsToDirectory(slug, synagogue, contacts) {
     }
 }
 
+/**
+ * 1.40.0 I88: per-community "Name order" (surname first / given name first) chosen on the people
+ * page. Saving it recomposes `name` for the people that actually have a surname + given name;
+ * people without a split keep their stored name untouched.
+ */
+async function saveCommunityNameOrder(req, res) {
+    if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
+    try {
+        const { normalizeNameOrder, composePersonName } = require('../lib/person-name');
+        const nameOrder = normalizeNameOrder(req.body.nameOrder);
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }, { people: 1, nameOrder: 1 }).lean();
+        if (!synagogue) {
+            return res.status(404).send('Not found');
+        }
+
+        const people = (synagogue.people || []).map((person) => {
+            const surname = String(person.surname || '').trim();
+            const givenName = String(person.givenName || '').trim();
+            if (!surname || !givenName) {
+                return person;
+            }
+            return { ...person, name: composePersonName(person, nameOrder || 'surname-first') };
+        });
+
+        await Synagogue.updateOne(
+            { slug: req.params.slug },
+            { $set: { nameOrder, people } },
+        );
+        invalidateAdminSynagogueCache(req.params.slug);
+        invalidateBoardCache(req.params.slug);
+
+        if (wantsJson(req) || req.get('X-Requested-With') === 'fetch') {
+            return res.json({ ok: true, nameOrder });
+        }
+        return res.redirect(`/admin/${req.params.slug}/people?saved=1`);
+    } catch (err) {
+        if (wantsJson(req)) {
+            return res.status(500).json({ ok: false, error: publicErrorMessage(err) });
+        }
+        return res.status(500).send(publicErrorMessage(err));
+    }
+}
+
+router.post('/:slug/people/name-order', requireAdmin, requirePermission('people'), saveCommunityNameOrder);
+
 router.post('/:slug/people/add', requireAdmin, requirePermission('people'), upload.single('photo'), async (req, res) => {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
@@ -2221,11 +2307,17 @@ router.post('/:slug/people/add', requireAdmin, requirePermission('people'), uplo
 
         // 1.36.0 I67: like the public add-name form — deceased name and father's name are separate
         // fields and בן/בת (бен/бат) is added from the male/female choice.
+        // 1.40.0 I88: the surname is its own field; `name` stays the composed display string.
         const { buildDeceasedBoardNameFromAdminForm } = require('../lib/admin-deceased-name');
-        const boardName = buildDeceasedBoardNameFromAdminForm(req.body, synagogue && synagogue.language);
+        const { resolveCommunityNameOrder } = require('../lib/person-name');
+        // 1.40.0 I88: the community order decides how the split name is composed.
+        const nameOrder = resolveCommunityNameOrder(synagogue);
+        const boardName = buildDeceasedBoardNameFromAdminForm(req.body, synagogue && synagogue.language, nameOrder);
         const newPerson = {
             id: maxId + 1,
             name: boardName.name,
+            surname: boardName.surname || '',
+            givenName: boardName.givenName || '',
             text: sanitizeRichText(text),
             internalNotes: normalizeInternalNotes(req.body.internalNotes),
             photo: req.file ? await optimizeUploadedImage(req.file.path, 'photo') : '',
@@ -2274,12 +2366,16 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
         if (deathDate === undefined && res.headersSent) {
             return undefined;
         }
-        const synForContacts = await Synagogue.findOne({ slug: req.params.slug }, { language: 1, contactDirectory: 1 }).lean();
+        const synForContacts = await Synagogue.findOne({ slug: req.params.slug }, { language: 1, contactDirectory: 1, nameOrder: 1, 'people.name': 1 }).lean();
         const contacts = parsePersonContactsFromBody(req.body, { defaultPhonePlatform: defaultPhonePlatformFor(synForContacts && synForContacts.language) });
         const legacy = personContactsToLegacyFields(contacts);
         await syncContactsToDirectory(req.params.slug, synForContacts, contacts);
         const personId = parseInt(id);
 
+        // 1.40.0 I88: the edit form has a separate Surname input. The typed `name` stays the full
+        // display name, so `givenName` is that name minus the surname.
+        const { resolveCommunityNameOrder, composePersonName } = require('../lib/person-name');
+        const personOrder = resolveCommunityNameOrder(synForContacts);
         const updateFields = {
             'people.$.name': name,
             'people.$.text': sanitizeRichText(text),
@@ -2287,6 +2383,17 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
             'people.$.contact': legacy.contact,
             'people.$.contacts': legacy.contacts,
         };
+        if (Object.prototype.hasOwnProperty.call(req.body, 'surname')) {
+            const { stripSurname } = require('../lib/admin-deceased-name');
+            const surname = String(req.body.surname || '').trim().slice(0, 120);
+            const typedName = String(name || '').trim();
+            const givenName = surname ? stripSurname(typedName, surname) : '';
+            updateFields['people.$.surname'] = surname;
+            updateFields['people.$.givenName'] = givenName;
+            updateFields['people.$.name'] = surname && givenName
+                ? composePersonName({ surname, givenName, name: typedName }, personOrder)
+                : typedName;
+        }
         if (Object.prototype.hasOwnProperty.call(req.body, 'gender')) {
             updateFields['people.$.gender'] = require('../lib/deceased-gender').normalizeGender(req.body.gender);
         }

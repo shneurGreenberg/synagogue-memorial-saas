@@ -287,9 +287,11 @@ class HomePageBase extends React.Component {
 
   getPageNames() {
     const { people, pageShift, itemsPerPage } = this.state;
+    // 1.40.0 I88: the Torah reading drops the surname — the payload sends `torahName`
+    // (given name + בן/בת + parent). People without a split fall back to the display name.
     return (people || [])
       .slice(pageShift, pageShift + itemsPerPage)
-      .map((person) => person.name)
+      .map((person) => person.torahName || person.name)
       .filter(Boolean);
   }
 
