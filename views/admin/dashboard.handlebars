@@ -704,6 +704,9 @@ html.preview-edit-pending #settingsForm > .admin-panel:not(.settings-preview-pan
 
     <form method="POST" action="/admin/{{synagogue.slug}}/settings/reset-theme" id="resetThemeForm" class="visually-hidden-reset-form" aria-hidden="true"></form>
     <form id="adminDetachedActionsForm" class="visually-hidden-reset-form" aria-hidden="true" hidden></form>
+
+    {{!-- 1.40.0 I86: coming yahrzeits with a "share on WhatsApp" button per person. --}}
+    {{> admin-yahrzeit-reminders}}
 </div>
 
 <script src="/js/candle-palette-browser.js?v={{@root.cssVersion}}"></script>

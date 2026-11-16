@@ -695,12 +695,13 @@ const getInitials = (name) => {
 };
 
 const ADMIN_PAGE_SCRIPTS = {
-    'admin/dashboard': [],
-    'admin/people': ['admin-death-date.js', 'admin-deceased-name.js', 'admin-people.js', 'admin-person-card.js', 'contact-platform-ui.js'],
+    'admin/dashboard': ['whatsapp-share.js'],
+    'admin/people': ['admin-death-date.js', 'admin-deceased-name.js', 'admin-people.js', 'admin-person-card.js', 'contact-platform-ui.js', 'whatsapp-share.js'],
     'admin/contacts': ['admin-contact-directory.js', 'contact-platform-ui.js'],
     'admin/events': ['admin-events.js', 'admin-slideshow.js'],
     'admin/users': ['admin-users.js'],
-    'admin/yahrzeit': ['admin-person-card.js', 'admin-yahrzeit.js', 'admin-death-date.js', 'admin-tile-capture.js', 'admin-push.js'],
+    'admin/home': ['whatsapp-share.js'],
+    'admin/yahrzeit': ['admin-person-card.js', 'admin-yahrzeit.js', 'admin-death-date.js', 'admin-tile-capture.js', 'admin-push.js', 'whatsapp-share.js'],
 };
 
 const ADMIN_NAV_BY_VIEW = {
@@ -770,7 +771,30 @@ function renderAdmin(res, view, options = {}) {
 }
 
 function wantsJson(req) {
-    return req.get('X-Requested-With') === 'XMLHttpRequest' || req.query.ajax === '1';
+  return req.get('X-Requested-With') === 'XMLHttpRequest' || req.query.ajax === '1';
+}
+
+/**
+ * 1.40.0 I86: upcoming yahrzeit rows get the WhatsApp-share data (tile PNG, board link and the
+ * JSON endpoint that returns the prepared yahrzeit message for that person).
+ */
+function buildReminderShareRows(synagogue, rows, permissions) {
+  if (!synagogue || !Array.isArray(rows) || !rows.length) {
+    return [];
+  }
+  if (!permissions || !permissions.people) {
+    return [];
+  }
+  const slug = synagogue.slug || '';
+  if (!slug) {
+    return [];
+  }
+  return rows.map((row) => ({
+    ...row,
+    tileImageUrl: row.tileImageUrl || `/admin/${slug}/yahrzeit/tile/${row.id}.png`,
+    boardShareUrl: row.boardShareUrl || `/s/${slug}`,
+    messageUrl: row.messageUrl || `/admin/${slug}/people/message/${row.id}.json`,
+  }));
 }
 
 async function fetchCommunityEvents(slug) {
@@ -1278,12 +1302,15 @@ router.get('/:slug/home', requireAdmin, async (req, res) => {
         const perms = req.adminPermissions || {};
         let yahrzeitWeekCount = 0;
         let missingGenderCount = 0;
+        let upcomingReminders = [];
         if (perms.people) {
             try {
                 const bundle = getCachedAdminYahrzeitBundle(enrichSynagogueForAdmin(synagogue), {
                     adminLanguage: synagogue && synagogue.adminLanguage,
                 });
                 yahrzeitWeekCount = Array.isArray(bundle.weekEntries) ? bundle.weekEntries.length : 0;
+                // 1.40.0 I86: the dashboard lists the coming yahrzeits with a WhatsApp share button.
+                upcomingReminders = buildReminderShareRows(synagogue, bundle.upcomingWeek, perms);
             } catch (e) { yahrzeitWeekCount = 0; }
             missingGenderCount = (synagogue.people || []).filter((p) => p && p.gender !== 'male' && p.gender !== 'female').length;
         }
@@ -1296,6 +1323,7 @@ router.get('/:slug/home', requireAdmin, async (req, res) => {
             yahrzeitWeekCount,
             missingGenderCount,
             peopleCount: (synagogue.people || []).length,
+            upcomingReminders,
         });
     } catch (err) {
         res.status(500).send(publicErrorMessage(err));
@@ -1314,6 +1342,16 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
         const enriched = enrichSynagogueForAdmin(synagogue);
         const activeSavedView = findSavedView(enriched.savedViews, enriched.activeSavedViewId);
         const combinedScales = require('../lib/combined-info-scales').resolveCombinedInfoScales(enriched);
+        // 1.40.0 I86: the desktop dashboard also lists coming yahrzeits with a WhatsApp share button.
+        let dashboardReminders = [];
+        if (req.adminPermissions && req.adminPermissions.people) {
+            try {
+                const bundle = getCachedAdminYahrzeitBundle(enriched, {
+                    adminLanguage: synagogue && synagogue.adminLanguage,
+                });
+                dashboardReminders = buildReminderShareRows(synagogue, bundle.upcomingWeek, req.adminPermissions);
+            } catch (e) { dashboardReminders = []; }
+        }
         renderAdmin(res, 'admin/dashboard', {
             synagogue: enriched,
             adminUser: req.adminUser,
@@ -1350,6 +1388,7 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
               previewSample: font.previewSample,
               selected: normalizeBoardFont(enriched.theme.boardFont) === font.id,
             })),
+            upcomingReminders: dashboardReminders,
             saved: req.query.saved === '1',
             refreshed: req.query.refreshed === '1',
             error: req.query.error || null,
@@ -1767,13 +1806,10 @@ router.get('/:slug/people/message/:personId.json', requireAdmin, requirePermissi
             ? contacts[contactIndex]
             : contacts[0];
 
-        if (!selectedContact) {
-            return res.json({ ok: true, preparedMessage: '', contactLink: '', tileUrl: '', canSend: false });
-        }
-
+        // 1.40.0 I86: a person without contacts still gets the share text (only the send link needs one).
         const entry = buildContactMessageEntry(enriched, {
             ...person,
-            contact: selectedContact,
+            contact: selectedContact || {},
             contacts,
         }, {
             adminLanguage: displaySynagogue.adminLanguage,
@@ -1783,11 +1819,11 @@ router.get('/:slug/people/message/:personId.json', requireAdmin, requirePermissi
         return res.json({
             ok: true,
             preparedMessage: entry.preparedMessage,
-            contactLink: entry.contactLink,
+            contactLink: selectedContact ? entry.contactLink : '',
             tileUrl: entry.tileUrl,
-            canSend: !!entry.contactLink,
+            canSend: !!(selectedContact && entry.contactLink),
             contactIndex: Number.isFinite(contactIndex) ? contactIndex : 0,
-            contactName: selectedContact.name || '',
+            contactName: (selectedContact && selectedContact.name) || '',
         });
     } catch (err) {
         return res.status(500).json({ ok: false, error: publicErrorMessage(err) });

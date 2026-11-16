@@ -1,4 +1,4 @@
-<div class="admin-page yahrzeit-page" data-synagogue-slug="{{synagogue.slug}}" data-copy-label="{{t 'yahrzeit_copy_message'}}" data-copied-label="{{t 'yahrzeit_copied'}}" data-send-label="{{t 'yahrzeit_send_contact'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}">
+<div class="admin-page yahrzeit-page" data-synagogue-slug="{{synagogue.slug}}" data-board-url="/s/{{synagogue.slug}}" data-copy-label="{{t 'yahrzeit_copy_message'}}" data-copied-label="{{t 'yahrzeit_copied'}}" data-send-label="{{t 'yahrzeit_send_contact'}}" data-date-label="{{t 'date_of_death'}}" data-delete-confirm="{{t 'are_you_sure'}}" data-no-bio-label="{{t 'person_card_no_biography'}}" data-platform-whatsapp="{{t 'contact_platform_whatsapp'}}" data-platform-telegram="{{t 'contact_platform_telegram'}}" data-platform-max="{{t 'contact_platform_max'}}" data-platform-sms="{{t 'contact_platform_sms'}}" data-platform-email="{{t 'contact_platform_email'}}" data-share-hint-copied="{{t 'yahrzeit_share_hint_copied'}}" data-share-hint-downloaded="{{t 'yahrzeit_share_hint_downloaded'}}" data-share-hint-failed="{{t 'yahrzeit_share_hint_failed'}}" data-share-focus-label="{{t 'yahrzeit_share_focused'}}">
     <header class="admin-page-header">
         <div>
             <h1>{{t 'yahrzeit_page'}}</h1>
@@ -254,6 +254,8 @@
                                         {{t 'yahrzeit_send_contact'}}
                                     </a>
                                     {{/if}}
+                                    {{!-- 1.40.0 I86: share the memorial tile + this prepared message on WhatsApp. --}}
+                                    {{> admin-whatsapp-share-button imageUrl=../tileImageUrl link=../boardShareUrl text=this.preparedMessage fileName=../name}}
                                 </div>
                             </div>
                         </div>
@@ -266,6 +268,10 @@
                         {{/if}}
 
                         <div class="yahrzeit-actions yahrzeit-card-actions">
+                            {{#unless this.contacts.length}}
+                            {{!-- 1.40.0 I86: nobody to message yet, but the tile can still be shared. --}}
+                            {{> admin-whatsapp-share-button imageUrl=this.tileImageUrl link=this.boardShareUrl text=this.preparedMessage fileName=this.name}}
+                            {{/unless}}
                             <a href="{{this.boardCardUrl}}" class="btn-admin btn-admin-ghost btn-admin-with-icon" target="_blank" rel="noopener noreferrer">
                                 <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
                                 {{t 'yahrzeit_view_board'}}
@@ -349,6 +355,8 @@
                                         {{t 'yahrzeit_send_contact'}}
                                     </a>
                                     {{/if}}
+                                    {{!-- 1.40.0 I86: share the memorial tile + this prepared message on WhatsApp. --}}
+                                    {{> admin-whatsapp-share-button imageUrl=../tileImageUrl link=../boardShareUrl text=this.preparedMessage fileName=../name}}
                                 </div>
                             </div>
                         </div>
@@ -361,6 +369,10 @@
                         {{/if}}
 
                         <div class="yahrzeit-actions yahrzeit-card-actions">
+                            {{#unless this.contacts.length}}
+                            {{!-- 1.40.0 I86: nobody to message yet, but the tile can still be shared. --}}
+                            {{> admin-whatsapp-share-button imageUrl=this.tileImageUrl link=this.boardShareUrl text=this.preparedMessage fileName=this.name}}
+                            {{/unless}}
                             <a href="{{this.boardCardUrl}}" class="btn-admin btn-admin-ghost btn-admin-with-icon" target="_blank" rel="noopener noreferrer">
                                 <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
                                 {{t 'yahrzeit_view_board'}}

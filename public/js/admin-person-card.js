@@ -128,6 +128,7 @@
     const collectContactBtn = document.getElementById('personCardCollectContactBtn');
     const contactsList = document.getElementById('personCardContactsList');
     const sendActions = document.getElementById('personCardSendActions');
+    const shareBtn = document.getElementById('personCardShareBtn');
     const editBtn = document.getElementById('personCardEditBtn');
     const deleteBtn = document.getElementById('personCardDeleteBtn');
     const deleteForm = document.getElementById('personCardDeleteForm');
@@ -197,6 +198,31 @@
       ).catch(function () {
         /* skip image when capture fails */
       });
+    }
+
+    /* 1.40.0 I86: the WhatsApp share button lives next to the tile/send actions in the footer.
+     * The message text is taken from the person's yahrzeit message endpoint (same text as "send"). */
+    function syncShareButton(person) {
+      if (!shareBtn) {
+        return;
+      }
+
+      if (!synagogueSlug || !person || person.id == null || !window.WhatsAppShare) {
+        shareBtn.hidden = true;
+        return;
+      }
+
+      shareBtn.hidden = false;
+      shareBtn.setAttribute(
+        'data-share-image',
+        '/admin/' + encodeURIComponent(synagogueSlug) + '/yahrzeit/tile/' + encodeURIComponent(person.id) + '.png',
+      );
+      shareBtn.setAttribute(
+        'data-share-message-url',
+        '/admin/' + encodeURIComponent(synagogueSlug) + '/people/message/' + encodeURIComponent(person.id) + '.json',
+      );
+      shareBtn.setAttribute('data-share-file', person.name || '');
+      shareBtn.setAttribute('data-share-link', '/s/' + encodeURIComponent(synagogueSlug));
     }
 
     function populateContacts(person) {
@@ -327,6 +353,7 @@
       }
 
       populateContacts(person);
+      syncShareButton(person);
       renderDetails(person);
 
       if (deleteIdInput) {
