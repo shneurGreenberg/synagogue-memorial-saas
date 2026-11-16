@@ -88,7 +88,7 @@
     {
       "id": 1,
       "name": "Брусиловский Виктор бен Александр",
-      "torahName": "Брусиловский Виктор бен Александр",
+      "torahName": "Виктор бен Александр",
       "gregorianDateOfDeath": {
         "month": 8,
         "date": 15,
@@ -107,7 +107,7 @@
     {
       "id": 2,
       "name": "Виленкин Евгений бен Самуил (Йосиф)",
-      "torahName": "Виленкин Евгений бен Самуил (Йосиф)",
+      "torahName": "Евгений бен Самуил (Йосиф)",
       "gregorianDateOfDeath": {
         "month": 5,
         "date": 11,
@@ -115,13 +115,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 3,
       "name": "Дыхне Семен бен Мендел",
-      "torahName": "Дыхне Семен бен Мендел",
+      "torahName": "Семен бен Мендел",
       "gregorianDateOfDeath": {
         "month": 5,
         "date": 11,
@@ -129,13 +134,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 4,
       "name": "Кац Арнольд бен Михаил",
-      "torahName": "Кац Арнольд бен Михаил",
+      "torahName": "Арнольд бен Михаил",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 22,
@@ -154,7 +164,7 @@
     {
       "id": 5,
       "name": "Ошеров Семен бен Вольф (Шимон)",
-      "torahName": "Ошеров Семен бен Вольф (Шимон)",
+      "torahName": "Семен бен Вольф (Шимон)",
       "gregorianDateOfDeath": {
         "month": 12,
         "date": 30,
@@ -173,7 +183,7 @@
     {
       "id": 6,
       "name": "Пясковский Моник бен Герш",
-      "torahName": "Пясковский Моник бен Герш",
+      "torahName": "Моник бен Герш",
       "gregorianDateOfDeath": {
         "month": 2,
         "date": 20,
@@ -181,13 +191,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 7,
       "name": "Фронштейн Исаак бен Яков (Исаак)",
-      "torahName": "Фронштейн Исаак бен Яков (Исаак)",
+      "torahName": "Исаак бен Яков (Исаак)",
       "gregorianDateOfDeath": {
         "month": 11,
         "date": 24,
@@ -195,13 +210,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 132,
       "name": "Фердман Хонон бен Арон",
-      "torahName": "Фердман Хонон бен Арон",
+      "torahName": "Хонон бен Арон",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -209,13 +229,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 9,
       "name": "Шпикельман Гнесся бат Яков",
-      "torahName": "Шпикельман Гнесся бат Яков",
+      "torahName": "Гнесся бат Яков",
       "gregorianDateOfDeath": {
         "month": 8,
         "date": 17,
@@ -234,7 +259,7 @@
     {
       "id": 10,
       "name": "Шпикельман Михаил бен Соломон (Михаэль)",
-      "torahName": "Шпикельман Михаил бен Соломон (Михаэль)",
+      "torahName": "Михаил бен Соломон (Михаэль)",
       "gregorianDateOfDeath": {
         "month": 5,
         "date": 25,
@@ -253,7 +278,7 @@
     {
       "id": 11,
       "name": "Шуриц Александр бен Давид (Исаак)",
-      "torahName": "Шуриц Александр бен Давид (Исаак)",
+      "torahName": "Александр бен Давид (Исаак)",
       "gregorianDateOfDeath": {
         "month": 4,
         "date": 27,
@@ -261,13 +286,18 @@
       },
       "hasDeathDate": true,
       "photo": "11.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 12,
       "name": "Ханин Яков бен Илья",
-      "torahName": "Ханин Яков бен Илья",
+      "torahName": "Яков бен Илья",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 29,
@@ -275,13 +305,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 13,
       "name": "Тодер Борис бен Павел",
-      "torahName": "Тодер Борис бен Павел",
+      "torahName": "Борис бен Павел",
       "gregorianDateOfDeath": {
         "month": 9,
         "date": 5,
@@ -289,13 +324,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 14,
       "name": "Ханин Кушелис бен Элияс",
-      "torahName": "Ханин Кушелис бен Элияс",
+      "torahName": "Кушелис бен Элияс",
       "gregorianDateOfDeath": {
         "month": 5,
         "date": 9,
@@ -303,6 +343,11 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
@@ -328,7 +373,7 @@
     {
       "id": 16,
       "name": "Зильберштейн Григорий бен Абрам",
-      "torahName": "Зильберштейн Григорий бен Абрам",
+      "torahName": "Григорий бен Абрам",
       "gregorianDateOfDeath": {
         "month": 7,
         "date": 20,
@@ -336,13 +381,18 @@
       },
       "hasDeathDate": true,
       "photo": "16-greg.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 17,
       "name": "Раппопорт Анна бат Илья",
-      "torahName": "Раппопорт Анна бат Илья",
+      "torahName": "Анна бат Илья",
       "gregorianDateOfDeath": {
         "month": 8,
         "date": 6,
@@ -350,13 +400,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 18,
       "name": "Каганицкая Елизавета",
-      "torahName": "Каганицкая Елизавета",
+      "torahName": "Елизавета",
       "gregorianDateOfDeath": {
         "month": 12,
         "date": 31,
@@ -375,7 +430,7 @@
     {
       "id": 19,
       "name": "Аникштейн Хая бат Идель",
-      "torahName": "Аникштейн Хая бат Идель",
+      "torahName": "Хая бат Идель",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 27,
@@ -394,7 +449,7 @@
     {
       "id": 20,
       "name": "Аникштейн Григорий бен Моисей",
-      "torahName": "Аникштейн Григорий бен Моисей",
+      "torahName": "Григорий бен Моисей",
       "gregorianDateOfDeath": {
         "month": 8,
         "date": 17,
@@ -412,8 +467,8 @@
     },
     {
       "id": 21,
-      "name": "Вайсбург Сарра бат Моисей ",
-      "torahName": "Вайсбург Сарра бат Моисей",
+      "name": "Вайсбург Сарра бат Моисей",
+      "torahName": "Сарра бат Моисей",
       "gregorianDateOfDeath": {
         "month": 11,
         "date": 9,
@@ -432,7 +487,7 @@
     {
       "id": 22,
       "name": "Вайсбург Борис бен Лазарь",
-      "torahName": "Вайсбург Борис бен Лазарь",
+      "torahName": "Борис бен Лазарь",
       "gregorianDateOfDeath": {
         "month": 9,
         "date": 8,
@@ -451,7 +506,7 @@
     {
       "id": 23,
       "name": "Шейнин Моисей бен Самуил",
-      "torahName": "Шейнин Моисей бен Самуил",
+      "torahName": "Моисей бен Самуил",
       "gregorianDateOfDeath": {
         "month": 6,
         "date": 14,
@@ -459,13 +514,18 @@
       },
       "hasDeathDate": true,
       "photo": "23.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 24,
       "name": "Шейнина Ольга бат Ерухим",
-      "torahName": "Шейнина Ольга бат Ерухим",
+      "torahName": "Ольга бат Ерухим",
       "gregorianDateOfDeath": {
         "month": 4,
         "date": 10,
@@ -473,13 +533,18 @@
       },
       "hasDeathDate": true,
       "photo": "24.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 25,
       "name": "Сирота Натан бен Абрам",
-      "torahName": "Сирота Натан бен Абрам",
+      "torahName": "Натан бен Абрам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 13,
@@ -487,13 +552,18 @@
       },
       "hasDeathDate": true,
       "photo": "25.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 27,
       "name": "Сирота Абрам бен Соломон",
-      "torahName": "Сирота Абрам бен Соломон",
+      "torahName": "Абрам бен Соломон",
       "gregorianDateOfDeath": {
         "month": 8,
         "date": 18,
@@ -512,7 +582,7 @@
     {
       "id": 28,
       "name": "Сирота Мина бат Лазарь",
-      "torahName": "Сирота Мина бат Лазарь",
+      "torahName": "Мина бат Лазарь",
       "gregorianDateOfDeath": {
         "month": 2,
         "date": 2,
@@ -531,7 +601,7 @@
     {
       "id": 29,
       "name": "Кесельман Фрида бат Авраам",
-      "torahName": "Кесельман Фрида бат Авраам",
+      "torahName": "Фрида бат Авраам",
       "gregorianDateOfDeath": {
         "month": 12,
         "date": 24,
@@ -539,13 +609,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 30,
       "name": "Сирота Полина бат Натан",
-      "torahName": "Сирота Полина бат Натан",
+      "torahName": "Полина бат Натан",
       "gregorianDateOfDeath": {
         "month": 7,
         "date": 20,
@@ -553,13 +628,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 31,
       "name": "Кракушанская Ента бат Дувид",
-      "torahName": "Кракушанская Ента бат Дувид",
+      "torahName": "Ента бат Дувид",
       "gregorianDateOfDeath": {
         "month": 10,
         "date": 3,
@@ -578,7 +658,7 @@
     {
       "id": 32,
       "name": "Кракушанский Герш бен Лейб",
-      "torahName": "Кракушанский Герш бен Лейб",
+      "torahName": "Герш бен Лейб",
       "gregorianDateOfDeath": {
         "month": 12,
         "date": 13,
@@ -586,13 +666,18 @@
       },
       "hasDeathDate": true,
       "photo": "32.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 33,
       "name": "Бикман Цина бат Мойше",
-      "torahName": "Бикман Цина бат Мойше",
+      "torahName": "Цина бат Мойше",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -611,7 +696,7 @@
     {
       "id": 34,
       "name": "Бикман Дувид бен Шмуль",
-      "torahName": "Бикман Дувид бен Шмуль",
+      "torahName": "Дувид бен Шмуль",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -630,7 +715,7 @@
     {
       "id": 35,
       "name": "Кракушанский Дудл бен Лейб",
-      "torahName": "Кракушанский Дудл бен Лейб",
+      "torahName": "Дудл бен Лейб",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -649,7 +734,7 @@
     {
       "id": 36,
       "name": "Кракушанская Роза бат Лейб",
-      "torahName": "Кракушанская Роза бат Лейб",
+      "torahName": "Роза бат Лейб",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -668,7 +753,7 @@
     {
       "id": 37,
       "name": "Кракушанский Копель бен Лейб",
-      "torahName": "Кракушанский Копель бен Лейб",
+      "torahName": "Копель бен Лейб",
       "gregorianDateOfDeath": {
         "month": 6,
         "date": 25,
@@ -706,7 +791,7 @@
     {
       "id": 39,
       "name": "Глузман Мойше бен Авраам",
-      "torahName": "Глузман Мойше бен Авраам",
+      "torahName": "Мойше бен Авраам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -725,7 +810,7 @@
     {
       "id": 40,
       "name": "Бикман Шмуль бен Авраам",
-      "torahName": "Бикман Шмуль бен Авраам",
+      "torahName": "Шмуль бен Авраам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -744,7 +829,7 @@
     {
       "id": 41,
       "name": "Вильдер Тамара бат Борис",
-      "torahName": "Вильдер Тамара бат Борис",
+      "torahName": "Тамара бат Борис",
       "gregorianDateOfDeath": {
         "month": 4,
         "date": 10,
@@ -763,7 +848,7 @@
     {
       "id": 42,
       "name": "Вильдер Леонид бен Озяс",
-      "torahName": "Вильдер Леонид бен Озяс",
+      "torahName": "Леонид бен Озяс",
       "gregorianDateOfDeath": {
         "month": 5,
         "date": 15,
@@ -771,13 +856,18 @@
       },
       "hasDeathDate": true,
       "photo": "42.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 43,
       "name": "Коновалова Надежда бат Авраам",
-      "torahName": "Коновалова Надежда бат Авраам",
+      "torahName": "Надежда бат Авраам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -796,7 +886,7 @@
     {
       "id": 44,
       "name": "Коновалов Борис бен Авраам",
-      "torahName": "Коновалов Борис бен Авраам",
+      "torahName": "Борис бен Авраам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -815,7 +905,7 @@
     {
       "id": 45,
       "name": "Вильдер Фрида бат Авраам",
-      "torahName": "Вильдер Фрида бат Авраам",
+      "torahName": "Фрида бат Авраам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -834,7 +924,7 @@
     {
       "id": 46,
       "name": "Вильдер Озяс бен Авраам",
-      "torahName": "Вильдер Озяс бен Авраам",
+      "torahName": "Озяс бен Авраам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -853,7 +943,7 @@
     {
       "id": 48,
       "name": "Шуриц Давид бен Авраам",
-      "torahName": "Шуриц Давид бен Авраам",
+      "torahName": "Давид бен Авраам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -872,7 +962,7 @@
     {
       "id": 49,
       "name": "Дворкина Геня бат Авраам",
-      "torahName": "Дворкина Геня бат Авраам",
+      "torahName": "Геня бат Авраам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -891,7 +981,7 @@
     {
       "id": 50,
       "name": "Бочевер Иосиф бен Моисей",
-      "torahName": "Бочевер Иосиф бен Моисей",
+      "torahName": "Иосиф бен Моисей",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 20,
@@ -910,7 +1000,7 @@
     {
       "id": 51,
       "name": "Бочевер Израиль бен Моисей",
-      "torahName": "Бочевер Израиль бен Моисей",
+      "torahName": "Израиль бен Моисей",
       "gregorianDateOfDeath": {
         "month": 12,
         "date": 26,
@@ -929,7 +1019,7 @@
     {
       "id": 52,
       "name": "Бочевер Абрам бен Моисей",
-      "torahName": "Бочевер Абрам бен Моисей",
+      "torahName": "Абрам бен Моисей",
       "gregorianDateOfDeath": {
         "month": 8,
         "date": 9,
@@ -948,7 +1038,7 @@
     {
       "id": 53,
       "name": "Бочевер Зиновий бен Моисей (Залман)",
-      "torahName": "Бочевер Зиновий бен Моисей (Залман)",
+      "torahName": "Зиновий бен Моисей (Залман)",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 3,
@@ -1005,7 +1095,7 @@
     {
       "id": 56,
       "name": "Айзман Идель бен Шульмана",
-      "torahName": "Айзман Идель бен Шульмана",
+      "torahName": "Идель бен Шульмана",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 6,
@@ -1043,7 +1133,7 @@
     {
       "id": 60,
       "name": "Гинзбург Леонид бен Абрам",
-      "torahName": "Гинзбург Леонид бен Абрам",
+      "torahName": "Леонид бен Абрам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 24,
@@ -1062,7 +1152,7 @@
     {
       "id": 61,
       "name": "Гинзбург Анна бат Самуил",
-      "torahName": "Гинзбург Анна бат Самуил",
+      "torahName": "Анна бат Самуил",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 24,
@@ -1070,13 +1160,18 @@
       },
       "hasDeathDate": true,
       "photo": "61.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 62,
       "name": "Гинзбург Абрам бен Лев",
-      "torahName": "Гинзбург Абрам бен Лев",
+      "torahName": "Абрам бен Лев",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 6,
@@ -1095,7 +1190,7 @@
     {
       "id": 63,
       "name": "Гинзбург Этель бат Сэм",
-      "torahName": "Гинзбург Этель бат Сэм",
+      "torahName": "Этель бат Сэм",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 11,
@@ -1103,13 +1198,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 64,
       "name": "Гинзбург Владимир бен Лев",
-      "torahName": "Гинзбург Владимир бен Лев",
+      "torahName": "Владимир бен Лев",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1117,13 +1217,18 @@
       },
       "hasDeathDate": true,
       "photo": "64.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 65,
       "name": "Гинзбург Виктория бат Сэм",
-      "torahName": "Гинзбург Виктория бат Сэм",
+      "torahName": "Виктория бат Сэм",
       "gregorianDateOfDeath": {
         "month": 12,
         "date": 24,
@@ -1142,7 +1247,7 @@
     {
       "id": 66,
       "name": "Тоболовская Ида бат Авраам",
-      "torahName": "Тоболовская Ида бат Авраам",
+      "torahName": "Ида бат Авраам",
       "gregorianDateOfDeath": {
         "month": 12,
         "date": 17,
@@ -1150,13 +1255,18 @@
       },
       "hasDeathDate": true,
       "photo": "66.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 67,
       "name": "Тоболовский Сэм бен Авраам",
-      "torahName": "Тоболовский Сэм бен Авраам",
+      "torahName": "Сэм бен Авраам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 8,
@@ -1175,7 +1285,7 @@
     {
       "id": 68,
       "name": "Шарогородский Самуил бен Борис",
-      "torahName": "Шарогородский Самуил бен Борис",
+      "torahName": "Самуил бен Борис",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 2,
@@ -1194,7 +1304,7 @@
     {
       "id": 69,
       "name": "Шарогородская Бина бат Моисей",
-      "torahName": "Шарогородская Бина бат Моисей",
+      "torahName": "Бина бат Моисей",
       "gregorianDateOfDeath": {
         "month": 7,
         "date": 1,
@@ -1213,7 +1323,7 @@
     {
       "id": 70,
       "name": "Гольдзилбер Эммануил бен Моисей",
-      "torahName": "Гольдзилбер Эммануил бен Моисей",
+      "torahName": "Эммануил бен Моисей",
       "gregorianDateOfDeath": {
         "month": 12,
         "date": 15,
@@ -1232,7 +1342,7 @@
     {
       "id": 71,
       "name": "Санько Таба бат Моисей",
-      "torahName": "Санько Таба бат Моисей",
+      "torahName": "Таба бат Моисей",
       "gregorianDateOfDeath": {
         "month": 12,
         "date": 23,
@@ -1251,7 +1361,7 @@
     {
       "id": 72,
       "name": "Тоболовский Арнольд бен Сэм",
-      "torahName": "Тоболовский Арнольд бен Сэм",
+      "torahName": "Арнольд бен Сэм",
       "gregorianDateOfDeath": {
         "month": 12,
         "date": 14,
@@ -1259,13 +1369,18 @@
       },
       "hasDeathDate": true,
       "photo": "72.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 73,
       "name": "Гольдзилбер Полина бат Авраам",
-      "torahName": "Гольдзилбер Полина бат Авраам",
+      "torahName": "Полина бат Авраам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1273,13 +1388,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 74,
       "name": "Гольдзилбер Моисей бен Авраам",
-      "torahName": "Гольдзилбер Моисей бен Авраам",
+      "torahName": "Моисей бен Авраам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1287,13 +1407,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 75,
       "name": "Илизаров Гавриил бен Абрам",
-      "torahName": "Илизаров Гавриил бен Абрам",
+      "torahName": "Гавриил бен Абрам",
       "gregorianDateOfDeath": {
         "month": 7,
         "date": 24,
@@ -1312,7 +1437,7 @@
     {
       "id": 76,
       "name": "Илизарова Мария бат Абрам",
-      "torahName": "Илизарова Мария бат Абрам",
+      "torahName": "Мария бат Абрам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1320,13 +1445,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 77,
       "name": "Илизаров Исаак бен Абрам",
-      "torahName": "Илизаров Исаак бен Абрам",
+      "torahName": "Исаак бен Абрам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1334,13 +1464,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 78,
       "name": "Елизаров Давид бен Абрам",
-      "torahName": "Елизаров Давид бен Абрам",
+      "torahName": "Давид бен Абрам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1348,13 +1483,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 79,
       "name": "Елизаров Елисей бен Абрам",
-      "torahName": "Елизаров Елисей бен Абрам",
+      "torahName": "Елисей бен Абрам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1362,13 +1502,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 80,
       "name": "Ланцберг Зинаида бат Абрам (Зылпа)",
-      "torahName": "Ланцберг Зинаида бат Абрам (Зылпа)",
+      "torahName": "Зинаида бат Абрам (Зылпа)",
       "gregorianDateOfDeath": {
         "month": 6,
         "date": 20,
@@ -1387,7 +1532,7 @@
     {
       "id": 81,
       "name": "Ланцберг Марк бен Самойла (Меер)",
-      "torahName": "Ланцберг Марк бен Самойла (Меер)",
+      "torahName": "Марк бен Самойла (Меер)",
       "gregorianDateOfDeath": {
         "month": 8,
         "date": 30,
@@ -1406,7 +1551,7 @@
     {
       "id": 82,
       "name": "Ланцберг Шмуль бен Эли",
-      "torahName": "Ланцберг Шмуль бен Эли",
+      "torahName": "Шмуль бен Эли",
       "gregorianDateOfDeath": {
         "month": 5,
         "date": 18,
@@ -1414,13 +1559,18 @@
       },
       "hasDeathDate": true,
       "photo": "82.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 83,
       "name": "Ланцберг Рухля бат Борух",
-      "torahName": "Ланцберг Рухля бат Борух",
+      "torahName": "Рухля бат Борух",
       "gregorianDateOfDeath": {
         "month": 11,
         "date": 28,
@@ -1428,6 +1578,11 @@
       },
       "hasDeathDate": true,
       "photo": "83.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
@@ -1453,7 +1608,7 @@
     {
       "id": 85,
       "name": "Верник Авраам бен Исаак",
-      "torahName": "Верник Авраам бен Исаак",
+      "torahName": "Авраам бен Исаак",
       "gregorianDateOfDeath": {
         "month": 9,
         "date": 29,
@@ -1472,7 +1627,7 @@
     {
       "id": 86,
       "name": "Буртман Михаил бен Абрам",
-      "torahName": "Буртман Михаил бен Абрам",
+      "torahName": "Михаил бен Абрам",
       "gregorianDateOfDeath": {
         "month": 2,
         "date": 1,
@@ -1510,7 +1665,7 @@
     {
       "id": 88,
       "name": "Берольский Соломон бен Марк",
-      "torahName": "Берольский Соломон бен Марк",
+      "torahName": "Соломон бен Марк",
       "gregorianDateOfDeath": {
         "month": 3,
         "date": 24,
@@ -1529,7 +1684,7 @@
     {
       "id": 89,
       "name": "Рабинович Иосиф бен Исаак",
-      "torahName": "Рабинович Иосиф бен Исаак",
+      "torahName": "Иосиф бен Исаак",
       "gregorianDateOfDeath": {
         "month": 8,
         "date": 15,
@@ -1537,13 +1692,18 @@
       },
       "hasDeathDate": true,
       "photo": "89.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 90,
       "name": "Цифринович Илья бен Исроэль",
-      "torahName": "Цифринович Илья бен Исроэль",
+      "torahName": "Илья бен Исроэль",
       "gregorianDateOfDeath": {
         "month": 5,
         "date": 10,
@@ -1551,13 +1711,18 @@
       },
       "hasDeathDate": true,
       "photo": "90.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 91,
       "name": "Цифринович Исроэль бен Авраам",
-      "torahName": "Цифринович Исроэль бен Авраам",
+      "torahName": "Исроэль бен Авраам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1565,13 +1730,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 92,
       "name": "Рохлина Этя бат Лейб",
-      "torahName": "Рохлина Этя бат Лейб",
+      "torahName": "Этя бат Лейб",
       "gregorianDateOfDeath": {
         "month": 10,
         "date": 29,
@@ -1590,7 +1760,7 @@
     {
       "id": 93,
       "name": "Рохлин Лейб бен Авраам",
-      "torahName": "Рохлин Лейб бен Авраам",
+      "torahName": "Лейб бен Авраам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1598,13 +1768,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 94,
       "name": "Бикман Шифра бат Дувид",
-      "torahName": "Бикман Шифра бат Дувид",
+      "torahName": "Шифра бат Дувид",
       "gregorianDateOfDeath": {
         "month": 12,
         "date": 18,
@@ -1623,7 +1798,7 @@
     {
       "id": 96,
       "name": "Бикман Ошер бен Дувид",
-      "torahName": "Бикман Ошер бен Дувид",
+      "torahName": "Ошер бен Дувид",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1631,13 +1806,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 97,
       "name": "Бикман Герш бен Дувид",
-      "torahName": "Бикман Герш бен Дувид",
+      "torahName": "Герш бен Дувид",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1656,7 +1836,7 @@
     {
       "id": 98,
       "name": "Мошкович Лия бат Абрам",
-      "torahName": "Мошкович Лия бат Абрам",
+      "torahName": "Лия бат Абрам",
       "gregorianDateOfDeath": {
         "month": 3,
         "date": 2,
@@ -1675,7 +1855,7 @@
     {
       "id": 99,
       "name": "Дворкин Павел бен Шмуиль",
-      "torahName": "Дворкин Павел бен Шмуиль",
+      "torahName": "Павел бен Шмуиль",
       "gregorianDateOfDeath": {
         "month": 5,
         "date": 16,
@@ -1702,6 +1882,11 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
@@ -1716,13 +1901,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 102,
       "name": "Кракушанский Лейб бен Копель",
-      "torahName": "Кракушанский Лейб бен Копель",
+      "torahName": "Лейб бен Копель",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1730,13 +1920,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 104,
       "name": "Кракушанская Гитель бат Авраам",
-      "torahName": "Кракушанская Гитель бат Авраам",
+      "torahName": "Гитель бат Авраам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1744,13 +1939,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 105,
       "name": "Кац Евгения бат Исаак",
-      "torahName": "Кац Евгения бат Исаак",
+      "torahName": "Евгения бат Исаак",
       "gregorianDateOfDeath": {
         "month": 8,
         "date": 11,
@@ -1769,7 +1969,7 @@
     {
       "id": 106,
       "name": "Кац Давид бен Хаим",
-      "torahName": "Кац Давид бен Хаим",
+      "torahName": "Давид бен Хаим",
       "gregorianDateOfDeath": {
         "month": 9,
         "date": 26,
@@ -1788,7 +1988,7 @@
     {
       "id": 107,
       "name": "Кац Хаим бен Давид",
-      "torahName": "Кац Хаим бен Давид",
+      "torahName": "Хаим бен Давид",
       "gregorianDateOfDeath": {
         "month": 7,
         "date": 24,
@@ -1796,13 +1996,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 108,
       "name": "Кац Груня бат Шимон",
-      "torahName": "Кац Груня бат Шимон",
+      "torahName": "Груня бат Шимон",
       "gregorianDateOfDeath": {
         "month": 8,
         "date": 16,
@@ -1810,13 +2015,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 109,
       "name": "Леокумович Иосиф бен Давид",
-      "torahName": "Леокумович Иосиф бен Давид",
+      "torahName": "Иосиф бен Давид",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1835,7 +2045,7 @@
     {
       "id": 110,
       "name": "Леокумович Израиль бен Давид",
-      "torahName": "Леокумович Израиль бен Давид",
+      "torahName": "Израиль бен Давид",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1843,13 +2053,18 @@
       },
       "hasDeathDate": true,
       "photo": "110.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 111,
       "name": "Леокумович Бася бат Авраам",
-      "torahName": "Леокумович Бася бат Авраам",
+      "torahName": "Бася бат Авраам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1857,13 +2072,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 112,
       "name": "Леокумович Давид бен Авраам",
-      "torahName": "Леокумович Давид бен Авраам",
+      "torahName": "Давид бен Авраам",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -1871,6 +2091,11 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
@@ -1915,7 +2140,7 @@
     {
       "id": 115,
       "name": "Вайнер Семен бен Хаим (Шулем Хаймович)",
-      "torahName": "Вайнер Семен бен Хаим (Шулем Хаймович)",
+      "torahName": "Семен бен Хаим (Шулем Хаймович)",
       "gregorianDateOfDeath": {
         "month": 9,
         "date": 25,
@@ -1972,7 +2197,7 @@
     {
       "id": 117,
       "name": "Вайнер Хаим бен Иосиф",
-      "torahName": "Вайнер Хаим бен Иосиф",
+      "torahName": "Хаим бен Иосиф",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 30,
@@ -2029,7 +2254,7 @@
     {
       "id": 120,
       "name": "Шапинко Семен бен Иосиф (Шломо)",
-      "torahName": "Шапинко Семен бен Иосиф (Шломо)",
+      "torahName": "Семен бен Иосиф (Шломо)",
       "gregorianDateOfDeath": {
         "month": 7,
         "date": 8,
@@ -2048,7 +2273,7 @@
     {
       "id": 134,
       "name": "Орень Белла бат Ефим",
-      "torahName": "Орень Белла бат Ефим",
+      "torahName": "Белла бат Ефим",
       "gregorianDateOfDeath": {
         "month": 11,
         "date": 17,
@@ -2067,7 +2292,7 @@
     {
       "id": 136,
       "name": "Зак Владимир бен Лейб",
-      "torahName": "Зак Владимир бен Лейб",
+      "torahName": "Владимир бен Лейб",
       "gregorianDateOfDeath": {
         "month": 3,
         "date": 12,
@@ -2086,7 +2311,7 @@
     {
       "id": 139,
       "name": "Зуншайн Михаил бен Ошер",
-      "torahName": "Зуншайн Михаил бен Ошер",
+      "torahName": "Михаил бен Ошер",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -2094,6 +2319,11 @@
       },
       "hasDeathDate": true,
       "photo": "139.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
@@ -2119,7 +2349,7 @@
     {
       "id": 122,
       "name": "Мельц Исаак бен Моисей",
-      "torahName": "Мельц Исаак бен Моисей",
+      "torahName": "Исаак бен Моисей",
       "gregorianDateOfDeath": {
         "month": 10,
         "date": 4,
@@ -2146,13 +2376,18 @@
       },
       "hasDeathDate": true,
       "photo": "123.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 124,
       "name": "Лернер София бат Михаил",
-      "torahName": "Лернер София бат Михаил",
+      "torahName": "София бат Михаил",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 5,
@@ -2160,13 +2395,18 @@
       },
       "hasDeathDate": true,
       "photo": "124.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 125,
       "name": "Марко Раиса бат Яков",
-      "torahName": "Марко Раиса бат Яков",
+      "torahName": "Раиса бат Яков",
       "gregorianDateOfDeath": {
         "month": 5,
         "date": 4,
@@ -2174,13 +2414,18 @@
       },
       "hasDeathDate": true,
       "photo": "125.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 141,
       "name": "Бочевер Анна бат Борис",
-      "torahName": "Бочевер Анна бат Борис",
+      "torahName": "Анна бат Борис",
       "gregorianDateOfDeath": {
         "month": 6,
         "date": 25,
@@ -2199,7 +2444,7 @@
     {
       "id": 130,
       "name": "Фердман Борис бен Ханон",
-      "torahName": "Фердман Борис бен Ханон",
+      "torahName": "Борис бен Ханон",
       "gregorianDateOfDeath": {
         "month": 9,
         "date": 10,
@@ -2218,7 +2463,7 @@
     {
       "id": 126,
       "name": "Марков Виктор бен Маркус",
-      "torahName": "Марков Виктор бен Маркус",
+      "torahName": "Виктор бен Маркус",
       "gregorianDateOfDeath": {
         "month": 2,
         "date": 26,
@@ -2226,13 +2471,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 142,
       "name": "Буторина Берта бат Григорий (Шапкайц)",
-      "torahName": "Буторина Берта бат Григорий (Шапкайц)",
+      "torahName": "Берта бат Григорий (Шапкайц)",
       "gregorianDateOfDeath": {
         "month": 6,
         "date": 14,
@@ -2240,13 +2490,18 @@
       },
       "hasDeathDate": true,
       "photo": "142.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 143,
       "name": "Буторин Борис бен Виктор",
-      "torahName": "Буторин Борис бен Виктор",
+      "torahName": "Борис бен Виктор",
       "gregorianDateOfDeath": {
         "month": 2,
         "date": 23,
@@ -2265,7 +2520,7 @@
     {
       "id": 127,
       "name": "Мельц Моисей бен Исаак",
-      "torahName": "Мельц Моисей бен Исаак",
+      "torahName": "Моисей бен Исаак",
       "gregorianDateOfDeath": {
         "month": 10,
         "date": 7,
@@ -2273,6 +2528,11 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
@@ -2287,6 +2547,11 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
@@ -2301,13 +2566,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 131,
       "name": "Фруман Вихна бат Ошер",
-      "torahName": "Фруман Вихна бат Ошер",
+      "torahName": "Вихна бат Ошер",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 29,
@@ -2315,13 +2585,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 133,
       "name": "Фруман Ошер бен Янкел",
-      "torahName": "Фруман Ошер бен Янкел",
+      "torahName": "Ошер бен Янкел",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -2329,13 +2604,18 @@
       },
       "hasDeathDate": true,
       "photo": "",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 140,
       "name": "Махензон Мария бат Рафаил",
-      "torahName": "Махензон Мария бат Рафаил",
+      "torahName": "Мария бат Рафаил",
       "gregorianDateOfDeath": {
         "month": 5,
         "date": 27,
@@ -2373,7 +2653,7 @@
     {
       "id": 149,
       "name": "Пекелис Рахиль бат Иосиф",
-      "torahName": "Пекелис Рахиль бат Иосиф",
+      "torahName": "Рахиль бат Иосиф",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 27,
@@ -2392,7 +2672,7 @@
     {
       "id": 150,
       "name": "Пекелис Натан бен Нусин",
-      "torahName": "Пекелис Натан бен Нусин",
+      "torahName": "Натан бен Нусин",
       "gregorianDateOfDeath": {
         "month": 12,
         "date": 25,
@@ -2411,7 +2691,7 @@
     {
       "id": 151,
       "name": "Пекелис Сильвия бат Натан",
-      "torahName": "Пекелис Сильвия бат Натан",
+      "torahName": "Сильвия бат Натан",
       "gregorianDateOfDeath": {
         "month": 8,
         "date": 1,
@@ -2430,7 +2710,7 @@
     {
       "id": 145,
       "name": "Страбыкина Лилия бат Михаил (Волчек Циля Менделевна)",
-      "torahName": "Страбыкина Лилия бат Михаил (Волчек Циля Менделевна)",
+      "torahName": "Лилия бат Михаил (Волчек Циля Менделевна)",
       "gregorianDateOfDeath": {
         "month": 6,
         "date": 25,
@@ -2449,7 +2729,7 @@
     {
       "id": 146,
       "name": "Кац Вера бат Исак",
-      "torahName": "Кац Вера бат Исак",
+      "torahName": "Вера бат Исак",
       "gregorianDateOfDeath": {
         "month": 12,
         "date": 25,
@@ -2468,7 +2748,7 @@
     {
       "id": 147,
       "name": "Кац Михаил бен Генрих",
-      "torahName": "Кац Михаил бен Генрих",
+      "torahName": "Михаил бен Генрих",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 4,
@@ -2487,7 +2767,7 @@
     {
       "id": 158,
       "name": "Штейман Яков бен Арон",
-      "torahName": "Штейман Яков бен Арон",
+      "torahName": "Яков бен Арон",
       "gregorianDateOfDeath": {
         "month": 3,
         "date": 25,
@@ -2495,13 +2775,18 @@
       },
       "hasDeathDate": true,
       "photo": "158.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 155,
       "name": "Гитерман Хая-Сура бат Хаим Идел",
-      "torahName": "Гитерман Хая-Сура бат Хаим Идел",
+      "torahName": "Хая-Сура бат Хаим Идел",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 1,
@@ -2509,13 +2794,18 @@
       },
       "hasDeathDate": true,
       "photo": "155.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 156,
       "name": "Гитерман Хаим бен Абрам",
-      "torahName": "Гитерман Хаим бен Абрам",
+      "torahName": "Хаим бен Абрам",
       "gregorianDateOfDeath": {
         "month": 8,
         "date": 1,
@@ -2534,7 +2824,7 @@
     {
       "id": 157,
       "name": "Крельштейн Меся бат Липа",
-      "torahName": "Крельштейн Меся бат Липа",
+      "torahName": "Меся бат Липа",
       "gregorianDateOfDeath": {
         "month": 9,
         "date": 30,
@@ -2561,13 +2851,18 @@
       },
       "hasDeathDate": true,
       "photo": "159.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 103,
       "name": "Кракушанский Копель бен Лейб",
-      "torahName": "Кракушанский Копель бен Лейб",
+      "torahName": "Копель бен Лейб",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 9,
@@ -2586,7 +2881,7 @@
     {
       "id": 161,
       "name": "Шпикельман Яков бен Михаил",
-      "torahName": "Шпикельман Яков бен Михаил",
+      "torahName": "Яков бен Михаил",
       "gregorianDateOfDeath": {
         "month": 2,
         "date": 20,
@@ -2605,7 +2900,7 @@
     {
       "id": 162,
       "name": "Верба Вера бат Израиль",
-      "torahName": "Верба Вера бат Израиль",
+      "torahName": "Вера бат Израиль",
       "gregorianDateOfDeath": {
         "month": 6,
         "date": 19,
@@ -2624,7 +2919,7 @@
     {
       "id": 163,
       "name": "Брегман Софья бат Рувим",
-      "torahName": "Брегман Софья бат Рувим",
+      "torahName": "Софья бат Рувим",
       "gregorianDateOfDeath": {
         "month": 12,
         "date": 31,
@@ -2643,7 +2938,7 @@
     {
       "id": 166,
       "name": "Рабичев Шуня бен Моисей",
-      "torahName": "Рабичев Шуня бен Моисей",
+      "torahName": "Шуня бен Моисей",
       "gregorianDateOfDeath": {
         "month": 7,
         "date": 3,
@@ -2662,7 +2957,7 @@
     {
       "id": 167,
       "name": "Верба Иосиф бен Борис",
-      "torahName": "Верба Иосиф бен Борис",
+      "torahName": "Иосиф бен Борис",
       "gregorianDateOfDeath": {
         "month": 5,
         "date": 28,
@@ -2681,7 +2976,7 @@
     {
       "id": 168,
       "name": "Шерман Борис бен Тевель",
-      "torahName": "Шерман Борис бен Тевель",
+      "torahName": "Борис бен Тевель",
       "gregorianDateOfDeath": {
         "month": 8,
         "date": 15,
@@ -2700,7 +2995,7 @@
     {
       "id": 169,
       "name": "Кац Семен бен Хаим",
-      "torahName": "Кац Семен бен Хаим",
+      "torahName": "Семен бен Хаим",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 15,
@@ -2719,7 +3014,7 @@
     {
       "id": 165,
       "name": "Таловский Раймонд бен Израиль",
-      "torahName": "Таловский Раймонд бен Израиль",
+      "torahName": "Раймонд бен Израиль",
       "gregorianDateOfDeath": {
         "month": 5,
         "date": 26,
@@ -2738,7 +3033,7 @@
     {
       "id": 164,
       "name": "Таловская Идея бат Павел",
-      "torahName": "Таловская Идея бат Павел",
+      "torahName": "Идея бат Павел",
       "gregorianDateOfDeath": {
         "month": 7,
         "date": 28,
@@ -2746,13 +3041,18 @@
       },
       "hasDeathDate": true,
       "photo": "164.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 170,
       "name": "Клейман Владимир бен Давид",
-      "torahName": "Клейман Владимир бен Давид",
+      "torahName": "Владимир бен Давид",
       "gregorianDateOfDeath": {
         "month": 10,
         "date": 15,
@@ -2771,7 +3071,7 @@
     {
       "id": 171,
       "name": "Клейман Зелла бат Моисей",
-      "torahName": "Клейман Зелла бат Моисей",
+      "torahName": "Зелла бат Моисей",
       "gregorianDateOfDeath": {
         "month": 9,
         "date": 21,
@@ -2809,7 +3109,7 @@
     {
       "id": 173,
       "name": "Канзбург Евгения бат Павел",
-      "torahName": "Канзбург Евгения бат Павел",
+      "torahName": "Евгения бат Павел",
       "gregorianDateOfDeath": {
         "month": 4,
         "date": 18,
@@ -2828,7 +3128,7 @@
     {
       "id": 175,
       "name": "Загорская Эсфирь бат Лев",
-      "torahName": "Загорская Эсфирь бат Лев",
+      "torahName": "Эсфирь бат Лев",
       "gregorianDateOfDeath": {
         "month": 6,
         "date": 21,
@@ -2855,13 +3155,18 @@
       },
       "hasDeathDate": true,
       "photo": "174.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 176,
       "name": "Мазина Людмила бат Матвей",
-      "torahName": "Мазина Людмила бат Матвей",
+      "torahName": "Людмила бат Матвей",
       "gregorianDateOfDeath": {
         "month": 10,
         "date": 1,
@@ -2880,7 +3185,7 @@
     {
       "id": 177,
       "name": "Фишман Янкель бен Самуил",
-      "torahName": "Фишман Янкель бен Самуил",
+      "torahName": "Янкель бен Самуил",
       "gregorianDateOfDeath": {
         "month": 6,
         "date": 22,
@@ -2899,7 +3204,7 @@
     {
       "id": 178,
       "name": "Стронгина Эстер бат Гирш",
-      "torahName": "Стронгина Эстер бат Гирш",
+      "torahName": "Эстер бат Гирш",
       "gregorianDateOfDeath": {
         "month": 5,
         "date": 7,
@@ -2918,7 +3223,7 @@
     {
       "id": 179,
       "name": "Немировский Абрам бен Исаак",
-      "torahName": "Немировский Абрам бен Исаак",
+      "torahName": "Абрам бен Исаак",
       "gregorianDateOfDeath": {
         "month": 4,
         "date": 7,
@@ -2937,7 +3242,7 @@
     {
       "id": 180,
       "name": "Немировская Александра бат Гирш",
-      "torahName": "Немировская Александра бат Гирш",
+      "torahName": "Александра бат Гирш",
       "gregorianDateOfDeath": {
         "month": 5,
         "date": 16,
@@ -2945,13 +3250,18 @@
       },
       "hasDeathDate": true,
       "photo": "180.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 181,
       "name": "Соскин Варлен бен Лев и Рахель",
-      "torahName": "Соскин Варлен бен Лев и Рахель",
+      "torahName": "Варлен бен Лев и Рахель",
       "gregorianDateOfDeath": {
         "month": 12,
         "date": 3,
@@ -2970,7 +3280,7 @@
     {
       "id": 182,
       "name": "Левит Михаил бен Иосиф и Рива",
-      "torahName": "Левит Михаил бен Иосиф и Рива",
+      "torahName": "Михаил бен Иосиф и Рива",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 23,
@@ -2989,7 +3299,7 @@
     {
       "id": 183,
       "name": "Натанзон Дебора бат Моисей и Хая.",
-      "torahName": "Натанзон Дебора бат Моисей и Хая.",
+      "torahName": "Дебора бат Моисей и Хая.",
       "gregorianDateOfDeath": {
         "month": 2,
         "date": 22,
@@ -3008,7 +3318,7 @@
     {
       "id": 184,
       "name": "Натанзон Михаил бен Лейб и Берта",
-      "torahName": "Натанзон Михаил бен Лейб и Берта",
+      "torahName": "Михаил бен Лейб и Берта",
       "gregorianDateOfDeath": {
         "month": 9,
         "date": 12,
@@ -3065,7 +3375,7 @@
     {
       "id": 187,
       "name": "Рывкина Генриетта бат Борух и Розалия",
-      "torahName": "Рывкина Генриетта бат Борух и Розалия",
+      "torahName": "Генриетта бат Борух и Розалия",
       "gregorianDateOfDeath": {
         "month": 4,
         "date": 21,
@@ -3073,13 +3383,18 @@
       },
       "hasDeathDate": true,
       "photo": "187.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 188,
       "name": "Адонина Елена бат Владимир и Эсфирь",
-      "torahName": "Адонина Елена бат Владимир и Эсфирь",
+      "torahName": "Елена бат Владимир и Эсфирь",
       "gregorianDateOfDeath": {
         "month": 4,
         "date": 25,
@@ -3098,7 +3413,7 @@
     {
       "id": 189,
       "name": "Фридман Мария бат Энта и Соломон",
-      "torahName": "Фридман Мария бат Энта и Соломон",
+      "torahName": "Мария бат Энта и Соломон",
       "gregorianDateOfDeath": {
         "month": 4,
         "date": 23,
@@ -3106,13 +3421,18 @@
       },
       "hasDeathDate": true,
       "photo": "189.jpg",
+      "photoCrop": {
+        "x": 50,
+        "y": 50,
+        "zoom": 1
+      },
       "title": "",
       "text": ""
     },
     {
       "id": 190,
       "name": "Дмитриева Эсфирь бат Мария и Семен",
-      "torahName": "Дмитриева Эсфирь бат Мария и Семен",
+      "torahName": "Эсфирь бат Мария и Семен",
       "gregorianDateOfDeath": {
         "month": 7,
         "date": 16,
@@ -3131,7 +3451,7 @@
     {
       "id": 191,
       "name": "Лившиц Ошер бен Пинхас и Малка",
-      "torahName": "Лившиц Ошер бен Пинхас и Малка",
+      "torahName": "Ошер бен Пинхас и Малка",
       "gregorianDateOfDeath": {
         "month": 11,
         "date": 15,
@@ -3150,7 +3470,7 @@
     {
       "id": 192,
       "name": "Левит Анатолий бен Иосиф и Рива",
-      "torahName": "Левит Анатолий бен Иосиф и Рива",
+      "torahName": "Анатолий бен Иосиф и Рива",
       "gregorianDateOfDeath": {
         "month": 5,
         "date": 25,
@@ -3169,7 +3489,7 @@
     {
       "id": 193,
       "name": "Левит Иосиф бен Арон и Рахиль",
-      "torahName": "Левит Иосиф бен Арон и Рахиль",
+      "torahName": "Иосиф бен Арон и Рахиль",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 30,
@@ -3188,7 +3508,7 @@
     {
       "id": 194,
       "name": "Левит Рива бат Хаим и Чарна",
-      "torahName": "Левит Рива бат Хаим и Чарна",
+      "torahName": "Рива бат Хаим и Чарна",
       "gregorianDateOfDeath": {
         "month": 12,
         "date": 12,
@@ -3207,7 +3527,7 @@
     {
       "id": 195,
       "name": "Куцкин Израиль бен Вольф и Сара",
-      "torahName": "Куцкин Израиль бен Вольф и Сара",
+      "torahName": "Израиль бен Вольф и Сара",
       "gregorianDateOfDeath": {
         "month": 9,
         "date": 12,
@@ -3245,7 +3565,7 @@
     {
       "id": 197,
       "name": "Гершевич Аарон бен Гершон и Раиса",
-      "torahName": "Гершевич Аарон бен Гершон и Раиса",
+      "torahName": "Аарон бен Гершон и Раиса",
       "gregorianDateOfDeath": {
         "month": 5,
         "date": 30,
@@ -3264,7 +3584,7 @@
     {
       "id": 199,
       "name": "Орлов Виктор бен Нисон",
-      "torahName": "Орлов Виктор бен Нисон",
+      "torahName": "Виктор бен Нисон",
       "gregorianDateOfDeath": {
         "month": 6,
         "date": 10,
@@ -3301,8 +3621,8 @@
     },
     {
       "id": 201,
-      "name": "Явнилович Михаил бен Арон ",
-      "torahName": "Явнилович Михаил бен Арон",
+      "name": "Явнилович Михаил бен Арон",
+      "torahName": "Михаил бен Арон",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 1,
@@ -3321,7 +3641,7 @@
     {
       "id": 202,
       "name": "Явнилович Елизавета бат Михаил",
-      "torahName": "Явнилович Елизавета бат Михаил",
+      "torahName": "Елизавета бат Михаил",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 1,
@@ -3340,7 +3660,7 @@
     {
       "id": 203,
       "name": "Гамм Анатолий бен Эфраим",
-      "torahName": "Гамм Анатолий бен Эфраим",
+      "torahName": "Анатолий бен Эфраим",
       "gregorianDateOfDeath": {
         "month": 8,
         "date": 31,
@@ -3358,8 +3678,8 @@
     },
     {
       "id": 204,
-      "name": "Либерман Дуня бат Меер ",
-      "torahName": "Либерман Дуня бат Меер",
+      "name": "Либерман Дуня бат Меер",
+      "torahName": "Дуня бат Меер",
       "gregorianDateOfDeath": {
         "month": 4,
         "date": 20,
@@ -3377,8 +3697,8 @@
     },
     {
       "id": 205,
-      "name": "Гершунов Борис бен Моисей ",
-      "torahName": "Гершунов Борис бен Моисей",
+      "name": "Гершунов Борис бен Моисей",
+      "torahName": "Борис бен Моисей",
       "gregorianDateOfDeath": {
         "month": 8,
         "date": 25,
@@ -3397,7 +3717,7 @@
     {
       "id": 206,
       "name": "Берлович Шима",
-      "torahName": "Берлович Шима",
+      "torahName": "Шима",
       "gregorianDateOfDeath": {
         "month": 1,
         "date": 1,
@@ -3416,7 +3736,7 @@
     {
       "id": 207,
       "name": "Лобченко Хана бат Меер",
-      "torahName": "Лобченко Хана бат Меер",
+      "torahName": "Хана бат Меер",
       "gregorianDateOfDeath": {
         "month": 4,
         "date": 27,
@@ -3435,7 +3755,7 @@
     {
       "id": 208,
       "name": "Фрейдл Рахель бат Исраэль",
-      "torahName": "Фрейдл Рахель бат Исраэль",
+      "torahName": "Рахель бат Исраэль",
       "gregorianDateOfDeath": {
         "month": 11,
         "date": 10,
@@ -3693,8 +4013,8 @@
     "prayers": "",
     "zmanim": "Времена"
   },
-  "contentVersion": 1794803299839,
-  "exportedAt": "2026-11-16T04:28:19.839Z",
+  "contentVersion": 1794811077933,
+  "exportedAt": "2026-11-16T06:37:57.933Z",
   "jewishContent": {
     "date": "2026-11-16",
     "timezone": "Asia/Novosibirsk",
@@ -3972,6 +4292,6 @@
         "category": "chabad"
       }
     ],
-    "updatedAt": "2026-11-16T04:28:19.839Z"
+    "updatedAt": "2026-11-16T06:37:57.933Z"
   }
 }
