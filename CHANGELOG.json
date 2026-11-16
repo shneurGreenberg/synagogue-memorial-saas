@@ -1,5 +1,29 @@
 [
   {
+    "version": "1.41.0",
+    "date": "2026-11-16",
+    "items": [
+      {
+        "type": "changed",
+        "text": "בטופס הנפטר יש עכשיו שלושה שדות נפרדים: שם משפחה, שם פרטי ושם האב/האם, יחד עם הבחירה זכר/נקבה (בן/בת). השם המלא נבנה מהם ומוצג רק כתצוגה מקדימה, בלי לכתוב אותו פעמיים. כך גם בטופס הציבורי, באישור בקשות ובייבוא. השמות הקיימים פוצלו לחלקים בלי שינוי בלוח",
+        "text_ru": "В карточке умершего теперь три отдельных поля: фамилия, имя и имя отца/матери, плюс выбор мужской/женский (бен/бат). Полное имя собирается из них и показывается только как предпросмотр, без повторного ввода. Так же в публичной форме, при одобрении заявок и при импорте. Существующие имена разделены на части без изменений на табло",
+        "text_en": "The deceased form now has three separate fields: surname, given name and father/mother name, plus the male/female choice (ben/bat). The full name is built from them and shown only as a preview, never typed twice. Same in the public form, request approval and imports. Existing names were split into parts with no change on the board"
+      },
+      {
+        "type": "fixed",
+        "text": "ההגדרה «סדר השמות בלוח» משפיעה עכשיו רק על הלוח, ולא על הסדר או הצורה של השמות ברשימת הנפטרים באדמין. הכפתורים קטנים יותר, «שמור הגדרות» באותה שורה במחשב, ובטלפון התצוגה מסודרת ויש כפתור שמירה",
+        "text_ru": "Настройка «Порядок имени на табло» теперь влияет только на табло, а не на порядок и вид имён в списке умерших в админке. Кнопки стали компактнее, «Сохранить настройки» — в той же строке на компьютере, а на телефоне блок аккуратный и с кнопкой сохранения",
+        "text_en": "The \"Name order on the board\" setting now affects only the board, not the order or format of names in the admin deceased list. Smaller buttons, \"Save settings\" on the same row on desktop, and a tidy layout with a save button on mobile"
+      },
+      {
+        "type": "fixed",
+        "text": "המסגרת של כפתורי הבחירה (לפני/אחרי השקיעה, זכר/נקבה, תאריך לועזי/עברי) מקיפה עכשיו את הכפתורים כמו שצריך, במחשב ובטלפון",
+        "text_ru": "Рамка переключателей (до/после заката, мужской/женский, григорианская/еврейская дата) теперь правильно обрамляет кнопки на компьютере и телефоне",
+        "text_en": "The frame of the toggle buttons (before/after sunset, male/female, Gregorian/Hebrew date) now wraps the buttons properly on desktop and mobile"
+      }
+    ]
+  },
+  {
     "version": "1.40.0",
     "date": "2026-11-16",
     "items": [

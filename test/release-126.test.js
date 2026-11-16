@@ -29,7 +29,7 @@ describe('release 1.26 add-name page polish', () => {
 
   it('places gender field immediately after the first-name row', () => {
     const html = fs.readFileSync(DECEASED_BLOCK, 'utf8');
-    const firstNameIdx = html.indexOf('deceased_first_name_label');
+    const firstNameIdx = html.indexOf('[givenName]');
     const genderIdx = html.indexOf('public-gender-field');
     const fatherIdx = html.indexOf('father_name_label');
     assert.ok(firstNameIdx > -1 && genderIdx > firstNameIdx);

@@ -63,7 +63,9 @@ function sampleContext(lang) {
   const publicSubmission = normalizePublicSubmission(synagogue.publicSubmission, synagogue.provisioning);
   const emptyDeceasedBlock = {
     name: '',
-    fatherName: '',
+    surname: '',
+    givenName: '',
+    parentName: '',
     deathDate: '',
     relationKey: '',
     relationOther: '',

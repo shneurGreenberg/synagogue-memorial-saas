@@ -27,9 +27,11 @@
             <span>{{publicT 'deceased_surname_label'}}</span>
             <input type="text" dir="auto" name="deceased[{{index}}][surname]" maxlength="120" required value="{{block.surname}}" placeholder="{{publicT 'deceased_surname_placeholder'}}">
         </label>
+        {{!-- 1.41.0: only the given-name words («Иван»); the parent has its own field below.
+             Legacy firstName/fatherName posts are still accepted by the server. --}}
         <label class="public-field">
             <span>{{publicT 'deceased_first_name_label'}}</span>
-            <input type="text" dir="auto" name="deceased[{{index}}][firstName]" maxlength="120" required value="{{block.firstName}}" placeholder="{{publicT 'deceased_first_name_placeholder'}}">
+            <input type="text" dir="auto" name="deceased[{{index}}][givenName]" maxlength="120" required value="{{block.givenName}}" placeholder="{{publicT 'deceased_first_name_placeholder'}}">
         </label>
     </div>
 
@@ -47,9 +49,10 @@
         </div>
     </fieldset>
 
+    {{!-- 1.41.0: the parent's name only — בן/בת (бен/бат) is added from the gender choice above. --}}
     <label class="public-field">
         <span>{{publicT 'father_name_label'}}</span>
-        <input type="text" dir="auto" name="deceased[{{index}}][fatherName]" maxlength="120" required value="{{block.fatherName}}" placeholder="{{publicT 'father_name_placeholder'}}">
+        <input type="text" dir="auto" name="deceased[{{index}}][parentName]" maxlength="120" required value="{{block.parentName}}" placeholder="{{publicT 'father_name_placeholder'}}">
     </label>
 
     <fieldset class="public-death-mode-field" data-public-death-mode>

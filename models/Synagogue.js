@@ -30,7 +30,12 @@ const PersonAddRequestSchema = new mongoose.Schema({
   deceasedName: { type: String, default: '' },
   // 1.40.0 I88: the public form asks for the surname and the first name separately.
   deceasedSurname: { type: String, default: '' },
+  // 1.41.0: the given name is only the given-name words; the parent has its own field + marker.
   deceasedGivenName: { type: String, default: '' },
+  deceasedParentName: { type: String, default: '' },
+  // 'ben' | 'bat' ('' = not chosen yet, the gender decides).
+  deceasedParentRelation: { type: String, enum: ['ben', 'bat', ''], default: '' },
+  // Legacy name of deceasedParentName (kept so old requests keep working).
   deceasedFatherName: { type: String, default: '' },
   deceasedGender: { type: String, enum: ['male', 'female', ''], default: '' },
   deceasedNotes: { type: String, default: '' },
@@ -54,10 +59,15 @@ const PersonSchema = new mongoose.Schema({
   id: Number,
   // Full composed display name (kept for every existing consumer).
   name: String,
-  // 1.40.0 I88: separate surname and given name (givenName = name without the surname,
-  // e.g. «Иван бен Александр»). Both '' means the person was never split.
+  // 1.40.0 I88: separate surname and given name.
+  // 1.41.0: givenName is ONLY the given-name words («Иван»); the parent name is stored apart
+  // (parentName) with its marker (parentRelation = 'ben' | 'bat'). Legacy rows whose givenName still
+  // contains a בן/בת marker keep working: lib/person-name.js leaves them as they are.
+  // All '' means the person was never split.
   surname: { type: String, default: '' },
   givenName: { type: String, default: '' },
+  parentName: { type: String, default: '' },
+  parentRelation: { type: String, enum: ['ben', 'bat', ''], default: '' },
   gregorianDateOfDeath: {
     month: { type: Number, default: undefined },
     date: { type: Number, default: undefined },

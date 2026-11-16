@@ -523,7 +523,7 @@ app.get('/s/:slug/api/board/person/:personId', apiRateLimiter, async (req, res) 
     }
 
     res.setHeader('Cache-Control', 'no-store');
-    return res.json({ person: toPublicPersonPayload(person, { nameOrder: synagogue.nameOrder }) });
+    return res.json({ person: toPublicPersonPayload(person, { nameOrder: synagogue.nameOrder, lang: synagogue.language || '' }) });
   } catch (err) {
     console.error('Person payload error:', err);
     return res.status(500).json({ error: publicErrorMessage(err) });

@@ -46,8 +46,8 @@ const publicSubmissionRateLimiter = createPublicSubmissionRateLimiter();
 const EMPTY_DECEASED_BLOCK = {
   name: '',
   surname: '',
-  firstName: '',
-  fatherName: '',
+  givenName: '',
+  parentName: '',
   deathDate: '',
   deathDateDisplay: '',
   deathDay: '',
@@ -137,10 +137,8 @@ function deceasedBlocksFromQuery(query) {
         surname: entry.rawFields && entry.rawFields.surname
           ? String(entry.rawFields.surname).trim()
           : nameParts.surname,
-        firstName: entry.rawFields && entry.rawFields.firstName
-          ? String(entry.rawFields.firstName).trim()
-          : nameParts.firstName,
-        fatherName: entry.fatherName || '',
+        givenName: entry.givenName || nameParts.firstName,
+        parentName: entry.parentName || '',
         deathDate: iso,
         deathDateDisplay,
         deathDay: entry.deathDay || (entry.gregorianDateOfDeath ? String(entry.gregorianDateOfDeath.date) : ''),
@@ -227,9 +225,9 @@ function appendDeceasedToSearchParams(params, body) {
   entries.forEach((entry, index) => {
     const parts = splitDeceasedDisplayName(entry.name || '');
     params.set(`deceased[${index}][surname]`, entry.surname || parts.surname);
-    params.set(`deceased[${index}][firstName]`, entry.firstName || parts.firstName);
+    params.set(`deceased[${index}][givenName]`, entry.givenName || parts.firstName);
+    params.set(`deceased[${index}][parentName]`, entry.parentName || '');
     params.set(`deceased[${index}][name]`, entry.name || '');
-    params.set(`deceased[${index}][fatherName]`, entry.fatherName || '');
     params.set(`deceased[${index}][relationKey]`, entry.relationKey || '');
     params.set(`deceased[${index}][relationOther]`, entry.relationOther || '');
     const displayDate = formatDdMmYyyy(entry.gregorianDateOfDeath)

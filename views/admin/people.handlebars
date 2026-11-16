@@ -55,21 +55,31 @@
     </div>
     {{/if}}
 
-    {{!-- 1.40.0 I88: per-community name order (labelled in words, not by color). Saving it
-         recomposes the display name of the people that were stored with a surname. --}}
+    {{!-- 1.40.0 I88: per-community name order (labelled in words, not by color).
+         1.41.0: the setting only changes the public board — the stored name stays canonical
+         (surname-first) and the list below keeps sorting/searching on it. Compact text pills and
+         the "save settings" button share one row on desktop; on a phone the button goes full width
+         (it is not inside .form-actions-sticky, whose submit is hidden on phones). --}}
     <section class="people-name-order-panel" aria-labelledby="nameOrderHeading">
         <h2 class="admin-panel-inline-title" id="nameOrderHeading">{{t 'name_order_label'}}</h2>
         <form method="POST" action="/admin/{{synagogue.slug}}/people/name-order" class="people-name-order-form">
-            <div class="admin-seg people-name-order-seg" role="radiogroup" aria-label="{{t 'name_order_label'}}">
-                <label class="admin-seg-option">
-                    <input type="radio" name="nameOrder" value="surname-first" {{#if (eq nameOrderOptions.selected 'surname-first')}}checked{{/if}}>
-                    <span>{{t 'name_order_surname_first'}}<small class="people-name-order-example">{{t 'name_order_example_surname_first'}}</small></span>
-                </label>
-                <label class="admin-seg-option">
-                    <input type="radio" name="nameOrder" value="given-first" {{#if (eq nameOrderOptions.selected 'given-first')}}checked{{/if}}>
-                    <span>{{t 'name_order_given_first'}}<small class="people-name-order-example">{{t 'name_order_example_given_first'}}</small></span>
-                </label>
+            <div class="people-name-order-row">
+                <div class="admin-seg people-name-order-seg" role="radiogroup" aria-label="{{t 'name_order_label'}}">
+                    <label class="admin-seg-option">
+                        <input type="radio" name="nameOrder" value="surname-first" {{#if (eq nameOrderOptions.selected 'surname-first')}}checked{{/if}}>
+                        <span>{{t 'name_order_surname_first'}}</span>
+                    </label>
+                    <label class="admin-seg-option">
+                        <input type="radio" name="nameOrder" value="given-first" {{#if (eq nameOrderOptions.selected 'given-first')}}checked{{/if}}>
+                        <span>{{t 'name_order_given_first'}}</span>
+                    </label>
+                </div>
+                <button type="submit" class="btn-admin btn-admin-primary btn-admin-sm btn-admin-with-icon people-name-order-save">{{{adminIcon 'save' class='btn-admin-inline-icon'}}}{{t 'save'}}</button>
             </div>
+            <p class="field-hint people-name-order-examples">
+                <span>{{t 'name_order_surname_first'}}: {{t 'name_order_example_surname_first'}}</span>
+                <span>{{t 'name_order_given_first'}}: {{t 'name_order_example_given_first'}}</span>
+            </p>
             <p class="field-hint">{{t 'name_order_hint'}}</p>
             {{#if nameOrderOptions.isDetected}}
             <p class="field-hint people-name-order-detected">{{t 'name_order_detected'}}</p>
@@ -78,9 +88,6 @@
             <p class="field-hint people-name-order-detected">{{t 'name_order_unknown'}}</p>
                 {{/unless}}
             {{/if}}
-            <div class="form-actions-sticky">
-                <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon">{{{adminIcon 'save' class='btn-admin-inline-icon'}}}{{t 'save'}}</button>
-            </div>
         </form>
     </section>
 
@@ -125,7 +132,8 @@
   {
     "name": "Example Name",
     "surname": "Example",
-    "firstName": "Name",
+    "givenName": "Name",
+    "parentName": "Father",
     "gregorianDateOfDeath": { "month": 3, "date": 15, "year": 2020 },
     "photo": "",
     "title": "",
@@ -181,21 +189,23 @@
                             <span class="seed-notice">{{t 'photo_hint'}}</span>
                         </div>
                         <div class="person-form-fields">
-                            {{!-- 1.36.0 I67: same as the public add-name form — the deceased's name and the
-                                 father's name are separate; בן/בת (бен/бат) is added from the gender choice.
-                                 1.40.0 I88: the surname is its own field too. --}}
+                            {{!-- 1.36.0 I67: same as the public add-name form — the given name and the
+                                 parent's name are separate; בן/בת (бен/бат) is added from the gender choice.
+                                 1.40.0 I88: the surname is its own field too.
+                                 1.41.0: three normalized parts (Surname / Given name / Parent name);
+                                 the full name is only the read-only preview below. --}}
                             <div class="form-field">
                                 <label for="addSurname">{{t 'person_surname_label'}}</label>
                                 <input type="text" dir="auto" name="surname" id="addSurname" class="form-control" maxlength="120" placeholder="{{t 'person_surname_placeholder'}}" data-deceased-name-part="surname">
                             </div>
                             <div class="form-field">
-                                <label for="addName">{{t 'deceased_name_label'}}</label>
-                                <input type="text" dir="auto" name="name" id="addName" class="form-control" required placeholder="{{t 'deceased_name_placeholder'}}" data-deceased-name-part="name">
+                                <label for="addGivenName">{{t 'person_given_name_label'}}</label>
+                                <input type="text" dir="auto" name="givenName" id="addGivenName" class="form-control" required placeholder="{{t 'person_given_name_placeholder'}}" data-deceased-name-part="givenName">
                                 <span class="field-hint">{{t 'person_given_name_hint'}}</span>
                             </div>
                             <div class="form-field">
-                                <label for="addFatherName">{{t 'person_add_request_father'}}</label>
-                                <input type="text" dir="auto" name="fatherName" id="addFatherName" class="form-control" maxlength="120" placeholder="{{t 'father_name_placeholder'}}" data-deceased-name-part="father">
+                                <label for="addParentName">{{t 'person_parent_name_label'}}</label>
+                                <input type="text" dir="auto" name="parentName" id="addParentName" class="form-control" maxlength="120" placeholder="{{t 'person_parent_name_placeholder'}}" data-deceased-name-part="parent">
                             </div>
                             <div class="form-field admin-gender-field">
                                 <label>{{t 'gender_label'}}</label>
@@ -279,15 +289,21 @@
                             </button>
                         </div>
                         <div class="person-form-fields">
-                            {{!-- 1.40.0 I88: the edit form also keeps the surname apart; the typed
-                                 name stays the full display name. --}}
+                            {{!-- 1.41.0: three normalized parts — Surname / Given name / Parent name.
+                                 The full name is only the read-only preview below; the server keeps a
+                                 legacy unsplit person's stored name when the parts were not touched. --}}
                             <div class="form-field">
                                 <label for="editSurname">{{t 'person_surname_label'}}</label>
-                                <input type="text" dir="auto" name="surname" id="editSurname" class="form-control" maxlength="120" placeholder="{{t 'person_surname_placeholder'}}">
+                                <input type="text" dir="auto" name="surname" id="editSurname" class="form-control" maxlength="120" placeholder="{{t 'person_surname_placeholder'}}" data-deceased-name-part="surname">
                             </div>
                             <div class="form-field">
-                                <label for="editName">{{t 'name'}}</label>
-                                <input type="text" dir="auto" name="name" id="editName" class="form-control" required placeholder="{{t 'name_placeholder'}}">
+                                <label for="editGivenName">{{t 'person_given_name_label'}}</label>
+                                <input type="text" dir="auto" name="givenName" id="editGivenName" class="form-control" required placeholder="{{t 'person_given_name_placeholder'}}" data-deceased-name-part="givenName">
+                                <span class="field-hint">{{t 'person_given_name_hint'}}</span>
+                            </div>
+                            <div class="form-field">
+                                <label for="editParentName">{{t 'person_parent_name_label'}}</label>
+                                <input type="text" dir="auto" name="parentName" id="editParentName" class="form-control" maxlength="120" placeholder="{{t 'person_parent_name_placeholder'}}" data-deceased-name-part="parent">
                             </div>
                             <div class="form-field admin-gender-field">
                                 <label>{{t 'gender_label'}}</label>
@@ -297,6 +313,8 @@
                                     <label class="admin-seg-option"><input type="radio" name="gender" value="female" id="editGenderFemale"><span>{{t 'gender_female'}}</span></label>
                                 </div>
                             </div>
+                            <p class="field-hint admin-board-name-preview" id="editBoardNamePreview" data-deceased-name-preview
+                                data-label="{{t 'board_name_preview'}}" data-lang="{{synagogue.language}}" data-name-order="{{#if nameOrderOptions.selected}}{{nameOrderOptions.selected}}{{else}}surname-first{{/if}}" hidden></p>
                             {{> admin-death-date-fields prefix="edit"}}
                             <div class="form-field admin-permanent-field">
                                 <input type="hidden" name="permanent" value="0">

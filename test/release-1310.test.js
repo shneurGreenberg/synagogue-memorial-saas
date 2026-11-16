@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('path');
+const { pathToFileURL } = require('node:url');
 
 const root = path.join(__dirname, '..');
 const read = (rel) => fs.readFileSync(path.join(root, rel), 'utf8');
@@ -23,7 +24,8 @@ async function bundle(entry) {
   const esbuild = require('esbuild');
   const out = path.join(os.tmpdir(), `kadish-test-${path.basename(entry)}-${process.pid}.mjs`);
   await esbuild.build({ entryPoints: [path.join(root, entry)], bundle: true, format: 'esm', platform: 'neutral', outfile: out, logLevel: 'silent', mainFields: ['module', 'main'] });
-  return import(`${out}?t=${Date.now()}`);
+  // A bare Windows path ("C:\...") is not a valid ESM specifier — it must be a file:// URL.
+  return import(`${pathToFileURL(out).href}?t=${Date.now()}`);
 }
 
 describe('1.31.0 I25: offline board keeps a month of content and survives a day change', () => {
