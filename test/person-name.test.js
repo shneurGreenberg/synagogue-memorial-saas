@@ -40,6 +40,17 @@ describe('1.40.0 I88: composePersonName', () => {
     );
   });
 
+  it('given-first keeps parentheses and punctuation in the given name', () => {
+    assert.equal(
+      composePersonName({ surname: 'Виленкин', givenName: 'Евгений бен Самуила (Йосиф)' }, 'given-first'),
+      'Евгений Виленкин бен Самуила (Йосиф)',
+    );
+    assert.equal(
+      composePersonName({ surname: 'Кац', givenName: 'И. бен Моисей, мл.' }, 'given-first'),
+      'И. Кац бен Моисей, мл.',
+    );
+  });
+
   it("'' order falls back to surname-first", () => {
     assert.equal(composePersonName(person, ''), 'Иванов Иван бен Александр');
   });
