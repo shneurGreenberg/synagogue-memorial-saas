@@ -1,6 +1,8 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const { proposeSurnameSplit, isRussianSurnameToken, SPLIT_REASONS } = require('../lib/split-surname');
+const {
+  proposeSurnameSplit, isRussianSurnameToken, buildGivenAtPos, SPLIT_REASONS, COMMON_GIVEN_NAMES,
+} = require('../lib/split-surname');
 const { composePersonName } = require('../lib/person-name');
 const {
   runNameNormalization, restoreNormalization, planNormalization, BACKUP_COLLECTION,
@@ -9,8 +11,8 @@ const {
 describe('1.40.0 I88: split-surname token detection', () => {
   it('reports only the known reason codes', async () => {
     assert.deepEqual(SPLIT_REASONS, [
-      'empty-name', 'order-unknown', 'too-few-tokens', 'no-surname-token', 'no-given-name',
-      'surname-shape', 'given-shape', 'hebrew-no-marker', 'identity-mismatch',
+      'empty-name', 'order-unknown', 'hebrew', 'too-few-tokens', 'shape', 'multi-given', 'punct',
+      'surname-is-given-name', 'given-shape', 'identity-mismatch',
     ]);
     const { summary } = await planNormalization(
       { find: () => ({ toArray: async () => [{ slug: 'x', people: [{ id: 1, name: 'Коган Иосиф' }] }] }) },
@@ -26,6 +28,77 @@ describe('1.40.0 I88: split-surname token detection', () => {
       assert.equal(isRussianSurnameToken(w), false, `${w} should not look like a surname`);
     });
   });
+  it('knows the builtin common given names', () => {
+    ['Яков', 'Лев', 'Нина', 'Валентина', 'Анна', 'Марк'].forEach((w) => {
+      assert.ok(COMMON_GIVEN_NAMES.has(w.toLowerCase()), w);
+    });
+  });
+});
+
+describe('1.40.1: structural rule — real surnames without morphology now split', () => {
+  const order = 'surname-first';
+  it('splits «Кац Арнольд бен Моисей»', () => {
+    const p = proposeSurnameSplit({ name: 'Кац Арнольд бен Моисей' }, order);
+    assert.equal(p.surname, 'Кац');
+    assert.equal(p.givenName, 'Арнольд бен Моисей');
+    assert.equal(p.reason, '');
+  });
+  it('splits «Сирота Анна бат Моисей» (Анна is a common given name)', () => {
+    const p = proposeSurnameSplit({ name: 'Сирота Анна бат Моисей' }, order);
+    assert.equal(p.surname, 'Сирота');
+    assert.equal(p.givenName, 'Анна бат Моисей');
+  });
+  it('splits «Раксин Яков бен Авраам» (Яков is shaped like a surname)', () => {
+    const p = proposeSurnameSplit({ name: 'Раксин Яков бен Авраам' }, order);
+    assert.equal(p.surname, 'Раксин');
+    assert.equal(p.givenName, 'Яков бен Авраам');
+  });
+  it('splits «Гинзбург Нина бат Лев» and «Коган Иосиф бен Лев»', () => {
+    assert.equal(proposeSurnameSplit({ name: 'Гинзбург Нина бат Лев' }, order).surname, 'Гинзбург');
+    assert.equal(proposeSurnameSplit({ name: 'Коган Иосиф бен Лев' }, order).surname, 'Коган');
+  });
+  it('never reads a given name as the surname', () => {
+    assert.equal(proposeSurnameSplit({ name: 'Яков Иванов бен Авраам' }, order).reason, 'surname-is-given-name');
+    assert.equal(proposeSurnameSplit({ name: 'Лев Кац бен Авраам' }, order).reason, 'surname-is-given-name');
+    assert.equal(proposeSurnameSplit({ name: 'Нина Либерман бат Моисей' }, order).reason, 'surname-is-given-name');
+    assert.equal(proposeSurnameSplit({ name: 'Валентина Абрамова бат Моисей' }, order).reason, 'surname-is-given-name');
+  });
+  it('keeps two tokens that are both surnames ambiguous', () => {
+    assert.equal(proposeSurnameSplit({ name: 'Иванов Абрамова' }, order).reason, 'given-shape');
+    assert.equal(proposeSurnameSplit({ name: 'Иванов Рабинович' }, order).reason, 'given-shape');
+  });
+});
+
+describe('1.40.1: structural rule — shape and punctuation', () => {
+  const order = 'surname-first';
+  it('requires exactly two tokens before the בן/בת marker', () => {
+    assert.equal(proposeSurnameSplit({ name: 'Иванов бен Александр' }, order).reason, 'shape');
+    assert.equal(proposeSurnameSplit({ name: 'Иван Петр Иванов бен Моисей' }, order).reason, 'multi-given');
+  });
+  it('accepts only 2 tokens, or 3 with a Russian patronymic, when there is no marker', () => {
+    assert.equal(proposeSurnameSplit({ name: 'Иванов Иван Моисей' }, order).reason, 'shape');
+    const patronymic = proposeSurnameSplit({ name: 'Иванов Иван Моисеевич' }, order);
+    assert.equal(patronymic.surname, 'Иванов');
+    assert.equal(patronymic.givenName, 'Иван Моисеевич');
+    const female = proposeSurnameSplit({ name: 'Кац Анна Моисеевна' }, order);
+    assert.equal(female.surname, 'Кац');
+    assert.equal(female.givenName, 'Анна Моисеевна');
+  });
+  it('refuses punctuation, initials and brackets', () => {
+    assert.equal(proposeSurnameSplit({ name: 'Иванов (Иван) бен Александр' }, order).reason, 'punct');
+    assert.equal(proposeSurnameSplit({ name: 'Иванов И. бен Александр' }, order).reason, 'punct');
+    assert.equal(proposeSurnameSplit({ name: 'Иванов - Иван бен Александр' }, order).reason, 'punct');
+  });
+  it('allows a hyphenated surname', () => {
+    const p = proposeSurnameSplit({ name: 'Кацман-Рабинович Сара бат Моисей' }, order);
+    assert.equal(p.surname, 'Кацман-Рабинович');
+    assert.equal(p.givenName, 'Сара бат Моисей');
+  });
+  it('does not split a single token or an empty name', () => {
+    assert.equal(proposeSurnameSplit({ name: 'Иванов' }, order).reason, 'too-few-tokens');
+    assert.equal(proposeSurnameSplit({ name: '' }, order).reason, 'empty-name');
+    assert.equal(proposeSurnameSplit({ name: '   ' }, order).reason, 'empty-name');
+  });
 });
 
 describe('1.40.0 I88: split-surname, surname-first community', () => {
@@ -35,7 +108,6 @@ describe('1.40.0 I88: split-surname, surname-first community', () => {
     assert.equal(p.surname, 'Иванов');
     assert.equal(p.givenName, 'Иван бен Александр');
     assert.equal(p.reason, '');
-    // identity: recomposing gives back the stored name exactly
     assert.equal(composePersonName({ ...p, name: 'Иванов Иван бен Александр' }, order), 'Иванов Иван бен Александр');
   });
   it('splits a female surname and a plain two-token name', () => {
@@ -46,30 +118,19 @@ describe('1.40.0 I88: split-surname, surname-first community', () => {
     assert.equal(plain.surname, 'Либерман');
     assert.equal(plain.givenName, 'Абрам');
   });
-  it('leaves rows whose surname token is not morphologically a surname', () => {
-    assert.equal(proposeSurnameSplit({ name: 'Коган Иосиф' }, order).reason, 'surname-shape');
-  });
-  it('leaves rows where both head tokens look like surnames', () => {
-    assert.equal(proposeSurnameSplit({ name: 'Иванов Абрамов' }, order).reason, 'given-shape');
-  });
-  it('leaves rows with no clear given-name part', () => {
-    assert.equal(proposeSurnameSplit({ name: 'Иванов бен Александр' }, order).reason, 'no-given-name');
-    assert.equal(proposeSurnameSplit({ name: 'Иванов' }, order).reason, 'too-few-tokens');
-    assert.equal(proposeSurnameSplit({ name: '' }, order).reason, 'empty-name');
-  });
   it('skips a person that already has a surname', () => {
     const p = proposeSurnameSplit({ name: 'Иванов Иван', surname: 'Иванов', givenName: 'Иван' }, order);
     assert.equal(p.alreadySplit, true);
   });
-  it('refuses any split that would not recompose to the same bytes', () => {
-    // double space inside the name would be normalised away by composePersonName
-    assert.equal(proposeSurnameSplit({ name: 'Иванов  Иван бен Александр' }, order).reason, 'identity-mismatch');
-    // stray leading whitespace is not reproduced either
-    assert.equal(proposeSurnameSplit({ name: ' Иванов Иван' }, order).reason, 'identity-mismatch');
-    // trailing/leading decoration is kept, so that one still splits
-    const p = proposeSurnameSplit({ name: 'Иванов Иван бен Александр (?)' }, order);
-    assert.equal(p.givenName, 'Иван бен Александр (?)');
-    assert.equal(composePersonName({ ...p, name: 'Иванов Иван бен Александр (?)' }, order), 'Иванов Иван бен Александр (?)');
+  it('compares the identity on the whitespace-collapsed name', () => {
+    // stray whitespace is trimmed/collapsed, so the split still recomposes to the stored name
+    const p = proposeSurnameSplit({ name: ' Иванов  Иван бен Александр ' }, order);
+    assert.equal(p.surname, 'Иванов');
+    assert.equal(p.givenName, 'Иван бен Александр');
+    assert.equal(composePersonName(p, order), 'Иванов Иван бен Александр');
+    // trailing decoration stays in the given-name part
+    const deco = proposeSurnameSplit({ name: 'Иванов Иван бен Александр (?)' }, order);
+    assert.equal(deco.givenName, 'Иван бен Александр (?)');
   });
 });
 
@@ -92,9 +153,30 @@ describe('1.40.0 I88: split-surname, given-first community', () => {
     assert.equal(p.surname, 'Либерман');
     assert.equal(p.givenName, 'Абрам');
   });
-  it('leaves a name whose first token is the surname under the other convention', () => {
-    // «Иванов Иван» read as given-first: «Иванов» is the given name, «Иван» is not a surname.
-    assert.equal(proposeSurnameSplit({ name: 'Иванов Иван' }, order).reason, 'surname-shape');
+  it('leaves a name whose first token is the given name under this convention', () => {
+    // «Иванов Иван» read as given-first: «Иванов» would be the given name — nothing to split safely.
+    assert.equal(proposeSurnameSplit({ name: 'Иванов Иван' }, order).reason, 'shape');
+  });
+});
+
+describe('1.40.1: community context (givenAtPos)', () => {
+  it('collects the given-name position for each order', () => {
+    const names = ['Кац Арнольд бен Моисей', 'Либерман Сара бат Моисей', 'Иосиф бен Лев'];
+    assert.deepEqual([...buildGivenAtPos(names, 'surname-first')].sort(), ['арнольд', 'сара']);
+    assert.deepEqual([...buildGivenAtPos(['Арнольд Кац бен Моисей'], 'given-first')], ['арнольд']);
+  });
+  it('keeps «Анна Мирмильштейн бат Моисей» ambiguous in a surname-first community', () => {
+    const ctx = { givenAtPos: buildGivenAtPos(['Сирота Анна бат Моисей'], 'surname-first') };
+    assert.deepEqual([...ctx.givenAtPos], ['анна']);
+    const p = proposeSurnameSplit({ name: 'Анна Мирмильштейн бат Моисей' }, 'surname-first', ctx);
+    assert.equal(p.reason, 'surname-is-given-name');
+  });
+  it('uses the community evidence for names the builtin list does not know', () => {
+    // «Григорий» is not in the builtin list, so only the community can tell it is a given name.
+    const name = 'Григорий Шапиро бен Моисей';
+    assert.equal(proposeSurnameSplit({ name }, 'surname-first').surname, 'Григорий');
+    const ctx = { givenAtPos: buildGivenAtPos(['Иванов Григорий бен Моисей'], 'surname-first') };
+    assert.equal(proposeSurnameSplit({ name }, 'surname-first', ctx).reason, 'surname-is-given-name');
   });
 });
 
@@ -102,12 +184,12 @@ describe('1.40.0 I88: split-surname ambiguous cases', () => {
   it('leaves everything alone when the convention is unknown', () => {
     assert.equal(proposeSurnameSplit({ name: 'Иванов Иван бен Александр' }, '').reason, 'order-unknown');
   });
-  it('splits Hebrew only with 2+ tokens before בן/בת and a known convention', () => {
-    assert.equal(proposeSurnameSplit({ name: 'אברהם בן יצחק' }, 'surname-first').reason, 'hebrew-no-marker');
-    const p = proposeSurnameSplit({ name: 'כהן אברהם בן יצחק' }, 'surname-first');
-    assert.equal(p.surname, 'כהן');
-    assert.equal(p.givenName, 'אברהם בן יצחק');
-    assert.equal(composePersonName({ ...p, name: 'כהן אברהם בן יצחק' }, 'surname-first'), 'כהן אברהם בן יצחק');
+  it('never splits a Hebrew-script name', () => {
+    assert.equal(proposeSurnameSplit({ name: 'אברהם בן יצחק' }, 'surname-first').reason, 'hebrew');
+    assert.equal(proposeSurnameSplit({ name: 'כהן אברהם בן יצחק' }, 'surname-first').reason, 'hebrew');
+    assert.equal(proposeSurnameSplit({ name: 'כהן אברהם בן יצחק' }, 'given-first').reason, 'hebrew');
+    // a Latin name is not Russian either, so it has no morphology to lean on
+    assert.equal(proposeSurnameSplit({ name: 'Cohen' }, 'surname-first').reason, 'too-few-tokens');
   });
 });
 
@@ -116,8 +198,8 @@ describe('1.40.0 I88: split-surname in the normalization run', () => {
     { slug: 'nsk', people: [
       { id: 1, name: 'Иванов Иван бен Александр' },
       { id: 2, name: 'Либерман Сара бат Моисей' },
-      { id: 3, name: 'Коган Иосиф бен Лев' },
-      { id: 4, name: 'Иванов Абрамов' },
+      { id: 3, name: 'Яков Кацман бен Авраам' },
+      { id: 4, name: 'Иванов Абрамова' },
       { id: 5, name: 'Шапиро Лев бен Ицхак' },
     ] },
     { slug: 'tomsk', nameOrder: 'given-first', people: [
@@ -131,10 +213,10 @@ describe('1.40.0 I88: split-surname in the normalization run', () => {
     const db = fakeDb(SEED);
     const dry = await runNameNormalization(db, { mode: 'dry-run', rule: 'split-surname' });
     assert.deepEqual(Object.keys(dry.summary.byCommunity).sort(), ['nsk', 'tomsk']);
-    assert.deepEqual(dry.summary.byCommunity.nsk, { total: 5, split: 2, ambiguous: 3, alreadySplit: 0, order: 'surname-first' });
+    assert.deepEqual(dry.summary.byCommunity.nsk, { total: 5, split: 3, ambiguous: 2, alreadySplit: 0, order: 'surname-first' });
     assert.deepEqual(dry.summary.byCommunity.tomsk, { total: 3, split: 3, ambiguous: 0, alreadySplit: 0, order: 'given-first' });
-    assert.equal(dry.summary.split, 5);
-    assert.equal(dry.summary.ambiguous, 3);
+    assert.equal(dry.summary.split, 6);
+    assert.equal(dry.summary.ambiguous, 2);
     assert.equal(db.data.synagogues[0].people[0].surname, undefined);
     assert.equal(db.data.synagogues[0].nameOrder, undefined);
   });
@@ -142,17 +224,17 @@ describe('1.40.0 I88: split-surname in the normalization run', () => {
   it('counts the ambiguous reasons', async () => {
     const db = fakeDb(SEED);
     const dry = await runNameNormalization(db, { mode: 'dry-run', rule: 'split-surname' });
-    assert.equal(dry.summary.byReason['surname-shape'], 2);
+    assert.equal(dry.summary.byReason['surname-is-given-name'], 1);
     assert.equal(dry.summary.byReason['given-shape'], 1);
-    const kogan = dry.rows.find((r) => r.community === 'nsk' && r.id === 3);
-    assert.equal(kogan.ambiguous, true);
-    assert.equal(kogan.note, 'surname-shape');
+    const yakov = dry.rows.find((r) => r.community === 'nsk' && r.id === 3);
+    assert.equal(yakov.ambiguous, true);
+    assert.equal(yakov.note, 'surname-is-given-name');
   });
 
   it('apply writes surname + givenName, keeps `name` byte-identical, sets nameOrder, restore clears it', async () => {
     const db = fakeDb(SEED);
     const res = await runNameNormalization(db, { mode: 'apply', rule: 'split-surname' });
-    assert.equal(res.updated, 5);
+    assert.equal(res.updated, 6);
     const nsk = db.data.synagogues[0];
     const tomsk = db.data.synagogues[1];
 
@@ -178,7 +260,7 @@ describe('1.40.0 I88: split-surname in the normalization run', () => {
     assert.equal(b.oldNameOrder, '');
 
     const back = await restoreNormalization(db.collection('synagogues'), db.collection(BACKUP_COLLECTION), res.runId);
-    assert.equal(back.restored, 5);
+    assert.equal(back.restored, 6);
     assert.equal(nsk.people[0].surname, '');
     assert.equal(nsk.people[0].givenName, '');
     assert.equal(nsk.people[0].name, 'Иванов Иван бен Александр');
@@ -192,8 +274,8 @@ describe('1.40.0 I88: split-surname in the normalization run', () => {
     await runNameNormalization(db, { mode: 'apply', rule: 'split-surname' });
     const dry = await runNameNormalization(db, { mode: 'dry-run', rule: 'split-surname' });
     assert.equal(dry.summary.split, 0);
-    assert.equal(dry.summary.alreadySplit, 5);
-    assert.equal(dry.summary.byCommunity.nsk.alreadySplit, 2);
+    assert.equal(dry.summary.alreadySplit, 6);
+    assert.equal(dry.summary.byCommunity.nsk.alreadySplit, 3);
     const res2 = await runNameNormalization(db, { mode: 'apply', rule: 'split-surname' });
     assert.equal(res2.updated, 0);
   });
@@ -207,6 +289,18 @@ describe('1.40.0 I88: split-surname in the normalization run', () => {
     const res = await runNameNormalization(db, { mode: 'apply', rule: 'split-surname' });
     assert.equal(res.updated, 0);
     assert.equal(db.data.synagogues[0].nameOrder, undefined);
+  });
+
+  it('passes the community given-name evidence to every row of that community', async () => {
+    const db = fakeDb([{ slug: 'ctx', nameOrder: 'surname-first', people: [
+      { id: 1, name: 'Иванов Григорий бен Моисей' },
+      { id: 2, name: 'Григорий Шапиро бен Моисей' },
+    ] }]);
+    const dry = await runNameNormalization(db, { mode: 'dry-run', rule: 'split-surname' });
+    assert.equal(dry.summary.byCommunity.ctx.split, 1);
+    assert.equal(dry.summary.byCommunity.ctx.ambiguous, 1);
+    assert.equal(dry.rows.find((r) => r.id === 2).note, 'surname-is-given-name');
+    assert.equal(dry.rows.find((r) => r.id === 1).surname, 'Иванов');
   });
 
   it('is reachable through planNormalization (rule dispatch)', async () => {
