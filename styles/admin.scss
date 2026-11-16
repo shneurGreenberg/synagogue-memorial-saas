@@ -4755,7 +4755,8 @@ body.admin-theme-light {
 .board-subtitle-color-weight-row > .form-field { min-width: 0; margin: 0; }
 
 /* 1.31.3: Hebrew / Gregorian date of death, person detail list */
-.admin-death-mode-pills { display: flex; gap: 14px; flex-wrap: wrap; }
+/* 1.41.0: the frame/pill layout lives in `.admin-seg` below; this selector only caps the width. */
+.admin-death-mode-pills { max-width: 100%; }
 .death-hebrew-preview { margin: 6px 0 0; font-size: 14px; }
 .death-hebrew-preview strong { font-weight: 600; }
 .admin-person-detail-list { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0; font-size: 14px; }
@@ -4817,26 +4818,79 @@ body.admin-theme-light {
 .admin-body input[type="checkbox"]:not(.toggle-switch input):disabled { opacity: .5; cursor: not-allowed; }
 .settings-media-remove { display: inline-flex; align-items: center; gap: 8px; }
 
-/* 1.32.0 I40: two-pill segmented toggle (same look as the public add-deceased page) */
+/* 1.32.0 I40: two-pill segmented toggle (same look as the public add-deceased page).
+   1.41.0: the frame has to wrap its options at every width. Two things used to break it:
+   - the options are <label> elements inside `.form-field`, and `.form-field label { display: block;
+     margin-bottom: .4rem; text-transform: uppercase }` out-specified `.admin-seg-option`, so each
+     pill became a block with a stray bottom margin and the frame no longer surrounded them
+     (same root cause as I50 for `.toggle-switch`);
+   - the pills used `width: 100%` with content-box sizing, so their 1px borders overflowed the
+     frame padding and the selected pill poked out of the rounded border.
+   The rules below re-assert the flex box, size the pills border-box, clip nothing the eye needs
+   (the focus ring is drawn *inside* the pill) and keep one height per row. */
 .admin-seg {
-  display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 999px;
+  --admin-seg-radius: 999px;
+  display: inline-flex; flex-wrap: wrap; align-items: stretch;
+  justify-content: center; align-content: center;
+  gap: 4px; padding: 4px; max-width: 100%; box-sizing: border-box;
+  border-radius: var(--admin-seg-radius);
   background: rgba(0, 0, 0, 0.22); border: 1px solid rgba(207, 175, 31, 0.35);
+  overflow: hidden; /* the selected pill follows the frame's rounded corners */
 }
 .admin-theme-light .admin-seg { background: #eef1f5; border-color: #d6dbe3; }
-.admin-seg-option { position: relative; margin: 0; cursor: pointer; display: inline-flex; }
+/* The hidden "unknown" radio of the gender toggle must never become a flex item. */
+.admin-seg > input[hidden],
+.admin-seg .admin-seg-unknown { display: none !important; }
+.admin-seg .admin-seg-option,
+.form-field .admin-seg-option,
+label.admin-seg-option {
+  position: relative; display: inline-flex; align-items: stretch; flex: 0 1 auto;
+  min-width: 0; margin: 0; padding: 0; border: 0; background: none; box-sizing: border-box;
+  font-weight: 600; font-size: .92rem; line-height: 1.2; letter-spacing: normal;
+  text-transform: none; color: inherit; cursor: pointer;
+}
 .admin-seg-option input { position: absolute; opacity: 0; width: 1px; height: 1px; clip-path: inset(50%); }
 .admin-seg-option span {
-  display: inline-flex; align-items: center; justify-content: center; min-width: 84px;
-  padding: 7px 16px; border-radius: 999px; font-weight: 600; font-size: .92rem; line-height: 1.2;
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 84px; min-height: 36px; padding: 7px 16px; box-sizing: border-box;
+  border-radius: 999px; font-weight: 600; font-size: .92rem; line-height: 1.2; text-align: center;
   border: 1px solid transparent; transition: background .2s ease, color .2s ease;
 }
+/* 1.41.0: the checked pill also carries an underline, so the choice is never conveyed by colour
+   alone. An underline costs no horizontal space — a "✓" glyph was tried first, but its ~13px
+   pushed translated labels ("After sunset", "לפני השקיעה") onto a second line, which changed the
+   frame's height whenever the selection moved. */
 .admin-seg-option input:checked + span {
   color: #fff; background: linear-gradient(135deg, rgba(207, 175, 31, 0.85), rgba(234, 179, 8, 0.7));
   border-color: rgba(207, 175, 31, 0.9); box-shadow: 0 1px 6px rgba(207, 175, 31, 0.35);
+  text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px;
 }
-.admin-seg-option input:focus-visible + span { outline: 2px solid #60a5fa; outline-offset: 2px; }
-.admin-death-mode-pills.admin-seg { gap: 4px; }
+/* The ring sits inside the pill: `outline-offset: 2px` was clipped by the rounded frame. */
+.admin-seg-option input:focus-visible + span {
+  outline: 2px solid #60a5fa; outline-offset: -3px; box-shadow: inset 0 0 0 1px rgba(15, 23, 42, .25);
+}
 .admin-sunset-field .admin-seg { margin-top: 4px; }
+/* The end options follow the frame's own curve, so a pill can never poke past the rounded border
+   even in a browser without `overflow: hidden` clipping. `radius - padding - border` is exactly
+   the frame's *inner* radius; for the 999px pill that resolves to half the pill height, which is
+   the pill's own corner. `:first-of-type`/`:last-of-type` match the first/last <label> even though
+   the public frame also holds the slider <span> as its first child. Logical corners keep this
+   RTL-safe. */
+.admin-seg .admin-seg-option:first-of-type span {
+  border-start-start-radius: calc(var(--admin-seg-radius) - 4px - 1px);
+  border-end-start-radius: calc(var(--admin-seg-radius) - 4px - 1px);
+}
+.admin-seg .admin-seg-option:last-of-type span {
+  border-start-end-radius: calc(var(--admin-seg-radius) - 4px - 1px);
+  border-end-end-radius: calc(var(--admin-seg-radius) - 4px - 1px);
+}
+/* A pill-shaped frame only reads right around a single row: once the options wrap, the frame
+   becomes a rounded rectangle so the corners no longer cut into the top/bottom rows. The pills
+   take the same smaller radius so the row keeps one visual language. */
+@media (max-width: 599.98px) {
+  .admin-seg { --admin-seg-radius: var(--admin-radius); }
+  .admin-seg .admin-seg-option span { border-radius: calc(var(--admin-seg-radius) - 4px - 1px); }
+}
 
 /* 1.40.0 I88: per-community name order — compact text pills + the save button in one row.
    1.41.0: the setting only affects the public board, so the panel is a small toolbar, not a
@@ -4856,6 +4910,9 @@ body.admin-theme-light {
 }
 /* A text cue in addition to the highlight, so the chosen option is never colour-only. */
 .people-name-order-seg .admin-seg-option input:checked + span::before { content: '✓'; font-size: .8em; margin-inline-end: 6px; }
+/* The name-order pills already carry the ✓ above; they are fixed-width toolbar pills, so the
+   generic underline cue is dropped there to avoid a doubled marker. */
+.people-name-order-seg .admin-seg-option input:checked + span { text-decoration: none; }
 .people-name-order-examples { display: flex; flex-wrap: wrap; gap: 4px 14px; }
 .people-name-order-examples span { opacity: .85; }
 .people-name-order-save { flex: 0 0 auto; margin-inline-start: auto; }
@@ -4995,9 +5052,21 @@ body.admin-theme-light {
     display: none;
   }
 }
-.admin-sunset-field .admin-seg { display: flex; flex-wrap: nowrap; border-radius: 999px; }
-.admin-sunset-field .admin-seg-option { flex: 1 1 0; min-width: 0; }
-.admin-sunset-field .admin-seg-option span { width: 100%; min-width: 0; white-space: normal; padding: 7px 10px; font-size: .85rem; border-radius: 999px; }
+/* The sunset toggle splits its fieldset evenly between the two labels. Each option is sized by its
+   own label (`flex-basis: auto` + `nowrap`), so when both fit they share one row, and when the
+   fieldset is too narrow the second option drops onto its own row as a whole pill — instead of the
+   text breaking into a taller pill (which made the two pills different heights). */
+.admin-sunset-field .admin-seg { display: flex; width: 100%; flex-wrap: wrap; }
+.admin-sunset-field .admin-seg-option { flex: 1 1 auto; }
+.admin-sunset-field .admin-seg-option span {
+  width: 100%; min-width: 0; white-space: nowrap;
+  padding: 7px 10px; font-size: .85rem;
+}
+/* Very narrow screens: a single long translation may not fit on one line, so allow word wrapping
+   rather than letting a pill overflow the frame. */
+@media (max-width: 599.98px) {
+  .admin-sunset-field .admin-seg-option span { white-space: normal; overflow-wrap: break-word; }
+}
 .admin-alert-success { padding: 10px 14px; border-radius: var(--admin-radius); background: rgba(34,197,94,.15); border: 1px solid rgba(34,197,94,.4); color: var(--admin-success-text); font-weight: 600; }
 
 /* 1.33.0 I44 + audit #12: unified tokens, focus, touch targets, mobile cleanups */
