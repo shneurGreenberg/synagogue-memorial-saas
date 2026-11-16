@@ -2284,21 +2284,24 @@ async function syncContactsToDirectory(slug, synagogue, contacts) {
 
 /**
  * 1.40.0 I88: per-community "Name order" (surname first / given name first) chosen on the people
- * page. Saving it recomposes `name` for the people that actually have a split name; people
- * without a split keep their stored name untouched.
- * 1.41.0: `name` itself is the canonical surname-first form — the board composes the display name
- * from the saved parts (composePersonName + the community order), so nothing has to be rewritten.
+ * page.
+ * 1.41.0: the setting is a board-only preference. `name` is the canonical stored name
+ * (composeAdminName, surname-first) and the public board composes its own display name from the
+ * saved parts (composePersonName + the community order), so this handler stores `nameOrder` and
+ * nothing else — people[].name is never rewritten. The admin list, its sorting and its search keep
+ * reading the stored `name`.
  */
 async function saveCommunityNameOrder(req, res) {
     if (req.params.slug !== req.session.adminSlug) return res.status(403).send('Forbidden');
     try {
         const { normalizeNameOrder } = require('../lib/person-name');
         const nameOrder = normalizeNameOrder(req.body.nameOrder);
-        const synagogue = await Synagogue.findOne({ slug: req.params.slug }, { nameOrder: 1 }).lean();
+        const synagogue = await Synagogue.findOne({ slug: req.params.slug }, { _id: 1 }).lean();
         if (!synagogue) {
             return res.status(404).send('Not found');
         }
 
+        // 1.41.0: only the setting is written. A $set of one flat field can never touch people[].
         await Synagogue.updateOne(
             { slug: req.params.slug },
             { $set: { nameOrder } },
@@ -2396,10 +2399,11 @@ router.post('/:slug/people/edit', requireAdmin, requirePermission('people'), upl
             return undefined;
         }
         const personId = parseInt(id);
+        // 1.41.0: the edit form builds the canonical stored name (surname-first), so the
+        // community's board-only nameOrder is not needed here.
         const synForContacts = await Synagogue.findOne({ slug: req.params.slug }, {
             language: 1,
             contactDirectory: 1,
-            nameOrder: 1,
             people: { $elemMatch: { id: personId } },
         }).lean();
         const contacts = parsePersonContactsFromBody(req.body, { defaultPhonePlatform: defaultPhonePlatformFor(synForContacts && synForContacts.language) });

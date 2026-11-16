@@ -4838,20 +4838,35 @@ body.admin-theme-light {
 .admin-death-mode-pills.admin-seg { gap: 4px; }
 .admin-sunset-field .admin-seg { margin-top: 4px; }
 
-/* 1.40.0 I88: per-community name order — the labels wrap and carry an example line. */
+/* 1.40.0 I88: per-community name order — compact text pills + the save button in one row.
+   1.41.0: the setting only affects the public board, so the panel is a small toolbar, not a
+   full-width form: the two labelled options sit together on the left, "save settings" on the right.
+   Below 600px the options keep their own row and the save button spans the full width. */
 .people-name-order-panel {
   margin: 0 0 18px; padding: 14px 16px; border-radius: var(--admin-radius);
   background: rgba(128, 128, 128, .1); border: 1px solid rgba(207, 175, 31, .28);
 }
 .people-name-order-panel .admin-panel-inline-title { margin: 0 0 10px; }
-.people-name-order-seg { width: 100%; }
-.people-name-order-seg .admin-seg-option { flex: 1 1 220px; }
+.people-name-order-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; }
+.people-name-order-seg { flex: 0 1 auto; max-width: 100%; }
+.people-name-order-seg .admin-seg-option { flex: 0 0 auto; }
 .people-name-order-seg .admin-seg-option span {
-  flex-direction: column; align-items: flex-start; min-width: 0; width: 100%;
-  padding: 8px 14px; text-align: start; white-space: normal;
+  min-width: 0; padding: 6px 14px; font-size: .86rem; font-weight: 600;
+  white-space: nowrap; text-align: center;
 }
-.people-name-order-example { font-weight: 400; opacity: .85; font-size: .82em; line-height: 1.25; margin-top: 2px; }
+/* A text cue in addition to the highlight, so the chosen option is never colour-only. */
+.people-name-order-seg .admin-seg-option input:checked + span::before { content: '✓'; font-size: .8em; margin-inline-end: 6px; }
+.people-name-order-examples { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.people-name-order-examples span { opacity: .85; }
+.people-name-order-save { flex: 0 0 auto; margin-inline-start: auto; }
 .people-name-order-detected { font-style: italic; }
+@media (max-width: 599.98px) {
+  .people-name-order-row { flex-direction: column; align-items: stretch; }
+  .people-name-order-seg { display: flex; width: 100%; }
+  .people-name-order-seg .admin-seg-option { flex: 1 1 0; min-width: 0; }
+  .people-name-order-seg .admin-seg-option span { width: 100%; white-space: normal; }
+  .people-name-order-save { width: 100%; margin-inline-start: 0; }
+}
 
 /* 1.32.0 I42: "board content" tabs + prayers/classes editor */
 .content-tabs { display: flex; gap: 6px; margin: 0 0 16px; padding: 4px; border-radius: var(--admin-radius); background: rgba(128,128,128,.14); }

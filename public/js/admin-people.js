@@ -1192,6 +1192,23 @@
     populateContactsSection(scope, null);
   }
 
+  /* 1.41.0: the name-order panel saves with a plain POST + redirect. Disable the button while the
+     form is in flight so a second tap (easy on a phone, where the button is full-width) cannot send
+     the request twice. Nothing else is composed here: the list keeps the stored `name`. */
+  function initNameOrderForm() {
+    const form = document.querySelector('.people-name-order-form');
+    if (!form || form.__nameOrderBound) {
+      return;
+    }
+    form.__nameOrderBound = true;
+    form.addEventListener('submit', function () {
+      const button = form.querySelector('.people-name-order-save');
+      if (button) {
+        button.disabled = true;
+      }
+    });
+  }
+
   function initContactPlatformToggles() {
     document.querySelectorAll('.admin-contacts-section').forEach(function (section) {
       initContactsManager(section.closest('.modal') || section.closest('form') || section);
@@ -1472,6 +1489,7 @@
 
     initLazyPhotos(list);
     bindPermanentSwitches();
+    initNameOrderForm();
     initEditModalHandlers();
     initContactPlatformToggles();
     resetContactsSection(document.getElementById('addPersonModal'));

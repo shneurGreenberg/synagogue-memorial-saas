@@ -96,7 +96,8 @@ describe('1.37.0 I74: unified colors + metallic gold', () => {
     assert.match(tr, /gold_effect: 'אפקט זהב מטאלי'/);
   });
   it('board applies it last and preview passes the flags', () => {
-    assert.match(read('client/src/components/ThemeStyles.jsx'), /\$\{unifiedCss\}\n {2}`;/);
+    // CRLF-safe: the source file may be checked out with Windows line endings.
+    assert.match(read('client/src/components/ThemeStyles.jsx'), /\$\{unifiedCss\}\r?\n {2}`;/);
     const { mergePreviewPatch } = require('../lib/board-preview');
     const out = mergePreviewPatch({ theme: {} }, { unifiedColors: '1', goldClock: '0' });
     assert.equal(out.theme.unifiedColors, true);

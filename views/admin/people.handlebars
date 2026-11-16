@@ -55,21 +55,31 @@
     </div>
     {{/if}}
 
-    {{!-- 1.40.0 I88: per-community name order (labelled in words, not by color). Saving it
-         recomposes the display name of the people that were stored with a surname. --}}
+    {{!-- 1.40.0 I88: per-community name order (labelled in words, not by color).
+         1.41.0: the setting only changes the public board — the stored name stays canonical
+         (surname-first) and the list below keeps sorting/searching on it. Compact text pills and
+         the "save settings" button share one row on desktop; on a phone the button goes full width
+         (it is not inside .form-actions-sticky, whose submit is hidden on phones). --}}
     <section class="people-name-order-panel" aria-labelledby="nameOrderHeading">
         <h2 class="admin-panel-inline-title" id="nameOrderHeading">{{t 'name_order_label'}}</h2>
         <form method="POST" action="/admin/{{synagogue.slug}}/people/name-order" class="people-name-order-form">
-            <div class="admin-seg people-name-order-seg" role="radiogroup" aria-label="{{t 'name_order_label'}}">
-                <label class="admin-seg-option">
-                    <input type="radio" name="nameOrder" value="surname-first" {{#if (eq nameOrderOptions.selected 'surname-first')}}checked{{/if}}>
-                    <span>{{t 'name_order_surname_first'}}<small class="people-name-order-example">{{t 'name_order_example_surname_first'}}</small></span>
-                </label>
-                <label class="admin-seg-option">
-                    <input type="radio" name="nameOrder" value="given-first" {{#if (eq nameOrderOptions.selected 'given-first')}}checked{{/if}}>
-                    <span>{{t 'name_order_given_first'}}<small class="people-name-order-example">{{t 'name_order_example_given_first'}}</small></span>
-                </label>
+            <div class="people-name-order-row">
+                <div class="admin-seg people-name-order-seg" role="radiogroup" aria-label="{{t 'name_order_label'}}">
+                    <label class="admin-seg-option">
+                        <input type="radio" name="nameOrder" value="surname-first" {{#if (eq nameOrderOptions.selected 'surname-first')}}checked{{/if}}>
+                        <span>{{t 'name_order_surname_first'}}</span>
+                    </label>
+                    <label class="admin-seg-option">
+                        <input type="radio" name="nameOrder" value="given-first" {{#if (eq nameOrderOptions.selected 'given-first')}}checked{{/if}}>
+                        <span>{{t 'name_order_given_first'}}</span>
+                    </label>
+                </div>
+                <button type="submit" class="btn-admin btn-admin-primary btn-admin-sm btn-admin-with-icon people-name-order-save">{{{adminIcon 'save' class='btn-admin-inline-icon'}}}{{t 'save'}}</button>
             </div>
+            <p class="field-hint people-name-order-examples">
+                <span>{{t 'name_order_surname_first'}}: {{t 'name_order_example_surname_first'}}</span>
+                <span>{{t 'name_order_given_first'}}: {{t 'name_order_example_given_first'}}</span>
+            </p>
             <p class="field-hint">{{t 'name_order_hint'}}</p>
             {{#if nameOrderOptions.isDetected}}
             <p class="field-hint people-name-order-detected">{{t 'name_order_detected'}}</p>
@@ -78,9 +88,6 @@
             <p class="field-hint people-name-order-detected">{{t 'name_order_unknown'}}</p>
                 {{/unless}}
             {{/if}}
-            <div class="form-actions-sticky">
-                <button type="submit" class="btn-admin btn-admin-primary btn-admin-with-icon">{{{adminIcon 'save' class='btn-admin-inline-icon'}}}{{t 'save'}}</button>
-            </div>
         </form>
     </section>
 
