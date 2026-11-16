@@ -1,0 +1,17 @@
+{{!-- 1.40.0 I86: upcoming yahrzeit reminders with a "share on WhatsApp" action per person.
+     The message text is fetched only when the button is pressed (data-share-message-url),
+     so the list stays light. --}}
+{{#if upcomingReminders.length}}
+<section class="admin-panel yahrzeit-reminders-panel" aria-labelledby="yahrzeitRemindersHeading">
+    <h2 class="admin-panel-title" id="yahrzeitRemindersHeading">{{t 'yahrzeit_share_reminders_title'}}</h2>
+    <ul class="yahrzeit-reminders-list">
+        {{#each upcomingReminders}}
+        <li class="yahrzeit-reminders-item" data-person-id="{{this.id}}">
+            <span class="yahrzeit-reminders-name">{{this.name}}</span>
+            <span class="yahrzeit-reminders-date">{{this.gregorianDateLabel}}{{#if this.hebrewDateLabel}} · {{this.hebrewDateLabel}}{{/if}}</span>
+            {{> admin-whatsapp-share-button imageUrl=this.tileImageUrl link=this.boardShareUrl messageUrl=this.messageUrl fileName=this.name extraClass='btn-admin-sm'}}
+        </li>
+        {{/each}}
+    </ul>
+</section>
+{{/if}}

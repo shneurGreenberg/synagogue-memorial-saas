@@ -86,6 +86,27 @@
     return String(id);
   }
 
+  /* 1.40.0 I86: email / push reminders link to ?share=<personId>. A native share sheet needs a
+   * user gesture, so we only scroll to that person and highlight their share button. */
+  function highlightShareButton(shareBtn) {
+    if (!shareBtn) {
+      return null;
+    }
+    shareBtn.classList.add('is-share-highlight');
+    var label = page ? page.getAttribute('data-share-focus-label') : '';
+    if (label) {
+      shareBtn.setAttribute('title', label);
+      shareBtn.setAttribute('aria-label', label);
+    }
+    window.setTimeout(function () { shareBtn.focus({ preventScroll: true }); }, 350);
+    return shareBtn;
+  }
+
+  function shareTargetPersonId() {
+    var match = /[?&]share=([^&]+)/.exec(window.location.search || '');
+    return match ? decodeURIComponent(match[1]) : '';
+  }
+
   function initYahrzeitPersonCards() {
     const dataEl = document.getElementById('yahrzeit-people-data');
     if (!page || !dataEl || !window.AdminPersonCard) {
@@ -114,6 +135,32 @@
       return null;
     }
 
+    /* 1.40.0 I86: focus the share action for ?share=<id>. A person from a push reminder may not be
+     * in today's list, so fall back to opening their person card (its footer has the share button). */
+    function highlightShareTarget() {
+      const personId = shareTargetPersonId();
+      if (!personId) {
+        return;
+      }
+      const card = document.getElementById('person-' + personId)
+        || document.getElementById('person-week-' + personId);
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (highlightShareButton(card.querySelector('[data-whatsapp-share]'))) {
+          return;
+        }
+      }
+      const person = peopleById[personIdKey(personId)];
+      if (!person) {
+        return;
+      }
+      personCard.openPersonCard(person);
+      const modalShareBtn = document.getElementById('personCardShareBtn');
+      if (modalShareBtn) {
+        highlightShareButton(modalShareBtn);
+      }
+    }
+
     function openPersonById(personId) {
       const person = peopleById[personIdKey(personId)];
       if (person) {
@@ -129,7 +176,7 @@
       });
     });
 
-    return { openPersonById: openPersonById };
+    return { openPersonById: openPersonById, highlightShareTarget: highlightShareTarget };
   }
 
   if (document.readyState === 'loading') {

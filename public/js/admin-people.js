@@ -949,6 +949,25 @@
     return parts[parts.length - 1];
   }
 
+  function getDeceasedSurnameInput(modal) {
+    if (!modal) {
+      return null;
+    }
+
+    return modal.querySelector('input[name="surname"]');
+  }
+
+  /** 1.40.0 I88: the surname field wins over guessing from the full name. */
+  function resolveFamilyName(modal) {
+    const surnameInput = getDeceasedSurnameInput(modal);
+    const typed = surnameInput ? String(surnameInput.value || '').trim() : '';
+    if (typed) {
+      return typed;
+    }
+    const deceasedInput = getDeceasedNameInput(modal);
+    return deceasedInput ? extractFamilyName(deceasedInput.value) : '';
+  }
+
   function getDeceasedNameInput(modal) {
     if (!modal) {
       return null;
@@ -977,7 +996,7 @@
       return;
     }
 
-    const familyName = deceasedInput ? extractFamilyName(deceasedInput.value) : '';
+    const familyName = resolveFamilyName(modal);
     const contactName = (nameInput.value || '').trim();
     const show = !!familyName && !contactName;
 
@@ -1000,8 +1019,7 @@
 
     chip.dataset.familyChipBound = '1';
     chip.addEventListener('click', function () {
-      const deceasedInput = getDeceasedNameInput(modal);
-      const familyName = deceasedInput ? extractFamilyName(deceasedInput.value) : '';
+      const familyName = resolveFamilyName(modal);
       if (!familyName) {
         return;
       }
@@ -1031,6 +1049,15 @@
     deceasedInput.addEventListener('input', function () {
       modal.querySelectorAll('.admin-contact-row').forEach(syncFamilyNameChip);
     });
+
+    // 1.40.0 I88: typing the surname itself also refreshes the suggestion chips.
+    const surnameInput = getDeceasedSurnameInput(modal);
+    if (surnameInput && surnameInput.dataset.familyChipBound !== '1') {
+      surnameInput.dataset.familyChipBound = '1';
+      surnameInput.addEventListener('input', function () {
+        modal.querySelectorAll('.admin-contact-row').forEach(syncFamilyNameChip);
+      });
+    }
   }
 
   function refreshFamilyNameChips(modal) {
@@ -1187,6 +1214,11 @@
 
     document.getElementById('editId').value = person.id;
     document.getElementById('editName').value = person.name || '';
+    // 1.40.0 I88: the surname is a field of its own ('' for people that were never split).
+    var editSurnameInput = document.getElementById('editSurname');
+    if (editSurnameInput) {
+      editSurnameInput.value = person.surname || '';
+    }
     const death = hasDeathDate(person) ? person.gregorianDateOfDeath : {};
     document.getElementById('editDate').value = death.date || '';
     document.getElementById('editMonth').value = death.month || '';

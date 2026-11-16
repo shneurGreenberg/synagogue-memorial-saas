@@ -28,6 +28,9 @@ const PersonAddRequestSchema = new mongoose.Schema({
   relationKey: { type: String, default: '' },
   relationOther: { type: String, default: '' },
   deceasedName: { type: String, default: '' },
+  // 1.40.0 I88: the public form asks for the surname and the first name separately.
+  deceasedSurname: { type: String, default: '' },
+  deceasedGivenName: { type: String, default: '' },
   deceasedFatherName: { type: String, default: '' },
   deceasedGender: { type: String, enum: ['male', 'female', ''], default: '' },
   deceasedNotes: { type: String, default: '' },
@@ -49,7 +52,12 @@ const PersonAddRequestSchema = new mongoose.Schema({
 
 const PersonSchema = new mongoose.Schema({
   id: Number,
+  // Full composed display name (kept for every existing consumer).
   name: String,
+  // 1.40.0 I88: separate surname and given name (givenName = name without the surname,
+  // e.g. «Иван бен Александр»). Both '' means the person was never split.
+  surname: { type: String, default: '' },
+  givenName: { type: String, default: '' },
   gregorianDateOfDeath: {
     month: { type: Number, default: undefined },
     date: { type: Number, default: undefined },
@@ -440,6 +448,13 @@ const SynagogueSchema = new mongoose.Schema({
   language: { type: String, default: 'ru' },
   // 1.29: 'memorial' (classic) or 'combined' (top: names, bottom: synagogue info).
   hebrewDatesOnly: { type: Boolean, default: false },
+  // 1.40.0 I88: how a split deceased name is composed ('surname-first' | 'given-first').
+  // '' = unknown, the stored `name` is used as-is.
+  nameOrder: {
+    type: String,
+    enum: ['surname-first', 'given-first', ''],
+    default: '',
+  },
   // 1.30.0 I10: unset = derived from hebrewDatesOnly (see lib/board-date-settings.js)
   boardCalendar: { type: String, enum: ['hebrew', 'gregorian', null], default: undefined },
   dateDisplay: { type: String, enum: ['both', 'hebrew', 'gregorian', null], default: undefined },

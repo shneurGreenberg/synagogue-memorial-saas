@@ -31,7 +31,8 @@
                                 data-l-yes="{{t 'detail_yes'}}" data-l-no="{{t 'detail_no'}}"
                                 data-l-male="{{t 'gender_male'}}" data-l-female="{{t 'gender_female'}}" data-l-unknown="{{t 'gender_unknown'}}"
                                 data-l-before="{{t 'died_before_sunset'}}" data-l-after="{{t 'died_after_sunset'}}"
-                                data-l-mode-hebrew="{{t 'death_mode_hebrew'}}" data-l-mode-gregorian="{{t 'death_mode_gregorian'}}"></dl>
+                                data-l-mode-hebrew="{{t 'death_mode_hebrew'}}" data-l-mode-gregorian="{{t 'death_mode_gregorian'}}"
+                                data-l-surname="{{t 'person_surname_label'}}" data-l-given-name="{{t 'deceased_name_label'}}"></dl>
                         </div>
                         <div class="admin-person-card-section" id="personCardContactSection">
                             <h3>{{t 'contact_section'}}</h3>
@@ -44,6 +45,17 @@
             </div>
             <div class="modal-footer admin-person-card-footer">
                 <div id="personCardSendActions" class="admin-person-card-send-actions"></div>
+                {{!-- 1.40.0 I86: share the memorial tile on WhatsApp (message text comes from the
+                     person's yahrzeit message endpoint). --}}
+                <button type="button" class="btn-admin btn-admin-secondary btn-admin-with-icon yahrzeit-share-btn" id="personCardShareBtn" hidden
+                    data-whatsapp-share
+                    data-share-link="/s/{{synagogue.slug}}"
+                    data-share-hint-copied="{{t 'yahrzeit_share_hint_copied'}}"
+                    data-share-hint-downloaded="{{t 'yahrzeit_share_hint_downloaded'}}"
+                    data-share-hint-failed="{{t 'yahrzeit_share_hint_failed'}}">
+                    {{{adminIcon 'whatsapp' class='btn-admin-inline-icon'}}}
+                    {{t 'yahrzeit_share_whatsapp'}}
+                </button>
                 <button type="button" class="btn-admin btn-admin-secondary btn-admin-with-icon" id="personCardEditBtn">{{{adminIcon 'edit' class='btn-admin-inline-icon'}}}{{t 'edit'}}</button>
                 <button type="button" class="btn-admin btn-admin-danger btn-admin-with-icon" id="personCardDeleteBtn">{{{adminIcon 'delete' class='btn-admin-inline-icon'}}}{{t 'delete'}}</button>
             </div>

@@ -4053,6 +4053,45 @@ body.admin-theme-light {
   margin-top: 0.75rem;
 }
 
+/* 1.40.0 I86: WhatsApp share button — highlighted when a reminder link opens ?share=<personId>.
+   The ring is a visible outline (not colour only): the button also gets a title that says what to do. */
+.yahrzeit-share-btn.is-share-highlight,
+.yahrzeit-share-btn:focus-visible {
+  outline: 3px solid var(--admin-border-focus);
+  outline-offset: 3px;
+}
+
+.yahrzeit-reminders-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.yahrzeit-reminders-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius-sm);
+}
+
+.yahrzeit-reminders-name {
+  font-weight: 600;
+}
+
+.yahrzeit-reminders-date {
+  color: var(--admin-text-muted);
+}
+
+.yahrzeit-reminders-item .yahrzeit-share-btn {
+  margin-inline-start: auto;
+}
+
 .public-submission-yahrzeit-alert {
   border: 2px solid #43a047;
   box-shadow: 0 0 0 1px rgba(67, 160, 71, 0.25);
@@ -4798,6 +4837,21 @@ body.admin-theme-light {
 .admin-seg-option input:focus-visible + span { outline: 2px solid #60a5fa; outline-offset: 2px; }
 .admin-death-mode-pills.admin-seg { gap: 4px; }
 .admin-sunset-field .admin-seg { margin-top: 4px; }
+
+/* 1.40.0 I88: per-community name order — the labels wrap and carry an example line. */
+.people-name-order-panel {
+  margin: 0 0 18px; padding: 14px 16px; border-radius: var(--admin-radius);
+  background: rgba(128, 128, 128, .1); border: 1px solid rgba(207, 175, 31, .28);
+}
+.people-name-order-panel .admin-panel-inline-title { margin: 0 0 10px; }
+.people-name-order-seg { width: 100%; }
+.people-name-order-seg .admin-seg-option { flex: 1 1 220px; }
+.people-name-order-seg .admin-seg-option span {
+  flex-direction: column; align-items: flex-start; min-width: 0; width: 100%;
+  padding: 8px 14px; text-align: start; white-space: normal;
+}
+.people-name-order-example { font-weight: 400; opacity: .85; font-size: .82em; line-height: 1.25; margin-top: 2px; }
+.people-name-order-detected { font-style: italic; }
 
 /* 1.32.0 I42: "board content" tabs + prayers/classes editor */
 .content-tabs { display: flex; gap: 6px; margin: 0 0 16px; padding: 4px; border-radius: var(--admin-radius); background: rgba(128,128,128,.14); }

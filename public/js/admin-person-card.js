@@ -128,6 +128,7 @@
     const collectContactBtn = document.getElementById('personCardCollectContactBtn');
     const contactsList = document.getElementById('personCardContactsList');
     const sendActions = document.getElementById('personCardSendActions');
+    const shareBtn = document.getElementById('personCardShareBtn');
     const editBtn = document.getElementById('personCardEditBtn');
     const deleteBtn = document.getElementById('personCardDeleteBtn');
     const deleteForm = document.getElementById('personCardDeleteForm');
@@ -199,6 +200,31 @@
       });
     }
 
+    /* 1.40.0 I86: the WhatsApp share button lives next to the tile/send actions in the footer.
+     * The message text is taken from the person's yahrzeit message endpoint (same text as "send"). */
+    function syncShareButton(person) {
+      if (!shareBtn) {
+        return;
+      }
+
+      if (!synagogueSlug || !person || person.id == null || !window.WhatsAppShare) {
+        shareBtn.hidden = true;
+        return;
+      }
+
+      shareBtn.hidden = false;
+      shareBtn.setAttribute(
+        'data-share-image',
+        '/admin/' + encodeURIComponent(synagogueSlug) + '/yahrzeit/tile/' + encodeURIComponent(person.id) + '.png',
+      );
+      shareBtn.setAttribute(
+        'data-share-message-url',
+        '/admin/' + encodeURIComponent(synagogueSlug) + '/people/message/' + encodeURIComponent(person.id) + '.json',
+      );
+      shareBtn.setAttribute('data-share-file', person.name || '');
+      shareBtn.setAttribute('data-share-link', '/s/' + encodeURIComponent(synagogueSlug));
+    }
+
     function populateContacts(person) {
       const contacts = getPersonContactList(person);
       if (contactsList) {
@@ -264,6 +290,11 @@
       var g = p.gregorianDateOfDeath;
       var hasG = g && g.year && g.month && g.date;
       var gender = p.gender === 'male' || p.gender === 'female' ? p.gender : 'unknown';
+      // 1.40.0 I88: surname / given name are shown when the person was saved split.
+      if (String(p.surname || '').trim() || String(p.givenName || '').trim()) {
+        row(L('surname'), String(p.surname || '').trim());
+        row(L('given-name'), String(p.givenName || '').trim());
+      }
       row(L('gender'), L(gender));
       row(L('gregorian'), hasG ? (String(g.date).padStart(2, '0') + '.' + String(g.month).padStart(2, '0') + '.' + g.year) : '');
       var heb = '';
@@ -322,6 +353,7 @@
       }
 
       populateContacts(person);
+      syncShareButton(person);
       renderDetails(person);
 
       if (deleteIdInput) {

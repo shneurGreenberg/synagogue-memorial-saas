@@ -226,8 +226,8 @@ function appendDeceasedToSearchParams(params, body) {
   const entries = parseDeceasedEntriesFromBody(body);
   entries.forEach((entry, index) => {
     const parts = splitDeceasedDisplayName(entry.name || '');
-    params.set(`deceased[${index}][surname]`, parts.surname);
-    params.set(`deceased[${index}][firstName]`, parts.firstName);
+    params.set(`deceased[${index}][surname]`, entry.surname || parts.surname);
+    params.set(`deceased[${index}][firstName]`, entry.firstName || parts.firstName);
     params.set(`deceased[${index}][name]`, entry.name || '');
     params.set(`deceased[${index}][fatherName]`, entry.fatherName || '');
     params.set(`deceased[${index}][relationKey]`, entry.relationKey || '');
