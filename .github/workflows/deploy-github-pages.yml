@@ -57,6 +57,7 @@ jobs:
       
       - name: Commit updated snapshots
         if: env.MONGODB_URI != ''
+        continue-on-error: true
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -65,7 +66,9 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "Update static snapshots [skip ci]"
-            git push
+            if ! git push; then
+              echo "::warning::snapshots were not committed to main because of branch protection"
+            fi
           fi
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
