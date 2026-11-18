@@ -36,6 +36,8 @@ class TorahReadingOverlayBase extends React.Component {
   constructor(props) {
     super(props);
     this.state = { fontSize: 48 };
+    this.namesRef = React.createRef();
+    this.fitFrame = 0;
     this.onOverlayClick = this.onOverlayClick.bind(this);
     this.stopPropagation = this.stopPropagation.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
@@ -57,11 +59,45 @@ class TorahReadingOverlayBase extends React.Component {
   componentWillUnmount() {
     document.removeEventListener('keydown', this.onKeyDown);
     window.removeEventListener('resize', this.updateFontSize);
+    if (this.fitFrame) {
+      cancelAnimationFrame(this.fitFrame);
+    }
   }
 
   updateFontSize() {
     const { names } = this.props;
-    this.setState({ fontSize: computeNameFontSize(names) });
+    const estimate = computeNameFontSize(names || []);
+    this.setState({ fontSize: estimate }, () => this.fitNamesToBox());
+  }
+
+  fitNamesToBox() {
+    if (this.fitFrame) {
+      cancelAnimationFrame(this.fitFrame);
+    }
+    this.fitFrame = requestAnimationFrame(() => {
+      this.fitFrame = 0;
+      const root = this.namesRef.current;
+      if (!root) {
+        return;
+      }
+      const nodes = root.querySelectorAll('.torah-reading-name');
+      if (!nodes.length) {
+        return;
+      }
+      let size = this.state.fontSize;
+      const fits = () => Array.from(nodes).every((node) => (
+        node.scrollHeight <= node.clientHeight && node.scrollWidth <= node.clientWidth
+      ));
+      let iterations = 0;
+      while (iterations < 25 && size > 14 && !fits()) {
+        size = Math.max(14, size * 0.92);
+        root.style.setProperty('--torah-name-size', `${size}px`);
+        iterations += 1;
+      }
+      if (Math.abs(size - this.state.fontSize) > 0.05) {
+        this.setState({ fontSize: size });
+      }
+    });
   }
 
   onOverlayClick(event) {
@@ -101,6 +137,7 @@ class TorahReadingOverlayBase extends React.Component {
           </button>
           <div
             className="torah-reading-names"
+            ref={this.namesRef}
             style={{ '--torah-name-size': `${fontSize}px` }}
           >
             {names.length > 0 ? columns.map((column, columnIndex) => (

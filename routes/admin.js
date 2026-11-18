@@ -1849,7 +1849,7 @@ router.get('/:slug/people/list', requireAdmin, requirePermission('people'), asyn
         void backfillPeopleHebrewDeathDates(req.params.slug, synagogue.people);
         let people = synagogue.people || [];
         if (query) {
-            people = people.filter((person) => personMatchesPeopleSearch(person.name, query));
+            people = people.filter((person) => personMatchesPeopleSearch(person, query));
         }
 
         return res.json({

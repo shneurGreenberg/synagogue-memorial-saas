@@ -237,7 +237,7 @@ describe('1.41.0: saving the name order only stores the setting', () => {
     assert.match(routes, /composeAdminName\(/);
     assert.doesNotMatch(routes, /composePersonName\(/);
     // the list, its search and its total all read the stored `name`
-    assert.match(routes, /personMatchesPeopleSearch\(person\.name, query\)/);
+    assert.match(routes, /personMatchesPeopleSearch\(person, query\)/);
     assert.match(routes, /let people = synagogue\.people \|\| \[\];/);
     // the save handler stores the setting and nothing else
     const handler = routes.slice(routes.indexOf('async function saveCommunityNameOrder'));

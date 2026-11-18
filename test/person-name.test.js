@@ -171,6 +171,61 @@ describe('1.40.0 I88 / 1.41.0: torahReadingName', () => {
   });
 });
 
+describe('1.42.0 I92: leftover surname inside givenName', () => {
+  it('drops «X (Y)» when the surname field is empty and the community is surname-first', () => {
+    assert.equal(
+      torahReadingName({ givenName: 'Буторин (Иванов) Софья бен Моисей' }, 'ru', 'surname-first'),
+      'Софья бен Моисей',
+    );
+  });
+
+  it('drops a dashed double surname («X-Y Z» and «X - Y Z»)', () => {
+    assert.equal(
+      torahReadingName({ givenName: 'Иванов-Петров Анна бат Сара' }, 'ru', 'surname-first'),
+      'Анна бат Сара',
+    );
+    assert.equal(
+      torahReadingName({ givenName: 'Иванов - Петров Анна бат Сара' }, 'ru', 'surname-first'),
+      'Анна бат Сара',
+    );
+  });
+
+  it('drops a leading token that is not a given name when the next two are', () => {
+    assert.equal(
+      torahReadingName({ givenName: 'Буторин Анна Галина' }, 'ru', 'surname-first'),
+      'Анна Галина',
+    );
+    assert.equal(
+      torahReadingName(
+        { givenName: 'Буторин Софья Маша бен Моисей' },
+        'ru',
+        'surname-first',
+        new Set(['софья', 'маша']),
+      ),
+      'Софья Маша бен Моисей',
+    );
+  });
+
+  it('does not drop a Hebrew name, a given-first community, or a result that is only бен/бат', () => {
+    assert.equal(
+      torahReadingName({ givenName: 'כהן (לוי) יצחק בן אברהם' }, 'he', 'surname-first'),
+      'כהן (לוי) יצחק בן אברהם',
+    );
+    assert.equal(
+      torahReadingName({ givenName: 'Иванов-Петров Анна бат Сара' }, 'ru', 'given-first'),
+      'Иванов-Петров Анна бат Сара',
+    );
+    assert.equal(
+      torahReadingName({ givenName: 'Лишний (Фам) бен' }, 'ru', 'surname-first'),
+      'Лишний (Фам) бен',
+    );
+    assert.equal(
+      torahReadingName({ surname: 'Иванов', givenName: 'Анна Галина' }, 'ru', 'surname-first'),
+      'Анна Галина',
+    );
+  });
+});
+
 describe('1.41.0: parent relation helpers', () => {
   it('normalizes the marker', () => {
     assert.equal(normalizeParentRelation('ben'), 'ben');

@@ -1771,6 +1771,8 @@
 .torah-reading-name {
   margin: 0;
   flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
