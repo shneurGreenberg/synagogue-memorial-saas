@@ -146,7 +146,7 @@
         || document.getElementById('person-week-' + personId);
       if (card) {
         card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        if (highlightShareButton(card.querySelector('[data-whatsapp-share]'))) {
+        if (highlightShareButton(card.querySelector('[data-message-share], [data-whatsapp-share]'))) {
           return;
         }
       }

@@ -255,7 +255,7 @@
                                     </a>
                                     {{/if}}
                                     {{!-- 1.40.0 I86: share the memorial tile + this prepared message on WhatsApp. --}}
-                                    {{> admin-whatsapp-share-button imageUrl=../tileImageUrl link=../boardShareUrl text=this.preparedMessage fileName=../name}}
+                                    {{> admin-message-share-button imageUrl=../tileImageUrl link=../boardShareUrl text=this.preparedMessage fileName=../name}}
                                 </div>
                             </div>
                         </div>
@@ -270,7 +270,7 @@
                         <div class="yahrzeit-actions yahrzeit-card-actions">
                             {{#unless this.contacts.length}}
                             {{!-- 1.40.0 I86: nobody to message yet, but the tile can still be shared. --}}
-                            {{> admin-whatsapp-share-button imageUrl=this.tileImageUrl link=this.boardShareUrl text=this.preparedMessage fileName=this.name}}
+                            {{> admin-message-share-button imageUrl=this.tileImageUrl link=this.boardShareUrl text=this.preparedMessage fileName=this.name}}
                             {{/unless}}
                             <a href="{{this.boardCardUrl}}" class="btn-admin btn-admin-ghost btn-admin-with-icon" target="_blank" rel="noopener noreferrer">
                                 <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
@@ -356,7 +356,7 @@
                                     </a>
                                     {{/if}}
                                     {{!-- 1.40.0 I86: share the memorial tile + this prepared message on WhatsApp. --}}
-                                    {{> admin-whatsapp-share-button imageUrl=../tileImageUrl link=../boardShareUrl text=this.preparedMessage fileName=../name}}
+                                    {{> admin-message-share-button imageUrl=../tileImageUrl link=../boardShareUrl text=this.preparedMessage fileName=../name}}
                                 </div>
                             </div>
                         </div>
@@ -371,7 +371,7 @@
                         <div class="yahrzeit-actions yahrzeit-card-actions">
                             {{#unless this.contacts.length}}
                             {{!-- 1.40.0 I86: nobody to message yet, but the tile can still be shared. --}}
-                            {{> admin-whatsapp-share-button imageUrl=this.tileImageUrl link=this.boardShareUrl text=this.preparedMessage fileName=this.name}}
+                            {{> admin-message-share-button imageUrl=this.tileImageUrl link=this.boardShareUrl text=this.preparedMessage fileName=this.name}}
                             {{/unless}}
                             <a href="{{this.boardCardUrl}}" class="btn-admin btn-admin-ghost btn-admin-with-icon" target="_blank" rel="noopener noreferrer">
                                 <svg class="btn-admin-inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>

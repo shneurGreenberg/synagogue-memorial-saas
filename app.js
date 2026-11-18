@@ -29,6 +29,7 @@ const { applyBoardPreviewOverrides } = require('./lib/board-preview');
 const { BOARD_VERSION } = require('./lib/board-version');
 const { currentCodeVersion } = require('./lib/changelog');
 const { buildHealthPayload } = require('./lib/health-payload');
+const { listActiveCommunitySlugs } = require('./lib/community-slugs');
 const { resolvePublishedVersion, normalizeScreenReport, recordBoardScreen, summarizeBoardScreens } = require('./lib/board-publish');
 const { photoCropToInlineStyle } = require('./lib/photo-crop');
 const { buildPhotoThumbUrl } = require('./lib/photo-url');
@@ -375,6 +376,17 @@ app.get('/photos/:filename', async (req, res, next) => {
 });
 
 const apiRateLimiter = createApiRateLimiter();
+
+app.get('/api/public/community-slugs', apiRateLimiter, async (req, res) => {
+  try {
+    const slugs = await listActiveCommunitySlugs(Synagogue);
+    res.setHeader('Cache-Control', 'public, max-age=60');
+    return res.json({ slugs });
+  } catch (err) {
+    console.error('Community slugs error:', err);
+    return res.status(500).json({ error: publicErrorMessage(err) });
+  }
+});
 
 function resolveBoardContentVersion(slug, synagogue) {
   return getBoardContentVersion(slug) || computeBoardVersion(synagogue);

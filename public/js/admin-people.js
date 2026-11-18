@@ -91,6 +91,25 @@
     }
   }
 
+  function normalizePeopleSearchText(value) {
+    return String(value || '')
+      .toLowerCase()
+      .replace(/ё/g, 'е')
+      .replace(/й/g, 'и')
+      .replace(/[().,\-]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function personSearchHaystack(person) {
+    return normalizePeopleSearchText([
+      person && person.name,
+      person && person.surname,
+      person && person.givenName,
+      person && person.parentName,
+    ].join(' '));
+  }
+
   function getPeopleSearchQuery() {
     if (searchInput && searchInput.value.trim()) {
       return searchInput.value.trim();
@@ -423,6 +442,7 @@
     }
 
     row.setAttribute('data-name', person.name || '');
+    row.setAttribute('data-search', personSearchHaystack(person));
     if (hasDeathDate(person)) {
       const parts = person.gregorianDateOfDeath;
       row.setAttribute('data-date', parts.year + '-' + parts.month + '-' + parts.date);
@@ -634,13 +654,16 @@
 
   function applyFilters() {
     updatePeopleFilterOptions();
-    const query = getPeopleSearchQuery().toLowerCase();
+    const words = normalizePeopleSearchText(getPeopleSearchQuery()).split(' ').filter(Boolean);
     const undatedOnly = undatedFilter && undatedFilter.getAttribute('aria-pressed') === 'true';
     const rows = Array.from(list.querySelectorAll('.person-row'));
 
     rows.forEach(function (row) {
-      const name = (row.getAttribute('data-name') || '').toLowerCase();
-      const matchesQuery = !query || name.includes(query);
+      const haystack = row.getAttribute('data-search')
+        || normalizePeopleSearchText(row.getAttribute('data-name') || '');
+      const matchesQuery = !words.length || words.every(function (word) {
+        return haystack.indexOf(word) !== -1;
+      });
       const matchesUndated = !undatedOnly || row.getAttribute('data-undated') === '1';
       const genderOnly = genderMissingFilter && genderMissingFilter.getAttribute('aria-pressed') === 'true';
       const matchesGender = !genderOnly || row.getAttribute('data-gender-missing') === '1';
@@ -764,6 +787,7 @@
     const row = document.createElement('article');
     row.className = 'person-row person-row-clickable';
     row.setAttribute('data-name', person.name || '');
+    row.setAttribute('data-search', personSearchHaystack(person));
     row.setAttribute('data-id', String(person.id));
     row.setAttribute('data-undated', hasDeathDate(person) ? '0' : '1');
     if (hasDeathDate(person)) {

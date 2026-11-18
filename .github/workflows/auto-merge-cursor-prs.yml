@@ -1,3 +1,5 @@
+# Branch protection on main must require the 'test' check.
+# GitHub auto-merge (squash) waits for required checks; a failed check does not merge.
 name: Auto-merge cursor PRs
 
 on:
@@ -13,7 +15,8 @@ jobs:
   auto-merge:
     if: >-
       github.event.pull_request.draft == false &&
-      startsWith(github.event.pull_request.head.ref, 'cursor/')
+      (startsWith(github.event.pull_request.head.ref, 'cursor/') ||
+      startsWith(github.event.pull_request.head.ref, 'release/'))
     runs-on: ubuntu-latest
     steps:
       - name: Enable auto-merge

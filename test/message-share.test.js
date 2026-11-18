@@ -7,16 +7,16 @@ const path = require('node:path');
 const ROOT = path.join(__dirname, '..');
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 
-function loadWhatsAppShare() {
+function loadMessageShare() {
   const sandbox = { module: { exports: {} }, window: {} };
   sandbox.window.window = sandbox.window;
-  vm.runInNewContext(read('public/js/whatsapp-share.js'), sandbox, { filename: 'whatsapp-share.js' });
-  return { api: sandbox.module.exports, windowApi: sandbox.window.WhatsAppShare };
+  vm.runInNewContext(read('public/js/message-share.js'), sandbox, { filename: 'message-share.js' });
+  return { api: sandbox.module.exports, windowApi: sandbox.window.MessageShare, legacy: sandbox.window.WhatsAppShare };
 }
 
-describe('1.40.0 I86 whatsapp-share: pure helpers', () => {
+describe('1.42.0 I90 message-share: pure helpers', () => {
   it('joins the message text and the board link with a single newline', () => {
-    const { api } = loadWhatsAppShare();
+    const { api } = loadMessageShare();
     assert.equal(api.joinShareText('Hello', 'https://example.org/s/a'), 'Hello\nhttps://example.org/s/a');
     assert.equal(api.joinShareText('Hello\n', '  https://example.org/s/a  '), 'Hello\nhttps://example.org/s/a');
     assert.equal(api.joinShareText('', 'https://example.org/s/a'), 'https://example.org/s/a');
@@ -24,21 +24,8 @@ describe('1.40.0 I86 whatsapp-share: pure helpers', () => {
     assert.equal(api.joinShareText(null, null), '');
   });
 
-  it('builds the desktop web.whatsapp.com URL with an encoded text', () => {
-    const { api } = loadWhatsAppShare();
-    const url = api.buildWhatsAppWebUrl('שלום עולם', 'https://example.org/s/a');
-    assert.equal(url, 'https://web.whatsapp.com/send?text=' + encodeURIComponent('שלום עולם\nhttps://example.org/s/a'));
-    assert.match(url, /^https:\/\/web\.whatsapp\.com\/send\?text=/);
-    // the newline and the link separators must be encoded, never bare
-    assert.doesNotMatch(url.slice('https://web.whatsapp.com/send?text='.length), /[\n &]/);
-    assert.equal(
-      api.buildWhatsAppWebUrl('a & b', ''),
-      'https://web.whatsapp.com/send?text=a%20%26%20b',
-    );
-  });
-
   it('sanitizes the file name and always ends with -tile.png', () => {
-    const { api } = loadWhatsAppShare();
+    const { api } = loadMessageShare();
     assert.equal(api.sanitizeFileName('אברהם כהן'), 'אברהם_כהן-tile.png');
     assert.equal(api.sanitizeFileName('John / Doe'), 'John_Doe-tile.png');
     assert.equal(api.sanitizeFileName(''), 'memorial-tile.png');
@@ -47,43 +34,38 @@ describe('1.40.0 I86 whatsapp-share: pure helpers', () => {
   });
 
   it('has he/ru/en hints and falls back to Russian for unknown languages', () => {
-    const { api } = loadWhatsAppShare();
+    const { api } = loadMessageShare();
     ['he', 'ru', 'en'].forEach((lang) => {
       const hints = api.hintMessages(lang);
       assert.ok(hints.copied && hints.downloaded && hints.failed, `${lang} hints missing`);
+      assert.doesNotMatch(hints.copied + hints.downloaded + hints.failed, /whatsapp/i);
     });
     assert.match(api.hintMessages('he').copied, /Ctrl\+V/);
     assert.match(api.hintMessages('ru').copied, /Ctrl\+V/);
-    assert.match(api.hintMessages('en').downloaded, /attach/i);
+    assert.match(api.hintMessages('en').downloaded, /any app/i);
     assert.equal(api.normalizeLang('he-IL'), 'he');
     assert.equal(api.normalizeLang('en'), 'en');
     assert.equal(api.normalizeLang('de'), 'ru');
     assert.equal(api.normalizeLang(undefined), 'ru');
   });
 
-  it('exposes the same API on window and on module.exports', () => {
-    const { api, windowApi } = loadWhatsAppShare();
-    assert.equal(typeof api.shareToWhatsApp, 'function');
-    assert.equal(typeof windowApi.shareToWhatsApp, 'function');
-    assert.equal(typeof windowApi.buildWhatsAppWebUrl, 'function');
+  it('exposes the same API on window.MessageShare and on module.exports', () => {
+    const { api, windowApi, legacy } = loadMessageShare();
+    assert.equal(typeof api.shareMessage, 'function');
+    assert.equal(typeof windowApi.shareMessage, 'function');
+    assert.equal(legacy.shareMessage, windowApi.shareMessage);
+    assert.equal(api.shareToWhatsApp, api.shareMessage);
+    assert.doesNotMatch(read('public/js/message-share.js'), /web\.whatsapp\.com/);
   });
 });
 
-describe('1.40.0 I86 whatsapp-share: behaviour', () => {
+describe('1.42.0 I90 message-share: behaviour', () => {
   function makeSandbox(overrides = {}) {
     const opened = [];
     const downloaded = [];
-    const toasts = [];
     const shareCalls = [];
     const clipboardWrites = [];
-
-    const button = {
-      attrs: { 'data-share-image': '/admin/demo/yahrzeit/tile/7.png', 'data-share-text': 'שלום' },
-      getAttribute(name) { return this.attrs[name] || null; },
-      setAttribute(name, value) { this.attrs[name] = value; },
-      removeAttribute(name) { delete this.attrs[name]; },
-      closest() { return null; },
-    };
+    const clipboardTexts = [];
 
     const sandbox = {
       module: { exports: {} },
@@ -102,6 +84,7 @@ describe('1.40.0 I86 whatsapp-share: behaviour', () => {
         share: async (payload) => { shareCalls.push(payload); },
         clipboard: {
           write: async (items) => { clipboardWrites.push(items); },
+          writeText: async (value) => { clipboardTexts.push(value); },
         },
       },
       setTimeout: () => 0,
@@ -134,22 +117,17 @@ describe('1.40.0 I86 whatsapp-share: behaviour', () => {
     Object.assign(sandbox, overrides);
 
     const api = (() => {
-      vm.runInNewContext(read('public/js/whatsapp-share.js'), sandbox, { filename: 'whatsapp-share.js' });
+      vm.runInNewContext(read('public/js/message-share.js'), sandbox, { filename: 'message-share.js' });
       return sandbox.module.exports;
     })();
 
-    return { api, opened, downloaded, toasts, shareCalls, clipboardWrites, button, sandbox };
+    return { api, opened, downloaded, shareCalls, clipboardWrites, clipboardTexts, sandbox };
   }
 
-  it('uses the native share sheet with the PNG file when the platform can share files', async () => {
-    const { api, opened, shareCalls, downloaded, sandbox } = makeSandbox();
-    const originalAppendChild = sandbox.document.body.appendChild;
-    sandbox.document.body.appendChild = (node) => {
-      if (node && node.textContent) sandbox.__toast = node.textContent;
-      originalAppendChild(node);
-    };
+  it('uses the native share sheet with the PNG, the text and the link when the platform can share files', async () => {
+    const { api, opened, shareCalls, downloaded } = makeSandbox();
 
-    const status = await api.shareToWhatsApp({
+    const status = await api.shareMessage({
       imageUrl: '/admin/demo/yahrzeit/tile/7.png',
       text: 'שלום',
       link: 'https://example.org/s/demo',
@@ -160,8 +138,8 @@ describe('1.40.0 I86 whatsapp-share: behaviour', () => {
     assert.equal(shareCalls.length, 1);
     assert.equal(shareCalls[0].files.length, 1);
     assert.equal(shareCalls[0].files[0].name, 'אברהם-tile.png');
-    assert.equal(shareCalls[0].text, 'שלום\nhttps://example.org/s/demo');
-    // the native sheet already delivers the image, so nothing is downloaded and no tab opens
+    assert.equal(shareCalls[0].text, 'שלום');
+    assert.equal(shareCalls[0].url, 'https://example.org/s/demo');
     assert.equal(downloaded.length, 0);
     assert.equal(opened.length, 0);
   });
@@ -173,7 +151,7 @@ describe('1.40.0 I86 whatsapp-share: behaviour', () => {
       err.name = 'AbortError';
       throw err;
     };
-    const status = await api.shareToWhatsApp({
+    const status = await api.shareMessage({
       imageUrl: '/admin/demo/yahrzeit/tile/7.png',
       text: 'hi',
       link: 'https://example.org/s/demo',
@@ -183,13 +161,13 @@ describe('1.40.0 I86 whatsapp-share: behaviour', () => {
     assert.equal(downloaded.length, 0);
   });
 
-  it('desktop: copies the image, opens WhatsApp Web with the text and shows a text hint', async () => {
+  it('shares text and link without the file, and copies the image, when files cannot be shared', async () => {
     const toasts = [];
-    const { api, opened, downloaded, clipboardWrites, sandbox } = makeSandbox();
+    const { api, opened, downloaded, shareCalls, clipboardWrites, clipboardTexts, sandbox } = makeSandbox();
     sandbox.navigator.canShare = () => false;
     sandbox.document.body.appendChild = (node) => { if (node && node.textContent) toasts.push(node.textContent); };
 
-    const status = await api.shareToWhatsApp({
+    const status = await api.shareMessage({
       imageUrl: '/admin/demo/yahrzeit/tile/7.png',
       text: 'שלום',
       link: 'https://example.org/s/demo',
@@ -197,25 +175,56 @@ describe('1.40.0 I86 whatsapp-share: behaviour', () => {
     });
 
     assert.equal(status, 'copied');
+    assert.equal(shareCalls.length, 1);
+    assert.equal(shareCalls[0].files, undefined);
+    assert.equal(shareCalls[0].text, 'שלום');
+    assert.equal(shareCalls[0].url, 'https://example.org/s/demo');
     assert.equal(clipboardWrites.length, 1);
     assert.ok(clipboardWrites[0][0].map['image/png']);
+    assert.equal(clipboardTexts.length, 0);
     assert.equal(downloaded.length, 0);
-    assert.equal(opened.length, 1);
-    assert.equal(opened[0].url, 'https://web.whatsapp.com/send?text=' + encodeURIComponent('שלום\nhttps://example.org/s/demo'));
-    assert.equal(opened[0].target, '_blank');
-    // the hint is plain text (not colour only) and is announced politely
+    assert.equal(opened.length, 0);
     assert.equal(toasts.length, 1);
     assert.match(toasts[0], /Ctrl\+V/);
   });
 
-  it('desktop: downloads the PNG when the clipboard refuses it', async () => {
+  it('desktop: copies the image and the text, and shows a text hint, without opening WhatsApp', async () => {
     const toasts = [];
-    const { api, opened, downloaded, sandbox } = makeSandbox();
-    sandbox.navigator.canShare = () => false;
-    sandbox.navigator.clipboard = { write: async () => { throw new Error('denied'); } };
+    const { api, opened, downloaded, shareCalls, clipboardWrites, clipboardTexts, sandbox } = makeSandbox();
+    delete sandbox.navigator.share;
+    delete sandbox.navigator.canShare;
     sandbox.document.body.appendChild = (node) => { if (node && node.textContent) toasts.push(node.textContent); };
 
-    const status = await api.shareToWhatsApp({
+    const status = await api.shareMessage({
+      imageUrl: '/admin/demo/yahrzeit/tile/7.png',
+      text: 'שלום',
+      link: 'https://example.org/s/demo',
+      fileName: 'אברהם',
+    });
+
+    assert.equal(status, 'copied');
+    assert.equal(shareCalls.length, 0);
+    assert.equal(clipboardWrites.length, 1);
+    assert.ok(clipboardWrites[0][0].map['image/png']);
+    assert.deepEqual(clipboardTexts, ['שלום\nhttps://example.org/s/demo']);
+    assert.equal(downloaded.length, 0);
+    assert.equal(opened.length, 0);
+    assert.equal(toasts.length, 1);
+    assert.match(toasts[0], /Ctrl\+V/);
+    assert.match(toasts[0], /יישום|приложен|any app/i);
+  });
+
+  it('desktop: downloads the PNG when the clipboard refuses it', async () => {
+    const toasts = [];
+    const { api, opened, downloaded, clipboardTexts, sandbox } = makeSandbox();
+    delete sandbox.navigator.share;
+    sandbox.navigator.clipboard = {
+      write: async () => { throw new Error('denied'); },
+      writeText: async (value) => { clipboardTexts.push(value); },
+    };
+    sandbox.document.body.appendChild = (node) => { if (node && node.textContent) toasts.push(node.textContent); };
+
+    const status = await api.shareMessage({
       imageUrl: '/admin/demo/yahrzeit/tile/7.png',
       text: 'x',
       link: 'https://example.org/s/demo',
@@ -225,81 +234,88 @@ describe('1.40.0 I86 whatsapp-share: behaviour', () => {
     assert.equal(status, 'downloaded');
     assert.equal(downloaded.length, 1);
     assert.equal(downloaded[0].download, 'Doe-tile.png');
-    assert.equal(opened.length, 1);
-    // Hebrew page (document.dir/lang) → Hebrew "image downloaded — attach it" hint
-    assert.match(toasts[0], /צרפו/);
+    assert.deepEqual(clipboardTexts, ['x\nhttps://example.org/s/demo']);
+    assert.equal(opened.length, 0);
+    assert.match(toasts[0], /הורדה/);
   });
 
-  it('still opens WhatsApp Web with the text when the tile cannot be fetched', async () => {
+  it('copies the text when the tile cannot be fetched and sharing is unavailable', async () => {
     const toasts = [];
-    const { api, opened, sandbox } = makeSandbox();
+    const { api, opened, clipboardTexts, sandbox } = makeSandbox();
+    delete sandbox.navigator.share;
     sandbox.fetch = async () => { throw new Error('offline'); };
     sandbox.document.body.appendChild = (node) => { if (node && node.textContent) toasts.push(node.textContent); };
 
-    const status = await api.shareToWhatsApp({
+    const status = await api.shareMessage({
       imageUrl: '/admin/demo/yahrzeit/tile/7.png',
       text: 'x',
       link: 'https://example.org/s/demo',
     });
 
     assert.equal(status, 'text-only');
-    assert.equal(opened.length, 1);
+    assert.equal(opened.length, 0);
+    assert.deepEqual(clipboardTexts, ['x\nhttps://example.org/s/demo']);
     assert.equal(toasts.length, 1);
   });
 
   it('accepts a plain hint string as well as per-outcome overrides', async () => {
     const toasts = [];
     const { api, sandbox } = makeSandbox();
-    sandbox.navigator.canShare = () => false;
+    delete sandbox.navigator.share;
     sandbox.document.body.appendChild = (node) => { if (node && node.textContent) toasts.push(node.textContent); };
-    await api.shareToWhatsApp({
+    await api.shareMessage({
       imageUrl: '/admin/demo/yahrzeit/tile/7.png',
       text: 'x',
       link: 'https://example.org/s/demo',
-      hint: 'Image copied - paste it in WhatsApp (Ctrl+V)',
+      hint: 'Image and message copied — paste them into any app (Ctrl+V)',
     });
-    assert.deepEqual(toasts, ['Image copied - paste it in WhatsApp (Ctrl+V)']);
+    assert.deepEqual(toasts, ['Image and message copied — paste them into any app (Ctrl+V)']);
   });
 });
 
-describe('1.40.0 I86 whatsapp-share: wiring', () => {
-  it('every tile-share surface loads the script and shows a labelled WhatsApp button', () => {
+describe('1.42.0 I90 message-share: wiring', () => {
+  it('every tile-share surface loads the script and shows one labelled send-message button', () => {
     const adminRoutes = read('routes/admin.js');
-    ['admin/people', 'admin/home', 'admin/yahrzeit'].forEach((view) => {
-      assert.match(adminRoutes, new RegExp(`'${view}': \\[[^\\]]*whatsapp-share\\.js`), `${view} missing whatsapp-share.js`);
+    ['admin/people', 'admin/home', 'admin/yahrzeit', 'admin/dashboard'].forEach((view) => {
+      assert.match(adminRoutes, new RegExp(`'${view}': \\[[^\\]]*message-share\\.js`), `${view} missing message-share.js`);
     });
 
-    const button = read('views/partials/admin-whatsapp-share-button.handlebars');
-    assert.match(button, /data-whatsapp-share/);
-    assert.match(button, /adminIcon 'whatsapp'/);
-    assert.match(button, /t 'yahrzeit_share_whatsapp'/);
+    const button = read('views/partials/admin-message-share-button.handlebars');
+    assert.match(button, /data-message-share/);
+    assert.match(button, /adminIcon 'share'/);
+    assert.match(button, /t 'yahrzeit_share_message'/);
+    assert.doesNotMatch(button, /whatsapp/i);
 
-    // yahrzeit list: a share button per prepared message (regular + missed-this-week lists) and,
-    // for a person without contacts, one in the card actions instead.
     const yahrzeitView = read('views/admin/yahrzeit.handlebars');
-    assert.equal((yahrzeitView.match(/\{\{> admin-whatsapp-share-button/g) || []).length, 4);
-    assert.match(yahrzeitView, /\{\{#unless this\.contacts\.length\}\}[\s\S]*admin-whatsapp-share-button/);
+    assert.equal((yahrzeitView.match(/\{\{> admin-message-share-button/g) || []).length, 4);
+    assert.match(yahrzeitView, /\{\{#unless this\.contacts\.length\}\}[\s\S]*admin-message-share-button/);
     assert.match(yahrzeitView, /data-board-url="\/s\/\{\{synagogue\.slug\}\}"/);
 
-    // person card modal
-    assert.match(read('views/partials/admin-person-card-modal.handlebars'), /data-whatsapp-share/);
+    assert.match(read('views/partials/admin-person-card-modal.handlebars'), /data-message-share/);
+    assert.match(read('views/partials/admin-person-card-modal.handlebars'), /adminIcon 'share'/);
 
-    // home screen + dashboard upcoming reminders
     assert.match(read('views/admin/home.handlebars'), /\{\{> admin-yahrzeit-reminders\}\}/);
     assert.match(read('views/admin/dashboard.handlebars'), /\{\{> admin-yahrzeit-reminders\}\}/);
-    assert.match(read('views/partials/admin-yahrzeit-reminders.handlebars'), /admin-whatsapp-share-button/);
+    assert.match(read('views/partials/admin-yahrzeit-reminders.handlebars'), /admin-message-share-button/);
+
+    assert.equal(require('../lib/admin-icons').ICONS.share.length > 20, true);
+    assert.match(read('public/js/admin-icons.js'), /share:/);
   });
 
   it('translates the new labels in he, ru and en', () => {
     const translations = require('../lib/admin-translations').translations;
     ['he', 'ru', 'en'].forEach((lang) => {
-      ['yahrzeit_share_whatsapp', 'yahrzeit_share_hint_copied', 'yahrzeit_share_hint_downloaded',
+      ['yahrzeit_share_message', 'yahrzeit_share_hint_copied', 'yahrzeit_share_hint_downloaded',
         'yahrzeit_share_hint_failed', 'yahrzeit_share_focused', 'yahrzeit_share_reminders_title',
       ].forEach((key) => {
         const value = translations[lang] && translations[lang][key];
         assert.ok(value && String(value).trim(), `${lang} missing ${key}`);
+        assert.doesNotMatch(String(value), /whatsapp|וואטסאפ|ватсап/i);
       });
     });
+    assert.equal(translations.he.yahrzeit_share_message, 'שליחת הודעה');
+    assert.equal(translations.ru.yahrzeit_share_message, 'Отправить сообщение');
+    assert.equal(translations.en.yahrzeit_share_message, 'Send message');
   });
 
   it('entries carry the tile PNG and the community board URL for sharing', () => {
@@ -352,7 +368,6 @@ describe('1.40.0 I86 whatsapp-share: wiring', () => {
       slug: 'demo',
     });
     assert.equal(payload.url, '/admin/demo/yahrzeit?share=9');
-    // without a community slug the old /admin/ fallback is kept
     assert.equal(buildYahrzeitPushPayload([{ person: { id: 9, name: 'P' }, date: new Date() }]).url, '/admin/');
   });
 
@@ -361,21 +376,18 @@ describe('1.40.0 I86 whatsapp-share: wiring', () => {
     assert.match(js, /share=\(\[\^&\]\+\)/);
     assert.match(js, /is-share-highlight/);
     assert.match(js, /highlightShareTarget/);
-    // a person from a push reminder may not be in today's list -> open their card instead
+    assert.match(js, /data-message-share/);
     assert.match(js, /openPersonCard\(person\)[\s\S]*personCardShareBtn/);
-    // a native share sheet needs a gesture: the code must focus, never call navigator.share itself
     assert.doesNotMatch(js, /navigator\.share\(/);
   });
 });
 
-describe('1.40.0 I86 CSP support', () => {
+describe('1.42.0 I90 CSP support', () => {
   it('admin policy allows blob: images and same-origin fetch', () => {
     const { ADMIN_POLICY, PUBLIC_REPORT_POLICY } = require('../lib/csp');
     [ADMIN_POLICY, PUBLIC_REPORT_POLICY].forEach((policy) => {
       assert.match(policy, /img-src[^;]*blob:/);
       assert.match(policy, /connect-src 'self'/);
     });
-    // WhatsApp Web opens in a new tab; top-level navigation is not restricted by CSP here.
-    assert.doesNotMatch(ADMIN_POLICY, /navigate-to/);
   });
 });
