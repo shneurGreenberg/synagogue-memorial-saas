@@ -1,5 +1,41 @@
 [
   {
+    "version": "1.42.0",
+    "date": "2026-11-18",
+    "items": [
+      {
+        "type": "changed",
+        "text": "כפתור «שליחת הודעה» כללי במקום כפתור הוואטסאפ, בתזכורות, ברשימת היארצייט ובכרטיס הנפטר: בטלפון נפתחת חלונית השיתוף עם תמונת האריח, הטקסט והקישור ובוחרים כל אפליקציה; במחשב משתפים ישירות אם הדפדפן מאפשר, ואחרת התמונה והטקסט מועתקים או יורדים עם הסבר קצר",
+        "text_ru": "Общая кнопка «Отправить сообщение» вместо кнопки WhatsApp — в напоминаниях, списке йорцайтов и карточке умершего: на телефоне открывается меню «Поделиться» с картинкой, текстом и ссылкой, можно выбрать любое приложение; на компьютере — прямой обмен, если браузер позволяет, иначе картинка и текст копируются или скачиваются с короткой подсказкой",
+        "text_en": "One general «Send message» button instead of the WhatsApp button, in reminders, the yahrzeit list and the person card: on phones the share sheet opens with the tile image, text and link so any app can be chosen; on desktop it shares directly when the browser allows, otherwise the image and text are copied or downloaded with a short hint"
+      },
+      {
+        "type": "fixed",
+        "text": "בטלפון, אזור היארצייטים הקרובים בתחתית הלוח הציבורי מסודר עכשיו: ריווח, יישור, שבירת שורות וכרטיסים אחידים",
+        "text_ru": "На телефоне блок ближайших йорцайтов внизу публичного табло теперь аккуратный: отступы, выравнивание, перенос строк и одинаковые карточки",
+        "text_en": "On phones, the upcoming-yahrzeits section at the bottom of the public board is now tidy: spacing, alignment, wrapping and consistent cards"
+      },
+      {
+        "type": "fixed",
+        "text": "תצוגת קריאת התורה לא מציגה שם משפחה גם בשמות שעדיין לא פוצלו במלואם, והגודל של השמות נמדד בפועל ומוקטן עד שהם נכנסים — שמות ארוכים לא נחתכים",
+        "text_ru": "В режиме чтения Торы фамилия не показывается и у имён, ещё не полностью разделённых на части; размер текста измеряется на экране и уменьшается, пока имя не поместится — длинные имена больше не обрезаются",
+        "text_en": "The Torah-reading view no longer shows a surname even for names not yet fully split, and the text size is measured on screen and reduced until it fits — long names are no longer cut off"
+      },
+      {
+        "type": "fixed",
+        "text": "חיפוש הנפטרים באדמין מחפש כל מילה בנפרד ובכל סדר, בשם המלא ובכל החלקים, בלי סוגריים, נקודות ומקפים, ו־ё/е ו־й/и נחשבים אותו דבר",
+        "text_ru": "Поиск умерших в админке ищет каждое слово отдельно и в любом порядке, по полному имени и всем частям, без учёта скобок, точек и дефисов; ё/е и й/и считаются одинаковыми",
+        "text_en": "Admin deceased search matches each word separately in any order across the full name and all parts, ignoring brackets, dots and dashes; ё/е and й/и are treated the same"
+      },
+      {
+        "type": "added",
+        "text": "כלל מיגרציה חדש «split-parts-2» לפיצול שמות שנשארו חלקיים (שם נעורים בסוגריים, שם משפחה כפול עם מקף, שני שמות פרטיים, שם משפחה בסוף בקהילות בעברית), ובדיקות אוטומטיות: בדיקות לכל PR, מיזוג אוטומטי כשהכול עובר, ובדיקה אחרי כל עלייה לאוויר של כל לוחות הקהילות עם התראה",
+        "text_ru": "Новое правило миграции «split-parts-2» для имён, оставшихся частично разделёнными (девичья фамилия в скобках, двойная фамилия через дефис, два имени, фамилия в конце в общинах на иврите), и автоматические проверки: тесты на каждый PR, автослияние при успехе и проверка всех табло общин после каждого развёртывания с оповещением",
+        "text_en": "New migration rule «split-parts-2» for names left partially split (maiden name in brackets, double surname with a dash, two given names, surname at the end in Hebrew communities), plus automation: tests on every PR, auto-merge when everything passes, and a post-deploy check of every community board with an alert"
+      }
+    ]
+  },
+  {
     "version": "1.41.0",
     "date": "2026-11-16",
     "items": [
