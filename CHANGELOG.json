@@ -1,5 +1,29 @@
 [
   {
+    "version": "1.42.1",
+    "date": "2026-11-18",
+    "items": [
+      {
+        "type": "fixed",
+        "text": "כלל המיגרציה «split-parts-2» מדלג עכשיו על שלושה מקרים לא בטוחים: בן/בת בתוך סוגריים, שני שמות משפחה בלי מקף, ושמות בעברית שכבר מתחילים בשם משפחה",
+        "text_ru": "Правило миграции «split-parts-2» теперь пропускает три небезопасных случая: бен/бат внутри скобок, две фамилии без дефиса и ивритские имена, которые уже начинаются с фамилии",
+        "text_en": "The «split-parts-2» name migration now skips three unsafe cases: бен/бат inside brackets, two surnames without a dash, and Hebrew names that already start with a surname"
+      },
+      {
+        "type": "fixed",
+        "text": "הבדיקה אחרי העלייה לאוויר קוראת את הקהילה האחרונה ומנסה שוב בזמן האתחול מחדש של אמוורה",
+        "text_ru": "Проверка после развёртывания читает последнюю общину и повторяет попытку во время перезапуска Amvera",
+        "text_en": "The post-deploy check reads the last community and retries during the Amvera restart"
+      },
+      {
+        "type": "fixed",
+        "text": "פריסת הגיבוי ל-GitHub Pages לא נכשלת יותר כשענף main מוגן",
+        "text_ru": "Запасное развёртывание GitHub Pages больше не падает, когда ветка main защищена",
+        "text_en": "The GitHub Pages fallback deploy no longer fails when main is protected"
+      }
+    ]
+  },
+  {
     "version": "1.42.0",
     "date": "2026-11-18",
     "items": [

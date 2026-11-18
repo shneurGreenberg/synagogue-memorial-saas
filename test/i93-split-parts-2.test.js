@@ -95,6 +95,28 @@ describe('1.42.0 I93: split-parts-2 proposals', () => {
     assert.equal(composePersonName(p, 'surname-first'), 'Иванов Анна бен Петр и Мария');
   });
 
+  it('leaves a бен/бат marker that sits only inside brackets', () => {
+    const p = proposeParts2Split({ name: 'Гершевич Абрам (Авраам бен Ишаягу)' }, 'surname-first');
+    assert.equal(p.reason, 'marker-in-brackets');
+    assert.equal(p.surname, undefined);
+    assert.ok(PARTS2_REASONS.includes(p.reason));
+    const outside = proposeParts2Split({ name: 'Иванов Анна бен Моисей (Авраам бен Ишаягу)' }, 'surname-first');
+    assert.equal(outside.surname, 'Иванов');
+    assert.equal(outside.givenName, 'Анна');
+    assert.equal(outside.parentName, 'Моисей (Авраам бен Ишаягу)');
+  });
+
+  it('leaves two surnames with no dash, and still splits two known given names', () => {
+    const doubled = proposeParts2Split({ name: 'Масамед Шнирман Фаня бат Абрам' }, 'surname-first');
+    assert.equal(doubled.reason, 'double-surname-no-dash');
+    assert.equal(doubled.surname, undefined);
+    const twoGiven = proposeParts2Split({ name: 'Зингель Ефим Хаим бен Моисей' }, 'surname-first');
+    assert.equal(twoGiven.surname, 'Зингель');
+    assert.equal(twoGiven.givenName, 'Ефим Хаим');
+    assert.equal(twoGiven.parentName, 'Моисей');
+    assert.equal(composePersonName(twoGiven, 'surname-first'), 'Зингель Ефим Хаим бен Моисей');
+  });
+
   it('does nothing when a surname is already stored', () => {
     const done = proposeParts2Split({
       name: 'Иванов Анна бен Моисей', surname: 'Иванов', givenName: 'Анна', parentName: 'Моисей', parentRelation: 'ben',
@@ -130,6 +152,23 @@ describe('1.42.0 I93: Hebrew surname-last', () => {
     assert.equal(glued.surname, 'כהן');
     const stays = proposeParts2Split({ name: 'יעקב בן יצחק שרה' }, 'surname-last', ctx);
     assert.equal(stays.reason, 'shape');
+  });
+
+  it('leaves a Hebrew row that already starts with a surname used at the end of other rows', () => {
+    const community = [
+      { name: 'שמואל בן יצחק גרינברג' },
+      { name: 'שרה בת רבקה גרינברג' },
+      { name: 'גרינברג שמואל גרונם בן יצחק מאיר' },
+    ];
+    const ctx = buildParts2Context(community, 'surname-first');
+    assert.equal(ctx.surnameLast, true);
+    const row = proposeParts2Split({ name: 'גרינברג שמואל גרונם בן יצחק מאיר' }, 'surname-last', ctx);
+    assert.equal(row.reason, 'hebrew-leading-surname');
+    assert.equal(row.surname, undefined);
+    const ordinary = proposeParts2Split({ name: 'שמואל בן יצחק גרינברג' }, 'surname-last', ctx);
+    assert.equal(ordinary.surname, 'גרינברג');
+    assert.equal(ordinary.givenName, 'שמואל');
+    assert.equal(ordinary.parentName, 'יצחק');
   });
 
   it('does not switch a community that already has an order', () => {
