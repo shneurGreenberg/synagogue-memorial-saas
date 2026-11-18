@@ -70,7 +70,7 @@ describe('1.42.0 I93: split-parts-2 proposals', () => {
     const reversed = proposeParts2Split({ name: 'Анна Мирмильштейн бен Семен' }, 'surname-first', ctx);
     assert.equal(reversed.reason, 'reversed');
     const notAGiven = proposeParts2Split({ name: 'Буторин Мирмильштейн Анна бен Семен' }, 'surname-first', ctx);
-    assert.equal(notAGiven.reason, 'unknown-given');
+    assert.equal(notAGiven.reason, 'double-surname-no-dash');
     assert.equal(proposeParts2Split({ name: 'Анна Мирмильштейн' }, 'surname-first', ctx).reason, 'no-marker');
   });
 
@@ -306,6 +306,54 @@ describe('1.42.0 I93: split-parts-2 in the normalization run', () => {
     const { summary } = await planNormalization(synagogues, { rule: 'split-parts-2' });
     assert.equal(summary.written, 1);
     assert.equal(summary.byCommunity.x.total, 1);
+  });
+
+  it('skips a double surname when the community makes the second surname look like a given name', async () => {
+    const synagogues = {
+      find: () => ({ toArray: async () => [{
+        slug: 'tomsk',
+        nameOrder: 'surname-first',
+        people: [
+          {
+            id: 1,
+            name: 'Масамед Шнирман Фаня бат Абрам',
+            surname: '',
+            givenName: 'Масамед Шнирман Фаня',
+            parentName: 'Абрам',
+            parentRelation: 'bat',
+          },
+          {
+            id: 2,
+            name: 'Коган Анна бат Моисей',
+            surname: 'Коган',
+            givenName: 'Анна Шнирман',
+            parentName: 'Моисей',
+            parentRelation: 'bat',
+          },
+          { id: 3, name: 'Коган Фаня бат Сара', givenName: 'Фаня' },
+          { id: 4, name: 'Левин Фаня бат Рива' },
+          {
+            id: 5,
+            name: 'Зингель Ефим Хаим бен Меир и Циля',
+            surname: '',
+            givenName: 'Зингель Ефим Хаим',
+            parentName: 'Меир и Циля',
+            parentRelation: 'ben',
+          },
+        ],
+      }] }),
+    };
+    const { rows } = await planNormalization(synagogues, { rule: 'split-parts-2' });
+    const doubled = rows.find((row) => row.id === 1);
+    assert.equal(doubled.ambiguous, true);
+    assert.equal(doubled.note, 'double-surname-no-dash');
+    assert.equal(doubled.surname, '');
+    const zingel = rows.find((row) => row.id === 5);
+    assert.equal(zingel.ambiguous, false);
+    assert.equal(zingel.surname, 'Зингель');
+    assert.equal(zingel.givenName, 'Ефим Хаим');
+    assert.equal(zingel.parentName, 'Меир и Циля');
+    assert.equal(zingel.parentRelation, 'ben');
   });
 });
 
