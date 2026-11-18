@@ -1,5 +1,17 @@
 [
   {
+    "version": "1.42.2",
+    "date": "2026-11-18",
+    "items": [
+      {
+        "type": "fixed",
+        "text": "כלל המיגרציה «split-parts-2» מדלג עכשיו גם על שתי שמות משפחה בלי מקף כשנתוני הקהילה גורמים לשם המשפחה השני להיראות כמו שם פרטי",
+        "text_ru": "Правило миграции «split-parts-2» теперь пропускает и две фамилии без дефиса, когда данные общины делают вторую фамилию похожей на имя",
+        "text_en": "The «split-parts-2» name migration now also skips double surnames without a dash when the community data makes the second surname look like a given name"
+      }
+    ]
+  },
+  {
     "version": "1.42.1",
     "date": "2026-11-18",
     "items": [
