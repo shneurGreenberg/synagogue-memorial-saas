@@ -695,13 +695,13 @@ const getInitials = (name) => {
 };
 
 const ADMIN_PAGE_SCRIPTS = {
-    'admin/dashboard': ['whatsapp-share.js'],
-    'admin/people': ['admin-death-date.js', 'admin-deceased-name.js', 'admin-people.js', 'admin-person-card.js', 'contact-platform-ui.js', 'whatsapp-share.js'],
+    'admin/dashboard': ['message-share.js'],
+    'admin/people': ['admin-death-date.js', 'admin-deceased-name.js', 'admin-people.js', 'admin-person-card.js', 'contact-platform-ui.js', 'message-share.js'],
     'admin/contacts': ['admin-contact-directory.js', 'contact-platform-ui.js'],
     'admin/events': ['admin-events.js', 'admin-slideshow.js'],
     'admin/users': ['admin-users.js'],
-    'admin/home': ['whatsapp-share.js'],
-    'admin/yahrzeit': ['admin-person-card.js', 'admin-yahrzeit.js', 'admin-death-date.js', 'admin-tile-capture.js', 'admin-push.js', 'whatsapp-share.js'],
+    'admin/home': ['message-share.js'],
+    'admin/yahrzeit': ['admin-person-card.js', 'admin-yahrzeit.js', 'admin-death-date.js', 'admin-tile-capture.js', 'admin-push.js', 'message-share.js'],
 };
 
 const ADMIN_NAV_BY_VIEW = {

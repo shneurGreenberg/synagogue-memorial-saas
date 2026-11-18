@@ -1,8 +1,8 @@
-{{!-- 1.40.0 I86: "Share on WhatsApp" — the memorial tile PNG + the yahrzeit message text.
-     Behaviour lives in public/js/whatsapp-share.js (native share sheet, or clipboard + WhatsApp Web).
+{{!-- 1.42.0 I90: "Send message" — the memorial tile PNG plus the yahrzeit message.
+     Behaviour lives in public/js/message-share.js (native share sheet, or clipboard copy).
      Params: imageUrl, link, text, messageUrl, fileName, extraClass. --}}
 <button type="button" class="btn-admin btn-admin-secondary btn-admin-with-icon yahrzeit-share-btn{{#if extraClass}} {{extraClass}}{{/if}}"
-    data-whatsapp-share
+    data-message-share
     data-share-image="{{imageUrl}}"
     data-share-link="{{link}}"
     data-share-file="{{fileName}}"
@@ -11,6 +11,6 @@
     data-share-hint-copied="{{t 'yahrzeit_share_hint_copied'}}"
     data-share-hint-downloaded="{{t 'yahrzeit_share_hint_downloaded'}}"
     data-share-hint-failed="{{t 'yahrzeit_share_hint_failed'}}">
-    {{{adminIcon 'whatsapp' class='btn-admin-inline-icon'}}}
-    {{t 'yahrzeit_share_whatsapp'}}
+    {{{adminIcon 'share' class='btn-admin-inline-icon'}}}
+    {{t 'yahrzeit_share_message'}}
 </button>

@@ -45,16 +45,16 @@
             </div>
             <div class="modal-footer admin-person-card-footer">
                 <div id="personCardSendActions" class="admin-person-card-send-actions"></div>
-                {{!-- 1.40.0 I86: share the memorial tile on WhatsApp (message text comes from the
+                {{!-- 1.42.0 I90: send the memorial tile through any channel (message text comes from the
                      person's yahrzeit message endpoint). --}}
                 <button type="button" class="btn-admin btn-admin-secondary btn-admin-with-icon yahrzeit-share-btn" id="personCardShareBtn" hidden
-                    data-whatsapp-share
+                    data-message-share
                     data-share-link="/s/{{synagogue.slug}}"
                     data-share-hint-copied="{{t 'yahrzeit_share_hint_copied'}}"
                     data-share-hint-downloaded="{{t 'yahrzeit_share_hint_downloaded'}}"
                     data-share-hint-failed="{{t 'yahrzeit_share_hint_failed'}}">
-                    {{{adminIcon 'whatsapp' class='btn-admin-inline-icon'}}}
-                    {{t 'yahrzeit_share_whatsapp'}}
+                    {{{adminIcon 'share' class='btn-admin-inline-icon'}}}
+                    {{t 'yahrzeit_share_message'}}
                 </button>
                 <button type="button" class="btn-admin btn-admin-secondary btn-admin-with-icon" id="personCardEditBtn">{{{adminIcon 'edit' class='btn-admin-inline-icon'}}}{{t 'edit'}}</button>
                 <button type="button" class="btn-admin btn-admin-danger btn-admin-with-icon" id="personCardDeleteBtn">{{{adminIcon 'delete' class='btn-admin-inline-icon'}}}{{t 'delete'}}</button>

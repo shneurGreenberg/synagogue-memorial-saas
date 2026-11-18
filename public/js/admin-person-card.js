@@ -200,14 +200,14 @@
       });
     }
 
-    /* 1.40.0 I86: the WhatsApp share button lives next to the tile/send actions in the footer.
+    /* 1.42.0 I90: the send-message button lives next to the tile/send actions in the footer.
      * The message text is taken from the person's yahrzeit message endpoint (same text as "send"). */
     function syncShareButton(person) {
       if (!shareBtn) {
         return;
       }
 
-      if (!synagogueSlug || !person || person.id == null || !window.WhatsAppShare) {
+      if (!synagogueSlug || !person || person.id == null || !(window.MessageShare || window.WhatsAppShare)) {
         shareBtn.hidden = true;
         return;
       }
