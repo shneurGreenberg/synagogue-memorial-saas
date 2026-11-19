@@ -198,7 +198,7 @@ describe('1.42.0 I93: the rule is wired everywhere', () => {
   it('is in the runner, the workflow, the CLI and the master allow-list', () => {
     assert.ok(RULES.includes('split-parts-2'));
     const wf = read('.github/workflows/name-normalization.yml');
-    assert.match(wf, /options: \[[^\]]*split-parts-2\]/);
+    assert.match(wf, /options: \[[^\]]*split-parts-2[,\]]/);
     assert.match(wf, /split-parts-2 \(/);
     const script = read('scripts/run-name-normalization.js');
     assert.match(script, /split-parts\|split-parts-2/);

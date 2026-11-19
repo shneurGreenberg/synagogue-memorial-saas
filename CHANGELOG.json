@@ -1,5 +1,17 @@
 [
   {
+    "version": "1.42.4",
+    "date": "2026-11-19",
+    "items": [
+      {
+        "type": "added",
+        "text": "כלי שמות ידני חדש שמחליף את סדר שני ההורים רק ברשומות שאושרו במפורש",
+        "text_ru": "Новый ручной инструмент имён меняет порядок двух родителей только у специально одобренных записей",
+        "text_en": "A new manual name tool swaps the order of two parents on specific approved records"
+      }
+    ]
+  },
+  {
     "version": "1.42.3",
     "date": "2026-11-19",
     "items": [

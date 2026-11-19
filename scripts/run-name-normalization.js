@@ -5,7 +5,7 @@
  * master admin at POST /master/api/name-normalization).
  *
  *   MONGODB_URI=... node scripts/run-name-normalization.js --mode=dry-run|apply|restore [--run-id=…] [--slug=…]
- *     [--rule=ben-bat|patronymic|drop-patronymic-dup|nominative-parents|split-surname|split-parts|split-parts-2] [--encrypt-to=out.enc.json] [--gender-fix=slug:id=female,…] [--approve=slug:id,…]
+ *     [--rule=ben-bat|patronymic|drop-patronymic-dup|nominative-parents|split-surname|split-parts|split-parts-2|swap-parents] [--encrypt-to=out.enc.json] [--gender-fix=slug:id=female,…] [--approve=slug:id,…]
  *
  * 1.37.0 I65: --rule=patronymic converts Russian patronymics (…Ефимовна → бат Ефим). With --encrypt-to and
  * RESULT_PUBKEY (base64 of an RSA public key PEM) the rows go only into a CSV encrypted for that key
@@ -85,7 +85,9 @@ const redact = (msg) => String(msg || '').replace(/mongodb(\+srv)?:\/\/\S+/g, '[
         ? (r.surname ? 'split into parts (see the encrypted CSV)' : 'partial split, surname left empty (see the encrypted CSV)')
         : r.kind === 'split-parts-2'
           ? (r.ambiguous ? 'not split (see the encrypted CSV)' : 'split into parts (see the encrypted CSV)')
-          : `${r.oldName} => ${r.newName}`;
+          : r.kind === 'swap-parents'
+            ? (r.ambiguous ? `skipped ${r.note} (see the encrypted CSV)` : 'parents swapped (see the encrypted CSV)')
+            : `${r.oldName} => ${r.newName}`;
     console.log([r.kind === 'gender' ? 'GENDER' : 'ROW', r.community, r.id, r.rule, status,
       `gender ${r.oldGender || '-'}→${r.newGender || '-'}`, detail].join(' | '));
   });

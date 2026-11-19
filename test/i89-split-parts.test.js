@@ -161,7 +161,7 @@ describe('1.41.0 I89: the rule is wired everywhere', () => {
   it('is in the runner rule list', () => {
     assert.ok(RULES.includes('split-parts'));
     assert.deepEqual(RULES, [
-      'ben-bat', 'patronymic', 'drop-patronymic-dup', 'nominative-parents', 'split-surname', 'split-parts', 'split-parts-2',
+      'ben-bat', 'patronymic', 'drop-patronymic-dup', 'nominative-parents', 'split-surname', 'split-parts', 'split-parts-2', 'swap-parents',
     ]);
   });
   it('is in the manual workflow choice options and description', () => {
