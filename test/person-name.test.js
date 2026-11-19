@@ -4,6 +4,7 @@ const {
   composePersonName,
   composeAdminName,
   torahReadingName,
+  torahNameWithoutMother,
   detectNameOrder,
   classifyNameOrder,
   isSurnameLikeToken,
@@ -591,5 +592,31 @@ describe('1.41.0: board payload', () => {
       people: [{ id: 3, surname: 'כהן', givenName: 'יצחק', parentName: 'אברהם', parentRelation: 'ben' }],
     });
     assert.equal(payload.people[0].name, 'כהן יצחק בן אברהם');
+  });
+});
+
+describe('1.42.3 I95: Torah list drops the mother', () => {
+  const withMother = {
+    surname: 'Иванов',
+    givenName: 'Иван',
+    parentName: 'Меир и Циля',
+    parentRelation: 'ben',
+  };
+
+  it('leaves torahReadingName unchanged so split-name-parts can compare it', () => {
+    assert.equal(torahReadingName(withMother), 'Иван бен Меир и Циля');
+    assert.equal(torahNameWithoutMother('Иван бен Меир и Циля'), 'Иван бен Меир');
+    assert.equal(torahNameWithoutMother('Sarah bat Meir and Tsilya'), 'Sarah bat Meir');
+    assert.equal(torahNameWithoutMother('יצחק בן מאיר ו צילה'), 'יצחק בן מאיר');
+    assert.equal(torahNameWithoutMother('יצחק בן מאיר וצילה'), 'יצחק בן מאיר');
+    assert.equal(torahNameWithoutMother('יצחק בן מאיר וועלוול'), 'יצחק בן מאיר וועלוול');
+    assert.equal(torahNameWithoutMother('יצחק בן וועלוול'), 'יצחק בן וועלוול');
+    assert.equal(torahNameWithoutMother('Иван бен Меир'), 'Иван бен Меир');
+  });
+
+  it('strips the mother only on the public torahName', () => {
+    const payload = toPublicBoardPayload({ slug: 'demo', people: [withMother] });
+    assert.equal(payload.people[0].name, 'Иванов Иван бен Меир и Циля');
+    assert.equal(payload.people[0].torahName, 'Иван бен Меир');
   });
 });
