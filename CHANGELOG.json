@@ -1,5 +1,29 @@
 [
   {
+    "version": "1.43.0",
+    "date": "2026-11-22",
+    "items": [
+      {
+        "type": "added",
+        "text": "כל קהילה יכולה להציג קישור ציבורי לשרת הרוסי או לשרת הבינלאומי (אוטומטית לפי אזור הזמן; שום דבר לא משתנה עד שמוגדרת כתובת השרת הרוסי). קודי ה-QR עוקבים אחרי הקישור",
+        "text_ru": "Каждая община может показывать публичную ссылку на российский или международный сервер (автоматически по часовому поясу; ничего не меняется, пока не задан адрес российского сервера). QR-коды следуют за этой ссылкой",
+        "text_en": "Each community can show a Russian-server or international-server public link (chosen automatically by time zone; nothing changes until a Russian server address is configured). QR codes follow that link"
+      },
+      {
+        "type": "added",
+        "text": "תמונות שהועלו יכולות להישמר במסד הנתונים המשותף כדי שכמה שרתים יציגו את אותן תמונות (כבוי כברירת מחדל), עם מיגרציה חד-פעמית שמגובה מראש",
+        "text_ru": "Загруженные изображения можно хранить в общей базе, чтобы несколько серверов показывали одни и те же картинки (выключено по умолчанию), с одноразовой миграцией и резервной копией",
+        "text_en": "Uploaded images can be stored in the shared database so several servers show the same images (off by default), with a backed-up one-time migration"
+      },
+      {
+        "type": "added",
+        "text": "הבדיקה אחרי העלייה לאוויר יכולה לבדוק גם שרת רוסי",
+        "text_ru": "Проверка после развёртывания может проверять и российский сервер",
+        "text_en": "The post-deploy check can also check a Russian server"
+      }
+    ]
+  },
+  {
     "version": "1.42.4",
     "date": "2026-11-19",
     "items": [
