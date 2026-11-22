@@ -325,7 +325,9 @@ const SynagogueSchema = new mongoose.Schema({
     enabled: { type: Boolean, default: false },
     donationUrl: { type: String, default: '' },
     donationQrImage: { type: String, default: '' },
+    donationQrEncodedUrl: { type: String, default: '' },
     registrationQrImage: { type: String, default: '' },
+    registrationQrEncodedUrl: { type: String, default: '' },
     showDonationQr: { type: Boolean, default: true },
     showRegistrationQr: { type: Boolean, default: true },
   },
@@ -456,6 +458,7 @@ const SynagogueSchema = new mongoose.Schema({
     timezone: { type: String, default: 'Asia/Novosibirsk' }
   },
   language: { type: String, default: 'ru' },
+  publicLinkRegion: { type: String, enum: ['auto', 'ru', 'intl'], default: 'auto' },
   // 1.29: 'memorial' (classic) or 'combined' (top: names, bottom: synagogue info).
   hebrewDatesOnly: { type: Boolean, default: false },
   // 1.40.0 I88: how a split deceased name is composed ('surname-first' | 'given-first').

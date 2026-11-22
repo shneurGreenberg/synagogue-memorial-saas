@@ -2074,6 +2074,22 @@ body.admin-is-busy {
     color: var(--admin-text);
   }
 
+  .public-link-region-fieldset {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .public-link-region-option {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.85rem;
+  }
+
   .settings-control-field {
     margin: 0;
   }
