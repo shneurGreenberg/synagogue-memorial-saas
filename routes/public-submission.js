@@ -424,11 +424,16 @@ async function saveDonationUrlForSlug(slug, rawUrl) {
     return;
   }
   const donationQrImage = await syncAutoDonationQrAfterUrlChange(synagogue);
+  const encoded = String(synagogue.publicSubmission?.donationQrEncodedUrl || '');
+  const qrPatch = {};
   if (donationQrImage) {
-    await Synagogue.updateOne(
-      { slug },
-      { $set: { 'publicSubmission.donationQrImage': donationQrImage } },
-    );
+    qrPatch['publicSubmission.donationQrImage'] = donationQrImage;
+  }
+  if (encoded) {
+    qrPatch['publicSubmission.donationQrEncodedUrl'] = encoded;
+  }
+  if (Object.keys(qrPatch).length > 0) {
+    await Synagogue.updateOne({ slug }, { $set: qrPatch });
   }
   invalidateBoardCache(slug);
   invalidateAdminSynagogueCache(slug);

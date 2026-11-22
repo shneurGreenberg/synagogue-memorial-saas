@@ -1,3 +1,52 @@
+        {{#if showPublicLinkRegion}}
+        <article class="settings-media-tile settings-control-tile">
+            <fieldset class="public-link-region-fieldset">
+                <legend class="settings-control-tile-title">{{t 'public_link_region_label'}}</legend>
+                <label class="public-link-region-option">
+                    <input type="radio" name="publicLinkRegion" value="auto" {{#unless (or (eq synagogue.publicLinkRegion 'ru') (eq synagogue.publicLinkRegion 'intl'))}}checked{{/unless}}>
+                    <span>{{t 'public_link_region_auto'}}</span>
+                </label>
+                <label class="public-link-region-option">
+                    <input type="radio" name="publicLinkRegion" value="ru" {{#if (eq synagogue.publicLinkRegion 'ru')}}checked{{/if}}>
+                    <span>{{t 'public_link_region_ru'}}</span>
+                </label>
+                <label class="public-link-region-option">
+                    <input type="radio" name="publicLinkRegion" value="intl" {{#if (eq synagogue.publicLinkRegion 'intl')}}checked{{/if}}>
+                    <span>{{t 'public_link_region_intl'}}</span>
+                </label>
+            </fieldset>
+            <div class="form-field settings-media-field">
+                <label for="resolvedPublicBoardUrl">{{t 'public_link_region_resolved'}}</label>
+                <input type="text" class="form-control admin-input-modern" id="resolvedPublicBoardUrl" readonly value="{{resolvedPublicBoardUrl}}">
+            </div>
+            <button type="button" class="btn-admin btn-admin-secondary btn-admin-sm" id="publicLinkCopyBtn" data-copy-label="{{t 'public_link_copy'}}" data-copied-label="{{t 'public_link_copied'}}">{{t 'public_link_copy'}}</button>
+            <script>
+                (function () {
+                    var button = document.getElementById('publicLinkCopyBtn');
+                    var input = document.getElementById('resolvedPublicBoardUrl');
+                    if (!button || !input) return;
+                    button.addEventListener('click', function () {
+                        var text = input.value || '';
+                        var label = button.getAttribute('data-copy-label') || button.textContent;
+                        var copied = button.getAttribute('data-copied-label') || label;
+                        function done() {
+                            button.textContent = copied;
+                            window.setTimeout(function () { button.textContent = label; }, 1600);
+                        }
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            navigator.clipboard.writeText(text).then(done).catch(function () {
+                                input.focus();
+                                input.select();
+                            });
+                            return;
+                        }
+                        input.focus();
+                        input.select();
+                    });
+                })();
+            </script>
+        </article>
+        {{/if}}
         <article class="settings-media-tile">
             <div class="admin-theme-setting settings-qr-visibility-toggle">
                 <div class="admin-theme-setting-label">{{t 'show_donation_qr_on_board'}}</div>

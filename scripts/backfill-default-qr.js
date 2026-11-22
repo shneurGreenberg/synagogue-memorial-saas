@@ -22,7 +22,7 @@ async function main() {
 
   const query = slugFilter ? { slug: slugFilter } : {};
   const communities = await Synagogue.find(query)
-    .select('slug name publicSubmission provisioning')
+    .select('slug name publicSubmission provisioning location publicLinkRegion')
     .lean();
   let candidates = 0;
   let updated = 0;

@@ -14,7 +14,8 @@ const { BOARD_THEME_DEFAULTS } = require('../lib/board-defaults');
 const { parsePhotoCropFromBody } = require('../lib/photo-crop');
 const { parseBoardFeaturesFromBody } = require('../lib/board-features');
 const { buildBoardSettingsUpdate } = require('../lib/admin-board-settings-save');
-const { syncAutoDonationQrAfterUrlChange } = require('../lib/default-community-qr');
+const { syncAutoDonationQrAfterUrlChange, syncAutoCommunityQrTargets } = require('../lib/default-community-qr');
+const { communityPublicPath, resolveRuBaseUrl } = require('../lib/public-base-url');
 const { invalidateBoardCache } = require('../lib/board-cache');
 const { loadAdminSynagogue, invalidateAdminSynagogueCache } = require('../lib/admin-synagogue-load');
 const { parsePermanentFromBody } = require('../lib/permanent-person');
@@ -872,15 +873,29 @@ router.post('/:slug/settings', requireAdmin, requirePermission('settings'), hand
         if (Object.keys(updateData).length > 0) {
             await Synagogue.updateOne({ slug: req.params.slug }, { $set: updateData });
         }
-        if (Object.prototype.hasOwnProperty.call(updateData, 'publicSubmission.donationUrl')) {
+        if (Object.prototype.hasOwnProperty.call(updateData, 'publicLinkRegion')) {
+            const fresh = await Synagogue.findOne({ slug: req.params.slug });
+            if (fresh) {
+                const qrPatch = await syncAutoCommunityQrTargets(fresh);
+                if (Object.keys(qrPatch).length > 0) {
+                    await Synagogue.updateOne({ slug: req.params.slug }, { $set: qrPatch });
+                }
+            }
+        } else if (Object.prototype.hasOwnProperty.call(updateData, 'publicSubmission.donationUrl')) {
             const fresh = await Synagogue.findOne({ slug: req.params.slug });
             if (fresh) {
                 const donationQrImage = await syncAutoDonationQrAfterUrlChange(fresh);
-                if (donationQrImage && donationQrImage !== fresh.publicSubmission?.donationQrImage) {
-                    await Synagogue.updateOne(
-                        { slug: req.params.slug },
-                        { $set: { 'publicSubmission.donationQrImage': donationQrImage } },
-                    );
+                const encoded = String(fresh.publicSubmission?.donationQrEncodedUrl || '');
+                const previousImage = String(fresh.publicSubmission?.donationQrImage || '');
+                const qrPatch = {};
+                if (donationQrImage && donationQrImage !== previousImage) {
+                    qrPatch['publicSubmission.donationQrImage'] = donationQrImage;
+                }
+                if (encoded) {
+                    qrPatch['publicSubmission.donationQrEncodedUrl'] = encoded;
+                }
+                if (Object.keys(qrPatch).length > 0) {
+                    await Synagogue.updateOne({ slug: req.params.slug }, { $set: qrPatch });
                 }
             }
         }
@@ -1389,6 +1404,8 @@ router.get('/:slug/dashboard', requireAdmin, requirePermission('settings'), asyn
               selected: normalizeBoardFont(enriched.theme.boardFont) === font.id,
             })),
             upcomingReminders: dashboardReminders,
+            showPublicLinkRegion: Boolean(resolveRuBaseUrl()),
+            resolvedPublicBoardUrl: communityPublicPath(enriched.slug, '', process.env, enriched),
             saved: req.query.saved === '1',
             refreshed: req.query.refreshed === '1',
             error: req.query.error || null,
