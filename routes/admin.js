@@ -466,6 +466,12 @@ function deleteSlideshowImageFiles(urls) {
         } catch {
             /* ignore missing or locked files */
         }
+        try {
+            const { forgetNamedFile } = require('../lib/image-store');
+            forgetNamedFile('images', filename);
+        } catch {
+            /* image store must not block slideshow cleanup */
+        }
     });
 }
 

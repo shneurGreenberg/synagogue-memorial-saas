@@ -32,6 +32,7 @@ const { communityLogoUrl } = require('../lib/community-logo-url');
 const { loadMasterCommunitiesList } = require('../lib/master-communities-list');
 const {
   createLoginRateLimiter,
+  createApiRateLimiter,
   regenerateSession,
   isAllowedImageUpload,
   isAllowedCommunityLogoUpload,
@@ -48,6 +49,7 @@ const { processCommunityLogoUpload } = require('../lib/community-logo-upload');
 const { applyDefaultCommunityQrToDocument } = require('../lib/default-community-qr');
 const { MAX_UPLOAD_BYTES } = require('../lib/upload-limits');
 const loginRateLimiter = createLoginRateLimiter();
+const uploadsMigrationRateLimiter = createApiRateLimiter();
 
 const IMAGES_DIR = path.join(__dirname, '..', 'images');
 const UPLOAD_TMP_DIR = path.join(__dirname, '..', 'provisioning', '_tmp');
@@ -629,6 +631,28 @@ router.post('/api/name-normalization', requireMasterApi, async (req, res) => {
         return res.json(result);
     } catch (err) {
         console.error('Name normalization error:', err && err.message);
+        return res.status(500).json({ error: publicErrorMessage(err) });
+    }
+});
+
+router.post('/api/uploads-migration', requireMasterApi, uploadsMigrationRateLimiter, async (req, res) => {
+    try {
+        const { runUploadsMigration } = require('../lib/migrations/migrate-uploads-to-db');
+        const mode = String((req.body && req.body.mode) || '');
+        if (!['dry-run', 'apply', 'restore'].includes(mode)) {
+            return res.status(400).json({ error: 'mode must be dry-run, apply or restore' });
+        }
+        if ((mode === 'apply' || mode === 'restore') && (!req.body || req.body.confirm !== 'APPLY')) {
+            return res.status(400).json({ error: 'confirm must be APPLY' });
+        }
+        const result = await runUploadsMigration({
+            mode,
+            runId: req.body && req.body.runId,
+        });
+        console.info(`[uploads-migration] mode=${mode} inserted=${result.inserted || 0} replaced=${result.replaced || 0} bytes=${result.bytes || 0}`);
+        return res.json(result);
+    } catch (err) {
+        console.error('[uploads-migration]', err && err.message ? err.message : err);
         return res.status(500).json({ error: publicErrorMessage(err) });
     }
 });

@@ -99,6 +99,10 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/synagogue
       console.error('Auto community QR startup regeneration failed:', err);
     });
   }
+  const { runUploadsMigrationFromEnv } = require('./lib/migrations/migrate-uploads-to-db');
+  runUploadsMigrationFromEnv().catch((err) => {
+    console.error('[uploads-migration]', err && err.message ? err.message : err);
+  });
 }).catch(err => console.error('MongoDB connection error:', err));
 
 app.use(compression());

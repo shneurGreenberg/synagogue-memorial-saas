@@ -19,4 +19,20 @@ Per community, admin settings offer **Auto**, **Russian server**, or **Internati
 
 The post-deploy workflow keeps checking `PROD_URL`. If the repository variable `PROD_URL_RU` is set, it also checks that host's `/healthz` version and `/s/<slug>` pages.
 
-Uploads stored under `/data` (photos and images) are local to each deployment. A file uploaded on one host is not copied to the other. That gap is not solved here.
+Uploads stored under `/data` (photos and images) are local to each deployment until shared storage is turned on.
+
+## Shared uploads
+
+Set `IMAGE_STORE=db` on a deployment to keep user uploads in MongoDB GridFS (bucket `uploads`) as well as on that host's disk. `/images/…` and `/photos/…` stay the same URLs. The database is checked first; a miss falls through to the persistent disk and then the files shipped in the repo. `/images/provisioning` is unchanged. Derived files (resized photo cache, favicons) are not stored in the database.
+
+Leave `IMAGE_STORE` unset to keep today's disk-only behaviour: no GridFS reads or writes.
+
+Migration (run on Warsaw, which has the persistent disk):
+
+1. Dry-run and review the JSON counts and database size. Either `POST /master/api/uploads-migration` with `{ "mode": "dry-run" }` as master admin, or start once with `UPLOADS_MIGRATION=dry-run`.
+2. Apply on Warsaw: `{ "mode": "apply", "confirm": "APPLY" }`, or `UPLOADS_MIGRATION=apply` together with `UPLOADS_MIGRATION_CONFIRM=APPLY`. Note the `runId` (`up-…`).
+3. Set `IMAGE_STORE=db` on Warsaw and on Moscow, then start Moscow.
+
+Restore that apply with `{ "mode": "restore", "runId": "up-…", "confirm": "APPLY" }`. The run removes files it inserted and puts replaced files back from the `uploads_backup` bucket.
+
+On the Moscow deployment set `DISABLE_PUSH_SCHEDULER=1` so only Warsaw sends yahrzeit push notifications.
